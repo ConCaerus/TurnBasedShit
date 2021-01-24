@@ -24,7 +24,10 @@ public abstract class UnitClass : MonoBehaviour {
     }
 
     private void Start() {
-        //loadEquipment();
+        if(stats.u_name == "")
+            setNewRandomName();
+        else
+            name = stats.u_name;
     }
 
 
@@ -44,8 +47,6 @@ public abstract class UnitClass : MonoBehaviour {
             FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, temp, DamageTextCanvas.damageType.defended);
         else
             FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, temp, DamageTextCanvas.damageType.weapon);
-        if(stats.u_health <= 0.0f)
-            die();
     }
 
     public void takePoisonDamage() {
@@ -54,8 +55,6 @@ public abstract class UnitClass : MonoBehaviour {
             stats.u_health -= temp;
 
             FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, temp, DamageTextCanvas.damageType.poison);
-            if(stats.u_health <= 0.0f)
-                die();
         }
     }
 
@@ -74,6 +73,7 @@ public abstract class UnitClass : MonoBehaviour {
         }
 
         FindObjectOfType<TurnOrderSorter>().removeUnitFromList(gameObject);
+        FindObjectOfType<HealthBarCanvas>().destroyHealthBarForUnit(gameObject);
         Destroy(gameObject);
     }
 
@@ -206,5 +206,10 @@ public abstract class UnitClass : MonoBehaviour {
         stats.u_order = n;
         //saveArmor();
         //saveWeapon();
+    }
+
+    public void setNewRandomName() {
+        stats.u_name = NameLibrary.getRandomName();
+        name = stats.u_name;
     }
 }

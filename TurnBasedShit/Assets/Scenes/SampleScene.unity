@@ -329,6 +329,7 @@ MonoBehaviour:
   defending: 0
   isMouseOverUnit: 0
   stats:
+    u_name: 
     u_health: 100
     u_maxHealth: 100
     u_speed: 0
@@ -431,7 +432,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 1.2451613, y: 1.8258065}
   m_EdgeRadius: 0
 --- !u!50 &144444964
 Rigidbody2D:
@@ -991,6 +992,7 @@ MonoBehaviour:
   defending: 0
   isMouseOverUnit: 0
   stats:
+    u_name: 
     u_health: 100
     u_maxHealth: 100
     u_speed: 0
@@ -1093,7 +1095,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 1.2451613, y: 1.8258065}
   m_EdgeRadius: 0
 --- !u!50 &758155886
 Rigidbody2D:
@@ -2031,6 +2033,7 @@ MonoBehaviour:
   defending: 0
   isMouseOverUnit: 0
   stats:
+    u_name: 
     u_health: 100
     u_maxHealth: 100
     u_speed: 0
@@ -2133,7 +2136,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 1.2451613, y: 1.8258065}
   m_EdgeRadius: 0
 --- !u!50 &1907120531
 Rigidbody2D:
@@ -2319,26 +2322,6 @@ PrefabInstance:
     - target: {fileID: 2150725456124683405, guid: 0f7e8ba4920db974598a9f8b50a5495f,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2150725456124683407, guid: 0f7e8ba4920db974598a9f8b50a5495f,
-        type: 3}
-      propertyPath: stats.equippedWeapon.w_power
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 2150725456124683407, guid: 0f7e8ba4920db974598a9f8b50a5495f,
-        type: 3}
-      propertyPath: stats.equippedWeapon.w_attributes.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2150725456124683407, guid: 0f7e8ba4920db974598a9f8b50a5495f,
-        type: 3}
-      propertyPath: stats.equippedWeapon.w_attributes.Array.data[1]
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2150725456124683407, guid: 0f7e8ba4920db974598a9f8b50a5495f,
-        type: 3}
-      propertyPath: stats.equippedWeapon.w_attributes.Array.data[2]
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

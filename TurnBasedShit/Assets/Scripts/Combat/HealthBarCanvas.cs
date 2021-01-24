@@ -18,6 +18,13 @@ public class HealthBarCanvas : MonoBehaviour {
         public void setMaxBarValue() {
             bar.maxValue = unit.GetComponent<UnitClass>().stats.u_maxHealth;
         }
+
+        public void destroyHealthBar() {
+            var temp = bar;
+            bar = null;
+            Destroy(temp.gameObject);
+            
+        }
     }
 
     
@@ -46,6 +53,15 @@ public class HealthBarCanvas : MonoBehaviour {
             temp.unit = i.gameObject;
             temp.bar = bar;
             healthBars.Add(temp);
+        }
+    }
+
+    public void destroyHealthBarForUnit(GameObject u) {
+        foreach(healthBar i in healthBars.ToArray()) {
+            if(i.unit == u) {
+                healthBars.Remove(i);
+                i.destroyHealthBar();
+            }
         }
     }
 }

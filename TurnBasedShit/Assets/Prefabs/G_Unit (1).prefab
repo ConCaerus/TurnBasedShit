@@ -229,7 +229,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 1.2451613, y: 1.8322581}
   m_EdgeRadius: 0
 --- !u!114 &2150725456124683407
 MonoBehaviour:
@@ -249,14 +249,15 @@ MonoBehaviour:
   defending: 0
   isMouseOverUnit: 0
   stats:
+    u_name: 
     u_health: 100
     u_maxHealth: 100
     u_speed: 0
     u_poisonCount: 0
     u_order: 0
     equippedWeapon:
-      w_attributes: 
-      w_power: 0
+      w_attributes: 000000000100000000000000
+      w_power: 50
       w_speedMod: 0
     equippedArmor:
       a_attributes: 

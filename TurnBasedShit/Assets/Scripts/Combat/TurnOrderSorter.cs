@@ -55,6 +55,13 @@ public class TurnOrderSorter : MonoBehaviour {
             FindObjectOfType<Party>().saveParty();
         }
 
+        //  kills dead units
+        //  for the love of god do not change these parameters. He will find you
+        foreach(GameObject i in unitsInPlay.ToArray()) {
+            if(i.GetComponent<UnitClass>().stats.u_health <= 0.0f)
+                i.GetComponent<UnitClass>().die();
+        }
+
         //  resets round if needed
         if(unitsInPlay.Count == 0)
             FindObjectOfType<UnitBattleMech>().resetBattleRound();

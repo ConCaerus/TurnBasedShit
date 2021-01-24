@@ -37,7 +37,12 @@ public class Party : MonoBehaviour {
     public void instantiateUnitsInParty() {
         if(unitsInParty.Count > 0) {
             for(int i = 0; i < unitsInParty.Count; i++) {
-                var temp = Instantiate(goodUnitPreset);
+                GameObject temp = null;
+                if(FindObjectsOfType<PlayerUnitInstance>().Length < i) {
+                    temp = Instantiate(goodUnitPreset);
+                }
+                else
+                    temp = FindObjectsOfType<PlayerUnitInstance>()[i].gameObject;
                 temp.GetComponent<UnitClass>().stats = unitsInParty[i];
 
                 //  set random pos
