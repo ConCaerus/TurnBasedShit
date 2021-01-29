@@ -8,6 +8,9 @@ public class UnitBattleMech : MonoBehaviour {
         FindObjectOfType<Party>().loadParty();
         FindObjectOfType<Party>().instantiateUnitsInParty();
         FindObjectOfType<Party>().resetUnitsInParty();
+        FindObjectOfType<Party>().saveParty();
+
+        Inventory.loadAllEquippment();
     }
 
     private void Start() {

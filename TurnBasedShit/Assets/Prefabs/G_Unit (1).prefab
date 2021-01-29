@@ -248,6 +248,8 @@ MonoBehaviour:
   attacking: 0
   defending: 0
   isMouseOverUnit: 0
+  weapon: {fileID: 0}
+  armor: {fileID: 0}
   stats:
     u_name: 
     u_health: 100
@@ -256,10 +258,19 @@ MonoBehaviour:
     u_poisonCount: 0
     u_order: 0
     equippedWeapon:
-      w_attributes: 000000000100000000000000
-      w_power: 50
+      w_attributes: 
+      w_power: 0
       w_speedMod: 0
+      w_sprite:
+        startingSprite: {fileID: 0}
+        s_location: 
+        s_name: 
     equippedArmor:
       a_attributes: 
       a_defence: 0
       a_speedMod: 0
+      a_sprite:
+        startingSprite: {fileID: 0}
+        s_location: 
+        s_name: 
+    u_spriteRenderer: {fileID: 0}

@@ -10,6 +10,7 @@ public class Party : MonoBehaviour {
 
     public void addUnitToParty(GameObject unit) {
         unitsInParty.Add(unit.GetComponent<UnitClass>().stats);
+        saveUnit(unit.GetComponent<UnitClass>().stats);
     }
 
     public void resetUnitsInParty() {
@@ -17,13 +18,16 @@ public class Party : MonoBehaviour {
         int index = 0;
         foreach(var i in FindObjectsOfType<PlayerUnitInstance>()) {
             unitsInParty.Add(i.stats);
-            i.setNewOrderNumber(index);
+            i.stats.u_order = index;
+            i.resetSpriteRenderer();
+            i.setup();
             index++;
         }
     }
 
     public void removeUnitFromParty(GameObject unit) {
         unitsInParty.Remove(unit.GetComponent<UnitClass>().stats);
+        clearUnitSaveData(unit.GetComponent<UnitClass>().stats);
     }
 
 
@@ -47,7 +51,7 @@ public class Party : MonoBehaviour {
 
                 //  set random pos
                 var randX = Random.Range(-8.0f, -3.0f);
-                var randY = Random.Range(-3.0f, 3.0f);
+                var randY = Random.Range(-2.0f, 2.0f);
                 temp.transform.position = new Vector2(randX, randY);
             }
         }
@@ -55,13 +59,13 @@ public class Party : MonoBehaviour {
     
 
     public void saveParty() {
-        resetUnitsInParty();
         for(int i = 0; i < unitsInParty.Count; i++) {
             var data = JsonUtility.ToJson(unitsInParty[i]);
             PlayerPrefs.SetString("Party" + i.ToString(), data);
         }
 
         PlayerPrefs.SetInt("PartySize", unitsInParty.Count);
+        PlayerPrefs.Save();
     }
 
     public void loadParty() {
@@ -69,7 +73,49 @@ public class Party : MonoBehaviour {
             for(int i = 0; i < PlayerPrefs.GetInt("PartySize"); i++) {
                 var data = PlayerPrefs.GetString("Party" + i.ToString());
                 unitsInParty.Add(JsonUtility.FromJson<UnitClassStats>(data));
+                PlayerPrefs.Save();
             }
         }
+    }
+
+
+    public void clearUnitSaveData(UnitClassStats stats) {
+        for(int i = 0; i < unitsInParty.Count; i++) {
+            if(unitsInParty[i] == stats) {
+                PlayerPrefs.DeleteKey("Party" + i.ToString());
+                PlayerPrefs.Save();
+                break;
+            }
+        }
+    }
+
+    public void resaveUnitSaveData(UnitClassStats stats) {
+        for(int i = 0; i < unitsInParty.Count; i++) {
+            if(unitsInParty[i] == stats) {
+                var data = JsonUtility.ToJson(stats);
+                PlayerPrefs.SetString("Party" + i.ToString(), data);
+                PlayerPrefs.Save();
+            }
+        }
+    }
+
+
+    public int getPartyCount() {
+        return unitsInParty.Count;
+    }
+
+    public GameObject getPartyMember(int index) {
+        foreach(var i in FindObjectsOfType<PlayerUnitInstance>()) {
+            if(i.stats.u_order == index)
+                return i.gameObject;
+        }
+        return null;
+    }
+
+    //  does not add unit to the actual party
+    public void saveUnit(UnitClassStats unit) {
+        var data = JsonUtility.ToJson(unit);
+        PlayerPrefs.SetString("Party" + unit.u_order.ToString(), data);
+        PlayerPrefs.Save();
     }
 }

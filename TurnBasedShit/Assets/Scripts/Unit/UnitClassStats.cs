@@ -14,4 +14,6 @@ public class UnitClassStats {
 
     public Weapon equippedWeapon;
     public Armor equippedArmor;
+
+    public SpriteRenderer u_spriteRenderer;
 }

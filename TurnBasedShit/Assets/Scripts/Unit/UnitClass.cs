@@ -10,6 +10,9 @@ public abstract class UnitClass : MonoBehaviour {
     public bool attacking = false, defending = false;
     public bool isMouseOverUnit = false;
 
+    public WeaponPreset weapon = null;
+    public ArmorPreset armor = null;
+
 
     public UnitClassStats stats;
 
@@ -23,13 +26,21 @@ public abstract class UnitClass : MonoBehaviour {
         isMouseOverUnit = false;
     }
 
-    private void Start() {
+    public void setup() {
         if(stats.u_name == "")
             setNewRandomName();
         else
             name = stats.u_name;
-    }
 
+        populateEmptyEquippment();
+
+        if(stats.u_spriteRenderer != null) {
+            GetComponent<SpriteRenderer>().sprite = stats.u_spriteRenderer.sprite;
+            GetComponent<SpriteRenderer>().color = stats.u_spriteRenderer.color;
+        } 
+        else
+            stats.u_spriteRenderer = GetComponent<SpriteRenderer>();
+    }
 
 
     public Vector2 getMousePos() {
@@ -146,70 +157,68 @@ public abstract class UnitClass : MonoBehaviour {
         return dmg - dmgBlocked;
     }
 
-    public void addEquippedWeapon(Weapon w) {
+    public void setEquippedWeapon(Weapon w) {
+        FindObjectOfType<Party>().removeUnitFromParty(gameObject);
         stats.equippedWeapon = w;
-        //saveWeapon();
+        stats.equippedWeapon.w_sprite.setLocation();
+        FindObjectOfType<Party>().addUnitToParty(gameObject);
     }
     public void removeEquippedWeapon() {
         stats.equippedWeapon = null;
-        PlayerPrefs.DeleteKey("Unit" + stats.u_order.ToString() + " Weapon");
     }
-    /*
-    public void saveWeapon() {
-        var data = JsonUtility.ToJson(stats.equippedWeapon);
-        PlayerPrefs.SetString("Unit" + stats.u_order.ToString() + " Weapon", data);
-    }
-    public void loadWeapon() {
-        if(PlayerPrefs.GetString("Unit" + stats.u_order.ToString() + " Weapon") != null) {
-            var data = PlayerPrefs.GetString("Unit" + stats.u_order.ToString() + " Weapon");
-            stats.equippedWeapon = JsonUtility.FromJson<Weapon>(data);
-        }
-        else
-            stats.equippedWeapon = new Weapon();
-    }
-    */
 
-    public void addEquippedArmor(Armor a) {
+    public void setEquippedArmor(Armor a) {
         stats.equippedArmor = a;
-        //saveArmor();
+        stats.equippedArmor.a_sprite.setLocation();
     }
     public void removeEquippedArmor() {
         stats.equippedArmor = null;
-        PlayerPrefs.DeleteKey("Unit" + stats.u_order.ToString() + " Armor");
     }
-    /*
-    public void saveArmor() {
-        var data = JsonUtility.ToJson(stats.equippedArmor);
-        PlayerPrefs.SetString("Unit" + stats.u_order.ToString() + " Armor", data);
-    }
-    public void loadArmor() {
-        if(PlayerPrefs.GetString("Unit" + stats.u_order.ToString() + " Armor") != null) {
-            var data = PlayerPrefs.GetString("Unit" + stats.u_order.ToString() + " Armor");
-            stats.equippedArmor = JsonUtility.FromJson<Armor>(data);
-        }
+
+    public void resetSavedEquippment() {
+        FindObjectOfType<Party>().clearUnitSaveData(stats);
+        if(weapon == null)
+            stats.equippedWeapon.resetWeaponStats();
         else
-            stats.equippedArmor = new Armor();
+            stats.equippedWeapon.setToPreset(weapon);
+        stats.equippedWeapon.w_sprite.setLocation();
+
+        if(armor == null)
+            stats.equippedArmor.resetArmorStats();
+        else
+            stats.equippedArmor.setToPreset(armor);
+        stats.equippedArmor.a_sprite.setLocation();
+
+        FindObjectOfType<Party>().saveUnit(stats);
     }
 
-    public void loadEquipment() {
-        loadWeapon();
-        loadArmor();
+    public void populateEmptyEquippment() {
+        if(stats.equippedWeapon.isEmpty() && weapon != null)
+            stats.equippedWeapon.setToPreset(weapon);
+        if(stats.equippedWeapon.w_sprite.getSprite() == null && weapon != null) {
+            weapon.preset.w_sprite.setLocation();
+            stats.equippedWeapon.w_sprite = weapon.preset.w_sprite;
+        }
 
-        stats.equippedArmor.weilder = gameObject;
-        stats.equippedWeapon.weilder = gameObject;
-    }
-    */
 
-    public void setNewOrderNumber(int n) {
-        PlayerPrefs.DeleteKey("Unit" + stats.u_order.ToString() + " Armor");
-        PlayerPrefs.DeleteKey("Unit" + stats.u_order.ToString() + " Weapon");
-        stats.u_order = n;
-        //saveArmor();
-        //saveWeapon();
+        if(stats.equippedArmor.isEmpty() && armor != null)
+            stats.equippedArmor.setToPreset(armor);
+        if(stats.equippedArmor.a_sprite.getSprite() == null && armor != null) {
+            armor.preset.a_sprite.setLocation();
+            stats.equippedArmor.a_sprite = armor.preset.a_sprite;
+        }
     }
 
     public void setNewRandomName() {
         stats.u_name = NameLibrary.getRandomName();
         name = stats.u_name;
+    }
+
+
+    public void resetSpriteRenderer() {
+        if(stats.u_spriteRenderer != null) {
+            GetComponent<SpriteRenderer>().sprite = stats.u_spriteRenderer.sprite;
+            GetComponent<SpriteRenderer>().color = stats.u_spriteRenderer.color;
+        }
     }
 }

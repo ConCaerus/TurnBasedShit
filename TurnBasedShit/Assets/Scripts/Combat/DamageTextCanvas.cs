@@ -34,7 +34,7 @@ public class DamageTextCanvas : MonoBehaviour {
         var ob = Instantiate(text, transform);
         var target = (Vector2)unit.transform.position + offset * unitDamageCounterCount;
         ob.transform.position = new Vector3(target.x, target.y, text.transform.position.z);
-        ob.text = dmg.ToString("0.##");
+        ob.text = dmg.ToString("0.#");
 
         if(type == damageType.weapon)
             ob.color = Color.red;

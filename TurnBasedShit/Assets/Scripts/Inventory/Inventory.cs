@@ -7,53 +7,133 @@ public static class Inventory {
     static List<Armor> armor = new List<Armor>();
 
 
-    public static void clearInventory() {
-        weapons.Clear();
-        armor.Clear();
-    }
-    public static void clearWeapons() {
-        weapons.Clear();
-    }
-    public static void clearArmor() {
-        armor.Clear();
-    }
-
-
     public static void addWeaponToInventory(Weapon w) {
+        w.w_sprite.setLocation();
+
+        int count = PlayerPrefs.GetInt("Inventory Weapon Count");
         weapons.Add(w);
 
         var data = JsonUtility.ToJson(w);
-        PlayerPrefs.SetString("Inventory Weapon" + weapons.Count.ToString(), data);
+        PlayerPrefs.SetString("Inventory Weapon" + count.ToString(), data);
+
+        Debug.Log(data);
+
+        PlayerPrefs.SetInt("Inventory Weapon Count", ++count);
+        PlayerPrefs.Save();
     }
     public static void addArmorToInventory(Armor a) {
+        a.a_sprite.setLocation();
+
+        int count = PlayerPrefs.GetInt("Inventory Armor Count");
         armor.Add(a);
+
+        var data = JsonUtility.ToJson(a);
+        PlayerPrefs.SetString("Inventory Armor" + count.ToString(), data);
+
+        PlayerPrefs.SetInt("Inventory Armor Count", ++count);
+        PlayerPrefs.Save();
     }
 
     public static void removeWeaponFromInventory(Weapon w) {
         for(int i = 0; i < weapons.Count; i++) {
             if(weapons[i] == w) {
-                PlayerPrefs.DeleteKey("Inventory Weapon" + i.ToString());
                 weapons.Remove(w);
+
+                saveAllEquippment();
+                break;
+            }
+        }
+
+        PlayerPrefs.DeleteKey("Inventory Weapon" + weapons.Count.ToString());
+    }
+    public static void removeArmorFromInventory(Armor a) {
+        for(int i = 0; i < armor.Count; i++) {
+            if(armor[i] == a) {
+                PlayerPrefs.DeleteKey("Inventory Armor" + i.ToString());
+                armor.Remove(a);
+
+                PlayerPrefs.SetInt("Inventory Armor Count", armor.Count - 2);
+                PlayerPrefs.Save();
                 break;
             }
         }
     }
-    public static void removeArmorFromInventory(Armor a) {
-        armor.Remove(a);
+
+
+    public static void saveAllEquippment() {
+        clearPrefs();
+        for(int i = 0; i < weapons.Count; i++) {
+            var data = JsonUtility.ToJson(weapons[i]);
+            PlayerPrefs.SetString("Inventory Weapon" + i.ToString(), data);
+        }
+        PlayerPrefs.SetInt("Inventory Weapon Count", weapons.Count);
+
+        for(int i = 0; i < armor.Count; i++) {
+            var data = JsonUtility.ToJson(armor[i]);
+            PlayerPrefs.SetString("Inventory Armor" + i.ToString(), data);
+        }
+        PlayerPrefs.SetInt("Inventory Armor Count", armor.Count);
+        PlayerPrefs.Save();
+    }
+    public static void loadAllEquippment() {
+        weapons.Clear();
+        armor.Clear();
+
+        for(int i = 0; i < PlayerPrefs.GetInt("Inventory Weapon Count"); i++) {
+            var data = PlayerPrefs.GetString("Inventory Weapon" + i.ToString());
+            weapons.Add(JsonUtility.FromJson<Weapon>(data));
+        }
+
+        for(int i = 0; i < PlayerPrefs.GetInt("Inventory Armor Count"); i++) {
+            var data = PlayerPrefs.GetString("Inventory Armor" + i.ToString());
+            armor.Add(JsonUtility.FromJson<Armor>(data));
+        }
+        PlayerPrefs.Save();
+    }
+
+
+    public static void clearPrefs() {
+        for(int i = 0; i < PlayerPrefs.GetInt("Inventory Weapon Count"); i++)
+            PlayerPrefs.DeleteKey("Inventory Weapon" + i.ToString());
+
+        for(int i = 0; i < PlayerPrefs.GetInt("Inventory Armor Count"); i++) {
+            PlayerPrefs.DeleteKey("Inventory Armor" + i.ToString());
+        }
+        PlayerPrefs.Save();
+    }
+    public static void clearInventory() {
+        weapons.Clear();
+        armor.Clear();
+        clearPrefs();
     }
 
 
     public static int getWeaponCount() {
         return weapons.Count;
     }
-    public static Weapon getWeaponFromIndex(int i) {
+    public static Weapon loadWeapon(int i) {
+        var data = PlayerPrefs.GetString("Inventory Weapon" + i.ToString());
+        weapons[i] = JsonUtility.FromJson<Weapon>(data);
+        PlayerPrefs.Save();
         return weapons[i];
+    }
+    public static Weapon takeWeaponAtIndex(int i) {
+        var temp = weapons[i];
+        removeWeaponFromInventory(weapons[i]);
+        return temp;
     }
 
     public static int getArmorCount() {
         return armor.Count;
     }
-    public static Armor getArmorFromIndex(int i) {
+    public static Armor loadArmor(int i) {
+        var data = PlayerPrefs.GetString("Inventory Armor" + i.ToString());
+        armor[i] = JsonUtility.FromJson<Armor>(data);
         return armor[i];
+    }
+    public static Armor takeArmorAtIndex(int i) {
+        var temp = armor[i];
+        weapons.RemoveAt(i);
+        return temp;
     }
 }
