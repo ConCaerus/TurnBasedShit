@@ -622,7 +622,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 54553975}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1970941034}
+        m_TargetAssemblyTypeName: InventoryCanvas, Assembly-CSharp
+        m_MethodName: equipHeldArmor
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &59823692
 GameObject:
   m_ObjectHideFlags: 0
@@ -1147,7 +1159,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300002, guid: 3f3f6abcce67a7145aba743500d5946e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9896841376689d649b934221321a108f, type: 3}
   m_Color: {r: 1, g: 0.49685526, b: 0.49685526, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1189,7 +1201,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.2451613, y: 1.8258065}
+    oldSize: {x: 1.62, y: 2.1866667}
     newSize: {x: 0.5, y: 0.5}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -2647,7 +2659,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -662, y: -358}
-  m_SizeDelta: {x: 43.36319, y: 46.32914}
+  m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &509988439
 MonoBehaviour:
@@ -2724,8 +2736,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 953834008087b4f44b32a68aec95ba9d, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -4600,7 +4612,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300002, guid: 3f3f6abcce67a7145aba743500d5946e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9896841376689d649b934221321a108f, type: 3}
   m_Color: {r: 1, g: 0.49685526, b: 0.49685526, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -4642,7 +4654,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.2451613, y: 1.8258065}
+    oldSize: {x: 1.62, y: 2.1866667}
     newSize: {x: 0.5, y: 0.5}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -8070,7 +8082,7 @@ PrefabInstance:
     - target: {fileID: 2150725456124683405, guid: 0f7e8ba4920db974598a9f8b50a5495f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.42
+      value: -1.622
       objectReference: {fileID: 0}
     - target: {fileID: 2150725456124683405, guid: 0f7e8ba4920db974598a9f8b50a5495f,
         type: 3}
@@ -8119,13 +8131,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2150725456124683406, guid: 0f7e8ba4920db974598a9f8b50a5495f,
         type: 3}
+      propertyPath: m_Color.b
+      value: 0.6415094
+      objectReference: {fileID: 0}
+    - target: {fileID: 2150725456124683406, guid: 0f7e8ba4920db974598a9f8b50a5495f,
+        type: 3}
       propertyPath: m_Color.g
-      value: 0.9493212
+      value: 0.6176119
       objectReference: {fileID: 0}
     - target: {fileID: 2150725456124683406, guid: 0f7e8ba4920db974598a9f8b50a5495f,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.5856176
+      value: 0.41556895
       objectReference: {fileID: 0}
     - target: {fileID: 2150725456124683407, guid: 0f7e8ba4920db974598a9f8b50a5495f,
         type: 3}
@@ -8139,6 +8156,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 91a71f740b007c7478e828abfd8ff846,
         type: 2}
+    - target: {fileID: 2150725456124683407, guid: 0f7e8ba4920db974598a9f8b50a5495f,
+        type: 3}
+      propertyPath: stats.u_order
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0f7e8ba4920db974598a9f8b50a5495f, type: 3}
 --- !u!1 &1756426414
@@ -9108,7 +9130,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300002, guid: 3f3f6abcce67a7145aba743500d5946e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9896841376689d649b934221321a108f, type: 3}
   m_Color: {r: 1, g: 0.49685526, b: 0.49685526, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -9150,7 +9172,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.2451613, y: 1.8258065}
+    oldSize: {x: 1.62, y: 2.1866667}
     newSize: {x: 0.5, y: 0.5}
     adaptiveTilingThreshold: 0.5
     drawMode: 0

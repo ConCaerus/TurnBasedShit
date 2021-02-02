@@ -158,10 +158,10 @@ public abstract class UnitClass : MonoBehaviour {
     }
 
     public void setEquippedWeapon(Weapon w) {
-        FindObjectOfType<Party>().removeUnitFromParty(gameObject);
         stats.equippedWeapon = w;
         stats.equippedWeapon.w_sprite.setLocation();
-        FindObjectOfType<Party>().addUnitToParty(gameObject);
+
+        FindObjectOfType<Party>().saveUnit(stats);
     }
     public void removeEquippedWeapon() {
         stats.equippedWeapon = null;
@@ -170,13 +170,14 @@ public abstract class UnitClass : MonoBehaviour {
     public void setEquippedArmor(Armor a) {
         stats.equippedArmor = a;
         stats.equippedArmor.a_sprite.setLocation();
+
+        FindObjectOfType<Party>().saveUnit(stats);
     }
     public void removeEquippedArmor() {
         stats.equippedArmor = null;
     }
 
     public void resetSavedEquippment() {
-        FindObjectOfType<Party>().clearUnitSaveData(stats);
         if(weapon == null)
             stats.equippedWeapon.resetWeaponStats();
         else
@@ -195,18 +196,20 @@ public abstract class UnitClass : MonoBehaviour {
     public void populateEmptyEquippment() {
         if(stats.equippedWeapon.isEmpty() && weapon != null)
             stats.equippedWeapon.setToPreset(weapon);
-        if(stats.equippedWeapon.w_sprite.getSprite() == null && weapon != null) {
-            weapon.preset.w_sprite.setLocation();
-            stats.equippedWeapon.w_sprite = weapon.preset.w_sprite;
-        }
+        else if(!stats.equippedWeapon.isEmpty())
+            weapon = stats.equippedWeapon.weaponToPreset();
+        stats.equippedWeapon.w_sprite = weapon.preset.w_sprite;
+        stats.equippedWeapon.w_sprite.setLocation();
 
 
         if(stats.equippedArmor.isEmpty() && armor != null)
             stats.equippedArmor.setToPreset(armor);
-        if(stats.equippedArmor.a_sprite.getSprite() == null && armor != null) {
-            armor.preset.a_sprite.setLocation();
-            stats.equippedArmor.a_sprite = armor.preset.a_sprite;
-        }
+        else if(!stats.equippedArmor.isEmpty())
+            armor = stats.equippedArmor.armorToPreset();
+        stats.equippedArmor.a_sprite = armor.preset.a_sprite;
+        stats.equippedArmor.a_sprite.setLocation();
+
+        FindObjectOfType<Party>().saveUnit(stats);
     }
 
     public void setNewRandomName() {

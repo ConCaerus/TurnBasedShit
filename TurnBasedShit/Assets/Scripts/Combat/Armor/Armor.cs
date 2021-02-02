@@ -18,17 +18,6 @@ public class Armor {
     public SpriteLocation a_sprite;
 
 
-    public float getTurtleBonusDefence() {
-        float temp = 0.0f;
-        foreach(var i in a_attributes) {
-            if(i == attributes.turtle) {
-                temp += a_defence * 0.15f;
-            }
-        }
-        return temp;
-    }
-
-
     //  NOTE: this function is applied by the defending unit while the 
     //          weapon class has its function called by the attacker
     public void applyAttributesAfterAttack(GameObject weilder, GameObject attacker) {
@@ -43,13 +32,23 @@ public class Armor {
     }
 
 
+    public float getTurtleBonusDefence() {
+        float temp = 0.0f;
+        foreach(var i in a_attributes) {
+            if(i == attributes.turtle) {
+                temp += a_defence * 0.15f;
+            }
+        }
+        return temp;
+    }
+
+
     public void resetArmorStats() {
         a_defence = 0;
         a_speedMod = 0;
         a_attributes.Clear();
         a_sprite.clear();
     }
-
 
     public bool isEmpty() {
         return a_attributes.Count == 0 && a_defence == 0 && a_speedMod == 0;

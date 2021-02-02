@@ -19,7 +19,6 @@ public class InventoryCanvas : MonoBehaviour {
 
 
     abstract class inventoryObject {
-        public int index;
         public GameObject icon;
         public GameObject slot;
 
@@ -50,21 +49,23 @@ public class InventoryCanvas : MonoBehaviour {
     }
     inventoryObject heldObject = null;
 
-    class inventoryWeapon : inventoryObject {
+    class InventoryWeapon : inventoryObject {
+        public Weapon weapon;
 
         public override char getType() {
             return 'w';
         }
     }
-    List<inventoryWeapon> inventoryWeapons = new List<inventoryWeapon>();
+    List<InventoryWeapon> inventoryWeapons = new List<InventoryWeapon>();
 
-    class inventoryArmor : inventoryObject {
+    class InventoryArmor : inventoryObject {
+        public Armor armor;
 
         public override char getType() {
             return 'a';
         }
     }
-    List<inventoryArmor> inventoryArmors = new List<inventoryArmor>();
+    List<InventoryArmor> inventoryArmors = new List<InventoryArmor>();
 
 
 
@@ -133,6 +134,7 @@ public class InventoryCanvas : MonoBehaviour {
             heldObject.destory();
             heldObject = null;
         }
+        
         populateInventorySlots();
     }
 
@@ -142,7 +144,6 @@ public class InventoryCanvas : MonoBehaviour {
         unitImage.GetComponent<Image>().color = shownUnit.GetComponent<SpriteRenderer>().color;
         shownUnit.GetComponent<UnitClass>().stats.equippedWeapon.w_sprite.setLocation();
         shownUnit.GetComponent<UnitClass>().stats.equippedArmor.a_sprite.setLocation();
-        shownUnit.GetComponent<UnitClass>().populateEmptyEquippment();
 
         weaponImage.GetComponent<Image>().sprite = shownUnit.GetComponent<UnitClass>().stats.equippedWeapon.w_sprite.getSprite();
         armorImage.GetComponent<Image>().sprite = shownUnit.GetComponent<UnitClass>().stats.equippedArmor.a_sprite.getSprite();
@@ -150,18 +151,19 @@ public class InventoryCanvas : MonoBehaviour {
 
     void populateInventorySlots() {
         Inventory.loadAllEquippment();
+        heldObject = null;
+        foreach(var i in inventoryWeapons) {
+            i.destory();
+        }
+        inventoryWeapons.Clear();
+        foreach(var i in inventoryArmors) {
+            i.destory();
+        }
+        inventoryArmors.Clear();
+
         if(weaponInventoryCanvas.activeInHierarchy) {
             var slots = weaponInventorySlots.GetComponentsInChildren<Button>();
             for(int i = 0; i < Inventory.getWeaponCount(); i++) {
-                bool alreadyInInventory = false;
-                foreach(var wea in inventoryWeapons) {
-                    if(wea.index == i) {
-                        alreadyInInventory = true;
-                        break;
-                    }
-                }
-                if(alreadyInInventory)
-                    continue;
                 var temp = slots[i];
                 GameObject other = Instantiate(temp.gameObject);
                 other.transform.position = temp.gameObject.transform.position;
@@ -172,8 +174,8 @@ public class InventoryCanvas : MonoBehaviour {
                 other.GetComponent<Image>().color = Color.white;
                 other.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
 
-                inventoryWeapon w = new inventoryWeapon();
-                w.index = i;
+                InventoryWeapon w = new InventoryWeapon();
+                w.weapon = Inventory.loadWeapon(i);
                 w.icon = other;
                 w.slot = temp.gameObject;
 
@@ -184,15 +186,6 @@ public class InventoryCanvas : MonoBehaviour {
         else if(armorInventorySlots.activeInHierarchy) {
             var slots = armorInventorySlots.GetComponentsInChildren<Button>();
             for(int i = 0; i < Inventory.getArmorCount(); i++) {
-                bool alreadyInInventory = false;
-                foreach(var arm in inventoryArmors) {
-                    if(arm.index == i) {
-                        alreadyInInventory = true;
-                        break;
-                    }
-                }
-                if(alreadyInInventory)
-                    continue;
                 var temp = slots[i];
                 GameObject other = Instantiate(temp.gameObject);
                 other.transform.position = temp.gameObject.transform.position;
@@ -201,10 +194,10 @@ public class InventoryCanvas : MonoBehaviour {
                 other.GetComponent<Image>().raycastTarget = false;
                 other.GetComponent<Image>().sprite = Inventory.loadArmor(i).a_sprite.getSprite();
                 other.GetComponent<Image>().color = Color.white;
-                other.GetComponent<RectTransform>().localScale = new Vector3(0.9f, 0.9f, 0.9f);
+                other.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
 
-                inventoryArmor a = new inventoryArmor();
-                a.index = i;
+                InventoryArmor a = new InventoryArmor();
+                a.armor = Inventory.loadArmor(i);
                 a.icon = other;
                 a.slot = temp.gameObject;
 
@@ -215,10 +208,10 @@ public class InventoryCanvas : MonoBehaviour {
 
 
     public void selectWeaponFromInventory(GameObject pressedButton) {
-        inventoryWeapon prevWeapon = null;
+        InventoryWeapon prevWeapon = null;
         if(heldObject != null) {
             heldObject.setNewSlot(pressedButton);
-            prevWeapon = (inventoryWeapon)heldObject;
+            prevWeapon = (InventoryWeapon)heldObject;
         }
         heldObject = null;
         foreach(var i in inventoryWeapons) {
@@ -234,10 +227,10 @@ public class InventoryCanvas : MonoBehaviour {
     }
 
     public void selectArmorFromInventory(GameObject pressedButton) {
-        inventoryArmor prevArmor = null;
+        InventoryArmor prevArmor = null;
         if(heldObject != null) {
             heldObject.setNewSlot(pressedButton);
-            prevArmor = (inventoryArmor)heldObject;
+            prevArmor = (InventoryArmor)heldObject;
         }
         heldObject = null;
         foreach(var i in inventoryArmors) {
@@ -254,11 +247,43 @@ public class InventoryCanvas : MonoBehaviour {
 
     public void equipHeldWeapon() {
         if(heldObject != null) {
+            shownUnit.GetComponent<UnitClass>().stats.equippedWeapon.w_sprite.setLocation();
             var prev = shownUnit.GetComponent<UnitClass>().stats.equippedWeapon;
-            shownUnit.GetComponent<UnitClass>().setEquippedWeapon(Inventory.takeWeaponAtIndex(heldObject.index));
+
+            var newUnitWeapon = new InventoryWeapon();
+            newUnitWeapon = (InventoryWeapon)heldObject;
+
+            var newInvWeapon = new InventoryWeapon();
+            newInvWeapon.weapon = prev;
+            heldObject.icon.GetComponent<Image>().sprite = shownUnit.GetComponent<UnitClass>().stats.equippedWeapon.w_sprite.getSprite();
+            newInvWeapon.icon = heldObject.icon;
+
+            shownUnit.GetComponent<UnitClass>().setEquippedWeapon(newUnitWeapon.weapon);
+            Inventory.removeWeaponFromInventory(newUnitWeapon.weapon);
             Inventory.addWeaponToInventory(prev);
-            heldObject.index = Inventory.getWeaponCount() - 1;
-            heldObject.icon.GetComponent<Image>().sprite = prev.w_sprite.getSprite();
+            heldObject = newInvWeapon;
+
+            updateUnitImages();
+        }
+    }
+
+    public void equipHeldArmor() {
+        if(heldObject != null) {
+            shownUnit.GetComponent<UnitClass>().stats.equippedArmor.a_sprite.setLocation();
+            var prev = shownUnit.GetComponent<UnitClass>().stats.equippedArmor;
+
+            var newUnitArmor = new InventoryArmor();
+            newUnitArmor = (InventoryArmor)heldObject;
+
+            var newInvArmor = new InventoryArmor();
+            newInvArmor.armor = prev;
+            heldObject.icon.GetComponent<Image>().sprite = shownUnit.GetComponent<UnitClass>().stats.equippedArmor.a_sprite.getSprite();
+            newInvArmor.icon = heldObject.icon;
+
+            shownUnit.GetComponent<UnitClass>().setEquippedArmor(newUnitArmor.armor);
+            Inventory.removeArmorFromInventory(newUnitArmor.armor);
+            Inventory.addArmorToInventory(prev);
+            heldObject = newInvArmor;
 
             updateUnitImages();
         }

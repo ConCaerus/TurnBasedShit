@@ -11,7 +11,7 @@ public class HealthBarCanvas : MonoBehaviour {
         public Slider bar;
 
 
-        public void update() { 
+        public void update() {
             bar.value = Mathf.Lerp(bar.value, unit.GetComponent<UnitClass>().stats.u_health, 50.0f * Time.deltaTime);
         }
 
@@ -23,11 +23,11 @@ public class HealthBarCanvas : MonoBehaviour {
             var temp = bar;
             bar = null;
             Destroy(temp.gameObject);
-            
+
         }
     }
 
-    
+
     List<healthBar> healthBars = new List<healthBar>();
 
 

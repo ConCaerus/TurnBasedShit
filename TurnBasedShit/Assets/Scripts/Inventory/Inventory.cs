@@ -16,9 +16,7 @@ public static class Inventory {
         var data = JsonUtility.ToJson(w);
         PlayerPrefs.SetString("Inventory Weapon" + count.ToString(), data);
 
-        Debug.Log(data);
-
-        PlayerPrefs.SetInt("Inventory Weapon Count", ++count);
+        PlayerPrefs.SetInt("Inventory Weapon Count", count + 1);
         PlayerPrefs.Save();
     }
     public static void addArmorToInventory(Armor a) {
@@ -30,7 +28,7 @@ public static class Inventory {
         var data = JsonUtility.ToJson(a);
         PlayerPrefs.SetString("Inventory Armor" + count.ToString(), data);
 
-        PlayerPrefs.SetInt("Inventory Armor Count", ++count);
+        PlayerPrefs.SetInt("Inventory Armor Count", count + 1);
         PlayerPrefs.Save();
     }
 
@@ -38,7 +36,6 @@ public static class Inventory {
         for(int i = 0; i < weapons.Count; i++) {
             if(weapons[i] == w) {
                 weapons.Remove(w);
-
                 saveAllEquippment();
                 break;
             }
@@ -49,14 +46,14 @@ public static class Inventory {
     public static void removeArmorFromInventory(Armor a) {
         for(int i = 0; i < armor.Count; i++) {
             if(armor[i] == a) {
-                PlayerPrefs.DeleteKey("Inventory Armor" + i.ToString());
                 armor.Remove(a);
 
-                PlayerPrefs.SetInt("Inventory Armor Count", armor.Count - 2);
-                PlayerPrefs.Save();
+                saveAllEquippment();
                 break;
             }
         }
+
+        PlayerPrefs.DeleteKey("Inventory Armor" + armor.Count.ToString());
     }
 
 
@@ -96,9 +93,8 @@ public static class Inventory {
         for(int i = 0; i < PlayerPrefs.GetInt("Inventory Weapon Count"); i++)
             PlayerPrefs.DeleteKey("Inventory Weapon" + i.ToString());
 
-        for(int i = 0; i < PlayerPrefs.GetInt("Inventory Armor Count"); i++) {
+        for(int i = 0; i < PlayerPrefs.GetInt("Inventory Armor Count"); i++)
             PlayerPrefs.DeleteKey("Inventory Armor" + i.ToString());
-        }
         PlayerPrefs.Save();
     }
     public static void clearInventory() {
@@ -129,11 +125,12 @@ public static class Inventory {
     public static Armor loadArmor(int i) {
         var data = PlayerPrefs.GetString("Inventory Armor" + i.ToString());
         armor[i] = JsonUtility.FromJson<Armor>(data);
+        PlayerPrefs.Save();
         return armor[i];
     }
     public static Armor takeArmorAtIndex(int i) {
         var temp = armor[i];
-        weapons.RemoveAt(i);
+        removeArmorFromInventory(armor[i]);
         return temp;
     }
 }

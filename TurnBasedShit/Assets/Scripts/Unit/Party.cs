@@ -20,7 +20,6 @@ public class Party : MonoBehaviour {
             unitsInParty.Add(i.stats);
             i.stats.u_order = index;
             i.resetSpriteRenderer();
-            i.setup();
             index++;
         }
     }
@@ -48,6 +47,7 @@ public class Party : MonoBehaviour {
                 else
                     temp = FindObjectsOfType<PlayerUnitInstance>()[i].gameObject;
                 temp.GetComponent<UnitClass>().stats = unitsInParty[i];
+                temp.GetComponent<UnitClass>().setup();
 
                 //  set random pos
                 var randX = Random.Range(-8.0f, -3.0f);
@@ -56,7 +56,7 @@ public class Party : MonoBehaviour {
             }
         }
     }
-    
+
 
     public void saveParty() {
         for(int i = 0; i < unitsInParty.Count; i++) {
@@ -99,6 +99,17 @@ public class Party : MonoBehaviour {
         }
     }
 
+    public void saveUnit(int index, UnitClassStats stats) {
+        var data = JsonUtility.ToJson(stats);
+        PlayerPrefs.SetString("Party" + index.ToString(), data);
+        PlayerPrefs.Save();
+    }
+    public void saveUnit(UnitClassStats stats) {
+        var data = JsonUtility.ToJson(stats);
+        PlayerPrefs.SetString("Party" + stats.u_order.ToString(), data);
+        PlayerPrefs.Save();
+    }
+
 
     public int getPartyCount() {
         return unitsInParty.Count;
@@ -110,12 +121,5 @@ public class Party : MonoBehaviour {
                 return i.gameObject;
         }
         return null;
-    }
-
-    //  does not add unit to the actual party
-    public void saveUnit(UnitClassStats unit) {
-        var data = JsonUtility.ToJson(unit);
-        PlayerPrefs.SetString("Party" + unit.u_order.ToString(), data);
-        PlayerPrefs.Save();
     }
 }

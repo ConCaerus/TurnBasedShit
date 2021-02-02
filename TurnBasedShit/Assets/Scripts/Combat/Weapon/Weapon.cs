@@ -64,7 +64,6 @@ public class Weapon {
         w_sprite.setLocation();
     }
 
-
     public WeaponPreset weaponToPreset() {
         WeaponPreset preset = new WeaponPreset();
         preset.preset = this;
