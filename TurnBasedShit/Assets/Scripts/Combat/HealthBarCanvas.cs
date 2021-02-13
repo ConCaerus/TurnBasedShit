@@ -23,37 +23,40 @@ public class HealthBarCanvas : MonoBehaviour {
             var temp = bar;
             bar = null;
             Destroy(temp.gameObject);
-
         }
     }
 
 
     List<healthBar> healthBars = new List<healthBar>();
 
-
     private void Start() {
-        createHealthBars();
+        createEnemyHealthBars();
     }
 
     private void Update() {
-        foreach(var i in healthBars)
+        foreach(var i in healthBars) {
             i.update();
+        }
     }
 
 
-    void createHealthBars() {
-        foreach(var i in FindObjectsOfType<UnitClass>()) {
-            var bar = Instantiate(barPrefab, transform);
-            var yOffset = new Vector3(0.0f, i.gameObject.transform.localScale.y / 1.0f, 0.0f);
-            var target = i.gameObject.transform.position + yOffset;
-            bar.transform.position = new Vector3(target.x, target.y, bar.transform.position.z);
-            bar.maxValue = i.stats.u_maxHealth;
-            bar.value = i.stats.u_health;
-            var temp = new healthBar();
-            temp.unit = i.gameObject;
-            temp.bar = bar;
-            healthBars.Add(temp);
+    public void createEnemyHealthBars() {
+        foreach(var i in FindObjectsOfType<EnemyUnitInstance>()) {
+            createHealthBar(i);
         }
+    }
+
+    public void createHealthBar(UnitClass unit) {
+        var bar = Instantiate(barPrefab, transform);
+        var yOffset = new Vector3(0.0f, unit.gameObject.transform.localScale.y / 1.0f, 0.0f);
+        var target = unit.gameObject.transform.position + yOffset;
+        bar.transform.position = new Vector3(target.x, target.y, bar.transform.position.z);
+        bar.maxValue = unit.stats.u_maxHealth;
+        bar.value = unit.stats.u_health;
+        var temp = new healthBar();
+        temp.unit = unit.gameObject;
+        temp.bar = bar;
+        healthBars.Add(temp);
     }
 
     public void destroyHealthBarForUnit(GameObject u) {

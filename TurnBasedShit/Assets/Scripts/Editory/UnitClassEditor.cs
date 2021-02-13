@@ -15,5 +15,35 @@ public class UnitClassEditor : Editor {
         if(GUILayout.Button("Reset Unit Saved Equippment")) {
             unit.resetSavedEquippment();
         }
+
+        if(GUILayout.Button("Set Equipment")) {
+            unit.setEquipment();
+        }
+
+        if(GUILayout.Button("Set Sprite")) {
+            unit.resetSpriteAndColor();
+        }
+    }
+}
+
+[CustomEditor(typeof(EnemyUnitInstance))]
+public class EnemyUnitClassEditory : Editor {
+
+    public override void OnInspectorGUI() {
+        base.OnInspectorGUI();
+
+        EnemyUnitInstance unit = (EnemyUnitInstance)target;
+
+        if(GUILayout.Button("Reset Unit Saved Equippment")) {
+            unit.resetSavedEquippment();
+        }
+
+        if(GUILayout.Button("Set Equipment")) {
+            unit.setEquipment();
+        }
+
+        if(GUILayout.Button("Set Sprite")) {
+            unit.resetSpriteAndColor();
+        }
     }
 }

@@ -5,22 +5,33 @@ using UnityEngine;
 public class InventoryPopulator : MonoBehaviour {
     [SerializeField] WeaponPreset weaponToAdd;
     [SerializeField] ArmorPreset armorToAdd;
+    [SerializeField] ItemPreset itemToAdd;
 
 
-    public void addAndResetEquippmentToAdd() {
-        if(weaponToAdd != null) {
-            Weapon w = weaponToAdd.preset;
-            Inventory.addWeaponToInventory(w);
-        }
+    public void resetInventory() {
+        Inventory.clearInventory();
+    }
 
-        if(armorToAdd != null) {
-            Armor a = armorToAdd.preset;
-            Inventory.addArmorToInventory(a);
+    public void addAndResetEquippmentToAdd(int count = 0) {
+        for(int j = 0; j < count; j++) {
+            if(weaponToAdd != null) {
+                Weapon w = weaponToAdd.preset;
+                Inventory.addNewWeapon(w);
+            }
+
+            if(armorToAdd != null) {
+                Armor a = armorToAdd.preset;
+                Inventory.addNewArmor(a);
+            }
+
+            if(itemToAdd != null) {
+                Item i = itemToAdd.preset;
+                Inventory.addNewItem(i);
+            }
         }
 
         weaponToAdd = null;
         armorToAdd = null;
-
-        Inventory.saveAllEquippment();
+        itemToAdd = null;
     }
 }

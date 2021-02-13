@@ -5,16 +5,11 @@ using UnityEngine;
 public class UnitBattleMech : MonoBehaviour {
 
     private void Awake() {
-        FindObjectOfType<Party>().loadParty();
-        FindObjectOfType<Party>().instantiateUnitsInParty();
-        FindObjectOfType<Party>().saveParty();
-
-        Inventory.loadAllEquippment();
+        FindObjectOfType<PartyObject>().instantiatePartyMembers();
     }
 
     private void Start() {
         resetBattleRound();
-        FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
     }
 
     public void resetBattleRound() {

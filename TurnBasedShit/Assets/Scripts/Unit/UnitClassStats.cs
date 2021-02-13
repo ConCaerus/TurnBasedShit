@@ -15,5 +15,10 @@ public class UnitClassStats {
     public Weapon equippedWeapon;
     public Armor equippedArmor;
 
-    public SpriteRenderer u_spriteRenderer;
+    public SpriteLocation u_sprite;
+    public Color u_color;
+
+    public void setNewOrder(int i) {
+        u_order = i;
+    }
 }

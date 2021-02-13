@@ -7,13 +7,25 @@ public class BattleOptionsCanvas : MonoBehaviour {
 
 
     public void runCombatLogic() {
-        if(FindObjectOfType<TurnOrderSorter>().playingUnit != null && FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().isPlayerUnit) {
-            optionsObject.SetActive(true);
-            moveToUnit();
-        }
-        else if(FindObjectOfType<TurnOrderSorter>().playingUnit != null && !FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().isPlayerUnit) {
-            FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().attacking = true;
-            optionsObject.SetActive(false);
+        if(FindObjectOfType<TurnOrderSorter>().playingUnit != null) {
+            var playingUnit = FindObjectOfType<TurnOrderSorter>().playingUnit;
+            if(playingUnit.GetComponent<UnitClass>().isPlayerUnit && !playingUnit.GetComponent<UnitClass>().stunned) {
+                optionsObject.SetActive(true);
+                moveToUnit();
+            }
+            else if(playingUnit.GetComponent<UnitClass>().isPlayerUnit && playingUnit.GetComponent<UnitClass>().stunned) {
+                StartCoroutine(skipUnitTurn());
+            }
+
+            else if(!playingUnit.GetComponent<UnitClass>().isPlayerUnit && !playingUnit.GetComponent<UnitClass>().stunned) {
+                FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().attacking = true;
+                optionsObject.SetActive(false);
+            }
+            else if(!playingUnit.GetComponent<UnitClass>().isPlayerUnit && playingUnit.GetComponent<UnitClass>().stunned) {
+                StartCoroutine(skipUnitTurn());
+            }
+            else
+                optionsObject.SetActive(false);
         }
         else
             optionsObject.SetActive(false);
@@ -25,6 +37,13 @@ public class BattleOptionsCanvas : MonoBehaviour {
         Vector2 offset = new Vector2(0.0f, FindObjectOfType<TurnOrderSorter>().playingUnit.transform.localScale.y);
 
         optionsObject.transform.position = target + offset;
+    }
+
+
+    IEnumerator skipUnitTurn() {
+        yield return new WaitForSeconds(1.0f);
+
+        FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
     }
 
 

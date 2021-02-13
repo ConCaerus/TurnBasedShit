@@ -61,11 +61,10 @@ public class Weapon {
         w_speedMod = temp.w_speedMod;
         w_attributes = temp.w_attributes;
         w_sprite = temp.w_sprite;
-        w_sprite.setLocation();
     }
 
     public WeaponPreset weaponToPreset() {
-        WeaponPreset preset = new WeaponPreset();
+        WeaponPreset preset = (WeaponPreset)ScriptableObject.CreateInstance("WeaponPreset");
         preset.preset = this;
         return preset;
     }

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 
 [System.Serializable]
 public class Armor {
@@ -61,11 +60,10 @@ public class Armor {
         a_speedMod = temp.a_speedMod;
         a_attributes = temp.a_attributes;
         a_sprite = temp.a_sprite;
-        a_sprite.setLocation();
     }
 
     public ArmorPreset armorToPreset() {
-        ArmorPreset preset = new ArmorPreset();
+        ArmorPreset preset = (ArmorPreset)ScriptableObject.CreateInstance("ArmorPreset");
         preset.preset = this;
         return preset;
     }

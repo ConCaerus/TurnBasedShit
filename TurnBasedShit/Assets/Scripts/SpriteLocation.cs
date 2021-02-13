@@ -29,7 +29,6 @@ public class SpriteLocation {
         }
 
         Debug.Log("Could not load sprite for some reason");
-        Debug.Log("Type of first sprite:   " + sprites[0].GetType());
         return null;
     }
 
@@ -63,7 +62,7 @@ public class SpriteLocation {
             setLocation(startingSprite);
             return;
         }
-        if(s == null) return;
+        if(s == null || s.GetType() != typeof(Texture2D)) return;
 
         var rect = new Rect(0, 0, s.width, s.height);
         Sprite temp = Sprite.Create(s, rect, Vector2.zero);

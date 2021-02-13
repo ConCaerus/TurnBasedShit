@@ -8,10 +8,11 @@ public abstract class UnitClass : MonoBehaviour {
 
     public bool isPlayerUnit = true;
     public bool attacking = false, defending = false;
+    public bool stunned = false;
     public bool isMouseOverUnit = false;
 
-    public WeaponPreset weapon = null;
-    public ArmorPreset armor = null;
+    [SerializeField] WeaponPreset weapon = null;
+    [SerializeField] ArmorPreset armor = null;
 
 
     public UnitClassStats stats;
@@ -31,15 +32,6 @@ public abstract class UnitClass : MonoBehaviour {
             setNewRandomName();
         else
             name = stats.u_name;
-
-        populateEmptyEquippment();
-
-        if(stats.u_spriteRenderer != null) {
-            GetComponent<SpriteRenderer>().sprite = stats.u_spriteRenderer.sprite;
-            GetComponent<SpriteRenderer>().color = stats.u_spriteRenderer.color;
-        } 
-        else
-            stats.u_spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
 
@@ -68,6 +60,9 @@ public abstract class UnitClass : MonoBehaviour {
             FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, temp, DamageTextCanvas.damageType.poison);
         }
     }
+    public void curePoison() {
+        stats.u_poisonCount = 0;
+    }
 
     public void addHealth(float h) {
         if(stats.u_health <= 0.0f)
@@ -86,6 +81,11 @@ public abstract class UnitClass : MonoBehaviour {
         FindObjectOfType<TurnOrderSorter>().removeUnitFromList(gameObject);
         FindObjectOfType<HealthBarCanvas>().destroyHealthBarForUnit(gameObject);
         Destroy(gameObject);
+    }
+
+
+    public void addSpeed(float s) {
+        stats.u_speed += s;
     }
 
 
@@ -157,23 +157,40 @@ public abstract class UnitClass : MonoBehaviour {
         return dmg - dmgBlocked;
     }
 
-    public void setEquippedWeapon(Weapon w) {
+    public void setEquippedWeapon(Weapon w = null) {
+        if(w == null && weapon != null) {
+            w = weapon.preset;
+            weapon = null;
+        }
+        if(w == null) return;
         stats.equippedWeapon = w;
-        stats.equippedWeapon.w_sprite.setLocation();
 
-        FindObjectOfType<Party>().saveUnit(stats);
+        Party.resaveUnit(stats);
     }
     public void removeEquippedWeapon() {
         stats.equippedWeapon = null;
     }
 
-    public void setEquippedArmor(Armor a) {
+    public void setEquippedArmor(Armor a = null) {
+        if(a == null && armor != null) {
+            a = armor.preset;
+            armor = null;
+        }
+        if(a == null) return;
         stats.equippedArmor = a;
-        stats.equippedArmor.a_sprite.setLocation();
 
-        FindObjectOfType<Party>().saveUnit(stats);
+        Party.resaveUnit(stats);
     }
     public void removeEquippedArmor() {
+        stats.equippedArmor = null;
+    }
+
+    public void setEquipment(Weapon w = null, Armor a = null) {
+        setEquippedWeapon(w);
+        setEquippedArmor(a);
+    }
+    public void removeEquipment() {
+        stats.equippedWeapon = null;
         stats.equippedArmor = null;
     }
 
@@ -182,15 +199,13 @@ public abstract class UnitClass : MonoBehaviour {
             stats.equippedWeapon.resetWeaponStats();
         else
             stats.equippedWeapon.setToPreset(weapon);
-        stats.equippedWeapon.w_sprite.setLocation();
 
         if(armor == null)
             stats.equippedArmor.resetArmorStats();
         else
             stats.equippedArmor.setToPreset(armor);
-        stats.equippedArmor.a_sprite.setLocation();
 
-        FindObjectOfType<Party>().saveUnit(stats);
+        Party.resaveUnit(stats);
     }
 
     public void populateEmptyEquippment() {
@@ -198,18 +213,14 @@ public abstract class UnitClass : MonoBehaviour {
             stats.equippedWeapon.setToPreset(weapon);
         else if(!stats.equippedWeapon.isEmpty())
             weapon = stats.equippedWeapon.weaponToPreset();
-        stats.equippedWeapon.w_sprite = weapon.preset.w_sprite;
-        stats.equippedWeapon.w_sprite.setLocation();
 
 
         if(stats.equippedArmor.isEmpty() && armor != null)
             stats.equippedArmor.setToPreset(armor);
         else if(!stats.equippedArmor.isEmpty())
             armor = stats.equippedArmor.armorToPreset();
-        stats.equippedArmor.a_sprite = armor.preset.a_sprite;
-        stats.equippedArmor.a_sprite.setLocation();
 
-        FindObjectOfType<Party>().saveUnit(stats);
+        Party.resaveUnit(stats);
     }
 
     public void setNewRandomName() {
@@ -217,11 +228,8 @@ public abstract class UnitClass : MonoBehaviour {
         name = stats.u_name;
     }
 
-
-    public void resetSpriteRenderer() {
-        if(stats.u_spriteRenderer != null) {
-            GetComponent<SpriteRenderer>().sprite = stats.u_spriteRenderer.sprite;
-            GetComponent<SpriteRenderer>().color = stats.u_spriteRenderer.color;
-        }
+    public void resetSpriteAndColor() {
+        stats.u_sprite.setLocation(GetComponent<SpriteRenderer>().sprite);
+        stats.u_color = GetComponent<SpriteRenderer>().color;
     }
 }

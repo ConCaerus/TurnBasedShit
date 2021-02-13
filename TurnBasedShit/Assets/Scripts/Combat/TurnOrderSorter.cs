@@ -29,6 +29,7 @@ public class TurnOrderSorter : MonoBehaviour {
         foreach(var i in FindObjectsOfType<UnitClass>()) {
             unitsInPlay.Add(i.gameObject);
         }
+        setNextInTurnOrder();
     }
 
     public void clearList() {
@@ -50,16 +51,23 @@ public class TurnOrderSorter : MonoBehaviour {
     public GameObject setNextInTurnOrder() {
         //  removes current unit from list
         if(playingUnit != null) {
+            playingUnit.GetComponent<UnitClass>().stunned = false;
             FindObjectOfType<UnitTurnOrderHighlighting>().dehighlightUnit(playingUnit);
             unitsInPlay.Remove(playingUnit);
-            FindObjectOfType<Party>().saveParty();
+            FindObjectOfType<PartyObject>().saveParty();
         }
 
         //  kills dead units
         //  for the love of god do not change these parameters. He will find you
-        foreach(GameObject i in unitsInPlay.ToArray()) {
+        foreach(var i in FindObjectsOfType<UnitClass>()) {
             if(i.GetComponent<UnitClass>().stats.u_health <= 0.0f)
                 i.GetComponent<UnitClass>().die();
+        }
+
+        //  removes units that dont exist
+        foreach(GameObject i in unitsInPlay.ToArray()) {
+            if(i == null)
+                unitsInPlay.Remove(i);
         }
 
         //  resets round if needed
