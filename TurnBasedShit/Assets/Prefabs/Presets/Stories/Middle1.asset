@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 152cd38f1a744394c8220d445cd989ca, type: 3}
+  m_Name: Middle1
+  m_EditorClassIdentifier: 
+  story: This is the first sub-story.
+  choices:
+  - story: End the story.
+    choice: {fileID: 11400000, guid: d8d3cb6d2ff84784798bfe7e315b0c84, type: 2}
+  - story: Advance the story.
+    choice: {fileID: 11400000, guid: ffa66c35c56a5844198019e6e9b6b346, type: 2}

@@ -9,7 +9,7 @@ public class MapTrail : MonoBehaviour {
     [SerializeField] GameObject anchor;
     GameObject movingAnchor = null;
 
-    const float minAnchorDist = 1.5f, maxAnchorDist = 5.0f, snappingDist = 0.25f;
+    const float minAnchorDist = 0.25f, maxAnchorDist = 5.0f, snappingDist = 0.25f;
 
     Vector2 startingPos = new Vector2(-8.0f, -1.0f);
 
