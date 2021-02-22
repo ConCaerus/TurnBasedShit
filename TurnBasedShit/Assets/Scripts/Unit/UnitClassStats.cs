@@ -21,4 +21,8 @@ public class UnitClassStats {
     public void setNewOrder(int i) {
         u_order = i;
     }
+
+    public bool isEmpty() {
+        return u_name == "" && u_order == 0;
+    }
 }

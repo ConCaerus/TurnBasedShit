@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 152cd38f1a744394c8220d445cd989ca, type: 3}
+  m_Name: GetTreatmentFailure
+  m_EditorClassIdentifier: 
+  mainText: Failed
+  affectsUnit: 1
+  chooseAffectedUnitPrompt: Select unit for treatment
+  affectedAmount: -25
+  affect: 0
+  affectedUnit:
+    u_name: 
+    u_health: 100
+    u_maxHealth: 100
+    u_speed: 0
+    u_poisonCount: 0
+    u_order: 0
+    equippedWeapon:
+      w_attributes: 
+      w_power: 0
+      w_speedMod: 0
+      w_sprite:
+        startingSprite: {fileID: 0}
+        weirdSprite: {fileID: 0}
+        s_location: 
+        s_name: 
+    equippedArmor:
+      a_attributes: 
+      a_defence: 0
+      a_speedMod: 0
+      a_sprite:
+        startingSprite: {fileID: 0}
+        weirdSprite: {fileID: 0}
+        s_location: 
+        s_name: 
+    u_sprite:
+      startingSprite: {fileID: 0}
+      weirdSprite: {fileID: 0}
+      s_location: 
+      s_name: 
+    u_color: {r: 0, g: 0, b: 0, a: 0}
+  isEnd: 0
+  choices:
+  - title: 'Start Over '
+    stories:
+    - {fileID: 11400000, guid: 73ac7dd0715e912499d241c7c51aca1c, type: 2}
+    probables: 

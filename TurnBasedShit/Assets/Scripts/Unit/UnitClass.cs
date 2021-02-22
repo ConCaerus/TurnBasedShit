@@ -28,10 +28,13 @@ public abstract class UnitClass : MonoBehaviour {
     }
 
     public void setup() {
-        if(stats.u_name == "")
+        if(stats.u_name == "") {
             setNewRandomName();
+        }
         else
             name = stats.u_name;
+
+        Party.resaveUnit(stats);
     }
 
 
@@ -80,6 +83,7 @@ public abstract class UnitClass : MonoBehaviour {
 
         FindObjectOfType<TurnOrderSorter>().removeUnitFromList(gameObject);
         FindObjectOfType<HealthBarCanvas>().destroyHealthBarForUnit(gameObject);
+        Party.removeUnit(stats);
         Destroy(gameObject);
     }
 
@@ -125,8 +129,6 @@ public abstract class UnitClass : MonoBehaviour {
         if(attackingTarget != null) {
             attackUnit(attackingTarget);
         }
-        else
-            Debug.LogError("Attacking unit has no target");
     }
 
     public void attackUnit(GameObject unit) {
@@ -137,7 +139,7 @@ public abstract class UnitClass : MonoBehaviour {
 
         gameObject.transform.DOPunchPosition(unit.transform.position - transform.position, 0.25f);
         unit.GetComponent<UnitClass>().takeDamage(gameObject, stats.equippedWeapon.w_power + stats.equippedWeapon.getPowerBonusDamage());
-        
+
 
         attacking = false;
     }

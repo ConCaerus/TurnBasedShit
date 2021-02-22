@@ -12,4 +12,22 @@ public static class NameLibrary {
         int rand = Random.Range(0, names.Count);
         return names[rand];
     }
+
+    public static string getRandomUsableName() {
+        List<string> temp = new List<string>();
+
+        foreach(var i in names)
+            temp.Add(i);
+
+        for(int i = 0; i < Party.getPartySize(); i++) {
+            foreach(var n in temp) {
+                if(n == Party.getMemberStats(i).u_name) {
+                    temp.Remove(n);
+                    break;
+                }
+            }
+        }
+
+        return temp[Random.Range(0, temp.Count)];
+    }
 }

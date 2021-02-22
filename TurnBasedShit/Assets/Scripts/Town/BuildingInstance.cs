@@ -25,6 +25,12 @@ public class BuildingInstance : MonoBehaviour {
             GetComponent<SpriteRenderer>().color = Color.gray;
     }
 
+    private void OnMouseOver() {
+        if(building.canBeInteractedWith && Input.GetMouseButtonDown(0)) {
+            FindObjectOfType<StoryCanvas>().playStory(building.getRandStory());
+        }
+    }
+
     private void OnMouseEnter() {
         isMouseOver = true;
         FindObjectOfType<BuildingHighlighting>().highlightUnit(gameObject);

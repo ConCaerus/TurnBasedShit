@@ -12,11 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 152cd38f1a744394c8220d445cd989ca, type: 3}
   m_Name: Beginning
   m_EditorClassIdentifier: 
-  story: This is a test of the emergency story system.
+  mainText: 'There is a hospital
+
+'
+  affectsUnit: 0
+  chooseAffectedUnitPrompt: 
+  affectedAmount: 0
+  isEnd: 0
   choices:
-  - story: End Story.
-    choice: {fileID: 11400000, guid: d8d3cb6d2ff84784798bfe7e315b0c84, type: 2}
-  - story: Advance Story.
-    choice: {fileID: 11400000, guid: b29ea09237769f14ebf753ad789af045, type: 2}
-  - story: Advance Story by 2.
-    choice: {fileID: 11400000, guid: ffa66c35c56a5844198019e6e9b6b346, type: 2}
+  - title: Enter hospital
+    stories:
+    - {fileID: 11400000, guid: 3d2c03580428e744eabbc3a25d30f03d, type: 2}
+    probables: 
+  - title: Do not Enter hospital
+    stories:
+    - {fileID: 11400000, guid: d73024dc6235ed24ebcbaf2e947fbbd5, type: 2}
+    probables: 

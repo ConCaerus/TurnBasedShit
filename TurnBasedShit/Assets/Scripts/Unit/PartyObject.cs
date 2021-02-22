@@ -21,9 +21,17 @@ public class PartyObject : MonoBehaviour {
 
             //  sets up stats
             obj.GetComponent<UnitClass>().stats = Party.getMemberStats(i);
-            obj.GetComponent<UnitClass>().setup();
+            if(obj.GetComponent<UnitClass>().stats.u_name == "") {
+                obj.GetComponent<UnitClass>().stats.u_name = NameLibrary.getRandomUsableName();
+            }
+            obj.name = obj.GetComponent<UnitClass>().stats.u_name;
 
             //  sets sprite
+            if(obj.GetComponent<UnitClass>().stats.u_sprite.getSprite() == null) {
+                Debug.Log(obj.GetComponent<UnitClass>().stats.u_name);
+                obj.GetComponent<UnitClass>().stats.u_sprite.setLocation(unitPrefab.GetComponent<UnitClass>().stats.u_sprite.getSprite());
+                obj.GetComponent<UnitClass>().stats.u_color = unitPrefab.GetComponent<UnitClass>().stats.u_color;
+            }
             obj.GetComponent<SpriteRenderer>().sprite = obj.GetComponent<UnitClass>().stats.u_sprite.getSprite();
             obj.GetComponent<SpriteRenderer>().color = obj.GetComponent<UnitClass>().stats.u_color;
 
@@ -34,6 +42,8 @@ public class PartyObject : MonoBehaviour {
 
             //  does other shit
             FindObjectOfType<HealthBarCanvas>().createHealthBar(obj.GetComponent<UnitClass>());
+
+            Party.resaveUnit(obj.GetComponent<UnitClass>().stats);
         }
 
         FindObjectOfType<TurnOrderSorter>().resetList();
@@ -42,7 +52,9 @@ public class PartyObject : MonoBehaviour {
     public void addUnitToAdd() {
         if(unitToAdd != null) {
             unitToAdd.GetComponent<UnitClass>().setEquipment();
+            unitToAdd.GetComponent<UnitClass>().resetSpriteAndColor();
             Party.addNewUnit(unitToAdd.GetComponent<UnitClass>().stats);
+            saveParty();
         }
         unitToAdd = null;
     }
@@ -80,7 +92,6 @@ public static class Party {
         }
     }
 
-    //  you left off needing to add that this function sets a new order for the unit.
     public static void addNewUnit(UnitClassStats stats) {
         stats.u_order = PlayerPrefs.GetInt(partySizeTag);
 
@@ -104,6 +115,11 @@ public static class Party {
                 return;
             }
         }
+    }
+    public static void removeUnitAtIndex(int index) {
+        PlayerPrefs.DeleteKey(memberTag(index));
+        PlayerPrefs.SetInt(partySizeTag, PlayerPrefs.GetInt(partySizeTag) - 1);
+        PlayerPrefs.Save();
     }
 
     public static void resaveUnit(UnitClassStats stats) {

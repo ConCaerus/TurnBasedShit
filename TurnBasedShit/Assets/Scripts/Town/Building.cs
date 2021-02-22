@@ -15,6 +15,8 @@ public class Building {
 
     public SpriteLocation b_sprite;
 
+    public List<Story> buildingStoryBeginnings;
+
 
     public Building(type t = type.Empty) {
         b_type = t;
@@ -23,5 +25,10 @@ public class Building {
         b_type = b.b_type;
         isOnlyOne = b.isOnlyOne;
         canBeInteractedWith = b.canBeInteractedWith;
+    }
+
+    public Story getRandStory() {
+        int rand = Random.Range(0, buildingStoryBeginnings.Count);
+        return buildingStoryBeginnings[rand];
     }
 }

@@ -10,11 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 152cd38f1a744394c8220d445cd989ca, type: 3}
-  m_Name: Middle1
+  m_Name: GetTreatmentSuccess
   m_EditorClassIdentifier: 
-  story: This is the first sub-story.
+  mainText: Success
+  affectsUnit: 1
+  chooseAffectedUnitPrompt: Select unit for treatment
+  affectedAmount: 25
+  affect: 0
+  isEnd: 0
   choices:
-  - story: End the story.
-    choice: {fileID: 11400000, guid: d8d3cb6d2ff84784798bfe7e315b0c84, type: 2}
-  - story: Advance the story.
-    choice: {fileID: 11400000, guid: ffa66c35c56a5844198019e6e9b6b346, type: 2}
+  - title: Start Over
+    stories:
+    - {fileID: 11400000, guid: 73ac7dd0715e912499d241c7c51aca1c, type: 2}
+    probables: 
