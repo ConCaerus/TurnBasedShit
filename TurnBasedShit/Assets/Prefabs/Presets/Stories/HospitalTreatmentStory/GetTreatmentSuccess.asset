@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: GetTreatmentSuccess
   m_EditorClassIdentifier: 
   mainText: Success
-  affectsUnit: 1
-  chooseAffectedUnitPrompt: Select unit for treatment
-  affectedAmount: 25
+  affectsParty: 1
+  chooseUnitToAffectPrompt: 
+  affectedUnitMod: 25
   affect: 0
   isEnd: 0
   choices:

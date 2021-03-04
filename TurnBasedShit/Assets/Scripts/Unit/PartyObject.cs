@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PartyObject : MonoBehaviour {
     [SerializeField] GameObject unitPrefab;
-    [SerializeField] List<Vector2> spawnPoses;
+    [SerializeField] List<GameObject> spawnPoses;
 
     [SerializeField] GameObject unitToAdd;
 
@@ -15,7 +15,7 @@ public class PartyObject : MonoBehaviour {
             i.die();
         }
 
-        List<Vector2> unusedSpawnPoses = spawnPoses;
+        List<GameObject> unusedSpawnPoses = spawnPoses;
         for(int i = 0; i < Party.getPartySize(); i++) {
             var obj = Instantiate(unitPrefab);
 
@@ -32,12 +32,12 @@ public class PartyObject : MonoBehaviour {
                 obj.GetComponent<UnitClass>().stats.u_sprite.setLocation(unitPrefab.GetComponent<UnitClass>().stats.u_sprite.getSprite());
                 obj.GetComponent<UnitClass>().stats.u_color = unitPrefab.GetComponent<UnitClass>().stats.u_color;
             }
-            obj.GetComponent<SpriteRenderer>().sprite = obj.GetComponent<UnitClass>().stats.u_sprite.getSprite();
+            obj.GetComponent<SpriteRenderer>().sprite = (Sprite)obj.GetComponent<UnitClass>().stats.u_sprite.getSprite();
             obj.GetComponent<SpriteRenderer>().color = obj.GetComponent<UnitClass>().stats.u_color;
 
             //  sets pos
             int randIndex = Random.Range(0, unusedSpawnPoses.Count);
-            obj.transform.position = unusedSpawnPoses[randIndex];
+            obj.transform.position = unusedSpawnPoses[randIndex].transform.position;
             unusedSpawnPoses.RemoveAt(randIndex);
 
             //  does other shit
@@ -104,22 +104,34 @@ public static class Party {
         PlayerPrefs.Save();
     }
     public static void removeUnit(UnitClassStats stats) {
+        int index = 0;
+        bool shrinkCount = false;
+
         for(int i = 0; i < PlayerPrefs.GetInt(partySizeTag); i++) {
             var data = PlayerPrefs.GetString(memberTag(i));
             var temp = JsonUtility.FromJson<UnitClassStats>(data);
 
-            if(temp == stats) {
-                PlayerPrefs.DeleteKey(memberTag(i));
-                PlayerPrefs.SetInt(partySizeTag, PlayerPrefs.GetInt(partySizeTag) - 1);
-                PlayerPrefs.Save();
-                return;
+            //  remove this unit
+            if(temp.equals(stats)) {
+                shrinkCount = true;
+            }
+
+            //  else set new order for the unit
+            else {
+                temp.u_order = index;
+                data = JsonUtility.ToJson(temp);
+                PlayerPrefs.SetString(memberTag(index), data);
+                index++;
             }
         }
-    }
-    public static void removeUnitAtIndex(int index) {
-        PlayerPrefs.DeleteKey(memberTag(index));
-        PlayerPrefs.SetInt(partySizeTag, PlayerPrefs.GetInt(partySizeTag) - 1);
+        if(shrinkCount) {
+            PlayerPrefs.DeleteKey(memberTag(getPartySize() - 1));
+            PlayerPrefs.SetInt(partySizeTag, PlayerPrefs.GetInt(partySizeTag) - 1);
+        }
         PlayerPrefs.Save();
+    }
+    public static void removeUnitAtIndex(int order) {
+        removeUnit(getMemberStats(order));
     }
 
     public static void resaveUnit(UnitClassStats stats) {

@@ -5,7 +5,7 @@ using UnityEngine;
 public static class UnitCreator {
 
 
-    public static UnitClassStats createNewUnitStats() {
+    public static UnitClassStats createRandomUnitStats() {
         var stats = new UnitClassStats();
 
         stats.u_name = NameLibrary.getRandomUsableName();

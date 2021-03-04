@@ -154,8 +154,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   townIconPreset: {fileID: 4986816515151381205, guid: 59aad14d0f1caa54289a08dc796a3f74,
     type: 3}
-  holder:
-    locations: []
 --- !u!4 &670567406
 Transform:
   m_ObjectHideFlags: 0
@@ -326,6 +324,7 @@ GameObject:
   - component: {fileID: 2087571420}
   - component: {fileID: 2087571419}
   - component: {fileID: 2087571418}
+  - component: {fileID: 2087571421}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -398,3 +397,15 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2087571421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2087571417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90940fd7d58cb914fb05b0d749a1a6f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class MapTrail : MonoBehaviour {
     [SerializeField] List<Vector2> anchorPoses = new List<Vector2>();
@@ -10,6 +11,8 @@ public class MapTrail : MonoBehaviour {
     GameObject movingAnchor = null;
 
     const float minAnchorDist = 0.25f, maxAnchorDist = 5.0f, snappingDist = 0.25f;
+
+    const float combatProb = 0.0f;
 
     Vector2 startingPos = new Vector2(-8.0f, -1.0f);
 
@@ -33,8 +36,12 @@ public class MapTrail : MonoBehaviour {
     }
 
     private void Update() {
-        if(Input.GetMouseButtonDown(0))
+        if(Input.GetMouseButtonDown(0)) {
+            enterLocation();
+            rollCombatChance();
             createNewAnchor();
+
+        }
         createLine();
         moveMovingAnchor();
     }
@@ -73,6 +80,23 @@ public class MapTrail : MonoBehaviour {
                 anchorPoses.Add(new Vector2(temp.xs[i], temp.ys[i]));
             }
         }
+    }
+
+    void enterLocation() {
+        for(int i = 0; i < MapLocationHolder.getLocationCount(); i++) {
+            if((Vector2)movingAnchor.transform.position == MapLocationHolder.getMapLocation(i).pos) {
+                MapLocationHolder.getMapLocation(i).enterLocation();
+                return;
+            }
+        }
+    }
+
+
+    void rollCombatChance() {
+        float rand = Random.Range(0.0f, 100.0f);
+
+        if(rand < combatProb)
+            SceneManager.LoadScene("Combat");
     }
 
     void createAnchors() {
@@ -134,13 +158,18 @@ public class MapTrail : MonoBehaviour {
 
             }
         }
-        foreach(var i in FindObjectOfType<MapLocationSpawner>().holder.locations) {
-            var dist = Vector2.Distance(movingAnchor.transform.position, i.pos);
-            if(dist < snappingDist * 2.0f && dist < Vector2.Distance(movingAnchor.transform.position, target))
-                target = i.pos;
+
+        MapLocation snappedLocation = null;
+        for(int i = 0; i < MapLocationHolder.getLocationCount(); i++) {
+            var dist = Vector2.Distance(movingAnchor.transform.position, MapLocationHolder.getMapLocation(i).pos);
+            if(dist < snappingDist * 2.0f && dist < Vector2.Distance(movingAnchor.transform.position, target)) {
+                target = MapLocationHolder.getMapLocation(i).pos;
+                snappedLocation = MapLocationHolder.getMapLocation(i);
+            }
         }
-        if(target != new Vector2(snappingDist + 1.0f, snappingDist + 1.0f))
+        if(target != new Vector2(snappingDist + 1.0f, snappingDist + 1.0f)) {
             movingAnchor.transform.position = target;
+        }
 
         //  moving anchor is too close to the center
         if(Vector2.Distance(movingAnchor.transform.position, anchors[anchors.Count - 2].transform.position) < minAnchorDist) {

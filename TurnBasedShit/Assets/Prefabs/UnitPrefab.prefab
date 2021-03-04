@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2150725456124683404}
   - component: {fileID: 2150725456124683407}
   m_Layer: 0
-  m_Name: G_Unit (1)
+  m_Name: UnitPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -123,7 +123,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.62, y: 2.1866667}
+    oldSize: {x: 1.3266667, y: 2.1}
     newSize: {x: 0.5, y: 0.5}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -150,8 +150,8 @@ MonoBehaviour:
   defending: 0
   stunned: 0
   isMouseOverUnit: 0
-  weapon: {fileID: 11400000, guid: e325710ad58cb0841bcf18676d85a0a3, type: 2}
-  armor: {fileID: 11400000, guid: c35ec3980a4a9a94b8c3a1bb7fc85faf, type: 2}
+  weapon: {fileID: 0}
+  armor: {fileID: 0}
   stats:
     u_name: 
     u_health: 100
@@ -160,28 +160,25 @@ MonoBehaviour:
     u_poisonCount: 0
     u_order: 0
     equippedWeapon:
-      w_attributes: 00000000
-      w_power: 25
-      w_speedMod: 5
+      w_name: 
+      w_attributes: 
+      w_power: 0
+      w_speedMod: 0
       w_sprite:
-        startingSprite: {fileID: 21300000, guid: 0527f49f8c02110408c97a81512d0666,
-          type: 3}
-        weirdSprite: {fileID: 2800000, guid: 0527f49f8c02110408c97a81512d0666, type: 3}
-        s_location: Assets/Sprites/Sword1.png
-        s_name: Sword1
+        startingSprite: {fileID: 0}
+        s_location: 
+        s_name: 
     equippedArmor:
+      a_name: 
       a_attributes: 
-      a_defence: 25
-      a_speedMod: 5
+      a_defence: 0
+      a_speedMod: 0
       a_sprite:
-        startingSprite: {fileID: 21300000, guid: 29b76a7b1e9c241428ac4209976dceb5,
-          type: 3}
-        weirdSprite: {fileID: 2800000, guid: 29b76a7b1e9c241428ac4209976dceb5, type: 3}
-        s_location: Assets/Sprites/Chainmail.png
-        s_name: Chainmail
+        startingSprite: {fileID: 0}
+        s_location: 
+        s_name: 
     u_sprite:
       startingSprite: {fileID: 21300000, guid: 9896841376689d649b934221321a108f, type: 3}
-      weirdSprite: {fileID: 0}
       s_location: Assets/Sprites/tempUnit.png
       s_name: tempUnit
     u_color: {r: 0.5856176, g: 0.9493212, b: 0.990566, a: 1}

@@ -13,41 +13,10 @@ MonoBehaviour:
   m_Name: GetTreatmentFailure
   m_EditorClassIdentifier: 
   mainText: Failed
-  affectsUnit: 1
-  chooseAffectedUnitPrompt: Select unit for treatment
-  affectedAmount: -25
+  affectsParty: 1
+  chooseUnitToAffectPrompt: 
+  affectedUnitMod: -25
   affect: 0
-  affectedUnit:
-    u_name: 
-    u_health: 100
-    u_maxHealth: 100
-    u_speed: 0
-    u_poisonCount: 0
-    u_order: 0
-    equippedWeapon:
-      w_attributes: 
-      w_power: 0
-      w_speedMod: 0
-      w_sprite:
-        startingSprite: {fileID: 0}
-        weirdSprite: {fileID: 0}
-        s_location: 
-        s_name: 
-    equippedArmor:
-      a_attributes: 
-      a_defence: 0
-      a_speedMod: 0
-      a_sprite:
-        startingSprite: {fileID: 0}
-        weirdSprite: {fileID: 0}
-        s_location: 
-        s_name: 
-    u_sprite:
-      startingSprite: {fileID: 0}
-      weirdSprite: {fileID: 0}
-      s_location: 
-      s_name: 
-    u_color: {r: 0, g: 0, b: 0, a: 0}
   isEnd: 0
   choices:
   - title: 'Start Over '

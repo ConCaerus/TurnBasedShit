@@ -38,11 +38,6 @@ public abstract class UnitClass : MonoBehaviour {
     }
 
 
-    public Vector2 getMousePos() {
-        return Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    }
-
-
     public void takeDamage(GameObject attacker, float dmg) {
         float temp = haveArmorReduceDamage(dmg);
         stats.u_health -= temp;
@@ -81,6 +76,7 @@ public abstract class UnitClass : MonoBehaviour {
             i.dehighlightUnit(gameObject);
         }
 
+        FindObjectOfType<AudioManager>().playDieSound();
         FindObjectOfType<TurnOrderSorter>().removeUnitFromList(gameObject);
         FindObjectOfType<HealthBarCanvas>().destroyHealthBarForUnit(gameObject);
         Party.removeUnit(stats);
@@ -134,12 +130,12 @@ public abstract class UnitClass : MonoBehaviour {
     public void attackUnit(GameObject unit) {
         if(stats.equippedWeapon == null)
             Debug.LogError("Unit " + name + "   is not equipped with a weapon");
+        FindObjectOfType<AudioManager>().playHitSound();
 
         stats.equippedWeapon.applyAttributesAfterAttack(gameObject, unit);
 
         gameObject.transform.DOPunchPosition(unit.transform.position - transform.position, 0.25f);
         unit.GetComponent<UnitClass>().takeDamage(gameObject, stats.equippedWeapon.w_power + stats.equippedWeapon.getPowerBonusDamage());
-
 
         attacking = false;
     }
@@ -232,6 +228,7 @@ public abstract class UnitClass : MonoBehaviour {
 
     public void resetSpriteAndColor() {
         stats.u_sprite.setLocation(GetComponent<SpriteRenderer>().sprite);
-        stats.u_color = GetComponent<SpriteRenderer>().color;
+        if(stats.u_color == new Color())
+            stats.u_color = GetComponent<SpriteRenderer>().color;
     }
 }

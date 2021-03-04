@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class TownCanvas : MonoBehaviour {
@@ -40,5 +41,11 @@ public class TownCanvas : MonoBehaviour {
                 return i.building;
         }
         return null;
+    }
+
+
+
+    public void leaveTown() {
+        SceneManager.LoadScene("Map");
     }
 }

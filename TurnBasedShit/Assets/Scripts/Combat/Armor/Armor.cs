@@ -4,10 +4,14 @@ using UnityEngine;
 
 [System.Serializable]
 public class Armor {
+    const int attributeCount = 3;
     public enum attributes {
         turtle, reflex, healing
     }
 
+
+
+    public string a_name;
 
     public List<attributes> a_attributes = new List<attributes>();
 
@@ -53,6 +57,23 @@ public class Armor {
         return a_attributes.Count == 0 && a_defence == 0 && a_speedMod == 0;
     }
 
+    public bool equals(Armor other) {
+        if(a_attributes.Count == other.a_attributes.Count) {
+            for(int i = 0; i < a_attributes.Count; i++) {
+                if(a_attributes[i] != other.a_attributes[i]) {
+                    return false;
+                }
+            }
+        }
+
+
+        bool defence = a_defence == other.a_defence;
+        bool speed = a_speedMod == other.a_speedMod;
+
+
+        return defence && speed;
+    }
+
 
     public void setToPreset(ArmorPreset preset) {
         var temp = preset.preset;
@@ -66,5 +87,19 @@ public class Armor {
         ArmorPreset preset = (ArmorPreset)ScriptableObject.CreateInstance("ArmorPreset");
         preset.preset = this;
         return preset;
+    }
+
+
+    public attributes getRandomAttribute() {
+        var rand = Random.Range(0, 101);
+        float step = 100.0f / (float)attributeCount;
+
+        int index = 0;
+        while(rand >= step) {
+            rand -= (int)step;
+            index++;
+        }
+
+        return (attributes)index;
     }
 }

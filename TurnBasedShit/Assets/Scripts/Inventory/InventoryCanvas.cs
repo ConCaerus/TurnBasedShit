@@ -7,13 +7,13 @@ using UnityEngine.UI;
 public class InventoryCanvas : MonoBehaviour {
     [SerializeField] GameObject inventoryCanvas;
     [SerializeField] GameObject weaponInventoryCanvas, armorInventoryCanvas;
-    [SerializeField] GameObject supportItemInventoryCanvas;
+    [SerializeField] GameObject consumableInventoryCanvas;
     [SerializeField] GameObject weaponImage, armorImage;
 
     [SerializeField] GameObject weaponInventorySlots, armorInventorySlots;
     [SerializeField] GameObject equipmentUI;
 
-    [SerializeField] GameObject supportItemInventorySlots;
+    [SerializeField] GameObject consumableInventorySlots;
 
     [SerializeField] TextMeshProUGUI unitName;
     [SerializeField] GameObject unitImage;
@@ -68,18 +68,18 @@ public class InventoryCanvas : MonoBehaviour {
     }
     List<InventoryArmor> inventoryArmors = new List<InventoryArmor>();
 
-    class InventoryItem : InventoryObject {
-        public Item item;
+    class InventoryConsumable : InventoryObject {
+        public Consumable consumable;
     }
     class InventoryItemStack : InventoryObject {
-        public List<InventoryItem> items = new List<InventoryItem>();
+        public List<InventoryConsumable> consumables = new List<InventoryConsumable>();
 
         public TextMeshProUGUI countText;
 
         public InventoryItemStack(GameObject slot, Transform parent) {
-            items.Clear();
+            consumables.Clear();
             countText = Instantiate(slot.GetComponentInChildren<TextMeshProUGUI>());
-            countText.text = items.Count.ToString();
+            countText.text = consumables.Count.ToString();
             countText.transform.SetParent(parent);
             countText.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             countText.enabled = slot.GetComponentInChildren<TextMeshProUGUI>().enabled;
@@ -94,19 +94,19 @@ public class InventoryCanvas : MonoBehaviour {
         }
 
         public void setCountText() {
-            countText.text = items.Count.ToString();
-            if(items.Count <= 1)
+            countText.text = consumables.Count.ToString();
+            if(consumables.Count <= 1)
                 countText.enabled = false;
             else
                 countText.enabled = true;
         }
 
         public void destroyStack() {
-            foreach(var i in items)
+            foreach(var i in consumables)
                 i.destory();
         }
     }
-    List<InventoryItem> inventoryItems = new List<InventoryItem>();
+    List<InventoryConsumable> inventoryConsumables = new List<InventoryConsumable>();
 
 
 
@@ -117,22 +117,23 @@ public class InventoryCanvas : MonoBehaviour {
 
     private void Update() {
         manageClickCount();
+        manageInfoBox();
 
         if(inventoryCanvas.activeInHierarchy && (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))) {
-            selectItemFromInventory(slotThatMouseIsOver(supportItemInventorySlots));
+            selectItemFromInventory(slotThatMouseIsOver());
         }
         if(heldObject != null) {
             heldObject.followMouse();
             if(heldObject.GetType() == typeof(InventoryItemStack)) {
-                ((InventoryItemStack)heldObject).countText.transform.localPosition = supportItemInventorySlots.GetComponentInChildren<TextMeshProUGUI>().transform.localPosition;
-                foreach(var i in ((InventoryItemStack)heldObject).items)
+                ((InventoryItemStack)heldObject).countText.transform.localPosition = consumableInventorySlots.GetComponentInChildren<TextMeshProUGUI>().transform.localPosition;
+                foreach(var i in ((InventoryItemStack)heldObject).consumables)
                     i.followMouse();
-                ((InventoryItemStack)heldObject).textFollowMouse(supportItemInventorySlots.GetComponentInChildren<Collider2D>().gameObject);
+                ((InventoryItemStack)heldObject).textFollowMouse(consumableInventorySlots.GetComponentInChildren<Collider2D>().gameObject);
             }
         }
         if(isMouseOverUnitImage() && heldObject == null) {
             unitStatsMenu.SetActive(true);
-            unitStatsMenu.transform.position = getMousePos() - statsOffset;
+            unitStatsMenu.transform.position = GameState.getMousePos() - statsOffset;
         }
         else {
             unitStatsMenu.SetActive(false);
@@ -151,10 +152,35 @@ public class InventoryCanvas : MonoBehaviour {
         }
     }
 
+    void manageInfoBox() {
+        var mousedOverSlot = slotThatMouseIsOver();
+        Debug.Log(mousedOverSlot);
+        //  consumables
+        if(consumableInventoryCanvas.activeInHierarchy) {
+            if(mousedOverSlot != null && getConsumableInSlot(mousedOverSlot) != null)
+                FindObjectOfType<InfoBox>().setAndShowInfoBox(getConsumableInSlot(mousedOverSlot));
+            else
+                FindObjectOfType<InfoBox>().hide();
+        }
 
-    Vector2 getMousePos() {
-        return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //  weapons
+        else if(weaponInventoryCanvas.activeInHierarchy) {
+            if(mousedOverSlot != null && getWeaponInSlot(mousedOverSlot) != null)
+                FindObjectOfType<InfoBox>().setAndShowInfoBox(getWeaponInSlot(mousedOverSlot));
+            else
+                FindObjectOfType<InfoBox>().hide();
+        }
+
+        //  armors
+        else if(armorInventoryCanvas.activeInHierarchy) {
+            if(mousedOverSlot != null && getArmorInSlot(mousedOverSlot) != null)
+                FindObjectOfType<InfoBox>().setAndShowInfoBox(getArmorInSlot(mousedOverSlot));
+            else
+                FindObjectOfType<InfoBox>().hide();
+        }
     }
+
+
     bool isMouseOverUnitImage() {
         Ray ray;
         RaycastHit2D hit;
@@ -187,7 +213,7 @@ public class InventoryCanvas : MonoBehaviour {
         }
         return false;
     }
-    GameObject slotThatMouseIsOver(GameObject slotHolder) {
+    GameObject slotThatMouseIsOver() {
         Ray ray;
         RaycastHit2D hit;
 
@@ -198,9 +224,21 @@ public class InventoryCanvas : MonoBehaviour {
 
         if(hit.collider == null)
             return null;
+
+
+        //  all of the slots
+        var slots = new List<Collider2D>();
+        foreach(var i in weaponInventorySlots.GetComponentsInChildren<Collider2D>())
+            slots.Add(i);
+        foreach(var i in armorInventorySlots.GetComponentsInChildren<Collider2D>())
+            slots.Add(i);
+        foreach(var i in consumableInventorySlots.GetComponentsInChildren<Collider2D>())
+            slots.Add(i);
+
+
         bool isHittingWantedObject = false;
         while(!isHittingWantedObject) {
-            foreach(var i in slotHolder.GetComponentsInChildren<Collider2D>()) {
+            foreach(var i in slots) {
                 if(hit.collider == i) {
                     isHittingWantedObject = true;
                     break;
@@ -219,7 +257,7 @@ public class InventoryCanvas : MonoBehaviour {
         }
 
         if(hit.collider != null) {
-            foreach(var i in slotHolder.GetComponentsInChildren<Collider2D>()) {
+            foreach(var i in slots) {
                 if(hit.collider == i)
                     return i.gameObject;
             }
@@ -277,7 +315,7 @@ public class InventoryCanvas : MonoBehaviour {
             i.destory();
         foreach(var i in inventoryWeapons)
             i.destory();
-        foreach(var i in inventoryItems)
+        foreach(var i in inventoryConsumables)
             i.destory();
 
 
@@ -318,14 +356,14 @@ public class InventoryCanvas : MonoBehaviour {
             i.destory();
         }
         inventoryArmors.Clear();
-        foreach(var i in inventoryItems) {
+        foreach(var i in inventoryConsumables) {
             i.destory();
         }
-        inventoryItems.Clear();
+        inventoryConsumables.Clear();
 
         //  Weapon shit
         if(weaponInventoryCanvas.activeInHierarchy) {
-            var slots = weaponInventorySlots.GetComponentsInChildren<Button>();
+            var slots = weaponInventorySlots.GetComponentsInChildren<Collider2D>();
             for(int i = 0; i < Inventory.getWeaponCount(); i++) {
                 var temp = slots[i];
                 GameObject other = Instantiate(temp.gameObject);
@@ -347,7 +385,7 @@ public class InventoryCanvas : MonoBehaviour {
 
         //  Armor shit
         else if(armorInventorySlots.activeInHierarchy) {
-            var slots = armorInventorySlots.GetComponentsInChildren<Button>();
+            var slots = armorInventorySlots.GetComponentsInChildren<Collider2D>();
             for(int i = 0; i < Inventory.getArmorCount(); i++) {
                 var temp = slots[i];
                 GameObject other = Instantiate(temp.gameObject);
@@ -369,22 +407,22 @@ public class InventoryCanvas : MonoBehaviour {
         }
 
         //  Item shit
-        else if(supportItemInventoryCanvas.activeInHierarchy) {
-            var slots = supportItemInventorySlots.GetComponentsInChildren<Collider2D>();
+        else if(consumableInventoryCanvas.activeInHierarchy) {
+            var slots = consumableInventorySlots.GetComponentsInChildren<Collider2D>();
             foreach(var i in slots) {
                 if(i.GetComponentInChildren<TextMeshProUGUI>() != null)
                     i.GetComponentInChildren<TextMeshProUGUI>().enabled = false;
             }
             for(int i = 0; i < Inventory.getItemCount(); i++) {
                 GameObject slot = null;
-                Item newItem = Inventory.getItem(i);
+                Consumable newItem = Inventory.getConsumable(i);
 
                 //  sets the slot object to a slot that isn't full but is populated with the same type of item
-                foreach(var j in inventoryItems) {
-                    if(j.item.isEqualTo(newItem) && getItemCountForSlot(j.slot) < newItem.i_maxStackCount) {
+                foreach(var j in inventoryConsumables) {
+                    if(j.consumable.isEqualTo(newItem) && getConsumableCountForSlot(j.slot) < newItem.c_maxStackCount) {
                         slot = j.slot;
                         slot.GetComponentInChildren<TextMeshProUGUI>().enabled = true;
-                        slot.GetComponentInChildren<TextMeshProUGUI>().text = (getItemCountForSlot(slot) + 1).ToString();
+                        slot.GetComponentInChildren<TextMeshProUGUI>().text = (getConsumableCountForSlot(slot) + 1).ToString();
                         break;
                     }
                 }
@@ -392,7 +430,7 @@ public class InventoryCanvas : MonoBehaviour {
                 //  sets the slot object to the first empty slot location
                 if(slot == null) {
                     for(int s = 0; s < slots.Length; s++) {
-                        if(getItemCountForSlot(slots[s].gameObject) == 0) {
+                        if(getConsumableCountForSlot(slots[s].gameObject) == 0) {
                             slot = slots[s].gameObject;
                             break;
                         }
@@ -404,48 +442,70 @@ public class InventoryCanvas : MonoBehaviour {
                 other.transform.position = slot.gameObject.transform.position;
                 Destroy(other.transform.GetChild(0).gameObject);
                 Destroy(other.GetComponent<Collider2D>());
-                other.transform.SetParent(supportItemInventorySlots.gameObject.transform);
+                other.transform.SetParent(consumableInventorySlots.gameObject.transform);
                 other.GetComponent<Image>().raycastTarget = false;
-                other.GetComponent<Image>().sprite = Inventory.getItem(i).i_sprite.getSprite();
+                other.GetComponent<Image>().sprite = Inventory.getConsumable(i).i_sprite.getSprite();
                 other.GetComponent<Image>().color = Color.white;
                 other.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
 
-                InventoryItem it = new InventoryItem();
-                it.item = newItem;
+                InventoryConsumable it = new InventoryConsumable();
+                it.consumable = newItem;
                 it.icon = other;
                 it.slot = slot.gameObject;
 
-                inventoryItems.Add(it);
+                inventoryConsumables.Add(it);
             }
         }
     }
 
-    int getItemCountForSlot(GameObject slot) {
+    int getConsumableCountForSlot(GameObject slot) {
         int count = 0;
-        foreach(var i in inventoryItems) {
+        foreach(var i in inventoryConsumables) {
             if(i.slot == slot)
                 count++;
         }
         return count;
     }
-    bool sameAsStackType(Item item, GameObject slot) {
-        foreach(var i in inventoryItems) {
+    Consumable getConsumableInSlot(GameObject slot) {
+        foreach(var i in inventoryConsumables) {
             if(i.slot == slot)
-                return item.isEqualTo(i.item);
+                return i.consumable;
+        }
+        return null;
+    }
+    Weapon getWeaponInSlot(GameObject slot) {
+        foreach(var i in inventoryWeapons) {
+            if(i.slot == slot)
+                return i.weapon;
+        }
+        return null;
+    }
+    Armor getArmorInSlot(GameObject slot) {
+        foreach(var i in inventoryArmors) {
+            if(i.slot == slot)
+                return i.armor;
+        }
+        return null;
+    }
+
+    bool sameAsStackType(Consumable cons, GameObject slot) {
+        foreach(var i in inventoryConsumables) {
+            if(i.slot == slot)
+                return cons.isEqualTo(i.consumable);
         }
         return false;
     }
-    bool canFitInStack(Item item, GameObject slot) {
-        return getItemCountForSlot(slot) == 0 ||
+    bool canFitInStack(Consumable item, GameObject slot) {
+        return getConsumableCountForSlot(slot) == 0 ||
             (sameAsStackType(item, slot) &&
-            getItemCountForSlot(slot) < item.i_maxStackCount);
+            getConsumableCountForSlot(slot) < item.c_maxStackCount);
     }
-    void setItemCountTextForSlot(GameObject slot) {
+    void setConsumableCountTextForSlot(GameObject slot) {
         if(slot.GetComponentInChildren<TextMeshProUGUI>() == null)
             return;
-        if(getItemCountForSlot(slot) > 1) {
+        if(getConsumableCountForSlot(slot) > 1) {
             slot.GetComponentInChildren<TextMeshProUGUI>().enabled = true;
-            int count = getItemCountForSlot(slot.gameObject);
+            int count = getConsumableCountForSlot(slot.gameObject);
             slot.GetComponentInChildren<TextMeshProUGUI>().text = count.ToString();
         }
         else
@@ -501,20 +561,20 @@ public class InventoryCanvas : MonoBehaviour {
             if(heldObject != null) {
                 if(heldObject.GetType() != typeof(InventoryItemStack)) {
                     //  checks if the stack is populated by the same item type or if the stack is empty
-                    if(canFitInStack(((InventoryItem)heldObject).item, pressedButton)) {
+                    if(canFitInStack(((InventoryConsumable)heldObject).consumable, pressedButton)) {
                         heldObject.setNewSlot(pressedButton);
-                        inventoryItems.Add((InventoryItem)heldObject);
+                        inventoryConsumables.Add((InventoryConsumable)heldObject);
                         heldObject = null;
                     }
                 }
                 else {
                     //  adds one item from the held stack to the stack
-                    if(canFitInStack(((InventoryItemStack)heldObject).items[0].item, pressedButton)) {
-                        ((InventoryItemStack)heldObject).items[0].setNewSlot(pressedButton);
-                        inventoryItems.Add(((InventoryItemStack)heldObject).items[0]);
-                        ((InventoryItemStack)heldObject).items.RemoveAt(0);
+                    if(canFitInStack(((InventoryItemStack)heldObject).consumables[0].consumable, pressedButton)) {
+                        ((InventoryItemStack)heldObject).consumables[0].setNewSlot(pressedButton);
+                        inventoryConsumables.Add(((InventoryItemStack)heldObject).consumables[0]);
+                        ((InventoryItemStack)heldObject).consumables.RemoveAt(0);
                     }
-                    if(((InventoryItemStack)heldObject).items.Count > 0) {
+                    if(((InventoryItemStack)heldObject).consumables.Count > 0) {
                         ((InventoryItemStack)heldObject).setCountText();
                     }
                     else {
@@ -526,10 +586,10 @@ public class InventoryCanvas : MonoBehaviour {
             }
             else {
                 //  taking an item from the inventory
-                foreach(var i in inventoryItems) {
+                foreach(var i in inventoryConsumables) {
                     if(i.slot == pressedButton) {
                         heldObject = i;
-                        inventoryItems.Remove(i);
+                        inventoryConsumables.Remove(i);
                         break;
                     }
                 }
@@ -542,24 +602,24 @@ public class InventoryCanvas : MonoBehaviour {
             if(heldObject != null) {
                 if(heldObject.GetType() != typeof(InventoryItemStack)) {
                     //  checks if the stack is populated by the same item type or if the stack is empty
-                    if(canFitInStack(((InventoryItem)heldObject).item, pressedButton)) {
+                    if(canFitInStack(((InventoryConsumable)heldObject).consumable, pressedButton)) {
                         heldObject.setNewSlot(pressedButton);
-                        inventoryItems.Add((InventoryItem)heldObject);
+                        inventoryConsumables.Add((InventoryConsumable)heldObject);
                         heldObject = null;
                     }
                 }
                 else {
                     //  adds as many items to the stack as possible
-                    while(((InventoryItemStack)heldObject).items.Count > 0 && canFitInStack(((InventoryItemStack)heldObject).items[0].item, pressedButton)) {
-                        ((InventoryItemStack)heldObject).items[0].setNewSlot(pressedButton);
-                        inventoryItems.Add(((InventoryItemStack)heldObject).items[0]);
-                        ((InventoryItemStack)heldObject).items.RemoveAt(0);
-                        setItemCountTextForSlot(pressedButton);
+                    while(((InventoryItemStack)heldObject).consumables.Count > 0 && canFitInStack(((InventoryItemStack)heldObject).consumables[0].consumable, pressedButton)) {
+                        ((InventoryItemStack)heldObject).consumables[0].setNewSlot(pressedButton);
+                        inventoryConsumables.Add(((InventoryItemStack)heldObject).consumables[0]);
+                        ((InventoryItemStack)heldObject).consumables.RemoveAt(0);
+                        setConsumableCountTextForSlot(pressedButton);
                     }
-                    if(((InventoryItemStack)heldObject).items.Count > 1) {
-                        ((InventoryItemStack)heldObject).countText.text = ((InventoryItemStack)heldObject).items.Count.ToString();
+                    if(((InventoryItemStack)heldObject).consumables.Count > 1) {
+                        ((InventoryItemStack)heldObject).countText.text = ((InventoryItemStack)heldObject).consumables.Count.ToString();
                     }
-                    else if(((InventoryItemStack)heldObject).items.Count == 1) {
+                    else if(((InventoryItemStack)heldObject).consumables.Count == 1) {
                         ((InventoryItemStack)heldObject).countText.enabled = false;
                     }
                     else {
@@ -571,16 +631,16 @@ public class InventoryCanvas : MonoBehaviour {
             }
             else {
                 //  taking a stack from the inventory
-                var temp = new InventoryItemStack(pressedButton, supportItemInventorySlots.transform);
+                var temp = new InventoryItemStack(pressedButton, consumableInventorySlots.transform);
 
-                foreach(var i in inventoryItems) {
+                foreach(var i in inventoryConsumables) {
                     if(i.slot == pressedButton) {
-                        temp.items.Add(i);
+                        temp.consumables.Add(i);
                     }
                 }
-                if(temp.items.Count > 0) {
-                    foreach(var i in temp.items)
-                        inventoryItems.Remove(i);
+                if(temp.consumables.Count > 0) {
+                    foreach(var i in temp.consumables)
+                        inventoryConsumables.Remove(i);
 
                     temp.setCountText();
                     heldObject = temp;
@@ -594,24 +654,24 @@ public class InventoryCanvas : MonoBehaviour {
             if(heldObject != null) {
                 if(heldObject.GetType() != typeof(InventoryItemStack)) {
                     //  checks if the stack is populated by the same item type or if the stack is empty
-                    if(canFitInStack(((InventoryItem)heldObject).item, pressedButton)) {
+                    if(canFitInStack(((InventoryConsumable)heldObject).consumable, pressedButton)) {
                         heldObject.setNewSlot(pressedButton);
-                        inventoryItems.Add((InventoryItem)heldObject);
+                        inventoryConsumables.Add((InventoryConsumable)heldObject);
                         heldObject = null;
                     }
                 }
                 else {
                     //  adds as many items to the stack as possible
-                    while(((InventoryItemStack)heldObject).items.Count > 0 && canFitInStack(((InventoryItemStack)heldObject).items[0].item, pressedButton)) {
-                        ((InventoryItemStack)heldObject).items[0].setNewSlot(pressedButton);
-                        inventoryItems.Add(((InventoryItemStack)heldObject).items[0]);
-                        ((InventoryItemStack)heldObject).items.RemoveAt(0);
-                        setItemCountTextForSlot(pressedButton);
+                    while(((InventoryItemStack)heldObject).consumables.Count > 0 && canFitInStack(((InventoryItemStack)heldObject).consumables[0].consumable, pressedButton)) {
+                        ((InventoryItemStack)heldObject).consumables[0].setNewSlot(pressedButton);
+                        inventoryConsumables.Add(((InventoryItemStack)heldObject).consumables[0]);
+                        ((InventoryItemStack)heldObject).consumables.RemoveAt(0);
+                        setConsumableCountTextForSlot(pressedButton);
                     }
-                    if(((InventoryItemStack)heldObject).items.Count > 1) {
-                        ((InventoryItemStack)heldObject).countText.text = ((InventoryItemStack)heldObject).items.Count.ToString();
+                    if(((InventoryItemStack)heldObject).consumables.Count > 1) {
+                        ((InventoryItemStack)heldObject).countText.text = ((InventoryItemStack)heldObject).consumables.Count.ToString();
                     }
-                    else if(((InventoryItemStack)heldObject).items.Count == 1) {
+                    else if(((InventoryItemStack)heldObject).consumables.Count == 1) {
                         ((InventoryItemStack)heldObject).countText.enabled = false;
                     }
                     else {
@@ -622,24 +682,24 @@ public class InventoryCanvas : MonoBehaviour {
                 }
             }
             else {
-                if(getItemCountForSlot(pressedButton) > 0) {
+                if(getConsumableCountForSlot(pressedButton) > 0) {
                     //  taking half a stack from the inventory
-                    var temp = new InventoryItemStack(pressedButton, supportItemInventorySlots.transform);
-                    int numberToAdd = getItemCountForSlot(pressedButton);
+                    var temp = new InventoryItemStack(pressedButton, consumableInventorySlots.transform);
+                    int numberToAdd = getConsumableCountForSlot(pressedButton);
                     if(numberToAdd % 2 != 0)
                         numberToAdd++;
                     numberToAdd /= 2;
-                    foreach(var i in inventoryItems) {
+                    foreach(var i in inventoryConsumables) {
                         if(numberToAdd == 0)
                             break;
                         else if(i.slot == pressedButton) {
-                            temp.items.Add(i);
+                            temp.consumables.Add(i);
                             numberToAdd--;
                         }
                     }
-                    if(temp.items.Count > 0) {
-                        foreach(var i in temp.items)
-                            inventoryItems.Remove(i);
+                    if(temp.consumables.Count > 0) {
+                        foreach(var i in temp.consumables)
+                            inventoryConsumables.Remove(i);
 
                         temp.setCountText();
                         heldObject = temp;
@@ -655,23 +715,23 @@ public class InventoryCanvas : MonoBehaviour {
             if(heldObject != null) {
                 
 
-                if(((InventoryItemStack)heldObject).items.Count > 0) {
+                if(((InventoryItemStack)heldObject).consumables.Count > 0) {
                     //  fills the stack with more items
                     List<GameObject> slotsTakenFrom = new List<GameObject>();
 
-                    foreach(var i in inventoryItems) {
-                        if(((InventoryItemStack)heldObject).items.Count >= ((InventoryItemStack)heldObject).items[0].item.i_maxStackCount)
+                    foreach(var i in inventoryConsumables) {
+                        if(((InventoryItemStack)heldObject).consumables.Count >= ((InventoryItemStack)heldObject).consumables[0].consumable.c_maxStackCount)
                             break;
-                        else if(i.item.isEqualTo(((InventoryItemStack)heldObject).items[0].item)) {
-                            ((InventoryItemStack)heldObject).items.Add(i);
+                        else if(i.consumable.isEqualTo(((InventoryItemStack)heldObject).consumables[0].consumable)) {
+                            ((InventoryItemStack)heldObject).consumables.Add(i);
                             slotsTakenFrom.Add(i.slot);
                         }
                     }
-                    foreach(var i in ((InventoryItemStack)heldObject).items)
-                        inventoryItems.Remove(i);
+                    foreach(var i in ((InventoryItemStack)heldObject).consumables)
+                        inventoryConsumables.Remove(i);
 
                     foreach(var i in slotsTakenFrom)
-                        setItemCountTextForSlot(i);
+                        setConsumableCountTextForSlot(i);
 
                     ((InventoryItemStack)heldObject).setCountText();
                 }
@@ -679,7 +739,7 @@ public class InventoryCanvas : MonoBehaviour {
         }
 
 
-        setItemCountTextForSlot(pressedButton);
+        setConsumableCountTextForSlot(pressedButton);
     }
 
 
@@ -726,21 +786,21 @@ public class InventoryCanvas : MonoBehaviour {
 
     public void useHeldItemOnUnit() {
         if(heldObject != null) {
-            if(heldObject.GetType() == typeof(InventoryItem)) {
-                var temp = new InventoryItem();
-                temp = (InventoryItem)heldObject;
+            if(heldObject.GetType() == typeof(InventoryConsumable)) {
+                var temp = new InventoryConsumable();
+                temp = (InventoryConsumable)heldObject;
 
-                temp.item.applyEffect(shownUnit);
-                Inventory.removeItem(temp.item);
+                temp.consumable.applyEffect(shownUnit);
+                Inventory.removeItem(temp.consumable);
                 temp.destory();
 
                 heldObject = null;
             }
             else if(heldObject.GetType() == typeof(InventoryItemStack)) {
-                ((InventoryItemStack)heldObject).items[0].item.applyEffect(shownUnit);
-                Inventory.removeItem(((InventoryItemStack)heldObject).items[0].item);
-                ((InventoryItemStack)heldObject).items[0].destory();
-                ((InventoryItemStack)heldObject).items.RemoveAt(0);
+                ((InventoryItemStack)heldObject).consumables[0].consumable.applyEffect(shownUnit);
+                Inventory.removeItem(((InventoryItemStack)heldObject).consumables[0].consumable);
+                ((InventoryItemStack)heldObject).consumables[0].destory();
+                ((InventoryItemStack)heldObject).consumables.RemoveAt(0);
                 ((InventoryItemStack)heldObject).setCountText();
             }
 
@@ -755,7 +815,7 @@ public class InventoryCanvas : MonoBehaviour {
                 equipHeldWeapon();
             else if(heldObject.GetType() == typeof(InventoryArmor))
                 equipHeldArmor();
-            else if(heldObject.GetType() == typeof(InventoryItem) || heldObject.GetType() == typeof(InventoryItemStack))
+            else if(heldObject.GetType() == typeof(InventoryConsumable) || heldObject.GetType() == typeof(InventoryItemStack))
                 useHeldItemOnUnit();
         }
     }

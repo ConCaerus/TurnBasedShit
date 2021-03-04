@@ -2,21 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
 
 [Serializable]
 public class MapLocation {
+    public Vector2 pos;
+    public locationType type;
+    public SpriteLocation sprite = new SpriteLocation();
+
+    public CombatLocation combatLocation = null;
+
+
     [Serializable]
     public enum locationType {
-        town
+        town, equipmentPickup
     }
-    public locationType type;
-    public Vector2 pos;
 
-    public MapLocation(locationType t, Vector2 p) {
-        type = t;
-        pos = p;
+    public void enterLocation() {
+        switch(type) {
+            case locationType.town:
+                GameState.resetCombatDetails();
+                SceneManager.LoadScene("Town");
+                break;
+
+            case locationType.equipmentPickup:
+                GameState.setCombatDetails(combatLocation);
+                MapLocationHolder.removeLocation(this);
+                SceneManager.LoadScene("Combat");
+                break;
+        }
     }
-    public MapLocation(locationType t) {
-        type = t;
+    public bool equals(MapLocation other) {
+        return pos == other.pos && type == other.type;
     }
 }

@@ -5,7 +5,7 @@ using TMPro;
 
 
 public enum partyAffectors {
-    unitHealth, addUnit
+    unitHealth, addUnit, killUnit, killRandUnit
 }
 
 [CreateAssetMenu(fileName = "Story", menuName = "Presets/Story")]
@@ -50,11 +50,16 @@ public class Story : ScriptableObject {
 
         //  adds a new unit to the party
         else if(next.affectsParty && next.affect == partyAffectors.addUnit) {
-            next.affectedUnit = UnitCreator.createNewUnitStats();
+            next.affectedUnit = Randomizer.createRandomUnitStats();
+        }
+
+        //  kills a random unit from the party
+        else if(next.affectsParty && next.affect == partyAffectors.killRandUnit) {
+            next.affectedUnit = Party.getMemberStats(Random.Range(0, Party.getPartySize()));
         }
 
         //  sets up an "OK" choice for the end of the story
-        else if(next.isEnd) {
+        if(next.isEnd) {
             Choice ch = new Choice();
             ch.title = "Okay";
             next.choices.Clear();
@@ -70,6 +75,10 @@ public class Story : ScriptableObject {
                 case partyAffectors.unitHealth:
                     return true;
                 case partyAffectors.addUnit:
+                    return false;
+                case partyAffectors.killUnit:
+                    return true;
+                case partyAffectors.killRandUnit:
                     return false;
             }
         }
@@ -99,10 +108,23 @@ public class Story : ScriptableObject {
                     Party.removeUnitAtIndex(affectedUnit.u_order);
                 }
                 break;
+
             case partyAffectors.addUnit:
                 Party.addNewUnit(affectedUnit);
 
                 c1.text = affectedUnit.u_name + " was added to the party";
+                break;
+
+            case partyAffectors.killUnit:
+                Party.removeUnitAtIndex(affectedUnit.u_order);
+
+                c1.text = affectedUnit.u_name + " has died";
+                break;
+
+            case partyAffectors.killRandUnit:
+                Party.removeUnitAtIndex(affectedUnit.u_order);
+
+                c1.text = affectedUnit.u_name + " has died";
                 break;
         }
         affectedUnit = null;
@@ -115,7 +137,7 @@ public class Story : ScriptableObject {
 
         for(int i = 0; i < Party.getPartySize(); i++) {
             Choice ch = new Choice();
-            ch.title = Party.getMemberStats(i).u_name + ": " + getRelevantUnitInformation(Party.getMemberStats(i));
+            ch.title = Party.getMemberStats(i).u_name + getRelevantUnitInformation(Party.getMemberStats(i));
             ch.stories.Add(this);
             chooseUnitStory.choices.Add(ch);
         }
@@ -124,7 +146,7 @@ public class Story : ScriptableObject {
     public string getRelevantUnitInformation(UnitClassStats stats) {
         switch(affect) {
             case partyAffectors.unitHealth:
-                return stats.u_health.ToString() + " / " + stats.u_maxHealth.ToString();
+                return ": " + stats.u_health.ToString() + " / " + stats.u_maxHealth.ToString();
         }
         return "";
     }

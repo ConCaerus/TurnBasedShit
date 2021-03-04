@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Sword
   m_EditorClassIdentifier: 
   preset:
+    w_name: Sword
     w_attributes: 00000000
     w_power: 25
     w_speedMod: 5
     w_sprite:
       startingSprite: {fileID: 21300000, guid: 0527f49f8c02110408c97a81512d0666, type: 3}
-      weirdSprite: {fileID: 2800000, guid: 0527f49f8c02110408c97a81512d0666, type: 3}
-      s_location: Assets/Sprites/Sword1.png
+      s_location: Assets/Sprites/Usables/Weapons/Sword1.png
       s_name: Sword1

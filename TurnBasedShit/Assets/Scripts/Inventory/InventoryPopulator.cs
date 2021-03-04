@@ -5,7 +5,7 @@ using UnityEngine;
 public class InventoryPopulator : MonoBehaviour {
     [SerializeField] WeaponPreset weaponToAdd;
     [SerializeField] ArmorPreset armorToAdd;
-    [SerializeField] ItemPreset itemToAdd;
+    [SerializeField] ConsumablePreset itemToAdd;
 
 
     public void resetInventory() {
@@ -25,7 +25,7 @@ public class InventoryPopulator : MonoBehaviour {
             }
 
             if(itemToAdd != null) {
-                Item i = itemToAdd.preset;
+                Consumable i = itemToAdd.preset;
                 Inventory.addNewItem(i);
             }
         }

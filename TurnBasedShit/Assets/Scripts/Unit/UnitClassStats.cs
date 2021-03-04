@@ -25,4 +25,17 @@ public class UnitClassStats {
     public bool isEmpty() {
         return u_name == "" && u_order == 0;
     }
+
+    public bool equals(UnitClassStats other) {
+        bool names = u_name == other.u_name;
+        bool health = u_health == other.u_health;
+        bool maxHealth = u_maxHealth == other.u_maxHealth;
+        bool speed = u_speed == other.u_speed;
+        bool order = u_order == other.u_order;
+        bool weapon = equippedWeapon.equals(other.equippedWeapon);
+        bool armor = equippedArmor.equals(other.equippedArmor);
+        bool color = u_color == other.u_color;
+
+        return names && health && maxHealth && speed && order && weapon && armor && color;
+    }
 }
