@@ -6,11 +6,9 @@ using UnityEditor;
 [System.Serializable]
 public class SpriteLocation {
     [SerializeField] Sprite startingSprite = null;
-    public string s_location = "", s_name = "";
+    public  string s_location = "", s_name = "";
 
     public Sprite getSprite() {
-        if(startingSprite != null)
-            return startingSprite;
         var sprites = AssetDatabase.LoadAllAssetsAtPath(s_location);
 
         foreach(var i in sprites) {

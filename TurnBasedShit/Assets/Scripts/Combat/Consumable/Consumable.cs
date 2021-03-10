@@ -14,10 +14,10 @@ public class Consumable {
     public effects c_effect;
     public float c_effectAmount;
 
-    public SpriteLocation i_sprite;
+    public SpriteLocation c_sprite;
 
     
-    public void applyEffect(GameObject unit) {
+    public UnitClassStats applyEffect(GameObject unit) {
         var uc = unit.GetComponent<UnitClass>();
         switch(c_effect) {
             case effects.heal:
@@ -34,6 +34,7 @@ public class Consumable {
         }
 
         Party.resaveUnit(uc.stats);
+        return uc.stats;
     }
 
     public bool isEqualTo(Consumable obj) {
@@ -42,5 +43,9 @@ public class Consumable {
 
         return obj.c_effect == c_effect && obj.c_effectAmount == c_effectAmount && 
             obj.c_name == c_name && obj.c_maxStackCount == c_maxStackCount;
+    }
+
+    public bool isEmpty() {
+        return string.IsNullOrEmpty(c_name) && c_maxStackCount == 0 && c_effectAmount == 0;
     }
 }

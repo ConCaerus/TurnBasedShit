@@ -413,7 +413,7 @@ public class InventoryCanvas : MonoBehaviour {
                 if(i.GetComponentInChildren<TextMeshProUGUI>() != null)
                     i.GetComponentInChildren<TextMeshProUGUI>().enabled = false;
             }
-            for(int i = 0; i < Inventory.getItemCount(); i++) {
+            for(int i = 0; i < Inventory.getConsumableCount(); i++) {
                 GameObject slot = null;
                 Consumable newItem = Inventory.getConsumable(i);
 
@@ -444,7 +444,7 @@ public class InventoryCanvas : MonoBehaviour {
                 Destroy(other.GetComponent<Collider2D>());
                 other.transform.SetParent(consumableInventorySlots.gameObject.transform);
                 other.GetComponent<Image>().raycastTarget = false;
-                other.GetComponent<Image>().sprite = Inventory.getConsumable(i).i_sprite.getSprite();
+                other.GetComponent<Image>().sprite = Inventory.getConsumable(i).c_sprite.getSprite();
                 other.GetComponent<Image>().color = Color.white;
                 other.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -791,14 +791,14 @@ public class InventoryCanvas : MonoBehaviour {
                 temp = (InventoryConsumable)heldObject;
 
                 temp.consumable.applyEffect(shownUnit);
-                Inventory.removeItem(temp.consumable);
+                Inventory.removeConsumable(temp.consumable);
                 temp.destory();
 
                 heldObject = null;
             }
             else if(heldObject.GetType() == typeof(InventoryItemStack)) {
                 ((InventoryItemStack)heldObject).consumables[0].consumable.applyEffect(shownUnit);
-                Inventory.removeItem(((InventoryItemStack)heldObject).consumables[0].consumable);
+                Inventory.removeConsumable(((InventoryItemStack)heldObject).consumables[0].consumable);
                 ((InventoryItemStack)heldObject).consumables[0].destory();
                 ((InventoryItemStack)heldObject).consumables.RemoveAt(0);
                 ((InventoryItemStack)heldObject).setCountText();

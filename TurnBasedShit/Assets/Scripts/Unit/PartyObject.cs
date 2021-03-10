@@ -21,19 +21,14 @@ public class PartyObject : MonoBehaviour {
 
             //  sets up stats
             obj.GetComponent<UnitClass>().stats = Party.getMemberStats(i);
-            if(obj.GetComponent<UnitClass>().stats.u_name == "") {
+            if(string.IsNullOrEmpty(obj.GetComponent<UnitClass>().stats.u_name)) {
                 obj.GetComponent<UnitClass>().stats.u_name = NameLibrary.getRandomUsableName();
             }
-            obj.name = obj.GetComponent<UnitClass>().stats.u_name;
+            obj.name = Party.getMemberStats(i).u_name;
 
             //  sets sprite
-            if(obj.GetComponent<UnitClass>().stats.u_sprite.getSprite() == null) {
-                Debug.Log(obj.GetComponent<UnitClass>().stats.u_name);
-                obj.GetComponent<UnitClass>().stats.u_sprite.setLocation(unitPrefab.GetComponent<UnitClass>().stats.u_sprite.getSprite());
-                obj.GetComponent<UnitClass>().stats.u_color = unitPrefab.GetComponent<UnitClass>().stats.u_color;
-            }
-            obj.GetComponent<SpriteRenderer>().sprite = (Sprite)obj.GetComponent<UnitClass>().stats.u_sprite.getSprite();
-            obj.GetComponent<SpriteRenderer>().color = obj.GetComponent<UnitClass>().stats.u_color;
+            obj.GetComponent<SpriteRenderer>().sprite = Party.getMemberStats(i).u_sprite.getSprite();
+            obj.GetComponent<SpriteRenderer>().color = Party.getMemberStats(i).u_color;
 
             //  sets pos
             int randIndex = Random.Range(0, unusedSpawnPoses.Count);
@@ -59,10 +54,29 @@ public class PartyObject : MonoBehaviour {
         unitToAdd = null;
     }
 
+    public void resaveInstantiatedUnit(UnitClassStats stats) {
+        Party.resaveUnit(stats);
+
+        foreach(var i in FindObjectsOfType<PlayerUnitInstance>()) {
+            if(i.stats.u_order == stats.u_order) {
+                i.stats = stats;
+                break;
+            }
+        }
+    }
+
     public void saveParty() {
         foreach(var i in FindObjectsOfType<PlayerUnitInstance>()) {
             Party.resaveUnit(i.stats);
         }
+    }
+
+    public GameObject getInstantiatedMember(UnitClassStats stats) {
+        foreach(var i in FindObjectsOfType<PlayerUnitInstance>()) {
+            if(stats.u_order == i.stats.u_order)
+                return i.gameObject;
+        }
+        return null;
     }
 }
 

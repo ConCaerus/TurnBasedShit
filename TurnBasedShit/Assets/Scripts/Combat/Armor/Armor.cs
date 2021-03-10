@@ -90,6 +90,16 @@ public class Armor {
     }
 
 
+    public int howManyOfAttribute(attributes a) {
+        var count = 0;
+        foreach(var i in a_attributes) {
+            if(i == a)
+                count++;
+        }
+        return count;
+    }
+
+
     public attributes getRandomAttribute() {
         var rand = Random.Range(0, 101);
         float step = 100.0f / (float)attributeCount;

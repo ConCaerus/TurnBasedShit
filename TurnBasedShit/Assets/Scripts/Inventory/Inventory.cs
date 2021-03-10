@@ -7,17 +7,17 @@ using UnityEditor;
 public static class Inventory {
     const string weaponCount = "Inventory Weapon Count";
     const string armorCount = "Inventory Armor Count";
-    const string itemCount = "Inventory Item Count";
+    const string consumableCount = "Inventory Consumable Count";
 
     static string weaponTag(int index) { return "Inventory Weapon" + index.ToString(); }
     static string armorTag(int index) { return "Inventory Armor" + index.ToString(); }
-    static string consumableTag(int index) { return "Inventory Item" + index.ToString(); }
+    static string consumableTag(int index) { return "Inventory Consumable" + index.ToString(); }
 
     
     public static void clearInventory() {
         clearWeapons();
         clearArmor();
-        clearItems();
+        clearConsumables();
     }
     public static void clearWeapons() {
         for(int i = 0; i < PlayerPrefs.GetInt(weaponCount); i++) {
@@ -35,11 +35,11 @@ public static class Inventory {
 
         PlayerPrefs.Save();
     }
-    public static void clearItems() {
-        for(int i = 0; i < PlayerPrefs.GetInt(itemCount); i++) {
+    public static void clearConsumables() {
+        for(int i = 0; i < PlayerPrefs.GetInt(consumableCount); i++) {
             PlayerPrefs.DeleteKey(consumableTag(i));
         }
-        PlayerPrefs.DeleteKey(itemCount);
+        PlayerPrefs.DeleteKey(consumableCount);
 
         PlayerPrefs.Save();
     }
@@ -62,12 +62,12 @@ public static class Inventory {
 
         PlayerPrefs.Save();
     }
-    public static void addNewItem(Consumable i) {
-        int index = PlayerPrefs.GetInt(itemCount);
+    public static void addNewConsumable(Consumable i) {
+        int index = PlayerPrefs.GetInt(consumableCount);
 
         var data = JsonUtility.ToJson(i);
         PlayerPrefs.SetString(consumableTag(index), data);
-        PlayerPrefs.SetInt(itemCount, index + 1);
+        PlayerPrefs.SetInt(consumableCount, index + 1);
 
         PlayerPrefs.Save();
     }
@@ -114,11 +114,11 @@ public static class Inventory {
         PlayerPrefs.SetInt(armorCount, PlayerPrefs.GetInt(armorCount) - 1);
         PlayerPrefs.Save();
     }
-    public static void removeItem(Consumable j) {
+    public static void removeConsumable(Consumable j) {
         var jData = JsonUtility.ToJson(j);
 
         bool past = false;
-        for(int i = 0; i < PlayerPrefs.GetInt(itemCount); i++) {
+        for(int i = 0; i < PlayerPrefs.GetInt(consumableCount); i++) {
             var data = PlayerPrefs.GetString(consumableTag(i));
 
             if(data == jData && !past) {
@@ -128,11 +128,11 @@ public static class Inventory {
             }
             else if(past) {
                 PlayerPrefs.DeleteKey(consumableTag(i));
-                overrideItem(i - 1, JsonUtility.FromJson<Consumable>(data));
+                overrideConsumable(i - 1, JsonUtility.FromJson<Consumable>(data));
             }
         }
 
-        PlayerPrefs.SetInt(itemCount, PlayerPrefs.GetInt(itemCount) - 1);
+        PlayerPrefs.SetInt(consumableCount, PlayerPrefs.GetInt(consumableCount) - 1);
         PlayerPrefs.Save();
     }
 
@@ -148,7 +148,7 @@ public static class Inventory {
 
         PlayerPrefs.Save();
     }
-    public static void overrideItem(int index, Consumable i) {
+    public static void overrideConsumable(int index, Consumable i) {
         var data = JsonUtility.ToJson(i);
         PlayerPrefs.SetString(consumableTag(index), data);
 
@@ -161,8 +161,8 @@ public static class Inventory {
     public static int getArmorCount() {
         return PlayerPrefs.GetInt(armorCount);
     }
-    public static int getItemCount() {
-        return PlayerPrefs.GetInt(itemCount);
+    public static int getConsumableCount() {
+        return PlayerPrefs.GetInt(consumableCount);
     }
 
     public static Weapon getWeapon(int i) {
@@ -232,8 +232,8 @@ public static class Inventory {
         }
         return -1;
     }
-    public static int getItemIndex(Consumable it) {
-        for(int i = 0; i < PlayerPrefs.GetInt(itemCount); i++) {
+    public static int getConsumableIndex(Consumable it) {
+        for(int i = 0; i < PlayerPrefs.GetInt(consumableCount); i++) {
             var data = PlayerPrefs.GetString(consumableTag(i));
             var temp = JsonUtility.FromJson<Consumable>(data);
 
@@ -241,5 +241,16 @@ public static class Inventory {
                 return i;
         }
         return -1;
+    }
+
+
+    public static int getNumberOfUniqueConsumables(Consumable con) {
+        int count = 0;
+        for(int i = 0; i < PlayerPrefs.GetInt(consumableCount); i++) {
+            if(getConsumable(i).isEqualTo(con))
+                count++;
+        }
+
+        return count;
     }
 }

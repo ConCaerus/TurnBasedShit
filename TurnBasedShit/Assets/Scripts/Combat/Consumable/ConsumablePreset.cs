@@ -17,7 +17,7 @@ public class ConsumablePresetEditor : Editor {
         var t = (ConsumablePreset)target;
 
         if(GUILayout.Button("Set Sprite Location")) {
-            t.preset.i_sprite.setLocation();
+            t.preset.c_sprite.setLocation();
         }
     }
 }

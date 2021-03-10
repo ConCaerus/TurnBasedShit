@@ -39,7 +39,9 @@ public abstract class UnitClass : MonoBehaviour {
 
 
     public void takeDamage(GameObject attacker, float dmg) {
-        float temp = haveArmorReduceDamage(dmg);
+        float temp = dmg;
+        if(stats.equippedArmor != null && !stats.equippedArmor.isEmpty())
+            temp = haveArmorReduceDamage(dmg);
         stats.u_health -= temp;
 
         stats.equippedArmor.applyAttributesAfterAttack(gameObject, attacker);
@@ -128,14 +130,15 @@ public abstract class UnitClass : MonoBehaviour {
     }
 
     public void attackUnit(GameObject unit) {
-        if(stats.equippedWeapon == null)
-            Debug.LogError("Unit " + name + "   is not equipped with a weapon");
+        float dmg = stats.u_power;
+        if(stats.equippedWeapon != null && !stats.equippedWeapon.isEmpty()) {
+            stats.equippedWeapon.applyAttributesAfterAttack(gameObject, unit);
+            dmg += stats.equippedWeapon.w_power + stats.equippedWeapon.getPowerBonusDamage();
+        }
         FindObjectOfType<AudioManager>().playHitSound();
 
-        stats.equippedWeapon.applyAttributesAfterAttack(gameObject, unit);
-
         gameObject.transform.DOPunchPosition(unit.transform.position - transform.position, 0.25f);
-        unit.GetComponent<UnitClass>().takeDamage(gameObject, stats.equippedWeapon.w_power + stats.equippedWeapon.getPowerBonusDamage());
+        unit.GetComponent<UnitClass>().takeDamage(gameObject, dmg);
 
         attacking = false;
     }

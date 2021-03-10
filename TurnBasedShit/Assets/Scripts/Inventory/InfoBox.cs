@@ -13,8 +13,7 @@ public class InfoBox : MonoBehaviour {
     [SerializeField] float dataOffset = 1.0f;
 
     private void Awake() {
-        dataText.enabled = false;
-        setAndShowInfoBox(Inventory.getRandomWeaponPreset());
+        hide();
     }
 
     private void Update() {
@@ -35,18 +34,64 @@ public class InfoBox : MonoBehaviour {
         infoBox.SetActive(false);
     }
     public void setAndShowInfoBox(object t) {
+        if(t == null) {
+            return;
+        }
         infoBox.SetActive(true);
         deleteAddDataTexts();
         //  cannot use a switch for some reason
-        if(t.GetType() == typeof(Weapon)) {
+        if(t.GetType() == typeof(UnitClassStats)) {
+            var s = (UnitClassStats)t;
+            if(s.isEmpty()) {
+                infoBox.SetActive(false);
+                return;
+            }
+            nameText.text = FindObjectOfType<TextCreator>().createColoredText(s.u_name);
+            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("NUM: " + s.u_order.ToString(), 1));
+            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("POW: " + s.u_power.ToString(), 1));
+            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("SPD: " + s.u_speed.ToString(), 1));
+        }
+
+        else if(t.GetType() == typeof(Weapon)) {
             var w = (Weapon)t;
-            nameText.text = w.w_name;
-            createNewDataText("POW: " + w.w_power.ToString());
-            createNewDataText("SPED: " + w.w_speedMod.ToString());
+            if(w.isEmpty()) {
+                infoBox.SetActive(false);
+                return;
+            }
+            nameText.text = FindObjectOfType<TextCreator>().createColoredText(w.w_name);
+            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("POW: " + w.w_power.ToString(), 1));
+            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("SPED: " + w.w_speedMod.ToString(), 1));
 
             for(int i = 0; i < w.w_attributes.Count; i++) {
-                createNewDataText(w.w_attributes[i].ToString().ToUpper() + " " + w.howManyOfAttribute(w.w_attributes[i]).ToString());
+                createNewDataText(FindObjectOfType<TextCreator>().createColoredText(w.w_attributes[i].ToString().ToUpper() + " " + w.howManyOfAttribute(w.w_attributes[i]).ToString(), 1));
             }
+        }
+
+        else if(t.GetType() == typeof(Armor)) {
+            var a = (Armor)t;
+            if(a.isEmpty()) {
+                infoBox.SetActive(false);
+                return;
+            }
+            nameText.text = FindObjectOfType<TextCreator>().createColoredText(a.a_name);
+            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("DEF: " + a.a_defence.ToString(), 1));
+            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("SPED: " + a.a_speedMod.ToString(), 1));
+
+            for(int i = 0; i < a.a_attributes.Count; i++) {
+                createNewDataText(FindObjectOfType<TextCreator>().createColoredText(a.a_attributes[i].ToString().ToUpper() + " " + a.howManyOfAttribute(a.a_attributes[i]).ToString(), 1));
+            }
+        }
+
+        else if(t.GetType() == typeof(Consumable)) {
+            var c = (Consumable)t;
+            if(c.isEmpty()) {
+                infoBox.SetActive(false);
+                return;
+            }
+            nameText.text = FindObjectOfType<TextCreator>().createColoredText(c.c_name);
+            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("EFCT: " + c.c_effect.ToString().ToUpper(), 1));
+            if(c.c_effectAmount > 0)
+                createNewDataText(FindObjectOfType<TextCreator>().createColoredText("AMT: " + c.c_effectAmount.ToString(), 1));
         }
     }
 

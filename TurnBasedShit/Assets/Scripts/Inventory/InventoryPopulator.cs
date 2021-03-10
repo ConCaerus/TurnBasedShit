@@ -26,7 +26,7 @@ public class InventoryPopulator : MonoBehaviour {
 
             if(itemToAdd != null) {
                 Consumable i = itemToAdd.preset;
-                Inventory.addNewItem(i);
+                Inventory.addNewConsumable(i);
             }
         }
 

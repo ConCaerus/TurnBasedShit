@@ -36,7 +36,7 @@ public class PickupLocation : MapLocation {
     public PickupLocation(Vector2 p, Consumable it) {
         pos = p;
         type = locationType.equipmentPickup;
-        sprite.setLocation(it.i_sprite.getSprite());
+        sprite.setLocation(it.c_sprite.getSprite());
 
         //  creates a new combatLocation
         var loc = new CombatLocation();

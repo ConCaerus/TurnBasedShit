@@ -17,6 +17,6 @@ public class CombatLocation {
         foreach(var i in armor)
             Inventory.addNewArmor(i);
         foreach(var i in items)
-            Inventory.addNewItem(i);
+            Inventory.addNewConsumable(i);
     }
 }

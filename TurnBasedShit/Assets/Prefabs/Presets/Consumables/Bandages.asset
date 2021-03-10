@@ -15,10 +15,10 @@ MonoBehaviour:
   preset:
     numOfEffects: 4
     c_name: Bandages
-    c_maxStackCount: 0
-    c_effect: 0
+    c_maxStackCount: 5
+    c_effect: 2
     c_effectAmount: 0
-    i_sprite:
+    c_sprite:
       startingSprite: {fileID: 21300000, guid: 4d6d2421ba1a5e94cb926e57c88baef9, type: 3}
-      s_location: Assets/Sprites/Bandages.png
+      s_location: Assets/Sprites/Usables/Consumables/Bandages.png
       s_name: Bandages
