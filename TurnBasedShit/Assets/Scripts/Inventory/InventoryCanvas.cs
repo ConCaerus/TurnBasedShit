@@ -1,187 +1,47 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using UnityEngine.UI;
+using TMPro;
 
 public class InventoryCanvas : MonoBehaviour {
-    [SerializeField] GameObject inventoryCanvas;
-    [SerializeField] GameObject weaponInventoryCanvas, armorInventoryCanvas;
-    [SerializeField] GameObject consumableInventoryCanvas;
-    [SerializeField] GameObject weaponImage, armorImage;
+    [SerializeField] GameObject heldObjectPicture;
+    object heldObject = null;
+    [SerializeField] List<GameObject> activeSlots = new List<GameObject>();
+    [SerializeField] List<GameObject> slotHolders = new List<GameObject>();
+    List<object> activeObjects = new List<object>();
 
-    [SerializeField] GameObject weaponInventorySlots, armorInventorySlots;
-    [SerializeField] GameObject equipmentUI;
+    [SerializeField] TextMeshProUGUI pageText;
+    int activePage = 0;
 
-    [SerializeField] GameObject consumableInventorySlots;
+    [SerializeField] GameObject weaponCanvas, armorCanvas, consumableCanvas;
+    [SerializeField] GameObject unitWeaponImage, unitArmorImage;
 
-    [SerializeField] TextMeshProUGUI unitName;
-    [SerializeField] GameObject unitImage;
-    [SerializeField] Slider unitHealthSlider;
-
-    [SerializeField] GameObject unitStatsMenu;
-    [SerializeField] TextMeshProUGUI unitsSpeedText;
-    [SerializeField] Vector2 statsOffset;
-
-    GameObject shownUnit = null;
-
-    int clickCount = 0;
-    Coroutine clickCountDecreaser = null;
-
-
-    abstract class InventoryObject {
-        public GameObject icon;
-        public GameObject slot;
-
-
-        protected Vector2 getMousePos() {
-            return Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        }
-
-
-        public void followMouse() {
-            if(icon != null)
-                icon.transform.position = new Vector3(getMousePos().x, getMousePos().y, icon.transform.position.z);
-        }
-
-        public void setNewSlot(GameObject s) {
-            slot = s;
-            if(icon != null) {
-                icon.transform.position = s.transform.position;
-            }
-        }
-
-        public void destory() {
-            if(icon.gameObject != null)
-                Destroy(icon.gameObject);
-        }
-    }
-    InventoryObject heldObject = null;
-
-    class InventoryWeapon : InventoryObject {
-        public Weapon weapon;
-    }
-    List<InventoryWeapon> inventoryWeapons = new List<InventoryWeapon>();
-
-    class InventoryArmor : InventoryObject {
-        public Armor armor;
-    }
-    List<InventoryArmor> inventoryArmors = new List<InventoryArmor>();
-
-    class InventoryConsumable : InventoryObject {
-        public Consumable consumable;
-    }
-    class InventoryItemStack : InventoryObject {
-        public List<InventoryConsumable> consumables = new List<InventoryConsumable>();
-
-        public TextMeshProUGUI countText;
-
-        public InventoryItemStack(GameObject slot, Transform parent) {
-            consumables.Clear();
-            countText = Instantiate(slot.GetComponentInChildren<TextMeshProUGUI>());
-            countText.text = consumables.Count.ToString();
-            countText.transform.SetParent(parent);
-            countText.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-            countText.enabled = slot.GetComponentInChildren<TextMeshProUGUI>().enabled;
-        }
-
-        public void textFollowMouse(GameObject slot) {
-            if(countText.enabled) {
-                var target = getMousePos();
-                target += (Vector2)slot.GetComponentInChildren<TextMeshProUGUI>().transform.localScale;
-                countText.transform.position = target;
-            }
-        }
-
-        public void setCountText() {
-            countText.text = consumables.Count.ToString();
-            if(consumables.Count <= 1)
-                countText.enabled = false;
-            else
-                countText.enabled = true;
-        }
-
-        public void destroyStack() {
-            foreach(var i in consumables)
-                i.destory();
-        }
-    }
-    List<InventoryConsumable> inventoryConsumables = new List<InventoryConsumable>();
-
-
+    [SerializeField] GameObject shownUnitInformation;
+    UnitClassStats shownUnit = null;
 
     private void Awake() {
-        inventoryCanvas.SetActive(false);
+        if(FindObjectOfType<InfoBox>() != null)
+            FindObjectOfType<InfoBox>().gameObject.SetActive(false);
     }
-
 
     private void Update() {
-        manageClickCount();
-        manageInfoBox();
+        if(FindObjectOfType<InfoBox>() != null)
+            manageInfoBox();
 
-        if(inventoryCanvas.activeInHierarchy && (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))) {
-            selectItemFromInventory(slotThatMouseIsOver());
-        }
-        if(heldObject != null) {
-            heldObject.followMouse();
-            if(heldObject.GetType() == typeof(InventoryItemStack)) {
-                ((InventoryItemStack)heldObject).countText.transform.localPosition = consumableInventorySlots.GetComponentInChildren<TextMeshProUGUI>().transform.localPosition;
-                foreach(var i in ((InventoryItemStack)heldObject).consumables)
-                    i.followMouse();
-                ((InventoryItemStack)heldObject).textFollowMouse(consumableInventorySlots.GetComponentInChildren<Collider2D>().gameObject);
-            }
-        }
-        if(isMouseOverUnitImage() && heldObject == null) {
-            unitStatsMenu.SetActive(true);
-            unitStatsMenu.transform.position = GameState.getMousePos() - statsOffset;
-        }
-        else {
-            unitStatsMenu.SetActive(false);
-        }
+        heldObjectPicture.transform.position = GameState.getMousePos();
 
-        if(isMouseOverUnitImage() && Input.GetMouseButtonDown(0) && heldObject != null) {
-            useHeldObject();
-            Debug.Log(true);
-        }
-    }
-
-    void manageClickCount() {
-        if(Input.GetMouseButtonDown(0)) {
-            clickCount++;
-            clickCountDecreaser = StartCoroutine(decreaseClickCount());
-        }
-    }
-
-    void manageInfoBox() {
-        var mousedOverSlot = slotThatMouseIsOver();
-        Debug.Log(mousedOverSlot);
-        //  consumables
-        if(consumableInventoryCanvas.activeInHierarchy) {
-            if(mousedOverSlot != null && getConsumableInSlot(mousedOverSlot) != null)
-                FindObjectOfType<InfoBox>().setAndShowInfoBox(getConsumableInSlot(mousedOverSlot));
-            else
-                FindObjectOfType<InfoBox>().hide();
-        }
-
-        //  weapons
-        else if(weaponInventoryCanvas.activeInHierarchy) {
-            if(mousedOverSlot != null && getWeaponInSlot(mousedOverSlot) != null)
-                FindObjectOfType<InfoBox>().setAndShowInfoBox(getWeaponInSlot(mousedOverSlot));
-            else
-                FindObjectOfType<InfoBox>().hide();
-        }
-
-        //  armors
-        else if(armorInventoryCanvas.activeInHierarchy) {
-            if(mousedOverSlot != null && getArmorInSlot(mousedOverSlot) != null)
-                FindObjectOfType<InfoBox>().setAndShowInfoBox(getArmorInSlot(mousedOverSlot));
-            else
-                FindObjectOfType<InfoBox>().hide();
-        }
+        if(Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
+            selectObjectFromSlot();
     }
 
 
-    bool isMouseOverUnitImage() {
+    //  useful getters
+    GameObject getMousedOverCollider() {
+        //  return if their are no active slots
+        if(activeSlots.Count == 0)
+            return null;
+
         Ray ray;
         RaycastHit2D hit;
 
@@ -190,641 +50,578 @@ public class InventoryCanvas : MonoBehaviour {
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
 
-
-        if(hit.collider == null)
-            return false;
-        while(hit.collider != null) {
-            if(hit.collider == unitImage.GetComponent<Collider2D>()) {
-                foreach(var i in unwantedHits)
-                    i.enabled = true;
-                return true;
-            }
-
-            //  hit is not a wanted object
-            hit.collider.enabled = false;
-            unwantedHits.Add(hit.collider);
-
-            hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
-            if(hit.collider == null) {
-                foreach(var i in unwantedHits)
-                    i.enabled = true;
-                return false;
-            }
-        }
-        return false;
-    }
-    GameObject slotThatMouseIsOver() {
-        Ray ray;
-        RaycastHit2D hit;
-
-        List<Collider2D> unwantedHits = new List<Collider2D>();
-
-        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
-
+        //  return if the ray did not hit anything
         if(hit.collider == null)
             return null;
 
-
-        //  all of the slots
-        var slots = new List<Collider2D>();
-        foreach(var i in weaponInventorySlots.GetComponentsInChildren<Collider2D>())
-            slots.Add(i);
-        foreach(var i in armorInventorySlots.GetComponentsInChildren<Collider2D>())
-            slots.Add(i);
-        foreach(var i in consumableInventorySlots.GetComponentsInChildren<Collider2D>())
-            slots.Add(i);
-
-
-        bool isHittingWantedObject = false;
-        while(!isHittingWantedObject) {
-            foreach(var i in slots) {
-                if(hit.collider == i) {
-                    isHittingWantedObject = true;
-                    break;
+        while(true) {
+            //  if the hit is hitting an inventory slot
+            foreach(var i in activeSlots) {
+                if(hit.collider == i.GetComponent<Collider2D>()) {
+                    foreach(var u in unwantedHits)
+                        u.enabled = true;
+                    return i.gameObject;
                 }
             }
-            if(isHittingWantedObject)
-                break;
+
+            GameObject wantedHit = null;
+
+            //  if the hit is hittign the shown unit picture
+            if(hit.collider == shownUnitInformation.transform.GetChild(2).GetComponent<Collider2D>())
+                wantedHit = shownUnitInformation.transform.GetChild(2).transform.gameObject;
+
+            //  if the hit is hitting a unit equipped slot
+            if(weaponCanvas.activeInHierarchy && hit.collider == unitWeaponImage.transform.parent.GetComponent<Collider2D>())
+                wantedHit = unitWeaponImage.transform.parent.gameObject;
+            if(armorCanvas.activeInHierarchy && hit.collider == unitArmorImage.transform.parent.GetComponent<Collider2D>())
+                wantedHit = unitArmorImage.transform.parent.gameObject;
+
+            //  hit is a wanted object
+            if(wantedHit != null) {
+                foreach(var u in unwantedHits)
+                    u.enabled = true;
+                return wantedHit.gameObject;
+            }
 
             //  hit is not a wanted object
             hit.collider.enabled = false;
             unwantedHits.Add(hit.collider);
 
             hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
-            if(hit.collider == null)
-                break;
-        }
 
-        if(hit.collider != null) {
-            foreach(var i in slots) {
-                if(hit.collider == i)
-                    return i.gameObject;
+            //  hit has run out of hit objects
+            if(hit.collider == null) {
+                foreach(var i in unwantedHits)
+                    i.enabled = true;
+                return null;
             }
         }
+    }
 
-        foreach(var i in unwantedHits)
-            i.enabled = true;
+    object getObjectInSlot(GameObject slot) {
+        if(slot == unitWeaponImage.transform.parent.gameObject)
+            return shownUnit.equippedWeapon;
+        if(slot == unitArmorImage.transform.parent.gameObject)
+            return shownUnit.equippedArmor;
+
+        int index = getSlotIndex(slot);
+        if(index >= activeSlots.Count || index < 0)
+            return null;
+
+        return activeObjects[index];
+    }
+
+    int getConsumableCountInSlot(GameObject slot) {
+        if(slot.transform.GetChild(0).GetComponent<TextMeshProUGUI>() == null)
+            return -1;
+
+        int index = getSlotIndex(slot);
+
+        if(activeObjects[index] == null)
+            return 0;
+        else if(activeObjects[index] != null && !slot.transform.GetChild(0).GetComponent<TextMeshProUGUI>().enabled)
+            return 1;
+        else
+            return int.Parse(slot.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
+    }
+
+    int getSlotIndex(GameObject slot) {
+        for(int i = 0; i < activeSlots.Count; i++) {
+            if(slot == activeSlots[i])
+                return i;
+        }
+        return -1;
+    }
+
+
+
+    //  useful setters
+    //  this is also used as a button
+    public void setActiveSlots() {
+        activeSlots.Clear();
+        foreach(var i in slotHolders) {
+            if(i.activeInHierarchy) {
+                foreach(var s in i.GetComponentsInChildren<Collider2D>()) {
+                    activeSlots.Add(s.gameObject);
+                }
+            }
+        }
+    }
+
+    public void setHeldObject(object thing) {
+        heldObject = thing;
+        if(thing == null)
+            heldObject = null;
+        else if(thing.GetType() == typeof(Weapon) && ((Weapon)thing).isEmpty()) {
+            heldObject = null;
+        }
+        else if(thing.GetType() == typeof(Armor) && ((Armor)thing).isEmpty())
+            heldObject = null;
+        heldObjectPicture.SetActive(thing != null);
+
+        if(heldObject != null) {
+            if(thing.GetType() == typeof(Weapon))
+                heldObjectPicture.GetComponent<Image>().sprite = ((Weapon)thing).w_sprite.getSprite();
+
+            else if(thing.GetType() == typeof(Armor))
+                heldObjectPicture.GetComponent<Image>().sprite = ((Armor)thing).a_sprite.getSprite();
+
+            else if(thing.GetType() == typeof(Consumable))
+                heldObjectPicture.GetComponent<Image>().sprite = ((Consumable)thing).c_sprite.getSprite();
+        }
+    }
+
+    Sprite getHeldObjectSprite() {
+        if(heldObject.GetType() == typeof(Weapon))
+            return ((Weapon)heldObject).w_sprite.getSprite();
+
+        else if(heldObject.GetType() == typeof(Armor))
+            return ((Armor)heldObject).a_sprite.getSprite();
+
+        else if(heldObject.GetType() == typeof(Consumable))
+            return ((Consumable)heldObject).c_sprite.getSprite();
+
         return null;
     }
 
 
-    public void showInventory() {
-        if(shownUnit == null)
-            setShownUnit(0);
-        inventoryCanvas.SetActive(true);
-        updateUI();
+    //  managers
+    public void manageInfoBox() {
+        var temp = getMousedOverCollider();
+        if(temp == null) {
+            FindObjectOfType<InfoBox>().hide();
+            return;
+        }
+        //  if temp is not a slot
+        if(temp == shownUnitInformation.transform.GetChild(2).transform.gameObject) {
+            FindObjectOfType<InfoBox>().setAndShowInfoBox(shownUnit);
+            return;
+        }
+
+        //  if temp is a slot
+        var obj = getObjectInSlot(temp);
+        if(obj == null) {
+            FindObjectOfType<InfoBox>().hide();
+            return;
+        }
+
+        FindObjectOfType<InfoBox>().setAndShowInfoBox(getObjectInSlot(temp));
     }
-    public void closeInventory() {
-        inventoryCanvas.SetActive(false);
+
+    void updateUnitChange() {
+        shownUnitInformation.transform.GetChild(2).GetComponent<Image>().sprite = shownUnit.u_sprite.getSprite();
+        shownUnitInformation.transform.GetChild(2).GetComponent<Image>().color = shownUnit.u_color;
+        shownUnitInformation.GetComponentInChildren<Slider>().maxValue = shownUnit.u_maxHealth;
+        shownUnitInformation.GetComponentInChildren<Slider>().value = shownUnit.u_health;
+        shownUnitInformation.GetComponentInChildren<TextMeshProUGUI>().text = shownUnit.u_name;
+
+        //  equipped weapon
+        if(weaponCanvas.activeInHierarchy) {
+            if(shownUnit.equippedWeapon == null || shownUnit.equippedWeapon.isEmpty()) {
+                unitWeaponImage.GetComponent<Image>().sprite = null;
+                unitWeaponImage.GetComponent<Image>().enabled = false;
+            }
+            else {
+                unitWeaponImage.GetComponent<Image>().enabled = true;
+                unitWeaponImage.GetComponent<Image>().sprite = shownUnit.equippedWeapon.w_sprite.getSprite();
+            }
+        }
+        else if(armorCanvas.activeInHierarchy) {
+            if(shownUnit.equippedArmor == null || shownUnit.equippedArmor.isEmpty()) {
+                unitArmorImage.GetComponent<Image>().sprite = null;
+                unitArmorImage.GetComponent<Image>().enabled = false;
+            }
+            else {
+                unitArmorImage.GetComponent<Image>().enabled = true;
+                unitArmorImage.GetComponent<Image>().sprite = shownUnit.equippedArmor.a_sprite.getSprite();
+            }
+        }
+    }
+
+    public void selectObjectFromSlot() {
+        var slot = getMousedOverCollider();
+        var index = getSlotIndex(slot);
+        var obj = getObjectInSlot(slot);
+
+        //  used slot is not in the active slots list
+        if(index < 0 && slot != unitWeaponImage.transform.parent.gameObject && slot != unitArmorImage.transform.parent.gameObject && slot != shownUnitInformation.transform.GetChild(2).transform.gameObject)
+            return;
+
+        //  nothing to do
+        if(obj == null && heldObject == null)
+            return;
+
+        if((obj == null || obj.GetType() != typeof(Consumable)) && (heldObject == null || heldObject.GetType() != typeof(Consumable))) {
+            //  put down the current held object
+            if(heldObject != null) {
+                //  slot is not a unit equipment
+                if(slot != unitWeaponImage.transform.parent.gameObject && slot != unitArmorImage.transform.parent.gameObject) {
+                    activeObjects[index] = heldObject;
+                    activeSlots[index].transform.GetChild(0).GetComponent<Image>().enabled = true;
+                    activeSlots[index].transform.GetChild(0).GetComponent<Image>().sprite = getHeldObjectSprite();
+                }
+
+                //  slot is a unit equipment
+                else {
+                    if(weaponCanvas.activeInHierarchy) {
+                        //  sets the unit's weapon to the held object
+                        shownUnit.equippedWeapon = (Weapon)heldObject;
+                        FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
+
+                        if(obj != null && !((Weapon)obj).isEmpty())
+                            Inventory.addNewWeapon((Weapon)obj);
+                        else
+                            obj = null;
+
+                        //  removes the held object from the inventory
+                        Inventory.removeWeapon((Weapon)heldObject);
+
+                        //  sets picture
+                        unitWeaponImage.GetComponent<Image>().enabled = true;
+                        unitWeaponImage.GetComponent<Image>().sprite = getHeldObjectSprite();
+                    }
+                    else if(armorCanvas.activeInHierarchy) {
+                        shownUnit.equippedArmor = (Armor)heldObject;
+                        FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
+
+                        if(obj != null && !((Armor)obj).isEmpty())
+                            Inventory.addNewArmor((Armor)obj);
+                        else
+                            obj = null;
+
+                        Inventory.removeArmor((Armor)heldObject);
+
+                        unitArmorImage.GetComponent<Image>().enabled = true;
+                        unitArmorImage.GetComponent<Image>().sprite = getHeldObjectSprite();
+                    }
+                }
+            }
+
+            //   takes object in slot
+            else {
+                //  slot is not a unit equipment
+                if(slot != unitWeaponImage.transform.parent.gameObject && slot != unitArmorImage.transform.parent.gameObject) {
+                    activeObjects[index] = null;
+                    slot.transform.GetChild(0).GetComponent<Image>().sprite = null;
+                    slot.transform.GetChild(0).GetComponent<Image>().enabled = false;
+                }
+
+                //  slot is a unit equipment
+                else {
+                    if(weaponCanvas.activeInHierarchy) {
+                        shownUnit.equippedWeapon = null;
+                        FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
+
+                        //  picture
+                        unitWeaponImage.GetComponent<Image>().sprite = null;
+                        unitWeaponImage.GetComponent<Image>().enabled = false;
+
+                        if(obj != null && !((Weapon)obj).isEmpty())
+                            Inventory.addNewWeapon((Weapon)obj);
+                    }
+                    else if(armorCanvas.activeInHierarchy) {
+                        shownUnit.equippedArmor = null;
+                        FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
+
+                        unitArmorImage.GetComponent<Image>().sprite = null;
+                        unitArmorImage.GetComponent<Image>().enabled = false;
+
+                        if(obj != null && !((Armor)obj).isEmpty())
+                            Inventory.addNewArmor((Armor)obj);
+                    }
+                }
+            }
+
+
+            //  set held object to the object in the slot
+            setHeldObject(obj);
+        }
+
+        //  consumable things
+        else if((obj == null || obj.GetType() == typeof(Consumable)) || (heldObject == null || heldObject.GetType() == typeof(Consumable))) {
+            //  put down the current held object
+            if(heldObject != null) {
+                //  player is applying the held consumable to the unit
+                if(slot == shownUnitInformation.transform.GetChild(2).transform.gameObject) {
+                    var unit = FindObjectOfType<PartyObject>().getInstantiatedMember(shownUnit);
+                    if(unit != null) {
+                        shownUnit = ((Consumable)heldObject).applyEffect(unit);
+                        updateUnitChange();
+                    }
+
+                    Inventory.removeConsumable((Consumable)heldObject);
+                }
+                else {
+                    int slotStackCount = getConsumableCountInSlot(slot);
+
+                    //  held object does not fit in stack so nothing happens
+                    bool roomInStack = obj == null || (slotStackCount >= 0 && slotStackCount < ((Consumable)obj).c_maxStackCount);
+                    bool sameTypeAsStack = obj == null || ((Consumable)obj).isEqualTo((Consumable)heldObject);
+
+                    if(!(roomInStack && sameTypeAsStack))
+                        return;
+
+                    //  held object fits in the stack
+                    slotStackCount++;
+                    if(slotStackCount > 1) {
+                        slot.transform.GetChild(0).GetComponent<TextMeshProUGUI>().enabled = true;
+                        slot.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = slotStackCount.ToString();
+                    }
+
+                    activeObjects[index] = heldObject;
+                    activeSlots[index].transform.GetChild(1).GetComponent<Image>().enabled = true;
+                    activeSlots[index].transform.GetChild(1).GetComponent<Image>().sprite = getHeldObjectSprite();
+                }
+
+                setHeldObject(null);
+            }
+
+            //  runs for auto use and for setting the object into a slot
+            else {
+                int slotStackCount = getConsumableCountInSlot(slot) - 1;
+                if(slotStackCount > 1) {
+                    slot.transform.GetChild(0).GetComponent<TextMeshProUGUI>().enabled = true;
+                    slot.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = slotStackCount.ToString();
+                }
+                else
+                    slot.transform.GetChild(0).GetComponent<TextMeshProUGUI>().enabled = false;
+
+                if(slotStackCount == 0) {
+                    activeObjects[index] = null;
+                    slot.transform.GetChild(1).GetComponent<Image>().sprite = null;
+                    slot.transform.GetChild(1).GetComponent<Image>().enabled = false;
+                }
+
+                //  if the player did not auto use the object
+                if(!Input.GetMouseButton(1))
+                    setHeldObject(obj);
+
+                //  player wants to auto use the consumable
+                else {
+                    var unit = FindObjectOfType<PartyObject>().getInstantiatedMember(shownUnit);
+                    if(unit != null) {
+                        //  use the consumable
+                        shownUnit = ((Consumable)obj).applyEffect(unit);
+                        updateUnitChange();
+
+                        Inventory.removeConsumable((Consumable)obj);
+                    }
+                }
+            }
+        }
     }
 
 
-    public void cycleUnitsRight() {
-        int index = shownUnit.GetComponent<UnitClass>().stats.u_order;
-        index++;
+    public void populateInventorySlots() {
+        //  just put this here for simplicity.
+        setActiveSlots();
+
+        //  sets the shown unit
+        if(shownUnit == null || shownUnit.isEmpty())
+            shownUnit = Party.getMemberStats(0);
+        updateUnitChange();
+
+        setHeldObject(null);
+        activeObjects.Clear();
+
+        pageText.text = activePage.ToString();
+
+        //  weapon
+        if(weaponCanvas.activeInHierarchy) {
+            for(int i = 0; i < activeSlots.Count; i++) {
+                activeSlots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
+                activeObjects.Add(null);
+
+                Weapon we = Inventory.getWeapon(i + (activeSlots.Count * activePage));
+                if(we != null) {
+                    activeSlots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
+                    activeSlots[i].transform.GetChild(0).GetComponent<Image>().sprite = we.w_sprite.getSprite();
+
+                    activeObjects[i] = we;
+                }
+            }
+        }
+
+        //  armor
+        else if(armorCanvas.activeInHierarchy) {
+            for(int i = 0; i < activeSlots.Count; i++) {
+                activeSlots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
+                activeObjects.Add(null);
+
+                Armor ar = Inventory.getArmor(i + (activeSlots.Count * activePage));
+                if(ar != null) {
+                    activeSlots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
+                    activeSlots[i].transform.GetChild(0).GetComponent<Image>().sprite = ar.a_sprite.getSprite();
+
+                    activeObjects[i] = ar;
+                }
+            }
+        }
+
+        //  consumable
+        else if(consumableCanvas.activeInHierarchy) {
+            List<List<Consumable>> groups = new List<List<Consumable>>();
+            //  sorts the different consumables into groups
+            for(int i = 0; i < Inventory.getConsumableCount(); i++) {
+                var con = Inventory.getConsumable(i);
+
+                //  checks if the consumable can be put into an existing group
+                bool fitAGroup = false;
+                foreach(var c in groups) {
+                    if(c[0].isEqualTo(con) && c.Count < c[0].c_maxStackCount) {
+                        c.Add(con);
+                        fitAGroup = true;
+                        break;
+                    }
+                }
+                if(fitAGroup)
+                    continue;
+
+                //  if no list contains that type of consumable, create a new group
+                var temp = new List<Consumable>();
+                temp.Add(con);
+                groups.Add(temp);
+            }
+
+
+            for(int i = 0; i < activeSlots.Count; i++) {
+                activeSlots[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().enabled = false;
+                activeSlots[i].transform.GetChild(1).GetComponent<Image>().enabled = false;
+                activeObjects.Add(null);
+
+                if(groups.Count > i) {
+                    List<Consumable> cons = groups[i];
+
+                    if(cons.Count > 1) {
+                        activeSlots[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().enabled = true;
+                        activeSlots[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = cons.Count.ToString();
+                    }
+                    activeSlots[i].transform.GetChild(1).GetComponent<Image>().enabled = true;
+                    activeSlots[i].transform.GetChild(1).GetComponent<Image>().sprite = cons[0].c_sprite.getSprite();
+
+                    activeObjects[i] = cons[0];
+                }
+            }
+        }
+    }
+
+
+    //  Buttons
+    public void cycleUnits(bool right) {
+        int index = shownUnit.u_order;
+
+        //  right
+        if(right) {
+            index++;
+        }
+        //  left
+        else {
+            index--;
+        }
+
         if(index >= Party.getPartySize())
             index = 0;
-
-        setShownUnit(index);
-        updateUI();
-    }
-    public void cycleUnitsLeft() {
-        int index = shownUnit.GetComponent<UnitClass>().stats.u_order;
-        index--;
-        if(index < 0) {
+        else if(index < 0)
             index = Party.getPartySize() - 1;
-        }
 
-        setShownUnit(index);
-        updateUI();
+        shownUnit = Party.getMemberStats(index);
+        updateUnitChange();
     }
 
+    public void cyclePage(int moveIndex) {
+        if(moveIndex == 0)
+            activePage++;
+        else if(moveIndex == 1 && activePage > 0)
+            activePage--;
 
-    public void updateUI() {
-        updateUnitImages();
+        if(moveIndex == 2)
+            activePage = 0;
 
-        if(heldObject != null) {
-            if(heldObject.GetType() != typeof(InventoryItemStack))
-                heldObject.destory();
-            else
-                ((InventoryItemStack)heldObject).destroyStack();
-        }
-        heldObject = null;
-        foreach(var i in inventoryArmors)
-            i.destory();
-        foreach(var i in inventoryWeapons)
-            i.destory();
-        foreach(var i in inventoryConsumables)
-            i.destory();
-
-
+        pageText.text = activePage.ToString();
         populateInventorySlots();
     }
 
-    void updateUnitImages() {
-        unitName.text = shownUnit.GetComponent<UnitClass>().stats.u_name;
-        unitImage.GetComponent<Image>().sprite = shownUnit.GetComponent<SpriteRenderer>().sprite;
-        unitImage.GetComponent<Image>().color = shownUnit.GetComponent<SpriteRenderer>().color;
-        unitHealthSlider.maxValue = shownUnit.GetComponent<UnitClass>().stats.u_maxHealth;
-        unitHealthSlider.value = shownUnit.GetComponent<UnitClass>().stats.u_health;
-
-        unitsSpeedText.text = "Speed: " + shownUnit.GetComponent<UnitClass>().stats.u_speed.ToString();
-
-        weaponImage.GetComponent<Image>().sprite = shownUnit.GetComponent<UnitClass>().stats.equippedWeapon.w_sprite.getSprite();
-        armorImage.GetComponent<Image>().sprite = shownUnit.GetComponent<UnitClass>().stats.equippedArmor.a_sprite.getSprite();
-    }
-    void setShownUnit(int partyIndex) {
-        var stats = Party.getMemberStats(partyIndex);
-
-        foreach(var i in FindObjectsOfType<PlayerUnitInstance>()) {
-            if(i.stats.u_order == stats.u_order) {
-                shownUnit = i.gameObject;
-
-                return;
-            }
-        }
+    public void renameShownUnit() {
+        StartCoroutine(renamer());
     }
 
-    void populateInventorySlots() {
-        heldObject = null;
-        foreach(var i in inventoryWeapons) {
-            i.destory();
-        }
-        inventoryWeapons.Clear();
-        foreach(var i in inventoryArmors) {
-            i.destory();
-        }
-        inventoryArmors.Clear();
-        foreach(var i in inventoryConsumables) {
-            i.destory();
-        }
-        inventoryConsumables.Clear();
+    IEnumerator renamer(string prev = "", List<int> prevPressed = null, int cycleTillAuto = 0) {
+        shownUnitInformation.GetComponentInChildren<TextMeshProUGUI>().text = prev;
+        if(prevPressed == null)
+            prevPressed = new List<int>();
 
-        //  Weapon shit
-        if(weaponInventoryCanvas.activeInHierarchy) {
-            var slots = weaponInventorySlots.GetComponentsInChildren<Collider2D>();
-            for(int i = 0; i < Inventory.getWeaponCount(); i++) {
-                var temp = slots[i];
-                GameObject other = Instantiate(temp.gameObject);
-                other.transform.position = temp.gameObject.transform.position;
-                Destroy(other.GetComponent<Button>());
-                other.transform.SetParent(weaponInventorySlots.gameObject.transform);
-                other.GetComponent<Image>().raycastTarget = false;
-                other.GetComponent<Image>().sprite = Inventory.getWeapon(i).w_sprite.getSprite();
-                other.GetComponent<Image>().color = Color.white;
-                other.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
-                InventoryWeapon w = new InventoryWeapon();
-                w.weapon = Inventory.getWeapon(i);
-                w.icon = other;
-                w.slot = temp.gameObject;
+        //  if none of the inputs that end the renaming process are pressed
+        if(!(Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2) || Input.GetKey(KeyCode.Return))) {
+            var arr = prev.ToCharArray();
+            bool hasInput = false;
 
-                inventoryWeapons.Add(w);
-            }
-        }
-
-        //  Armor shit
-        else if(armorInventorySlots.activeInHierarchy) {
-            var slots = armorInventorySlots.GetComponentsInChildren<Collider2D>();
-            for(int i = 0; i < Inventory.getArmorCount(); i++) {
-                var temp = slots[i];
-                GameObject other = Instantiate(temp.gameObject);
-                other.transform.position = temp.gameObject.transform.position;
-                Destroy(other.GetComponent<Button>());
-                other.transform.SetParent(armorInventorySlots.gameObject.transform);
-                other.GetComponent<Image>().raycastTarget = false;
-                other.GetComponent<Image>().sprite = Inventory.getArmor(i).a_sprite.getSprite();
-                other.GetComponent<Image>().color = Color.white;
-                other.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
-
-                InventoryArmor a = new InventoryArmor();
-                a.armor = Inventory.getArmor(i);
-                a.icon = other;
-                a.slot = temp.gameObject;
-
-                inventoryArmors.Add(a);
-            }
-        }
-
-        //  Item shit
-        else if(consumableInventoryCanvas.activeInHierarchy) {
-            var slots = consumableInventorySlots.GetComponentsInChildren<Collider2D>();
-            foreach(var i in slots) {
-                if(i.GetComponentInChildren<TextMeshProUGUI>() != null)
-                    i.GetComponentInChildren<TextMeshProUGUI>().enabled = false;
-            }
-            for(int i = 0; i < Inventory.getConsumableCount(); i++) {
-                GameObject slot = null;
-                Consumable newItem = Inventory.getConsumable(i);
-
-                //  sets the slot object to a slot that isn't full but is populated with the same type of item
-                foreach(var j in inventoryConsumables) {
-                    if(j.consumable.isEqualTo(newItem) && getConsumableCountForSlot(j.slot) < newItem.c_maxStackCount) {
-                        slot = j.slot;
-                        slot.GetComponentInChildren<TextMeshProUGUI>().enabled = true;
-                        slot.GetComponentInChildren<TextMeshProUGUI>().text = (getConsumableCountForSlot(slot) + 1).ToString();
-                        break;
-                    }
+            //  removes the unpressed characters in prevPressed
+            for(int i = prevPressed.Count - 1; i >= 0; i--) {
+                if(!Input.GetKey((KeyCode)prevPressed[i])) {
+                    prevPressed.RemoveAt(i);
+                    i--;
                 }
-                //  there wasn't a slot that could stack this item
-                //  sets the slot object to the first empty slot location
-                if(slot == null) {
-                    for(int s = 0; s < slots.Length; s++) {
-                        if(getConsumableCountForSlot(slots[s].gameObject) == 0) {
-                            slot = slots[s].gameObject;
+            }
+            //  if the user backspaces
+            bool hasPressedBackspace = false;
+            foreach(var i in prevPressed) {
+                if(i == (int)KeyCode.Backspace) {
+                    hasPressedBackspace = true;
+                    break;
+                }
+            }
+            if(Input.GetKey(KeyCode.Backspace) && ((!hasPressedBackspace  && cycleTillAuto == 0) || (hasPressedBackspace && prevPressed.Count == 1 && cycleTillAuto > 50)) && !string.IsNullOrEmpty(prev)) {
+                hasInput = true;
+                prev = "";
+                for(int i = 0; i < arr.Length - 1; i++) {
+                    prev += arr[i];
+                }
+
+                if(!hasPressedBackspace)
+                    prevPressed.Add((int)KeyCode.Backspace);
+            }
+
+            else {
+                char next = '?';
+                bool hasPressedLetter = false;
+                //  if the user enters a letter
+                for(int i = 97; i < 123; i++) {
+                    foreach(var p in prevPressed) {
+                        if(p == i) {
+                            hasPressedLetter = true;
                             break;
                         }
                     }
-                }
-
-
-                GameObject other = Instantiate(slot.gameObject);
-                other.transform.position = slot.gameObject.transform.position;
-                Destroy(other.transform.GetChild(0).gameObject);
-                Destroy(other.GetComponent<Collider2D>());
-                other.transform.SetParent(consumableInventorySlots.gameObject.transform);
-                other.GetComponent<Image>().raycastTarget = false;
-                other.GetComponent<Image>().sprite = Inventory.getConsumable(i).c_sprite.getSprite();
-                other.GetComponent<Image>().color = Color.white;
-                other.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
-
-                InventoryConsumable it = new InventoryConsumable();
-                it.consumable = newItem;
-                it.icon = other;
-                it.slot = slot.gameObject;
-
-                inventoryConsumables.Add(it);
-            }
-        }
-    }
-
-    int getConsumableCountForSlot(GameObject slot) {
-        int count = 0;
-        foreach(var i in inventoryConsumables) {
-            if(i.slot == slot)
-                count++;
-        }
-        return count;
-    }
-    Consumable getConsumableInSlot(GameObject slot) {
-        foreach(var i in inventoryConsumables) {
-            if(i.slot == slot)
-                return i.consumable;
-        }
-        return null;
-    }
-    Weapon getWeaponInSlot(GameObject slot) {
-        foreach(var i in inventoryWeapons) {
-            if(i.slot == slot)
-                return i.weapon;
-        }
-        return null;
-    }
-    Armor getArmorInSlot(GameObject slot) {
-        foreach(var i in inventoryArmors) {
-            if(i.slot == slot)
-                return i.armor;
-        }
-        return null;
-    }
-
-    bool sameAsStackType(Consumable cons, GameObject slot) {
-        foreach(var i in inventoryConsumables) {
-            if(i.slot == slot)
-                return cons.isEqualTo(i.consumable);
-        }
-        return false;
-    }
-    bool canFitInStack(Consumable item, GameObject slot) {
-        return getConsumableCountForSlot(slot) == 0 ||
-            (sameAsStackType(item, slot) &&
-            getConsumableCountForSlot(slot) < item.c_maxStackCount);
-    }
-    void setConsumableCountTextForSlot(GameObject slot) {
-        if(slot.GetComponentInChildren<TextMeshProUGUI>() == null)
-            return;
-        if(getConsumableCountForSlot(slot) > 1) {
-            slot.GetComponentInChildren<TextMeshProUGUI>().enabled = true;
-            int count = getConsumableCountForSlot(slot.gameObject);
-            slot.GetComponentInChildren<TextMeshProUGUI>().text = count.ToString();
-        }
-        else
-            slot.GetComponentInChildren<TextMeshProUGUI>().enabled = false;
-    }
-
-
-    public void selectWeaponFromInventory(GameObject pressedButton) {
-        InventoryWeapon prevWeapon = null;
-        if(heldObject != null) {
-            heldObject.setNewSlot(pressedButton);
-            prevWeapon = (InventoryWeapon)heldObject;
-        }
-        heldObject = null;
-        foreach(var i in inventoryWeapons) {
-            if(i.slot == pressedButton) {
-                heldObject = i;
-                inventoryWeapons.Remove(i);
-                break;
-            }
-        }
-
-        if(prevWeapon != null)
-            inventoryWeapons.Add(prevWeapon);
-    }
-
-    public void selectArmorFromInventory(GameObject pressedButton) {
-        InventoryArmor prevArmor = null;
-        if(heldObject != null) {
-            heldObject.setNewSlot(pressedButton);
-            prevArmor = (InventoryArmor)heldObject;
-        }
-        heldObject = null;
-        foreach(var i in inventoryArmors) {
-            if(i.slot == pressedButton) {
-                heldObject = i;
-                inventoryArmors.Remove(i);
-                break;
-            }
-        }
-
-        if(prevArmor != null)
-            inventoryArmors.Add(prevArmor);
-    }
-
-    public void selectItemFromInventory(GameObject pressedButton) {
-        if(pressedButton == null)
-            return;
-
-        //  Takes just one item from stack (right click)
-        if(Input.GetMouseButton(1)) {
-            //  adds the held object to the slot stack if there is enough room and the items are the same type
-            if(heldObject != null) {
-                if(heldObject.GetType() != typeof(InventoryItemStack)) {
-                    //  checks if the stack is populated by the same item type or if the stack is empty
-                    if(canFitInStack(((InventoryConsumable)heldObject).consumable, pressedButton)) {
-                        heldObject.setNewSlot(pressedButton);
-                        inventoryConsumables.Add((InventoryConsumable)heldObject);
-                        heldObject = null;
-                    }
-                }
-                else {
-                    //  adds one item from the held stack to the stack
-                    if(canFitInStack(((InventoryItemStack)heldObject).consumables[0].consumable, pressedButton)) {
-                        ((InventoryItemStack)heldObject).consumables[0].setNewSlot(pressedButton);
-                        inventoryConsumables.Add(((InventoryItemStack)heldObject).consumables[0]);
-                        ((InventoryItemStack)heldObject).consumables.RemoveAt(0);
-                    }
-                    if(((InventoryItemStack)heldObject).consumables.Count > 0) {
-                        ((InventoryItemStack)heldObject).setCountText();
-                    }
-                    else {
-                        if(((InventoryItemStack)heldObject).countText != null)
-                            Destroy(((InventoryItemStack)heldObject).countText.gameObject);
-                        heldObject = null;
-                    }
-                }
-            }
-            else {
-                //  taking an item from the inventory
-                foreach(var i in inventoryConsumables) {
-                    if(i.slot == pressedButton) {
-                        heldObject = i;
-                        inventoryConsumables.Remove(i);
-                        break;
-                    }
-                }
-            }
-        }
-
-        //  Takes the entire stack (left click)
-        else if(Input.GetMouseButton(0) && clickCount < 2) {
-            //  addes the held object to the slot stack if there is enough room and the items are the same type
-            if(heldObject != null) {
-                if(heldObject.GetType() != typeof(InventoryItemStack)) {
-                    //  checks if the stack is populated by the same item type or if the stack is empty
-                    if(canFitInStack(((InventoryConsumable)heldObject).consumable, pressedButton)) {
-                        heldObject.setNewSlot(pressedButton);
-                        inventoryConsumables.Add((InventoryConsumable)heldObject);
-                        heldObject = null;
-                    }
-                }
-                else {
-                    //  adds as many items to the stack as possible
-                    while(((InventoryItemStack)heldObject).consumables.Count > 0 && canFitInStack(((InventoryItemStack)heldObject).consumables[0].consumable, pressedButton)) {
-                        ((InventoryItemStack)heldObject).consumables[0].setNewSlot(pressedButton);
-                        inventoryConsumables.Add(((InventoryItemStack)heldObject).consumables[0]);
-                        ((InventoryItemStack)heldObject).consumables.RemoveAt(0);
-                        setConsumableCountTextForSlot(pressedButton);
-                    }
-                    if(((InventoryItemStack)heldObject).consumables.Count > 1) {
-                        ((InventoryItemStack)heldObject).countText.text = ((InventoryItemStack)heldObject).consumables.Count.ToString();
-                    }
-                    else if(((InventoryItemStack)heldObject).consumables.Count == 1) {
-                        ((InventoryItemStack)heldObject).countText.enabled = false;
-                    }
-                    else {
-                        if(((InventoryItemStack)heldObject).countText != null)
-                            Destroy(((InventoryItemStack)heldObject).countText.gameObject);
-                        heldObject = null;
-                    }
-                }
-            }
-            else {
-                //  taking a stack from the inventory
-                var temp = new InventoryItemStack(pressedButton, consumableInventorySlots.transform);
-
-                foreach(var i in inventoryConsumables) {
-                    if(i.slot == pressedButton) {
-                        temp.consumables.Add(i);
-                    }
-                }
-                if(temp.consumables.Count > 0) {
-                    foreach(var i in temp.consumables)
-                        inventoryConsumables.Remove(i);
-
-                    temp.setCountText();
-                    heldObject = temp;
-                }
-            }
-        }
-
-        //  Takes half of the stack (middle mouse)
-        else if(Input.GetMouseButton(2)) {
-            //  addes the held object to the slot stack if there is enough room and the items are the same type
-            if(heldObject != null) {
-                if(heldObject.GetType() != typeof(InventoryItemStack)) {
-                    //  checks if the stack is populated by the same item type or if the stack is empty
-                    if(canFitInStack(((InventoryConsumable)heldObject).consumable, pressedButton)) {
-                        heldObject.setNewSlot(pressedButton);
-                        inventoryConsumables.Add((InventoryConsumable)heldObject);
-                        heldObject = null;
-                    }
-                }
-                else {
-                    //  adds as many items to the stack as possible
-                    while(((InventoryItemStack)heldObject).consumables.Count > 0 && canFitInStack(((InventoryItemStack)heldObject).consumables[0].consumable, pressedButton)) {
-                        ((InventoryItemStack)heldObject).consumables[0].setNewSlot(pressedButton);
-                        inventoryConsumables.Add(((InventoryItemStack)heldObject).consumables[0]);
-                        ((InventoryItemStack)heldObject).consumables.RemoveAt(0);
-                        setConsumableCountTextForSlot(pressedButton);
-                    }
-                    if(((InventoryItemStack)heldObject).consumables.Count > 1) {
-                        ((InventoryItemStack)heldObject).countText.text = ((InventoryItemStack)heldObject).consumables.Count.ToString();
-                    }
-                    else if(((InventoryItemStack)heldObject).consumables.Count == 1) {
-                        ((InventoryItemStack)heldObject).countText.enabled = false;
-                    }
-                    else {
-                        if(((InventoryItemStack)heldObject).countText != null)
-                            Destroy(((InventoryItemStack)heldObject).countText.gameObject);
-                        heldObject = null;
-                    }
-                }
-            }
-            else {
-                if(getConsumableCountForSlot(pressedButton) > 0) {
-                    //  taking half a stack from the inventory
-                    var temp = new InventoryItemStack(pressedButton, consumableInventorySlots.transform);
-                    int numberToAdd = getConsumableCountForSlot(pressedButton);
-                    if(numberToAdd % 2 != 0)
-                        numberToAdd++;
-                    numberToAdd /= 2;
-                    foreach(var i in inventoryConsumables) {
-                        if(numberToAdd == 0)
-                            break;
-                        else if(i.slot == pressedButton) {
-                            temp.consumables.Add(i);
-                            numberToAdd--;
+                    if(Input.GetKey((KeyCode)i) && !(next != '?' && hasPressedLetter) && ((!hasPressedLetter && cycleTillAuto == 0) || (hasPressedLetter && cycleTillAuto > 50))) {
+                        if(!hasPressedLetter) {
+                            prevPressed.Add(i);
                         }
-                    }
-                    if(temp.consumables.Count > 0) {
-                        foreach(var i in temp.consumables)
-                            inventoryConsumables.Remove(i);
-
-                        temp.setCountText();
-                        heldObject = temp;
+                        hasInput = true;
+                        next = (char)i;
                     }
                 }
-            }
-        }
 
-
-        //  autofills and takes a stack (double click)
-        else if(Input.GetMouseButton(0) && clickCount > 1) {
-            //  held object will already be populated with the items added from when the click count was 1
-            if(heldObject != null) {
-                
-
-                if(((InventoryItemStack)heldObject).consumables.Count > 0) {
-                    //  fills the stack with more items
-                    List<GameObject> slotsTakenFrom = new List<GameObject>();
-
-                    foreach(var i in inventoryConsumables) {
-                        if(((InventoryItemStack)heldObject).consumables.Count >= ((InventoryItemStack)heldObject).consumables[0].consumable.c_maxStackCount)
-                            break;
-                        else if(i.consumable.isEqualTo(((InventoryItemStack)heldObject).consumables[0].consumable)) {
-                            ((InventoryItemStack)heldObject).consumables.Add(i);
-                            slotsTakenFrom.Add(i.slot);
-                        }
-                    }
-                    foreach(var i in ((InventoryItemStack)heldObject).consumables)
-                        inventoryConsumables.Remove(i);
-
-                    foreach(var i in slotsTakenFrom)
-                        setConsumableCountTextForSlot(i);
-
-                    ((InventoryItemStack)heldObject).setCountText();
+                if(hasInput) {
+                    if(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+                        next = (char)(next - 32);
+                    prev += next;
                 }
             }
-        }
 
-
-        setConsumableCountTextForSlot(pressedButton);
-    }
-
-
-    public void equipHeldWeapon() {
-        if(heldObject != null) {
-            var prev = shownUnit.GetComponent<UnitClass>().stats.equippedWeapon;
-
-            var newUnitWeapon = new InventoryWeapon();
-            newUnitWeapon = (InventoryWeapon)heldObject;
-
-            var newInvWeapon = new InventoryWeapon();
-            newInvWeapon.weapon = prev;
-            heldObject.icon.GetComponent<Image>().sprite = shownUnit.GetComponent<UnitClass>().stats.equippedWeapon.w_sprite.getSprite();
-            newInvWeapon.icon = heldObject.icon;
-
-            shownUnit.GetComponent<UnitClass>().setEquippedWeapon(newUnitWeapon.weapon);
-            Inventory.removeWeapon(newUnitWeapon.weapon);
-            Inventory.addNewWeapon(prev);
-            heldObject = newInvWeapon;
-
-            updateUnitImages();
-        }
-    }
-
-    public void equipHeldArmor() {
-        if(heldObject != null) {
-            var prev = shownUnit.GetComponent<UnitClass>().stats.equippedArmor;
-
-            var newUnitArmor = new InventoryArmor();
-            newUnitArmor = (InventoryArmor)heldObject;
-
-            var newInvArmor = new InventoryArmor();
-            newInvArmor.armor = prev;
-            heldObject.icon.GetComponent<Image>().sprite = shownUnit.GetComponent<UnitClass>().stats.equippedArmor.a_sprite.getSprite();
-            newInvArmor.icon = heldObject.icon;
-
-            shownUnit.GetComponent<UnitClass>().setEquippedArmor(newUnitArmor.armor);
-            Inventory.overrideArmor(Inventory.getArmorIndex(newUnitArmor.armor), prev);
-            heldObject = newInvArmor;
-
-            updateUnitImages();
-        }
-    }
-
-    public void useHeldItemOnUnit() {
-        if(heldObject != null) {
-            if(heldObject.GetType() == typeof(InventoryConsumable)) {
-                var temp = new InventoryConsumable();
-                temp = (InventoryConsumable)heldObject;
-
-                temp.consumable.applyEffect(shownUnit);
-                Inventory.removeConsumable(temp.consumable);
-                temp.destory();
-
-                heldObject = null;
+            if(!hasInput && prevPressed.Count == 0) {
+                cycleTillAuto = 0;
             }
-            else if(heldObject.GetType() == typeof(InventoryItemStack)) {
-                ((InventoryItemStack)heldObject).consumables[0].consumable.applyEffect(shownUnit);
-                Inventory.removeConsumable(((InventoryItemStack)heldObject).consumables[0].consumable);
-                ((InventoryItemStack)heldObject).consumables[0].destory();
-                ((InventoryItemStack)heldObject).consumables.RemoveAt(0);
-                ((InventoryItemStack)heldObject).setCountText();
-            }
+            else
+                cycleTillAuto++;
+            yield return new WaitForEndOfFrame();
 
-            updateUnitImages();
+            StartCoroutine(renamer(prev, prevPressed, cycleTillAuto));
         }
-    }
-
-
-    public void useHeldObject() {
-        if(heldObject != null) {
-            if(heldObject.GetType() == typeof(InventoryWeapon))
-                equipHeldWeapon();
-            else if(heldObject.GetType() == typeof(InventoryArmor))
-                equipHeldArmor();
-            else if(heldObject.GetType() == typeof(InventoryConsumable) || heldObject.GetType() == typeof(InventoryItemStack))
-                useHeldItemOnUnit();
+        //  end the loop
+        else {
+            shownUnit.u_name = prev;
+            FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
+            updateUnitChange();
         }
-    }
-
-
-    IEnumerator decreaseClickCount() {
-        yield return new WaitForSeconds(0.35f);
-
-        clickCount = 0;
-        clickCountDecreaser = null;
     }
 }

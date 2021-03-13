@@ -19,9 +19,8 @@ public static class Randomizer {
         return stats;
     }
 
-    public static Weapon createRandomWeapon() {
-        var we = Inventory.getRandomWeaponPreset();
 
+    public static Weapon randomizeWeapon(Weapon we) {
         //  sets random attributes
         for(int i = 0; i < Random.Range(0,3); i++) {
             we.w_attributes.Add(we.getRandAttribute());
@@ -34,9 +33,7 @@ public static class Randomizer {
 
         return we;
     }
-    public static Armor createRandomArmor() {
-        var ar = Inventory.getRandomArmorPreset();
-
+    public static Armor randomizeArmor(Armor ar) {
         //  sets random attributes
         for(int i = 0; i < Random.Range(0,3); i++) {
             ar.a_attributes.Add(ar.getRandomAttribute());
@@ -48,14 +45,11 @@ public static class Randomizer {
 
         return ar;
     }
-    public static Consumable createRandomConsumable() {
-        var it = Inventory.getRandomConsumablePreset();
-        
-
+    public static Consumable randomizeConsumable(Consumable con) {
         //  sets random attributes
-        it.c_effectAmount = Random.Range(5.0f, 50.0f);
+        con.c_effectAmount = Random.Range(5.0f, 50.0f);
 
-        return it;
+        return con;
     }
 
 

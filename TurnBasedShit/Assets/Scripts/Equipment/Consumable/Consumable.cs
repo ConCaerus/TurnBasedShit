@@ -14,7 +14,7 @@ public class Consumable {
     public effects c_effect;
     public float c_effectAmount;
 
-    public SpriteLocation c_sprite;
+    public SpriteLoader c_sprite;
 
     
     public UnitClassStats applyEffect(GameObject unit) {

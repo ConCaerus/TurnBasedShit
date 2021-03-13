@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+
 
 //  didnt want to change the name of the actual script
 [CustomEditor(typeof(PlayerUnitInstance))]
@@ -47,3 +49,4 @@ public class EnemyUnitClassEditory : Editor {
         }
     }
 }
+#endif

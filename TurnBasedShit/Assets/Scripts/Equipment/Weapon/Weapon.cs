@@ -18,7 +18,7 @@ public class Weapon {
     public float w_power;
     public float w_speedMod;
 
-    public SpriteLocation w_sprite;
+    public SpriteLoader w_sprite;
 
 
 

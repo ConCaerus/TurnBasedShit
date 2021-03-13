@@ -8,27 +8,27 @@ public static class MapLocationHolder {
 
 
     public static void clearSaveData() {
-        for(int i = 0; i < PlayerPrefs.GetInt(locationCountTag()); i++) {
-            PlayerPrefs.DeleteKey(locationTag(i));
+        for(int i = 0; i < SaveData.getInt(locationCountTag()); i++) {
+            SaveData.deleteKey(locationTag(i));
         }
-        PlayerPrefs.DeleteKey(locationCountTag());
-        PlayerPrefs.Save();
+        SaveData.deleteKey(locationCountTag());
+        SaveData.save();
     }
 
     public static void saveNewLocation(MapLocation loc) {
         var data = JsonUtility.ToJson(loc);
-        PlayerPrefs.SetString(locationTag(getLocationCount()), data);
+        SaveData.setString(locationTag(getLocationCount()), data);
 
-        PlayerPrefs.SetInt(locationCountTag(), PlayerPrefs.GetInt(locationCountTag()) + 1);
-        PlayerPrefs.Save();
+        SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) + 1);
+        SaveData.save();
     }
 
     public static void removeLocation(MapLocation loc) {
         int index = 0;
         bool shrinkCount = false;
 
-        for(int i = 0; i < PlayerPrefs.GetInt(locationCountTag()); i++) {
-            var data = PlayerPrefs.GetString(locationTag(i));
+        for(int i = 0; i < SaveData.getInt(locationCountTag()); i++) {
+            var data = SaveData.getString(locationTag(i));
             var temp = JsonUtility.FromJson<MapLocation>(data);
 
             //  remove this location
@@ -39,23 +39,23 @@ public static class MapLocationHolder {
             //  else set new order for the unit
             else {
                 data = JsonUtility.ToJson(temp);
-                PlayerPrefs.SetString(locationTag(index), data);
+                SaveData.setString(locationTag(index), data);
                 index++;
             }
         }
         if(shrinkCount) {
-            PlayerPrefs.DeleteKey(locationTag(getLocationCount() - 1));
-            PlayerPrefs.SetInt(locationCountTag(), PlayerPrefs.GetInt(locationCountTag()) - 1);
+            SaveData.deleteKey(locationTag(getLocationCount() - 1));
+            SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) - 1);
         }
-        PlayerPrefs.Save();
+        SaveData.save();
     }
 
 
     public static int getLocationCount() {
-        return PlayerPrefs.GetInt(locationCountTag());
+        return SaveData.getInt(locationCountTag());
     }
     public static MapLocation getMapLocation(int index) {
-        var data = PlayerPrefs.GetString(locationTag(index));
+        var data = SaveData.getString(locationTag(index));
         var temp = JsonUtility.FromJson<MapLocation>(data);
 
         return temp;

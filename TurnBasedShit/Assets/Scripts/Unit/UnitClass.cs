@@ -135,6 +135,8 @@ public abstract class UnitClass : MonoBehaviour {
             stats.equippedWeapon.applyAttributesAfterAttack(gameObject, unit);
             dmg += stats.equippedWeapon.w_power + stats.equippedWeapon.getPowerBonusDamage();
         }
+        dmg = applyCritDamage(dmg);
+
         FindObjectOfType<AudioManager>().playHitSound();
 
         gameObject.transform.DOPunchPosition(unit.transform.position - transform.position, 0.25f);
@@ -143,6 +145,18 @@ public abstract class UnitClass : MonoBehaviour {
         attacking = false;
     }
 
+
+    float applyCritDamage(float dmg) {
+        //  normal mod
+        dmg /= 2.0f;
+        dmg *= Random.Range(1.75f, 2.25f);
+
+        //  crit mod
+        if(Random.Range(0, 101) == 0)
+            dmg *= Random.Range(2.0f, 3.0f);
+
+        return dmg;
+    }
 
     public float haveArmorReduceDamage(float dmg) {
         float dmgBlocked = 0.0f;
@@ -230,7 +244,7 @@ public abstract class UnitClass : MonoBehaviour {
     }
 
     public void resetSpriteAndColor() {
-        stats.u_sprite.setLocation(GetComponent<SpriteRenderer>().sprite);
+        stats.u_sprite.setSprite(GetComponent<SpriteRenderer>().sprite);
         if(stats.u_color == new Color())
             stats.u_color = GetComponent<SpriteRenderer>().color;
     }

@@ -18,7 +18,7 @@ public class Armor {
     public float a_defence;
     public float a_speedMod;
 
-    public SpriteLocation a_sprite;
+    public SpriteLoader a_sprite;
 
 
     //  NOTE: this function is applied by the defending unit while the 

@@ -157,6 +157,7 @@ MonoBehaviour:
     u_health: 100
     u_maxHealth: 100
     u_speed: 0
+    u_power: 0
     u_poisonCount: 0
     u_order: 0
     equippedWeapon:
@@ -178,7 +179,5 @@ MonoBehaviour:
         s_location: 
         s_name: 
     u_sprite:
-      startingSprite: {fileID: 21300000, guid: 9f58e729c2121e246865885e0e6b0df2, type: 3}
-      s_location: Assets/Sprites/Bug Enemy.png
-      s_name: Bug Enemy
+      sprite: {fileID: 21300000, guid: 9f58e729c2121e246865885e0e6b0df2, type: 3}
     u_color: {r: 1, g: 1, b: 1, a: 1}

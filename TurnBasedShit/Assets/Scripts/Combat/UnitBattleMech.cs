@@ -26,7 +26,6 @@ public class UnitBattleMech : MonoBehaviour {
     }
 
     public void resetBattleRound() {
-
         FindObjectOfType<TurnOrderSorter>().resetList();
         FindObjectOfType<RoundCounterCanvas>().roundCount++;
     }

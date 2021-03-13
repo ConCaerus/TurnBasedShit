@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 public class MapLocationSpawner : MonoBehaviour {
     [SerializeField] const int numberOfTowns = 8;
@@ -76,11 +78,11 @@ public class MapLocationSpawner : MonoBehaviour {
 
             var rand = Random.Range(0, 3);
             if(rand == 0)
-                temp = new PickupLocation(new Vector2(randX, randY), Randomizer.createRandomWeapon());
+                temp = new PickupLocation(new Vector2(randX, randY), Randomizer.randomizeWeapon(FindObjectOfType<PresetLibrary>().getRandomWeapon()));
             else if(rand == 1)
-                temp = new PickupLocation(new Vector2(randX, randY), Randomizer.createRandomArmor());
+                temp = new PickupLocation(new Vector2(randX, randY), Randomizer.randomizeArmor(FindObjectOfType<PresetLibrary>().getRandomArmor()));
             else if(rand == 2)
-                temp = new PickupLocation(new Vector2(randX, randY), Randomizer.createRandomConsumable());
+                temp = new PickupLocation(new Vector2(randX, randY), Randomizer.randomizeConsumable(FindObjectOfType<PresetLibrary>().getRandomConsumable()));
 
             //  creates an icon for the TownLocation
             var obj = Instantiate(townIconPreset.gameObject);
@@ -100,7 +102,7 @@ public class MapLocationSpawner : MonoBehaviour {
         var randX = Random.Range(-15.0f, 15.0f);
         var randY = Random.Range(-15.0f, 15.0f);
 
-        var temp = new PickupLocation(new Vector2(randX, randY), Randomizer.createRandomWeapon());
+        var temp = new PickupLocation(new Vector2(randX, randY), Randomizer.randomizeWeapon(FindObjectOfType<PresetLibrary>().getRandomWeapon()));
 
         //  creats an icon for the location
         var obj = Instantiate(townIconPreset.gameObject);
@@ -114,6 +116,7 @@ public class MapLocationSpawner : MonoBehaviour {
 }
 
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(MapLocationSpawner))]
 public class MapLocationSpawnerEditor : Editor {
 
@@ -125,3 +128,4 @@ public class MapLocationSpawnerEditor : Editor {
             MapLocationHolder.clearSaveData();
     }
 }
+#endif

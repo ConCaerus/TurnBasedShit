@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 [CreateAssetMenu(fileName = "CombatLocation", menuName = "Presets/CombatLocation")]
 public class CombatLocationPreset : ScriptableObject {
@@ -9,6 +11,7 @@ public class CombatLocationPreset : ScriptableObject {
 
     public List<GameObject> enemies = new List<GameObject>();
 }
+#if UNITY_EDITOR
 
 [CustomEditor(typeof(CombatLocationPreset))]
 public class CombatLocationEditor : Editor {
@@ -27,3 +30,4 @@ public class CombatLocationEditor : Editor {
         }
     }
 }
+#endif

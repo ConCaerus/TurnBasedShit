@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class MapLocation {
     public Vector2 pos;
     public locationType type;
-    public SpriteLocation sprite = new SpriteLocation();
+    public SpriteLoader sprite = new SpriteLoader();
 
     public CombatLocation combatLocation = null;
 

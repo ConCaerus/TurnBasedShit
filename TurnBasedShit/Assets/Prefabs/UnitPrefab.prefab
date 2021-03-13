@@ -157,6 +157,7 @@ MonoBehaviour:
     u_health: 100
     u_maxHealth: 100
     u_speed: 0
+    u_power: 0
     u_poisonCount: 0
     u_order: 0
     equippedWeapon:
@@ -165,9 +166,8 @@ MonoBehaviour:
       w_power: 0
       w_speedMod: 0
       w_sprite:
-        startingSprite: {fileID: 0}
-        s_location: 
-        s_name: 
+        sprite: {fileID: 0}
+        sInfo: 
     equippedArmor:
       a_name: 
       a_attributes: 
@@ -178,7 +178,6 @@ MonoBehaviour:
         s_location: 
         s_name: 
     u_sprite:
-      startingSprite: {fileID: 21300000, guid: 9896841376689d649b934221321a108f, type: 3}
-      s_location: Assets/Sprites/tempUnit.png
-      s_name: tempUnit
+      sprite: {fileID: 21300000, guid: 9896841376689d649b934221321a108f, type: 3}
+      sInfo: 
     u_color: {r: 0.5856176, g: 0.9493212, b: 0.990566, a: 1}

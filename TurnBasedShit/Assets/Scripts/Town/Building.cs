@@ -13,7 +13,7 @@ public class Building {
     public bool isOnlyOne;
     public bool canBeInteractedWith;
 
-    public SpriteLocation b_sprite;
+    public SpriteLoader b_sprite;
 
     public List<Story> buildingStoryBeginnings;
 

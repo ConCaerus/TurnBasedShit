@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+
 
 [CustomEditor(typeof(BuildingPreset))]
 public class BuildingPresetEditor : Editor {
@@ -12,7 +14,8 @@ public class BuildingPresetEditor : Editor {
         BuildingPreset bp = (BuildingPreset)target;
 
         if(GUILayout.Button("Set Sprite")) {
-            bp.preset.b_sprite.setLocation();
+            bp.preset.b_sprite.setSprite();
         }
     }
 }
+#endif

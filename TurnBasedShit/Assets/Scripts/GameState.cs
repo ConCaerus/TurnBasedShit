@@ -8,19 +8,22 @@ public static class GameState {
         combat, town, map
     }
 
+    //  current combat location that the player is in
     public const string combatDetailsTag = "CombatLocation";
+
+
 
     public static void resetCombatDetails() {
         var data = JsonUtility.ToJson(new CombatLocation());
-        PlayerPrefs.SetString(combatDetailsTag, data);
+        SaveData.setString(combatDetailsTag, data);
     }
 
     public static void setCombatDetails(CombatLocation cl) {
         var data = JsonUtility.ToJson(cl);
-        PlayerPrefs.SetString(combatDetailsTag, data);
+        SaveData.setString(combatDetailsTag, data);
     }
     public static CombatLocation getCombatDetails() {
-        var data = PlayerPrefs.GetString(combatDetailsTag);
+        var data = SaveData.getString(combatDetailsTag);
         return JsonUtility.FromJson<CombatLocation>(data);
     }
 

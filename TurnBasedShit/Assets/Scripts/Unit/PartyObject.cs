@@ -60,6 +60,7 @@ public class PartyObject : MonoBehaviour {
         foreach(var i in FindObjectsOfType<PlayerUnitInstance>()) {
             if(i.stats.u_order == stats.u_order) {
                 i.stats = stats;
+                i.name = stats.u_name;
                 break;
             }
         }
@@ -88,16 +89,16 @@ public static class Party {
 
 
     public static void clearParty() {
-        for(int i = 0; i < PlayerPrefs.GetInt(partySizeTag); i++) {
-            PlayerPrefs.DeleteKey(memberTag(i));
+        for(int i = 0; i < SaveData.getInt(partySizeTag); i++) {
+            SaveData.deleteKey(memberTag(i));
         }
-        PlayerPrefs.DeleteKey(partySizeTag);
+        SaveData.deleteKey(partySizeTag);
 
-        PlayerPrefs.Save();
+        SaveData.save();
     }
     public static void clearPartyEquipment() {
-        for(int i = 0; i < PlayerPrefs.GetInt(partySizeTag); i++) {
-            var data = PlayerPrefs.GetString(memberTag(i));
+        for(int i = 0; i < SaveData.getInt(partySizeTag); i++) {
+            var data = SaveData.getString(memberTag(i));
             var stats = JsonUtility.FromJson<UnitClassStats>(data);
 
             stats.equippedWeapon.resetWeaponStats();
@@ -107,22 +108,22 @@ public static class Party {
     }
 
     public static void addNewUnit(UnitClassStats stats) {
-        stats.u_order = PlayerPrefs.GetInt(partySizeTag);
+        stats.u_order = SaveData.getInt(partySizeTag);
 
-        int index = PlayerPrefs.GetInt(partySizeTag);
+        int index = SaveData.getInt(partySizeTag);
         var data = JsonUtility.ToJson(stats);
 
-        PlayerPrefs.SetString(memberTag(index), data);
-        PlayerPrefs.SetInt(partySizeTag, index + 1);
+        SaveData.setString(memberTag(index), data);
+        SaveData.setInt(partySizeTag, index + 1);
 
-        PlayerPrefs.Save();
+        SaveData.save();
     }
     public static void removeUnit(UnitClassStats stats) {
         int index = 0;
         bool shrinkCount = false;
 
-        for(int i = 0; i < PlayerPrefs.GetInt(partySizeTag); i++) {
-            var data = PlayerPrefs.GetString(memberTag(i));
+        for(int i = 0; i < SaveData.getInt(partySizeTag); i++) {
+            var data = SaveData.getString(memberTag(i));
             var temp = JsonUtility.FromJson<UnitClassStats>(data);
 
             //  remove this unit
@@ -134,15 +135,15 @@ public static class Party {
             else {
                 temp.u_order = index;
                 data = JsonUtility.ToJson(temp);
-                PlayerPrefs.SetString(memberTag(index), data);
+                SaveData.setString(memberTag(index), data);
                 index++;
             }
         }
         if(shrinkCount) {
-            PlayerPrefs.DeleteKey(memberTag(getPartySize() - 1));
-            PlayerPrefs.SetInt(partySizeTag, PlayerPrefs.GetInt(partySizeTag) - 1);
+            SaveData.deleteKey(memberTag(getPartySize() - 1));
+            SaveData.setInt(partySizeTag, SaveData.getInt(partySizeTag) - 1);
         }
-        PlayerPrefs.Save();
+        SaveData.save();
     }
     public static void removeUnitAtIndex(int order) {
         removeUnit(getMemberStats(order));
@@ -150,16 +151,16 @@ public static class Party {
 
     public static void resaveUnit(UnitClassStats stats) {
         var data = JsonUtility.ToJson(stats);
-        PlayerPrefs.SetString(memberTag(stats.u_order), data);
-        PlayerPrefs.Save();
+        SaveData.setString(memberTag(stats.u_order), data);
+        SaveData.save();
     }
 
 
     public static int getPartySize() {
-        return PlayerPrefs.GetInt(partySizeTag);
+        return SaveData.getInt(partySizeTag);
     }
     public static UnitClassStats getMemberStats(int index) {
-        var data = PlayerPrefs.GetString(memberTag(index));
+        var data = SaveData.getString(memberTag(index));
         return JsonUtility.FromJson<UnitClassStats>(data);
     }
 }

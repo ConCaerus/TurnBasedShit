@@ -16,7 +16,7 @@ public class UnitClassStats {
     public Weapon equippedWeapon;
     public Armor equippedArmor;
 
-    public SpriteLocation u_sprite;
+    public SpriteLoader u_sprite;
     public Color u_color;
 
     public void setNewOrder(int i) {

@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5967991836329400846
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5967991836329400845}
+  - component: {fileID: 5967991836329400844}
+  m_Layer: 0
+  m_Name: PresetLibrary
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5967991836329400845
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5967991836329400846}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5967991836329400844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5967991836329400846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac4bd32f1410fd34dae38fffc64470b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weapons:
+  - {fileID: 11400000, guid: 91a71f740b007c7478e828abfd8ff846, type: 2}
+  - {fileID: 11400000, guid: e325710ad58cb0841bcf18676d85a0a3, type: 2}
+  armor:
+  - {fileID: 11400000, guid: c35ec3980a4a9a94b8c3a1bb7fc85faf, type: 2}
+  - {fileID: 11400000, guid: 2ae73c0250d26cb45aa4bd203c05c63f, type: 2}
+  consumables:
+  - {fileID: 11400000, guid: b8620bd6f554fa140a2994562098ac50, type: 2}
+  - {fileID: 11400000, guid: eaaa276422f32644e8a7c22ea54d6abd, type: 2}
+  buildings:
+  - {fileID: 11400000, guid: 3528bd5d6f8e4fa4c9e165ae886dce16, type: 2}
+  - {fileID: 11400000, guid: b0f1de034a736c442829c0743584bbe8, type: 2}
+  - {fileID: 11400000, guid: 6c8a405e950020b4984ae5f6b521b572, type: 2}
+  - {fileID: 11400000, guid: b18032dfd9347d24f9e98e106bcfe017, type: 2}
+  - {fileID: 11400000, guid: dbe9d87c187d67243b0d74baca8a47fa, type: 2}
+  - {fileID: 11400000, guid: ebb6b5c75a302c54bb245738a9412b3c, type: 2}
+  - {fileID: 11400000, guid: df8dea74604716b4a90216229f9a97ca, type: 2}
+  - {fileID: 11400000, guid: 368746f8d26790c4ba913240151f2c16, type: 2}
+  combatLocations:
+  - {fileID: 11400000, guid: b42b60e01d1e7cf42acb6cf8d4c68769, type: 2}

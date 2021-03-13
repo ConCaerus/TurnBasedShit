@@ -4,7 +4,12 @@ using UnityEngine;
 
 [System.Serializable]
 public class CombatLocation {
+    public enum diffLevel {
+        cake, easy, normal, inter, hard, heroic, legendary
+    }
+
     public List<UnitClassStats> enemies = new List<UnitClassStats>();
+    public diffLevel difficulty;
 
     public List<Weapon> weapons = new List<Weapon>();
     public List<Armor> armor = new List<Armor>();

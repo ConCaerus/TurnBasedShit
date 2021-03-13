@@ -1,18 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
 
-[CustomEditor(typeof(WeaponPreset))]
-public class WeaponPresetEditor : Editor {
+[CustomEditor(typeof(ArmorPreset))]
+public class ArmorPresetEditor : Editor {
 
     public override void OnInspectorGUI() {
         base.OnInspectorGUI();
 
-        var t = (WeaponPreset)target;
+        var t = (ArmorPreset)target;
 
         if(GUILayout.Button("Set Sprite Location")) {
-            t.preset.w_sprite.setLocation();
+            t.preset.a_sprite.setSprite();
         }
     }
 }
+#endif

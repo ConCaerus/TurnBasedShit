@@ -8,6 +8,7 @@ public class EnemyUnitSpawner : MonoBehaviour {
 
     public void spawnEnemies() {
         var info = GameState.getCombatDetails();
+
         if(info.enemies.Count == 0)
             info = Randomizer.getRandomCombatLocation();
 
@@ -18,7 +19,6 @@ public class EnemyUnitSpawner : MonoBehaviour {
         foreach(var i in info.enemies) {
             var obj = Instantiate(enemyPreset.gameObject);
             obj.name = "Enemy: " + i.u_name;
-            obj.GetComponent<SpriteRenderer>().sprite = i.u_sprite.getSprite();
 
             //  sets a random position
             var rand = Random.Range(0, unusedSpawnPoses.Count);

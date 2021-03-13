@@ -8,7 +8,7 @@ public class PickupLocation : MapLocation {
     public PickupLocation(Vector2 p, Weapon w) {
         pos = p;
         type = locationType.equipmentPickup;
-        sprite.setLocation(w.w_sprite.getSprite());
+        sprite.setSprite(w.w_sprite.getSprite());
 
         //  creates a new combatLocation
         var loc = new CombatLocation();
@@ -22,7 +22,7 @@ public class PickupLocation : MapLocation {
     public PickupLocation(Vector2 p, Armor a) {
         pos = p;
         type = locationType.equipmentPickup;
-        sprite.setLocation(a.a_sprite.getSprite());
+        sprite.setSprite(a.a_sprite.getSprite());
 
         //  creates a new combatLocation
         var loc = new CombatLocation();
@@ -36,7 +36,7 @@ public class PickupLocation : MapLocation {
     public PickupLocation(Vector2 p, Consumable it) {
         pos = p;
         type = locationType.equipmentPickup;
-        sprite.setLocation(it.c_sprite.getSprite());
+        sprite.setSprite(it.c_sprite.getSprite());
 
         //  creates a new combatLocation
         var loc = new CombatLocation();
