@@ -11,17 +11,21 @@ public class CombatLocation {
     public List<UnitClassStats> enemies = new List<UnitClassStats>();
     public diffLevel difficulty;
 
+    public int coinReward = 0;
+
     public List<Weapon> weapons = new List<Weapon>();
     public List<Armor> armor = new List<Armor>();
-    public List<Consumable> items = new List<Consumable>();
+    public List<Consumable> consumables = new List<Consumable>();
 
 
     public void addSpoilsToInventory() {
+        Inventory.addCoins(coinReward);
+
         foreach(var i in weapons)
             Inventory.addNewWeapon(i);
         foreach(var i in armor)
             Inventory.addNewArmor(i);
-        foreach(var i in items)
+        foreach(var i in consumables)
             Inventory.addNewConsumable(i);
     }
 }

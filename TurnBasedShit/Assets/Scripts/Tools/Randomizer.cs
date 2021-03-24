@@ -19,6 +19,20 @@ public static class Randomizer {
         return stats;
     }
 
+    public static UnitClassStats randomizeUnitStats(UnitClassStats stats) {
+        //  health
+        float maxHealthMod = stats.u_maxHealth / 10.0f;
+        stats.u_maxHealth += Random.Range(-maxHealthMod, maxHealthMod);
+        float healthMin = stats.u_maxHealth * 0.6f;
+        stats.u_health = Random.Range(healthMin, stats.u_maxHealth);
+
+        //  speed
+        float speedMod = 2.0f;
+        stats.u_speed += Random.Range(-speedMod, speedMod);
+
+        return stats;
+    }
+
 
     public static Weapon randomizeWeapon(Weapon we) {
         //  sets random attributes
@@ -52,14 +66,10 @@ public static class Randomizer {
         return con;
     }
 
-
-    public static CombatLocation getRandomCombatLocation() {
-        var locations = AssetDatabase.FindAssets("t:CombatLocationPreset", null);
-        var rand = Random.Range(0, 101);
-        int result = rand % locations.Length;
-
-        var g = AssetDatabase.GUIDToAssetPath(locations[result]);
-        CombatLocationPreset p = (CombatLocationPreset)AssetDatabase.LoadAssetAtPath(g, typeof(CombatLocationPreset));
-        return p.preset;
+    public static CombatLocation randomizeCombatLocation(CombatLocation cl) {
+        //  randomize enemies
+        for(int i = 0; i < cl.enemies.Count; i++)
+            cl.enemies[i] = randomizeUnitStats(cl.enemies[i]);
+        return cl;
     }
 }

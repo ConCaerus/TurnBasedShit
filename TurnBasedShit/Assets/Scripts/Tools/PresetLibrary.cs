@@ -65,6 +65,10 @@ public class PresetLibrary : MonoBehaviour {
             if(i.preset.difficulty == lvl)
                 temps.Add(i.preset);
         }
+
+        if(temps.Count == 0)
+            return getRandomCombatLocation();
+
         return temps[Random.Range(0, temps.Count)];
     }
     public CombatLocation getRandomCombatLocation() {

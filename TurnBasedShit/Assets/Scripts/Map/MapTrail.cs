@@ -12,7 +12,7 @@ public class MapTrail : MonoBehaviour {
 
     const float minAnchorDist = 0.25f, maxAnchorDist = 5.0f, snappingDist = 0.25f;
 
-    const float combatProb = 0.0f;
+    const float combatProb = 25.0f;
 
     Vector2 startingPos = new Vector2(-8.0f, -1.0f);
 
@@ -95,8 +95,12 @@ public class MapTrail : MonoBehaviour {
     void rollCombatChance() {
         float rand = Random.Range(0.0f, 100.0f);
 
-        if(rand < combatProb)
+        if(rand < combatProb) {
+            Debug.Log(FindObjectOfType<RegionDivider>().getRelevantRegionLevel(movingAnchor.transform.position.x));
+            var cl = FindObjectOfType<PresetLibrary>().getCombatLocation(FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(movingAnchor.transform.position.x));
+            GameState.setCombatDetails(Randomizer.randomizeCombatLocation(cl));
             SceneManager.LoadScene("Combat");
+        }
     }
 
     void createAnchors() {

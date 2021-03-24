@@ -18,11 +18,6 @@ public class MapLocationSpawner : MonoBehaviour {
         GameState.resetCombatDetails();
     }
 
-    private void Update() {
-        if(Input.GetKeyDown(KeyCode.Space))
-            createWeaponPickupLocation();
-    }
-
 
 
     public void createIcons() {
@@ -74,15 +69,19 @@ public class MapLocationSpawner : MonoBehaviour {
             var randX = Random.Range(-18.0f, 18.0f);
             var randY = Random.Range(-18.0f, 18.0f);
 
+            //  gets a relevant combatlocation
+            CombatLocation cl = FindObjectOfType<PresetLibrary>().getCombatLocation(FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(randX));
+            cl = Randomizer.randomizeCombatLocation(cl);
+
             PickupLocation temp = null;
 
             var rand = Random.Range(0, 3);
             if(rand == 0)
-                temp = new PickupLocation(new Vector2(randX, randY), Randomizer.randomizeWeapon(FindObjectOfType<PresetLibrary>().getRandomWeapon()));
+                temp = new PickupLocation(new Vector2(randX, randY), Randomizer.randomizeWeapon(FindObjectOfType<PresetLibrary>().getRandomWeapon()), cl);
             else if(rand == 1)
-                temp = new PickupLocation(new Vector2(randX, randY), Randomizer.randomizeArmor(FindObjectOfType<PresetLibrary>().getRandomArmor()));
+                temp = new PickupLocation(new Vector2(randX, randY), Randomizer.randomizeArmor(FindObjectOfType<PresetLibrary>().getRandomArmor()), cl);
             else if(rand == 2)
-                temp = new PickupLocation(new Vector2(randX, randY), Randomizer.randomizeConsumable(FindObjectOfType<PresetLibrary>().getRandomConsumable()));
+                temp = new PickupLocation(new Vector2(randX, randY), Randomizer.randomizeConsumable(FindObjectOfType<PresetLibrary>().getRandomConsumable()), cl);
 
             //  creates an icon for the TownLocation
             var obj = Instantiate(townIconPreset.gameObject);
@@ -94,24 +93,6 @@ public class MapLocationSpawner : MonoBehaviour {
             //  saves the TownLocation
             MapLocationHolder.saveNewLocation(temp);
         }
-    }
-
-
-    //  weaponPickup shit
-    public void createWeaponPickupLocation() {
-        var randX = Random.Range(-15.0f, 15.0f);
-        var randY = Random.Range(-15.0f, 15.0f);
-
-        var temp = new PickupLocation(new Vector2(randX, randY), Randomizer.randomizeWeapon(FindObjectOfType<PresetLibrary>().getRandomWeapon()));
-
-        //  creats an icon for the location
-        var obj = Instantiate(townIconPreset.gameObject);
-        obj.transform.position = temp.pos;
-        obj.GetComponent<SpriteRenderer>().sprite = temp.sprite.getSprite();
-        obj.transform.SetParent(transform);
-
-        //  saves the location
-        MapLocationHolder.saveNewLocation(temp);
     }
 }
 

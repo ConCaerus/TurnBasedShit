@@ -18,13 +18,19 @@ public class PartyObject : MonoBehaviour {
         List<GameObject> unusedSpawnPoses = spawnPoses;
         for(int i = 0; i < Party.getPartySize(); i++) {
             var obj = Instantiate(unitPrefab);
+            if(Party.getMemberStats(i) == null || Party.getMemberStats(i).isEmpty() || Party.getMemberStats(i).u_sprite.getSprite(true) == null) {
+                obj.gameObject.GetComponent<UnitClass>().setEquipment();
+                obj.gameObject.GetComponent<UnitClass>().resetSpriteAndColor();
+                Party.addUnitAtIndex(i, obj.gameObject.GetComponent<UnitClass>().stats);
+            }
 
             //  sets up stats
             obj.GetComponent<UnitClass>().stats = Party.getMemberStats(i);
             if(string.IsNullOrEmpty(obj.GetComponent<UnitClass>().stats.u_name)) {
                 obj.GetComponent<UnitClass>().stats.u_name = NameLibrary.getRandomUsableName();
             }
-            obj.name = Party.getMemberStats(i).u_name;
+            obj.name = obj.GetComponent<UnitClass>().stats.u_name;
+
 
             //  sets sprite
             obj.GetComponent<SpriteRenderer>().sprite = Party.getMemberStats(i).u_sprite.getSprite();
@@ -84,17 +90,23 @@ public class PartyObject : MonoBehaviour {
 
 //  Actual Party Script
 public static class Party {
-    const string partySizeTag = "PartySize";
-    static string memberTag(int index) { return "Party" + index.ToString(); }
+    public const string partySizeTag = "PartySize";
+    public static string memberTag(int index) { return "Party" + index.ToString(); }
 
+
+
+    public static void createDefaultParty() {
+        addNewUnit(new UnitClassStats());
+        addNewUnit(new UnitClassStats());
+
+        SaveData.setInt(partySizeTag, 2);
+    }
 
     public static void clearParty() {
         for(int i = 0; i < SaveData.getInt(partySizeTag); i++) {
             SaveData.deleteKey(memberTag(i));
         }
         SaveData.deleteKey(partySizeTag);
-
-        SaveData.save();
     }
     public static void clearPartyEquipment() {
         for(int i = 0; i < SaveData.getInt(partySizeTag); i++) {
@@ -115,8 +127,13 @@ public static class Party {
 
         SaveData.setString(memberTag(index), data);
         SaveData.setInt(partySizeTag, index + 1);
+    }
+    public static void addUnitAtIndex(int index, UnitClassStats stats) {
+        stats.u_order = index;
 
-        SaveData.save();
+        var data = JsonUtility.ToJson(stats);
+
+        SaveData.setString(memberTag(index), data);
     }
     public static void removeUnit(UnitClassStats stats) {
         int index = 0;
@@ -143,7 +160,6 @@ public static class Party {
             SaveData.deleteKey(memberTag(getPartySize() - 1));
             SaveData.setInt(partySizeTag, SaveData.getInt(partySizeTag) - 1);
         }
-        SaveData.save();
     }
     public static void removeUnitAtIndex(int order) {
         removeUnit(getMemberStats(order));
@@ -152,7 +168,6 @@ public static class Party {
     public static void resaveUnit(UnitClassStats stats) {
         var data = JsonUtility.ToJson(stats);
         SaveData.setString(memberTag(stats.u_order), data);
-        SaveData.save();
     }
 
 

@@ -15,6 +15,10 @@ public static class Inventory {
     static string consumableTag(int index) { return "Inventory Consumable" + index.ToString(); }
 
 
+    public static void createDefaultInventory() {
+
+    }
+
     public static void clearInventory() {
         clearWeapons();
         clearArmor();
@@ -26,29 +30,21 @@ public static class Inventory {
             SaveData.deleteKey(weaponTag(i));
         }
         SaveData.deleteKey(weaponCount);
-
-        SaveData.save();
     }
     public static void clearArmor() {
         for(int i = 0; i < SaveData.getInt(armorCount); i++) {
             SaveData.deleteKey(armorTag(i));
         }
         SaveData.deleteKey(armorCount);
-
-        SaveData.save();
     }
     public static void clearConsumables() {
         for(int i = 0; i < SaveData.getInt(consumableCount); i++) {
             SaveData.deleteKey(consumableTag(i));
         }
         SaveData.deleteKey(consumableCount);
-
-        SaveData.save();
     }
     public static void clearCoins() {
         SaveData.deleteKey(coinCount);
-
-        SaveData.save();
     }
 
     public static void addNewWeapon(Weapon w) {
@@ -58,8 +54,6 @@ public static class Inventory {
         var data = JsonUtility.ToJson(w);
         SaveData.setString(weaponTag(index), data);
         SaveData.setInt(weaponCount, index + 1);
-
-        SaveData.save();
     }
     public static void addNewArmor(Armor a) {
         int index = SaveData.getInt(armorCount);
@@ -68,8 +62,6 @@ public static class Inventory {
         var data = JsonUtility.ToJson(a);
         SaveData.setString(armorTag(index), data);
         SaveData.setInt(armorCount, index + 1);
-
-        SaveData.save();
     }
     public static void addNewConsumable(Consumable c) {
         int index = SaveData.getInt(consumableCount);
@@ -78,14 +70,10 @@ public static class Inventory {
         var data = JsonUtility.ToJson(c);
         SaveData.setString(consumableTag(index), data);
         SaveData.setInt(consumableCount, index + 1);
-
-        SaveData.save();
     }
     public static void addCoins(int count) {
         int temp = SaveData.getInt(coinCount);
         SaveData.setInt(coinCount, temp + count);
-
-        SaveData.save();
     }
 
     public static void removeWeapon(Weapon w) {
@@ -107,7 +95,6 @@ public static class Inventory {
         }
 
         SaveData.setInt(weaponCount, SaveData.getInt(weaponCount) - 1);
-        SaveData.save();
     }
     public static void removeArmor(Armor a) {
         var aData = JsonUtility.ToJson(a);
@@ -128,7 +115,6 @@ public static class Inventory {
         }
 
         SaveData.setInt(armorCount, SaveData.getInt(armorCount) - 1);
-        SaveData.save();
     }
     public static void removeConsumable(Consumable j) {
         var jData = JsonUtility.ToJson(j);
@@ -149,29 +135,22 @@ public static class Inventory {
         }
 
         SaveData.setInt(consumableCount, SaveData.getInt(consumableCount) - 1);
-        SaveData.save();
     }
 
     public static void overrideWeapon(int index, Weapon w) {
         w.w_sprite.setSprite();
         var data = JsonUtility.ToJson(w);
         SaveData.setString(weaponTag(index), data);
-
-        SaveData.save();
     }
     public static void overrideArmor(int index, Armor a) {
         a.a_sprite.setSprite();
         var data = JsonUtility.ToJson(a);
         SaveData.setString(armorTag(index), data);
-
-        SaveData.save();
     }
     public static void overrideConsumable(int index, Consumable c) {
         c.c_sprite.setSprite();
         var data = JsonUtility.ToJson(c);
         SaveData.setString(consumableTag(index), data);
-
-        SaveData.save();
     }
 
     public static int getWeaponCount() {
@@ -182,6 +161,9 @@ public static class Inventory {
     }
     public static int getConsumableCount() {
         return SaveData.getInt(consumableCount);
+    }
+    public static int getCoinCount() {
+        return SaveData.getInt(coinCount);
     }
 
     public static Weapon getWeapon(int i) {

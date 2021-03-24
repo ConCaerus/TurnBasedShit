@@ -4,7 +4,7 @@ using UnityEngine;
 
 [System.Serializable]
 public class Consumable {
-    public int numOfEffects = 4;
+    const int numOfEffects = 4;
     public enum effects {
         heal, curePoison, cureBleed
     }
@@ -49,3 +49,4 @@ public class Consumable {
         return string.IsNullOrEmpty(c_name) && c_maxStackCount == 0 && c_effectAmount == 0;
     }
 }
+

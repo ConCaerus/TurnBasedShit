@@ -28,7 +28,6 @@ public class SpriteLoader {
         sprite = s;
         var tex = spriteToTex(s);
         setInfoString(tex.EncodeToPNG());
-        Debug.Log(sInfo);
     }
     public void setTexture(Texture2D tex) {
         setInfoString(tex.EncodeToPNG());
@@ -66,15 +65,15 @@ public class SpriteLoader {
     public void setInfoString(byte[] info) {
         sInfo = System.Convert.ToBase64String(info);
     }
-    public Sprite getSprite() {
+    public Sprite getSprite(bool canBeNull = false) {
         if(!string.IsNullOrEmpty(sInfo)) {
             return getSpriteFromInfo();
         }
         if(sprite != null) {
             return sprite;
         }
-
-        Debug.LogError("Tried to get null sprite");
+        if(!canBeNull)
+            Debug.LogError("Tried to get null sprite");
         return null;
     }
 

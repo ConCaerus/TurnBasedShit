@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MapZoom : MonoBehaviour {
-    const float zoomSpeed = 1.0f;
-    const float maxZoom = 100.0f, minZoom = 0.5f;
+    [SerializeField] float zoomSpeed = 1.0f;
+    [SerializeField] float maxZoom = 100.0f, minZoom = 0.5f;
 
     private void Update() {
         float scroll = Input.mouseScrollDelta.y;

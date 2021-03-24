@@ -5,44 +5,32 @@ using UnityEngine;
 public class PickupLocation : MapLocation {
 
     //  weapon
-    public PickupLocation(Vector2 p, Weapon w) {
+    public PickupLocation(Vector2 p, Weapon w, CombatLocation cl) {
         pos = p;
         type = locationType.equipmentPickup;
         sprite.setSprite(w.w_sprite.getSprite());
 
-        //  creates a new combatLocation
-        var loc = new CombatLocation();
-        foreach(var i in Randomizer.getRandomCombatLocation().enemies)
-            loc.enemies.Add(i);
-        loc.weapons.Add(w);
-        combatLocation = loc;
+        combatLocation = cl;
+        combatLocation.weapons.Add(w);
     }
 
     //  armor
-    public PickupLocation(Vector2 p, Armor a) {
+    public PickupLocation(Vector2 p, Armor a, CombatLocation cl) {
         pos = p;
         type = locationType.equipmentPickup;
         sprite.setSprite(a.a_sprite.getSprite());
 
-        //  creates a new combatLocation
-        var loc = new CombatLocation();
-        foreach(var i in Randomizer.getRandomCombatLocation().enemies)
-            loc.enemies.Add(i);
-        loc.armor.Add(a);
-        combatLocation = loc;
+        combatLocation = cl;
+        combatLocation.armor.Add(a);
     }
 
     //  item
-    public PickupLocation(Vector2 p, Consumable it) {
+    public PickupLocation(Vector2 p, Consumable con, CombatLocation cl) {
         pos = p;
         type = locationType.equipmentPickup;
-        sprite.setSprite(it.c_sprite.getSprite());
+        sprite.setSprite(con.c_sprite.getSprite());
 
-        //  creates a new combatLocation
-        var loc = new CombatLocation();
-        foreach(var i in Randomizer.getRandomCombatLocation().enemies)
-            loc.enemies.Add(i);
-        loc.items.Add(it);
-        combatLocation = loc;
+        combatLocation = cl;
+        combatLocation.consumables.Add(con);
     }
 }

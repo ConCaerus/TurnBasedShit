@@ -9,8 +9,8 @@ public class EnemyUnitSpawner : MonoBehaviour {
     public void spawnEnemies() {
         var info = GameState.getCombatDetails();
 
-        if(info.enemies.Count == 0)
-            info = Randomizer.getRandomCombatLocation();
+        if(info == null || info.enemies.Count == 0)
+            info = FindObjectOfType<PresetLibrary>().getCombatLocation(0);
 
         List<GameObject> unusedSpawnPoses = new List<GameObject>();
         foreach(var i in enemySpawnPoses)

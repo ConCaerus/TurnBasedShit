@@ -4,13 +4,13 @@ using UnityEngine;
 
 public static class GameState {
 
-    public enum states {
+    public enum state {
         combat, town, map
     }
+    const string stateTag = "Current Game State";
 
     //  current combat location that the player is in
     public const string combatDetailsTag = "CombatLocation";
-
 
 
     public static void resetCombatDetails() {
@@ -30,5 +30,15 @@ public static class GameState {
 
     public static Vector2 getMousePos() {
         return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    }
+
+
+    public static state currentGameState {
+        get {
+            return (state)SaveData.getInt(stateTag);
+        }
+        set {
+            SaveData.setInt(stateTag, (int)value);
+        }
     }
 }

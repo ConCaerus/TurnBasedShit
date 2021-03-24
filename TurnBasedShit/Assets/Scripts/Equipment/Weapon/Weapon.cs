@@ -113,3 +113,4 @@ public class Weapon {
         return (attributes)index;
     }
 }
+

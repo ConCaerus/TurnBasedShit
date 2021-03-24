@@ -9,13 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbb583490e363fe4ab8ce7551565d656, type: 3}
+  m_Script: {fileID: 11500000, guid: 8314e47df0f35fa40a5735bae29e2b0f, type: 3}
   m_Name: Sword
   m_EditorClassIdentifier: 
   preset:
     w_name: Sword
-    w_attributes: 00000000
+    w_attributes: 
     w_power: 25
     w_speedMod: 5
     w_sprite:
       sprite: {fileID: 21300000, guid: 0527f49f8c02110408c97a81512d0666, type: 3}
+      sInfo: 

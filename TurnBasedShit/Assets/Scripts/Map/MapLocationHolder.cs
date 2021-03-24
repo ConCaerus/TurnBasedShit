@@ -12,7 +12,6 @@ public static class MapLocationHolder {
             SaveData.deleteKey(locationTag(i));
         }
         SaveData.deleteKey(locationCountTag());
-        SaveData.save();
     }
 
     public static void saveNewLocation(MapLocation loc) {
@@ -20,7 +19,6 @@ public static class MapLocationHolder {
         SaveData.setString(locationTag(getLocationCount()), data);
 
         SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) + 1);
-        SaveData.save();
     }
 
     public static void removeLocation(MapLocation loc) {
@@ -47,7 +45,6 @@ public static class MapLocationHolder {
             SaveData.deleteKey(locationTag(getLocationCount() - 1));
             SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) - 1);
         }
-        SaveData.save();
     }
 
 

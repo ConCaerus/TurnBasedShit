@@ -53,7 +53,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: f6e50924b55b4ac4e9b8e18962cbc87c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -157,7 +157,7 @@ MonoBehaviour:
     u_health: 100
     u_maxHealth: 100
     u_speed: 0
-    u_power: 0
+    u_power: 1
     u_poisonCount: 0
     u_order: 0
     equippedWeapon:
@@ -166,18 +166,17 @@ MonoBehaviour:
       w_power: 5
       w_speedMod: 0
       w_sprite:
-        startingSprite: {fileID: 0}
-        s_location: 
-        s_name: 0
+        sprite: {fileID: 0}
+        sInfo: 
     equippedArmor:
       a_name: Bug Armor
       a_attributes: 
       a_defence: 10
       a_speedMod: 2
       a_sprite:
-        startingSprite: {fileID: 0}
-        s_location: 
-        s_name: 
+        sprite: {fileID: 0}
+        sInfo: 
     u_sprite:
       sprite: {fileID: 21300000, guid: 9f58e729c2121e246865885e0e6b0df2, type: 3}
+      sInfo: 
     u_color: {r: 1, g: 1, b: 1, a: 1}

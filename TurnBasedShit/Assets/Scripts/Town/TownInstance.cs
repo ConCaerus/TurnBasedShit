@@ -1,6 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+
+[CustomEditor(typeof(TownInstance))]
+public class TownEditor : Editor {
+
+    public override void OnInspectorGUI() {
+        base.OnInspectorGUI();
+
+        TownInstance ti = (TownInstance)target;
+
+        if(GUILayout.Button("Add Rand Buildings")) {
+            ti.addRandomBuildings();
+        }
+        if(GUILayout.Button("Add Empty Buildings")) {
+            ti.addEmptyBuildings();
+        }
+        if(GUILayout.Button("Instantiate Buildings")) {
+            foreach(var i in FindObjectsOfType<BuildingInstance>())
+                DestroyImmediate(i.gameObject);
+            ti.instantiateBuildings();
+        }
+    }
+}
+#endif
 
 
 public class TownInstance : MonoBehaviour {
@@ -13,6 +38,28 @@ public class TownInstance : MonoBehaviour {
     }
 
 
+    public void addRandomBuildings() {
+        town.t_buildings.Clear();
+        for(int i = 0; i < town.t_buildingCount; i++) {
+            int rand = Random.Range(0, Building.buildingTypeCount);
+            var building = FindObjectOfType<PresetLibrary>().getBuilding((Building.type)rand);
+
+            //  already has one of this type and shouldn't
+            while(building.isOnlyOne && town.hasBuilding(building.b_type)) {
+                rand = Random.Range(0, Building.buildingTypeCount);
+                building = FindObjectOfType<PresetLibrary>().getBuilding((Building.type)rand);
+            }
+
+
+            town.t_buildings.Add(building);
+        }
+    }
+    public void addEmptyBuildings() {
+        town.t_buildings.Clear();
+        for(int i = 0; i < town.t_buildingCount; i++) {
+            town.t_buildings.Add(FindObjectOfType<PresetLibrary>().getBuilding(Building.type.Empty));
+        }
+    }
     
     public void instantiateBuildings() {
         List<Vector2> unusedSpawnPoses = new List<Vector2>();
@@ -56,37 +103,6 @@ public class Town {
         }
     }
 
-
-    public void addEmptyBuildings(int count = 0) {
-        if(count == 0)
-            count = t_buildingCount;
-        t_buildings = new List<Building>();
-        t_buildings.Clear();
-        for(int i = 0; i < count; i++) {
-            t_buildings.Add(BuildingLibrary.getBuildingOfType(Building.type.Empty));
-        }
-        Debug.Log(t_buildings.Count);
-    }
-    public void addRandomBuildings(int count = 0) {
-        if(t_buildings == null)
-            t_buildings = new List<Building>();
-        if(count == 0)
-            count = t_buildingCount;
-        t_buildings.Clear();
-        for(int i = 0; i < count; i++) {
-            int rand = Random.Range(0, Building.buildingTypeCount);
-            var building = BuildingLibrary.getBuildingFromIndex(rand);
-
-            //  already has one of this type and shouldn't
-            while(building.isOnlyOne && hasBuilding(building.b_type)) {
-                rand = Random.Range(0, Building.buildingTypeCount);
-                building = BuildingLibrary.getBuildingFromIndex(rand);
-            }
-
-
-            t_buildings.Add(building);
-        }
-    }
 
     public bool hasBuilding(Building.type t) {
         foreach(var i in t_buildings)

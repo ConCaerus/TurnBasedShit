@@ -11,7 +11,7 @@ public class BuildingInstance : MonoBehaviour {
         building = b;
     }
     public BuildingInstance(Building.type type) {
-        building = BuildingLibrary.getBuildingOfType(type);
+        building = FindObjectOfType<PresetLibrary>().getBuilding(type);
     }
 
     private void Start() {

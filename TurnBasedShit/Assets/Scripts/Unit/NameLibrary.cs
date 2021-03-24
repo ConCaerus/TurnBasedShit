@@ -21,7 +21,7 @@ public static class NameLibrary {
 
         for(int i = 0; i < Party.getPartySize(); i++) {
             foreach(var n in temp) {
-                if(n == Party.getMemberStats(i).u_name) {
+                if(Party.getMemberStats(i) != null && !Party.getMemberStats(i).isEmpty() && n == Party.getMemberStats(i).u_name) {
                     temp.Remove(n);
                     break;
                 }

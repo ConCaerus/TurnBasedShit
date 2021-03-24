@@ -20,6 +20,8 @@ public class InventoryCanvas : MonoBehaviour {
     [SerializeField] GameObject shownUnitInformation;
     UnitClassStats shownUnit = null;
 
+    [SerializeField] TextMeshProUGUI coinCountText;
+
     private void Awake() {
         if(FindObjectOfType<InfoBox>() != null)
             FindObjectOfType<InfoBox>().gameObject.SetActive(false);
@@ -426,6 +428,8 @@ public class InventoryCanvas : MonoBehaviour {
 
         pageText.text = activePage.ToString();
 
+        coinCountText.text = Inventory.getCoinCount().ToString();
+
         //  weapon
         if(weaponCanvas.activeInHierarchy) {
             for(int i = 0; i < activeSlots.Count; i++) {
@@ -542,86 +546,14 @@ public class InventoryCanvas : MonoBehaviour {
     }
 
     public void renameShownUnit() {
-        StartCoroutine(renamer());
+        StartCoroutine(FindObjectOfType<TextInputReader>().reader(renameUnit, setUnitName));
     }
-
-    IEnumerator renamer(string prev = "", List<int> prevPressed = null, int cycleTillAuto = 0) {
-        shownUnitInformation.GetComponentInChildren<TextMeshProUGUI>().text = prev;
-        if(prevPressed == null)
-            prevPressed = new List<int>();
-
-        //  if none of the inputs that end the renaming process are pressed
-        if(!(Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2) || Input.GetKey(KeyCode.Return))) {
-            var arr = prev.ToCharArray();
-            bool hasInput = false;
-
-            //  removes the unpressed characters in prevPressed
-            for(int i = prevPressed.Count - 1; i >= 0; i--) {
-                if(!Input.GetKey((KeyCode)prevPressed[i])) {
-                    prevPressed.RemoveAt(i);
-                    i--;
-                }
-            }
-            //  if the user backspaces
-            bool hasPressedBackspace = false;
-            foreach(var i in prevPressed) {
-                if(i == (int)KeyCode.Backspace) {
-                    hasPressedBackspace = true;
-                    break;
-                }
-            }
-            if(Input.GetKey(KeyCode.Backspace) && ((!hasPressedBackspace  && cycleTillAuto == 0) || (hasPressedBackspace && prevPressed.Count == 1 && cycleTillAuto > 50)) && !string.IsNullOrEmpty(prev)) {
-                hasInput = true;
-                prev = "";
-                for(int i = 0; i < arr.Length - 1; i++) {
-                    prev += arr[i];
-                }
-
-                if(!hasPressedBackspace)
-                    prevPressed.Add((int)KeyCode.Backspace);
-            }
-
-            else {
-                char next = '?';
-                bool hasPressedLetter = false;
-                //  if the user enters a letter
-                for(int i = 97; i < 123; i++) {
-                    foreach(var p in prevPressed) {
-                        if(p == i) {
-                            hasPressedLetter = true;
-                            break;
-                        }
-                    }
-                    if(Input.GetKey((KeyCode)i) && !(next != '?' && hasPressedLetter) && ((!hasPressedLetter && cycleTillAuto == 0) || (hasPressedLetter && cycleTillAuto > 50))) {
-                        if(!hasPressedLetter) {
-                            prevPressed.Add(i);
-                        }
-                        hasInput = true;
-                        next = (char)i;
-                    }
-                }
-
-                if(hasInput) {
-                    if(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
-                        next = (char)(next - 32);
-                    prev += next;
-                }
-            }
-
-            if(!hasInput && prevPressed.Count == 0) {
-                cycleTillAuto = 0;
-            }
-            else
-                cycleTillAuto++;
-            yield return new WaitForEndOfFrame();
-
-            StartCoroutine(renamer(prev, prevPressed, cycleTillAuto));
-        }
-        //  end the loop
-        else {
-            shownUnit.u_name = prev;
-            FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
-            updateUnitChange();
-        }
+    public void renameUnit(string s) {
+        shownUnitInformation.GetComponentInChildren<TextMeshProUGUI>().text = s;
+    }
+    public void setUnitName(string s) {
+        shownUnit.u_name = s;
+        FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
+        updateUnitChange();
     }
 }
