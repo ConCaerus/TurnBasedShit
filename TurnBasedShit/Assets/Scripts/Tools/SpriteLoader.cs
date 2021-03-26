@@ -10,7 +10,6 @@ public class SpriteLoader {
     public void setSprite(Sprite s = null) {
         if(s == null && sprite != null) {
             s = sprite;
-            Debug.Log("here");
         }
         else if(s == null && !string.IsNullOrEmpty(sInfo)) {
             Texture2D t = new Texture2D(2, 2);
@@ -18,7 +17,6 @@ public class SpriteLoader {
             if(t.LoadImage(getInfoFromString())) {
                 s = texToSprite(t);
             }
-            Debug.Log("here");
         }
         if(s == null) {
             Debug.LogError("Tried to save null sprite");

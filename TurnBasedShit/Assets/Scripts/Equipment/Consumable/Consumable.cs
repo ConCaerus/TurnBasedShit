@@ -10,9 +10,11 @@ public class Consumable {
     }
 
     public string c_name;
+    public int c_coinCost;
     public int c_maxStackCount;
     public effects c_effect;
     public float c_effectAmount;
+    
 
     public SpriteLoader c_sprite;
 

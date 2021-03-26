@@ -96,6 +96,9 @@ public static class Inventory {
 
         SaveData.setInt(weaponCount, SaveData.getInt(weaponCount) - 1);
     }
+    public static void removeWeapon(int index) {
+        removeWeapon(getWeapon(index));
+    }
     public static void removeArmor(Armor a) {
         var aData = JsonUtility.ToJson(a);
 
@@ -116,6 +119,9 @@ public static class Inventory {
 
         SaveData.setInt(armorCount, SaveData.getInt(armorCount) - 1);
     }
+    public static void removeArmor(int index) {
+        removeArmor(getArmor(index));
+    }
     public static void removeConsumable(Consumable j) {
         var jData = JsonUtility.ToJson(j);
 
@@ -135,6 +141,9 @@ public static class Inventory {
         }
 
         SaveData.setInt(consumableCount, SaveData.getInt(consumableCount) - 1);
+    }
+    public static void removeConsumable(int index) {
+        removeConsumable(getConsumable(index));
     }
 
     public static void overrideWeapon(int index, Weapon w) {

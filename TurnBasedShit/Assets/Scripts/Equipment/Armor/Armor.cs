@@ -18,6 +18,8 @@ public class Armor {
     public float a_defence;
     public float a_speedMod;
 
+    public int a_coinCost;
+
     public SpriteLoader a_sprite;
 
 
