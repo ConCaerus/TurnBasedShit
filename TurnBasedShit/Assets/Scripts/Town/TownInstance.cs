@@ -33,8 +33,14 @@ public class TownInstance : MonoBehaviour {
     public int buildingCount = 5;
     public List<Vector2> buildingSpawnPoses = new List<Vector2>();
 
-    private void Start() {
-        town = new Town(buildingCount);
+    private void Awake() {
+        if(GameInfo.getCurrentTownIndex() == -1) {
+            town = TownLibrary.addNewTownAndSetIndex(new Town(buildingCount));
+            ShopInventory.populateShop(town.t_index, GameInfo.getDiffRegion(), FindObjectOfType<PresetLibrary>());
+            GameInfo.setCurrentTownIndex(town.t_index - 1);
+        }
+        else
+            town = TownLibrary.getTown(GameInfo.getCurrentTownIndex());
     }
 
 
@@ -91,7 +97,12 @@ public class TownInstance : MonoBehaviour {
 
 [System.Serializable]
 public class Town {
+    public int t_index = -1;
     public int t_buildingCount;
+
+    //  shop information
+    public float shopSellReduction = 0.05f;
+    public float shopPriceMod = 0.0f;
 
     public List<Building> t_buildings = new List<Building>();
 
@@ -101,6 +112,10 @@ public class Town {
         for(int i = 0; i < t_buildingCount; i++) {
             t_buildings.Add(new Building());
         }
+
+        //  shop shit
+        shopSellReduction = Random.Range(0.0f, 0.15f);
+        shopPriceMod = Random.Range(-0.2f, 0.2f);
     }
 
 

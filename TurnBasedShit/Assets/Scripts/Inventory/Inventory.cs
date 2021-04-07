@@ -5,14 +5,30 @@ using UnityEditor;
 
 //  Actual Inventory Script
 public static class Inventory {
-    const string weaponCount = "Inventory Weapon Count";
-    const string armorCount = "Inventory Armor Count";
-    const string consumableCount = "Inventory Consumable Count";
     const string coinCount = "Coin Count";
 
-    static string weaponTag(int index) { return "Inventory Weapon" + index.ToString(); }
-    static string armorTag(int index) { return "Inventory Armor" + index.ToString(); }
-    static string consumableTag(int index) { return "Inventory Consumable" + index.ToString(); }
+    static string objectCount(System.Type type) {
+        if(type == typeof(Weapon))
+            return "Inventory Weapon Count";
+        if(type == typeof(Armor))
+            return "Inventory Armor Count";
+        if(type == typeof(Consumable))
+            return "Inventory Consumable Count";
+        if(type == typeof(Item))
+            return "Inventory Item Count";
+        return string.Empty;
+    }
+    static string objectTag(int index, System.Type type) {
+        if(type == typeof(Weapon))
+            return "Inventory Weapon" + index.ToString();
+        if(type == typeof(Armor))
+            return "Inventory Armor" + index.ToString();
+        if(type == typeof(Consumable))
+            return "Inventory Consumable" + index.ToString();
+        if(type == typeof(Item))
+            return "Inventory Item" + index.ToString();
+        return string.Empty;
+    }
 
 
     public static void createDefaultInventory() {
@@ -23,53 +39,68 @@ public static class Inventory {
         clearWeapons();
         clearArmor();
         clearConsumables();
+        clearItems();
         clearCoins();
     }
     public static void clearWeapons() {
-        for(int i = 0; i < SaveData.getInt(weaponCount); i++) {
-            SaveData.deleteKey(weaponTag(i));
+        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Weapon))); i++) {
+            SaveData.deleteKey(objectTag(i, typeof(Weapon)));
         }
-        SaveData.deleteKey(weaponCount);
+        SaveData.deleteKey(objectCount(typeof(Weapon)));
     }
     public static void clearArmor() {
-        for(int i = 0; i < SaveData.getInt(armorCount); i++) {
-            SaveData.deleteKey(armorTag(i));
+        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Armor))); i++) {
+            SaveData.deleteKey(objectTag(i, typeof(Armor)));
         }
-        SaveData.deleteKey(armorCount);
+        SaveData.deleteKey(objectCount(typeof(Armor)));
     }
     public static void clearConsumables() {
-        for(int i = 0; i < SaveData.getInt(consumableCount); i++) {
-            SaveData.deleteKey(consumableTag(i));
+        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Consumable))); i++) {
+            SaveData.deleteKey(objectTag(i, typeof(Consumable)));
         }
-        SaveData.deleteKey(consumableCount);
+        SaveData.deleteKey(objectCount(typeof(Consumable)));
+    }
+    public static void clearItems() {
+        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Item))); i++) {
+            SaveData.deleteKey(objectTag(i, typeof(Item)));
+        }
+        SaveData.deleteKey(objectCount(typeof(Item)));
     }
     public static void clearCoins() {
         SaveData.deleteKey(coinCount);
     }
 
-    public static void addNewWeapon(Weapon w) {
-        int index = SaveData.getInt(weaponCount);
+    public static void addWeapon(Weapon w) {
+        int index = getTypeCount(typeof(Weapon));
 
         w.w_sprite.setSprite();
         var data = JsonUtility.ToJson(w);
-        SaveData.setString(weaponTag(index), data);
-        SaveData.setInt(weaponCount, index + 1);
+        SaveData.setString(objectTag(index, typeof(Weapon)), data);
+        SaveData.setInt(objectCount(typeof(Weapon)), index + 1);
     }
-    public static void addNewArmor(Armor a) {
-        int index = SaveData.getInt(armorCount);
+    public static void addArmor(Armor a) {
+        int index = getTypeCount(typeof(Armor));
 
         a.a_sprite.setSprite();
         var data = JsonUtility.ToJson(a);
-        SaveData.setString(armorTag(index), data);
-        SaveData.setInt(armorCount, index + 1);
+        SaveData.setString(objectTag(index, typeof(Armor)), data);
+        SaveData.setInt(objectCount(typeof(Armor)), index + 1);
     }
-    public static void addNewConsumable(Consumable c) {
-        int index = SaveData.getInt(consumableCount);
+    public static void addConsumable(Consumable c) {
+        int index = getTypeCount(typeof(Consumable));
 
         c.c_sprite.setSprite();
         var data = JsonUtility.ToJson(c);
-        SaveData.setString(consumableTag(index), data);
-        SaveData.setInt(consumableCount, index + 1);
+        SaveData.setString(objectTag(index, typeof(Consumable)), data);
+        SaveData.setInt(objectCount(typeof(Consumable)), index + 1);
+    }
+    public static void addItem(Item it) {
+        int index = getTypeCount(typeof(Item));
+
+        it.i_sprite.setSprite();
+        var data = JsonUtility.ToJson(it);
+        SaveData.setString(objectTag(index, typeof(Item)), data);
+        SaveData.setInt(objectCount(typeof(Item)), index + 1);
     }
     public static void addCoins(int count) {
         int temp = SaveData.getInt(coinCount);
@@ -77,156 +108,181 @@ public static class Inventory {
     }
 
     public static void removeWeapon(Weapon w) {
-        var wData = JsonUtility.ToJson(w);
-
+        var tData = JsonUtility.ToJson(w);
         bool past = false;
-        for(int i = 0; i < SaveData.getInt(weaponCount); i++) {
-            var data = SaveData.getString(weaponTag(i));
+        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Weapon))); i++) {
+            var data = SaveData.getString(objectTag(i, typeof(Weapon)));
 
-            if(data == wData && !past) {
-                SaveData.deleteKey(weaponTag(i));
+            if(data == tData && !past) {
+                SaveData.deleteKey(objectTag(i, typeof(Weapon)));
                 past = true;
                 continue;
             }
             else if(past) {
-                SaveData.deleteKey(weaponTag(i));
+                SaveData.deleteKey(objectTag(i, typeof(Weapon)));
                 overrideWeapon(i - 1, JsonUtility.FromJson<Weapon>(data));
             }
         }
+        SaveData.setInt(objectCount(typeof(Weapon)), SaveData.getInt(objectCount(typeof(Weapon))) - 1);
+    }
+    public static void removeArmor(Armor a) {
+        var tData = JsonUtility.ToJson(a);
+        bool past = false;
+        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Armor))); i++) {
+            var data = SaveData.getString(objectTag(i, typeof(Armor)));
 
-        SaveData.setInt(weaponCount, SaveData.getInt(weaponCount) - 1);
+            if(data == tData && !past) {
+                SaveData.deleteKey(objectTag(i, typeof(Armor)));
+                past = true;
+                continue;
+            }
+            else if(past) {
+                SaveData.deleteKey(objectTag(i, typeof(Armor)));
+                overrideArmor(i - 1, JsonUtility.FromJson<Armor>(data));
+            }
+        }
+        SaveData.setInt(objectCount(typeof(Armor)), SaveData.getInt(objectCount(typeof(Armor))) - 1);
+    }
+    public static void removeConsumable(Consumable c) {
+        var tData = JsonUtility.ToJson(c);
+        bool past = false;
+        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Consumable))); i++) {
+            var data = SaveData.getString(objectTag(i, typeof(Consumable)));
+
+            if(data == tData && !past) {
+                SaveData.deleteKey(objectTag(i, typeof(Consumable)));
+                past = true;
+                continue;
+            }
+            else if(past) {
+                SaveData.deleteKey(objectTag(i, typeof(Consumable)));
+                overrideConsumable(i - 1, JsonUtility.FromJson<Consumable>(data));
+            }
+        }
+        SaveData.setInt(objectCount(typeof(Consumable)), SaveData.getInt(objectCount(typeof(Consumable))) - 1);
+    }
+    public static void removeItem(Item it) {
+        var tData = JsonUtility.ToJson(it);
+        bool past = false;
+        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Item))); i++) {
+            var data = SaveData.getString(objectTag(i, typeof(Item)));
+
+            if(data == tData && !past) {
+                SaveData.deleteKey(objectTag(i, typeof(Item)));
+                past = true;
+                continue;
+            }
+            else if(past) {
+                SaveData.deleteKey(objectTag(i, typeof(Item)));
+                overrideItem(i - 1, JsonUtility.FromJson<Item>(data));
+            }
+        }
+        SaveData.setInt(objectCount(typeof(Item)), SaveData.getInt(objectCount(typeof(Item))) - 1);
     }
     public static void removeWeapon(int index) {
         removeWeapon(getWeapon(index));
     }
-    public static void removeArmor(Armor a) {
-        var aData = JsonUtility.ToJson(a);
-
-        bool past = false;
-        for(int i = 0; i < SaveData.getInt(armorCount); i++) {
-            var data = SaveData.getString(armorTag(i));
-
-            if(data == aData && !past) {
-                SaveData.deleteKey(armorTag(i));
-                past = true;
-                continue;
-            }
-            else if(past) {
-                SaveData.deleteKey(armorTag(i));
-                overrideArmor(i - 1, JsonUtility.FromJson<Armor>(data));
-            }
-        }
-
-        SaveData.setInt(armorCount, SaveData.getInt(armorCount) - 1);
-    }
     public static void removeArmor(int index) {
         removeArmor(getArmor(index));
     }
-    public static void removeConsumable(Consumable j) {
-        var jData = JsonUtility.ToJson(j);
-
-        bool past = false;
-        for(int i = 0; i < SaveData.getInt(consumableCount); i++) {
-            var data = SaveData.getString(consumableTag(i));
-
-            if(data == jData && !past) {
-                SaveData.deleteKey(consumableTag(i));
-                past = true;
-                continue;
-            }
-            else if(past) {
-                SaveData.deleteKey(consumableTag(i));
-                overrideConsumable(i - 1, JsonUtility.FromJson<Consumable>(data));
-            }
-        }
-
-        SaveData.setInt(consumableCount, SaveData.getInt(consumableCount) - 1);
-    }
     public static void removeConsumable(int index) {
         removeConsumable(getConsumable(index));
+    }
+    public static void removeItem(int index) {
+        removeItem(getItem(index));
+    }
+    public static void removeCoins(int count) {
+        int temp = SaveData.getInt(coinCount);
+        SaveData.setInt(coinCount, temp - count);
     }
 
     public static void overrideWeapon(int index, Weapon w) {
         w.w_sprite.setSprite();
         var data = JsonUtility.ToJson(w);
-        SaveData.setString(weaponTag(index), data);
+        SaveData.setString(objectTag(index, typeof(Weapon)), data);
     }
     public static void overrideArmor(int index, Armor a) {
         a.a_sprite.setSprite();
         var data = JsonUtility.ToJson(a);
-        SaveData.setString(armorTag(index), data);
+        SaveData.setString(objectTag(index, typeof(Armor)), data);
     }
     public static void overrideConsumable(int index, Consumable c) {
         c.c_sprite.setSprite();
         var data = JsonUtility.ToJson(c);
-        SaveData.setString(consumableTag(index), data);
+        SaveData.setString(objectTag(index, typeof(Consumable)), data);
+    }
+    public static void overrideItem(int index, Item it) {
+        it.i_sprite.setSprite();
+        var data = JsonUtility.ToJson(it);
+        SaveData.setString(objectTag(index, typeof(Item)), data);
     }
 
-    public static int getWeaponCount() {
-        return SaveData.getInt(weaponCount);
-    }
-    public static int getArmorCount() {
-        return SaveData.getInt(armorCount);
-    }
-    public static int getConsumableCount() {
-        return SaveData.getInt(consumableCount);
+    public static int getTypeCount(System.Type type) {
+        if(type == typeof(Weapon))
+            return SaveData.getInt(objectCount(type));
+        if(type == typeof(Armor))
+            return SaveData.getInt(objectCount(type));
+        if(type == typeof(Consumable))
+            return SaveData.getInt(objectCount(type));
+        if(type == typeof(Item))
+            return SaveData.getInt(objectCount(type));
+        return -1;
     }
     public static int getCoinCount() {
         return SaveData.getInt(coinCount);
     }
 
     public static Weapon getWeapon(int i) {
-        var data = SaveData.getString(weaponTag(i));
+        var data = SaveData.getString(objectTag(i, typeof(Weapon)));
         return JsonUtility.FromJson<Weapon>(data);
     }
     public static Armor getArmor(int i) {
-        var data = SaveData.getString(armorTag(i));
+        var data = SaveData.getString(objectTag(i, typeof(Armor)));
         return JsonUtility.FromJson<Armor>(data);
     }
     public static Consumable getConsumable(int i) {
-        var data = SaveData.getString(consumableTag(i));
+        var data = SaveData.getString(objectTag(i, typeof(Consumable)));
         return JsonUtility.FromJson<Consumable>(data);
+    }
+    public static Item getItem(int i) {
+        var data = SaveData.getString(objectTag(i, typeof(Item)));
+        return JsonUtility.FromJson<Item>(data);
     }
 
     public static int getWeaponIndex(Weapon w) {
-        for(int i = 0; i < SaveData.getInt(weaponCount); i++) {
-            var data = SaveData.getString(weaponTag(i));
-            var temp = JsonUtility.FromJson<Weapon>(data);
+        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Weapon))); i++) {
+            var temp = getWeapon(i);
 
-            if(temp == w) 
+            if(temp == w)
                 return i;
         }
         return -1;
     }
     public static int getArmorIndex(Armor a) {
-        for(int i = 0; i < SaveData.getInt(armorCount); i++) {
-            var data = SaveData.getString(armorTag(i));
-            var temp = JsonUtility.FromJson<Armor>(data);
+        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Armor))); i++) {
+            var temp = getArmor(i);
 
-            if(temp == a) 
+            if(temp == a)
                 return i;
         }
         return -1;
     }
-    public static int getConsumableIndex(Consumable it) {
-        for(int i = 0; i < SaveData.getInt(consumableCount); i++) {
-            var data = SaveData.getString(consumableTag(i));
-            var temp = JsonUtility.FromJson<Consumable>(data);
+    public static int getConsumableIndex(Consumable c) {
+        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Consumable))); i++) {
+            var temp = getConsumable(i);
+
+            if(temp == c)
+                return i;
+        }
+        return -1;
+    }
+    public static int getItemIndex(Item it) {
+        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Item))); i++) {
+            var temp = getItem(i);
 
             if(temp == it)
                 return i;
         }
         return -1;
-    }
-
-
-    public static int getNumberOfUniqueConsumables(Consumable con) {
-        int count = 0;
-        for(int i = 0; i < SaveData.getInt(consumableCount); i++) {
-            if(getConsumable(i).isEqualTo(con))
-                count++;
-        }
-
-        return count;
     }
 }

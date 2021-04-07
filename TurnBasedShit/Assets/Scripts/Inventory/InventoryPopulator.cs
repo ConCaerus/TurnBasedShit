@@ -5,7 +5,8 @@ using UnityEngine;
 public class InventoryPopulator : MonoBehaviour {
     [SerializeField] WeaponPreset weaponToAdd;
     [SerializeField] ArmorPreset armorToAdd;
-    [SerializeField] ConsumablePreset itemToAdd;
+    [SerializeField] ConsumablePreset consumableToAdd;
+    [SerializeField] ItemPreset itemToAdd;
 
 
     public void resetInventory() {
@@ -16,22 +17,28 @@ public class InventoryPopulator : MonoBehaviour {
         for(int j = 0; j < count; j++) {
             if(weaponToAdd != null) {
                 Weapon w = weaponToAdd.preset;
-                Inventory.addNewWeapon(w);
+                Inventory.addWeapon(w);
             }
 
             if(armorToAdd != null) {
                 Armor a = armorToAdd.preset;
-                Inventory.addNewArmor(a);
+                Inventory.addArmor(a);
+            }
+
+            if(consumableToAdd != null) {
+                Consumable i = consumableToAdd.preset;
+                Inventory.addConsumable(i);
             }
 
             if(itemToAdd != null) {
-                Consumable i = itemToAdd.preset;
-                Inventory.addNewConsumable(i);
+                Item i = itemToAdd.preset;
+                Inventory.addItem(i);
             }
         }
 
         weaponToAdd = null;
         armorToAdd = null;
+        consumableToAdd = null;
         itemToAdd = null;
     }
 }

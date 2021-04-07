@@ -12,7 +12,7 @@ public class BattleResultsCanvas : MonoBehaviour {
         int index = 0;
 
         //  weapons
-        foreach(var i in GameState.getCombatDetails().weapons) {
+        foreach(var i in GameInfo.getCombatDetails().weapons) {
             var obj = Instantiate(equipmentIcons[index]);
             obj.GetComponent<Image>().sprite = i.w_sprite.getSprite();
 

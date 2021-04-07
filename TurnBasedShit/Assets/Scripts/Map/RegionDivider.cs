@@ -54,7 +54,7 @@ public class RegionDivider : MonoBehaviour {
 
         return int.Parse(relevant.GetComponentInChildren<TextMeshProUGUI>().text);
     }
-    public CombatLocation.diffLevel getRelevantDifficultyLevel(float x) {
-        return (CombatLocation.diffLevel)getRelevantRegionLevel(x);
+    public GameInfo.diffLvl getRelevantDifficultyLevel(float x) {
+        return (GameInfo.diffLvl)getRelevantRegionLevel(x);
     }
 }

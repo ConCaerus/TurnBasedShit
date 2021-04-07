@@ -15,7 +15,7 @@ public class MapLocationSpawner : MonoBehaviour {
 
     private void Start() {
         createIcons();
-        GameState.resetCombatDetails();
+        GameInfo.resetCombatDetails();
     }
 
 
@@ -51,7 +51,7 @@ public class MapLocationSpawner : MonoBehaviour {
             var randX = Random.Range(-8.0f, 8.0f);
             var randY = Random.Range(-8.0f, 8.0f);
 
-            var temp = new TownLocation(new Vector2(randX, randY), townIconPreset.GetComponent<SpriteRenderer>().sprite);
+            var temp = new TownLocation(new Vector2(randX, randY), townIconPreset.GetComponent<SpriteRenderer>().sprite, Randomizer.createRandomTown());
 
             //  creates an icon for the TownLocation
             var obj = Instantiate(townIconPreset.gameObject);
@@ -70,7 +70,7 @@ public class MapLocationSpawner : MonoBehaviour {
             var randY = Random.Range(-18.0f, 18.0f);
 
             //  gets a relevant combatlocation
-            CombatLocation cl = FindObjectOfType<PresetLibrary>().getCombatLocation(FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(randX));
+            CombatLocation cl = FindObjectOfType<PresetLibrary>().createCombatLocation(FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(randX));
             cl = Randomizer.randomizeCombatLocation(cl);
 
             PickupLocation temp = null;

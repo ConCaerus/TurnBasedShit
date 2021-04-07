@@ -26,7 +26,7 @@ public class InfoBox : MonoBehaviour {
         infoBox.GetComponent<RectTransform>().GetWorldCorners(corners);
         var xOffset = (corners[2].x - corners[1].x) / 2.0f;
         var yOffset = (corners[1].y - corners[0].y) / 2.0f;
-        infoBox.transform.position = new Vector3(GameState.getMousePos().x + xOffset, GameState.getMousePos().y - yOffset, infoBox.transform.position.z);
+        infoBox.transform.position = new Vector3(GameInfo.getMousePos().x + xOffset, GameInfo.getMousePos().y - yOffset, infoBox.transform.position.z);
     }
 
     public void hide() {

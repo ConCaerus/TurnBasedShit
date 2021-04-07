@@ -15,6 +15,7 @@ public class UnitClassStats {
 
     public Weapon equippedWeapon;
     public Armor equippedArmor;
+    public Item equippedItem;
 
     public SpriteLoader u_sprite;
     public Color u_color;
@@ -34,8 +35,9 @@ public class UnitClassStats {
         bool speed = u_speed == other.u_speed;
         bool power = u_power == other.u_power;
         bool order = u_order == other.u_order;
-        bool weapon = equippedWeapon.equals(other.equippedWeapon);
-        bool armor = equippedArmor.equals(other.equippedArmor);
+        bool weapon = equippedWeapon.isEqualTo(other.equippedWeapon);
+        bool armor = equippedArmor.isEqualTo(other.equippedArmor);
+        bool item = equippedItem.isEqualTo(other.equippedItem);
         bool color = u_color == other.u_color;
 
         return names && health && maxHealth && speed && power && order && weapon && armor && color;

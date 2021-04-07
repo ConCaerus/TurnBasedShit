@@ -43,14 +43,14 @@ public class MainMenuCanvas : MonoBehaviour {
         if(!SaveData.hasSaveDataForCurrentSave())
             SaveData.createSaveDataForCurrentSave();
 
-        switch(GameState.currentGameState) {
-            case GameState.state.combat:
+        switch(GameInfo.currentGameState) {
+            case GameInfo.state.combat:
                 SceneManager.LoadScene("Combat");
                 break;
-            case GameState.state.map:
+            case GameInfo.state.map:
                 SceneManager.LoadScene("Map");
                 break;
-            case GameState.state.town:
+            case GameInfo.state.town:
                 SceneManager.LoadScene("Town");
                 break;
         }

@@ -50,7 +50,7 @@ public class Story : ScriptableObject {
 
         //  adds a new unit to the party
         else if(next.affectsParty && next.affect == partyAffectors.addUnit) {
-            next.affectedUnit = Randomizer.createRandomUnitStats();
+            next.affectedUnit = Randomizer.createRandomUnitStats(false);
         }
 
         //  kills a random unit from the party

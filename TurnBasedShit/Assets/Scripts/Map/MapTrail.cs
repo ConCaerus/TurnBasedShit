@@ -97,8 +97,8 @@ public class MapTrail : MonoBehaviour {
 
         if(rand < combatProb) {
             Debug.Log(FindObjectOfType<RegionDivider>().getRelevantRegionLevel(movingAnchor.transform.position.x));
-            var cl = FindObjectOfType<PresetLibrary>().getCombatLocation(FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(movingAnchor.transform.position.x));
-            GameState.setCombatDetails(Randomizer.randomizeCombatLocation(cl));
+            var cl = FindObjectOfType<PresetLibrary>().createCombatLocation(FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(movingAnchor.transform.position.x));
+            GameInfo.setCombatDetails(Randomizer.randomizeCombatLocation(cl));
             SceneManager.LoadScene("Combat");
         }
     }

@@ -10,6 +10,7 @@ public class Consumable {
     }
 
     public string c_name;
+    public GameInfo.rarityLvl c_rarity;
     public int c_coinCost;
     public int c_maxStackCount;
     public effects c_effect;
@@ -44,7 +45,7 @@ public class Consumable {
             return false;
 
         return obj.c_effect == c_effect && obj.c_effectAmount == c_effectAmount && 
-            obj.c_name == c_name && obj.c_maxStackCount == c_maxStackCount;
+            obj.c_name == c_name && obj.c_maxStackCount == c_maxStackCount && c_rarity == obj.c_rarity;
     }
 
     public bool isEmpty() {

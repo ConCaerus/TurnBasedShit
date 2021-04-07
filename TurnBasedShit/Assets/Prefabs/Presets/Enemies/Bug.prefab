@@ -130,7 +130,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.2451613, y: 1.8258065}
+  m_Size: {x: 2.2, y: 1.31}
   m_EdgeRadius: 0
 --- !u!114 &6037864551336239584
 MonoBehaviour:
@@ -154,8 +154,8 @@ MonoBehaviour:
   armor: {fileID: 0}
   stats:
     u_name: Bug
-    u_health: 100
-    u_maxHealth: 100
+    u_health: 25
+    u_maxHealth: 25
     u_speed: 0
     u_power: 1
     u_poisonCount: 0
@@ -165,6 +165,7 @@ MonoBehaviour:
       w_attributes: 
       w_power: 5
       w_speedMod: 0
+      w_coinCost: 0
       w_sprite:
         sprite: {fileID: 0}
         sInfo: 
@@ -173,6 +174,7 @@ MonoBehaviour:
       a_attributes: 
       a_defence: 10
       a_speedMod: 2
+      a_coinCost: 0
       a_sprite:
         sprite: {fileID: 0}
         sInfo: 

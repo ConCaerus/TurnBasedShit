@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyUnitInstance : UnitClass {
-
+    public GameInfo.diffLvl enemyDiff = 0;
 
     Coroutine combatTurnWaitor = null;
 

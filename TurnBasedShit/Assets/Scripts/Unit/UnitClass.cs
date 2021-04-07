@@ -65,8 +65,10 @@ public abstract class UnitClass : MonoBehaviour {
     }
 
     public void addHealth(float h) {
-        if(stats.u_health <= 0.0f)
+        if(stats.u_health <= 0.0f) {
             die();
+            return;
+        }
         stats.u_health += h;
         if(stats.u_health > stats.u_maxHealth)
             stats.u_health = stats.u_maxHealth;
@@ -77,6 +79,10 @@ public abstract class UnitClass : MonoBehaviour {
         foreach(var i in FindObjectsOfType<UnitHighlighting>()) {
             i.dehighlightUnit(gameObject);
         }
+
+        Inventory.addItem(stats.equippedItem);
+        stats.equippedItem = null;
+        FindObjectOfType<ItemUser>().resetInplayItems();
 
         FindObjectOfType<AudioManager>().playDieSound();
         FindObjectOfType<TurnOrderSorter>().removeUnitFromList(gameObject);

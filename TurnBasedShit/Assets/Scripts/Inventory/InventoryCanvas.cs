@@ -11,10 +11,10 @@ public class InventoryCanvas : MonoBehaviour {
     [SerializeField] List<GameObject> slotHolders = new List<GameObject>();
     List<object> activeObjects = new List<object>();
 
-    [SerializeField] TextMeshProUGUI pageText;
+    [SerializeField] TextMeshProUGUI pageText1, pageText2;
     int activePage = 0;
 
-    [SerializeField] GameObject weaponCanvas, armorCanvas, consumableCanvas;
+    [SerializeField] GameObject weaponCanvas, armorCanvas, consumableCanvas, itemCanvas;
     [SerializeField] GameObject unitWeaponImage, unitArmorImage;
 
     [SerializeField] GameObject shownUnitInformation;
@@ -31,7 +31,7 @@ public class InventoryCanvas : MonoBehaviour {
         if(FindObjectOfType<InfoBox>() != null)
             manageInfoBox();
 
-        heldObjectPicture.transform.position = GameState.getMousePos();
+        heldObjectPicture.transform.position = GameInfo.getMousePos();
 
         if(Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
             selectObjectFromSlot();
@@ -271,7 +271,7 @@ public class InventoryCanvas : MonoBehaviour {
                         FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
 
                         if(obj != null && !((Weapon)obj).isEmpty())
-                            Inventory.addNewWeapon((Weapon)obj);
+                            Inventory.addWeapon((Weapon)obj);
                         else
                             obj = null;
 
@@ -287,7 +287,7 @@ public class InventoryCanvas : MonoBehaviour {
                         FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
 
                         if(obj != null && !((Armor)obj).isEmpty())
-                            Inventory.addNewArmor((Armor)obj);
+                            Inventory.addArmor((Armor)obj);
                         else
                             obj = null;
 
@@ -319,7 +319,7 @@ public class InventoryCanvas : MonoBehaviour {
                         unitWeaponImage.GetComponent<Image>().enabled = false;
 
                         if(obj != null && !((Weapon)obj).isEmpty())
-                            Inventory.addNewWeapon((Weapon)obj);
+                            Inventory.addWeapon((Weapon)obj);
                     }
                     else if(armorCanvas.activeInHierarchy) {
                         shownUnit.equippedArmor = null;
@@ -329,7 +329,7 @@ public class InventoryCanvas : MonoBehaviour {
                         unitArmorImage.GetComponent<Image>().enabled = false;
 
                         if(obj != null && !((Armor)obj).isEmpty())
-                            Inventory.addNewArmor((Armor)obj);
+                            Inventory.addArmor((Armor)obj);
                     }
                 }
             }
@@ -426,7 +426,8 @@ public class InventoryCanvas : MonoBehaviour {
         setHeldObject(null);
         activeObjects.Clear();
 
-        pageText.text = activePage.ToString();
+        pageText1.text = activePage.ToString();
+        pageText2.text = activePage.ToString();
 
         coinCountText.text = Inventory.getCoinCount().ToString();
 
@@ -466,8 +467,8 @@ public class InventoryCanvas : MonoBehaviour {
         else if(consumableCanvas.activeInHierarchy) {
             List<List<Consumable>> groups = new List<List<Consumable>>();
             //  sorts the different consumables into groups
-            for(int i = 0; i < Inventory.getConsumableCount(); i++) {
-                var con = Inventory.getConsumable(i);
+            for(int i = 0; i < Inventory.getTypeCount(typeof(Consumable)); i++) {
+                Consumable con = Inventory.getConsumable(i);
 
                 //  checks if the consumable can be put into an existing group
                 bool fitAGroup = false;
@@ -507,6 +508,22 @@ public class InventoryCanvas : MonoBehaviour {
                 }
             }
         }
+
+        //  item
+        else if(itemCanvas.activeInHierarchy) {
+            for(int i = 0; i < activeSlots.Count; i++) {
+                activeSlots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
+                activeObjects.Add(null);
+
+                Item it = Inventory.getItem(i + (activeSlots.Count * activePage));
+                if(it != null) {
+                    activeSlots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
+                    activeSlots[i].transform.GetChild(0).GetComponent<Image>().sprite = it.i_sprite.getSprite();
+
+                    activeObjects[i] = it;
+                }
+            }
+        }
     }
 
 
@@ -541,7 +558,8 @@ public class InventoryCanvas : MonoBehaviour {
         if(moveIndex == 2)
             activePage = 0;
 
-        pageText.text = activePage.ToString();
+        pageText1.text = activePage.ToString();
+        pageText2.text = activePage.ToString();
         populateInventorySlots();
     }
 

@@ -51,10 +51,12 @@ public class TurnOrderSorter : MonoBehaviour {
     public GameObject setNextInTurnOrder() {
         //  removes current unit from list
         if(playingUnit != null) {
+            FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterTurn, playingUnit.GetComponent<UnitClass>());
             playingUnit.GetComponent<UnitClass>().stunned = false;
             FindObjectOfType<UnitTurnOrderHighlighting>().dehighlightUnit(playingUnit);
             unitsInPlay.Remove(playingUnit);
             FindObjectOfType<PartyObject>().saveParty();
+            FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterEachTurn, playingUnit.GetComponent<UnitClass>());
         }
 
         //  kills dead units
@@ -69,10 +71,13 @@ public class TurnOrderSorter : MonoBehaviour {
             if(i == null)
                 unitsInPlay.Remove(i);
         }
+        FindObjectOfType<ItemUser>().resetInplayItems();
 
         //  resets round if needed
-        if(unitsInPlay.Count == 0)
+        if(unitsInPlay.Count == 0) {
             FindObjectOfType<UnitBattleMech>().resetBattleRound();
+            FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterRound, playingUnit.GetComponent<UnitClass>());
+        }
 
         //  sets next to unit with most speed
         var next = unitsInPlay[0];
@@ -88,6 +93,10 @@ public class TurnOrderSorter : MonoBehaviour {
         FindObjectOfType<UnitTurnOrderHighlighting>().highlightUnit(playingUnit);
         playingUnit.GetComponent<UnitClass>().prepareUnitForNextRound();
         FindObjectOfType<BattleOptionsCanvas>().runCombatLogic();
+
+        FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeTurn, playingUnit.GetComponent<UnitClass>());
+        FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeEachTurn, playingUnit.GetComponent<UnitClass>());
+
         return playingUnit;
     }
 

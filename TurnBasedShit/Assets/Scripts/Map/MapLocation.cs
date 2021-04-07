@@ -21,12 +21,14 @@ public class MapLocation {
     public void enterLocation() {
         switch(type) {
             case locationType.town:
-                GameState.resetCombatDetails();
+                GameInfo.resetCombatDetails();
+                GameInfo.setCurrentTownIndex(((TownLocation)this).town.t_index);
                 SceneManager.LoadScene("Town");
                 break;
 
             case locationType.equipmentPickup:
-                GameState.setCombatDetails(combatLocation);
+                GameInfo.setCombatDetails(combatLocation);
+                GameInfo.resetCurrentTownIndex();
                 MapLocationHolder.removeLocation(this);
                 SceneManager.LoadScene("Combat");
                 break;

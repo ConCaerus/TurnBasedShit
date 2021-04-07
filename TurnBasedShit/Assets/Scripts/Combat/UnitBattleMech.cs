@@ -14,7 +14,6 @@ public class UnitBattleMech : MonoBehaviour {
     }
 
     private void Start() {
-        //FindObjectOfType<CombatEnvironmentSpawner>().spawnEnivronmentObjects();
         resetBattleRound();
     }
 
@@ -39,7 +38,7 @@ public class UnitBattleMech : MonoBehaviour {
 
         //  player killed all enemies and the battle is over
         else if(FindObjectsOfType<EnemyUnitInstance>().Length == 0) {
-            GameState.getCombatDetails().addSpoilsToInventory();
+            GameInfo.getCombatDetails().addSpoilsToInventory();
             showBattleResults();
             battleResultsCanvas.GetComponent<BattleResultsCanvas>().showCombatLocationEquipment();
         }

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5967991836329400845}
   - component: {fileID: 5967991836329400844}
+  - component: {fileID: 9152197614094743713}
   m_Layer: 0
   m_Name: PresetLibrary
   m_TagString: Untagged
@@ -43,14 +44,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac4bd32f1410fd34dae38fffc64470b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemies:
+  - {fileID: 6037864551336239584, guid: 08b421165bf5c6b45b8a47228b8e066a, type: 3}
+  - {fileID: 6037864551336239584, guid: 7e2d0e1460eb0d041b27304ca7917a33, type: 3}
   weapons:
   - {fileID: 11400000, guid: 2fd8c18db666ce34eb8ebc587c1a9de2, type: 2}
   - {fileID: 11400000, guid: 692e5b484b4f2e74199f4e9c0f188f37, type: 2}
+  - {fileID: 11400000, guid: 61aae0b74e704374fb50ae980e7081f3, type: 2}
   armor:
   - {fileID: 11400000, guid: c35ec3980a4a9a94b8c3a1bb7fc85faf, type: 2}
+  - {fileID: 11400000, guid: 30ccb2a1f14fbe84db341f5a49465d02, type: 2}
+  - {fileID: 11400000, guid: 37267c66de7378647863e49163311691, type: 2}
   consumables:
   - {fileID: 11400000, guid: b8620bd6f554fa140a2994562098ac50, type: 2}
   - {fileID: 11400000, guid: eaaa276422f32644e8a7c22ea54d6abd, type: 2}
+  items:
+  - {fileID: 11400000, guid: a1360cb066af6ea42ae443178cfa1c45, type: 2}
   buildings:
   - {fileID: 11400000, guid: 3528bd5d6f8e4fa4c9e165ae886dce16, type: 2}
   - {fileID: 11400000, guid: b0f1de034a736c442829c0743584bbe8, type: 2}
@@ -60,5 +69,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ebb6b5c75a302c54bb245738a9412b3c, type: 2}
   - {fileID: 11400000, guid: df8dea74604716b4a90216229f9a97ca, type: 2}
   - {fileID: 11400000, guid: 368746f8d26790c4ba913240151f2c16, type: 2}
-  combatLocations:
-  - {fileID: 11400000, guid: b42b60e01d1e7cf42acb6cf8d4c68769, type: 2}
+--- !u!114 &9152197614094743713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5967991836329400846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6d085a323d7e1543bea118c4317036c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

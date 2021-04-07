@@ -9,9 +9,8 @@ public class Armor {
         turtle, reflex, healing
     }
 
-
-
     public string a_name;
+    public GameInfo.rarityLvl a_rarity;
 
     public List<attributes> a_attributes = new List<attributes>();
 
@@ -59,7 +58,7 @@ public class Armor {
         return a_attributes.Count == 0 && a_defence == 0 && a_speedMod == 0;
     }
 
-    public bool equals(Armor other) {
+    public bool isEqualTo(Armor other) {
         if(a_attributes.Count == other.a_attributes.Count) {
             for(int i = 0; i < a_attributes.Count; i++) {
                 if(a_attributes[i] != other.a_attributes[i]) {
@@ -71,9 +70,10 @@ public class Armor {
 
         bool defence = a_defence == other.a_defence;
         bool speed = a_speedMod == other.a_speedMod;
+        bool rarity = a_rarity == other.a_rarity;
 
 
-        return defence && speed;
+        return defence && speed && rarity;
     }
 
 
@@ -83,6 +83,7 @@ public class Armor {
         a_speedMod = temp.a_speedMod;
         a_attributes = temp.a_attributes;
         a_sprite = temp.a_sprite;
+        a_rarity = temp.a_rarity;
     }
 
     public ArmorPreset armorToPreset() {

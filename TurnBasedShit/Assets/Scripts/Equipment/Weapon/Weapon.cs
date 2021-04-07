@@ -12,6 +12,7 @@ public class Weapon {
 
 
     public string w_name;
+    public GameInfo.rarityLvl w_rarity;
 
     public List<attributes> w_attributes = new List<attributes>();
 
@@ -59,7 +60,7 @@ public class Weapon {
         return w_attributes.Count == 0 && w_power == 0 && w_speedMod == 0;
     }
 
-    public bool equals(Weapon other) {
+    public bool isEqualTo(Weapon other) {
         if(w_attributes.Count == other.w_attributes.Count) {
             for(int i = 0; i < w_attributes.Count; i++) {
                 if(w_attributes[i] != other.w_attributes[i]) {
@@ -71,9 +72,10 @@ public class Weapon {
 
         bool power = w_power == other.w_power;
         bool speed = w_speedMod == other.w_speedMod;
+        bool rarity = w_rarity == other.w_rarity;
 
 
-        return power && speed;
+        return power && speed && rarity;
     }
 
 
@@ -83,6 +85,7 @@ public class Weapon {
         w_speedMod = temp.w_speedMod;
         w_attributes = temp.w_attributes;
         w_sprite = temp.w_sprite;
+        w_rarity = temp.w_rarity;
     }
 
     public WeaponPreset weaponToPreset() {
