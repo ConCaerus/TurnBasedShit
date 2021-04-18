@@ -6,6 +6,8 @@ using TMPro;
 public class DamageTextCanvas : MonoBehaviour {
     [SerializeField] TextMeshProUGUI text;
 
+    [SerializeField] Color weaponColor, poisonColor, defendedColor, healingColor;
+
     Vector2 offset = new Vector2(0.0f, 0.5f);
 
 
@@ -13,13 +15,19 @@ public class DamageTextCanvas : MonoBehaviour {
 
 
     public enum damageType {
-        weapon, poison, defended
+        weapon, poison, defended, healed
     }
 
 
     struct damageText {
         public GameObject damagedUnit;
         public TextMeshProUGUI text;
+    }
+
+
+    private void LateUpdate() {
+        removeTextsWithUnit(null);
+        positionTexts();
     }
 
 
@@ -37,21 +45,46 @@ public class DamageTextCanvas : MonoBehaviour {
         ob.text = dmg.ToString("0.#");
 
         if(type == damageType.weapon)
-            ob.color = Color.red;
+            ob.color = weaponColor;
         else if(type == damageType.poison)
-            ob.color = Color.magenta;
+            ob.color = poisonColor;
         else if(type == damageType.defended)
-            ob.color = Color.cyan;
+            ob.color = defendedColor;
+        else if(type == damageType.healed)
+            ob.color = healingColor;
 
 
-            var temp = new damageText();
+        var temp = new damageText();
         temp.damagedUnit = unit;
         temp.text = ob;
 
         texts.Add(temp);
 
-
         StartCoroutine(hideWaiter(temp));
+    }
+
+    public void removeTextsWithUnit(GameObject unit) {
+        List<int> removeIndexes = new List<int>();
+        for(int i = 0; i < texts.Count; i++) {
+            if(texts[i].damagedUnit == unit)
+                removeIndexes.Add(i);
+        }
+        foreach(var i in removeIndexes) {
+            texts.RemoveAt(i);
+        }
+    }
+
+    void positionTexts() {
+        int[] counts = new int[texts.Count];
+
+        for(int i = 0; i < texts.Count; i++) {
+            texts[i].text.transform.position = (Vector2)texts[i].damagedUnit.transform.position + offset * counts[i];
+
+            for(int u = 0; u < texts.Count; u++) {
+                if(i != u && texts[i].damagedUnit == texts[u].damagedUnit)
+                    counts[u]++;
+            }
+        }
     }
 
 
@@ -59,6 +92,8 @@ public class DamageTextCanvas : MonoBehaviour {
         yield return new WaitForSeconds(1.0f);
 
         texts.Remove(ob);
-        Destroy(ob.text.gameObject);
+        if(ob.text != null)
+            Destroy(ob.text.gameObject);
+
     }
 }

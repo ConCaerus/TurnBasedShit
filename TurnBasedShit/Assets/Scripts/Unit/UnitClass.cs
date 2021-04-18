@@ -15,7 +15,7 @@ public abstract class UnitClass : MonoBehaviour {
     [SerializeField] ArmorPreset armor = null;
 
 
-    public UnitClassStats stats;
+    public UnitStats stats;
 
 
 
@@ -39,13 +39,19 @@ public abstract class UnitClass : MonoBehaviour {
 
 
     public void takeDamage(GameObject attacker, float dmg) {
-        float temp = dmg;
-        if(stats.equippedArmor != null && !stats.equippedArmor.isEmpty())
-            temp = haveArmorReduceDamage(dmg);
+        //  Trigger Items
+        FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeAttacked, this, true);
+
+        //  Take damage
+        float temp = stats.getModifiedDamageTaken(dmg);
         stats.u_health -= temp;
 
+
+        //  Trigger armor events 
         stats.equippedArmor.applyAttributesAfterAttack(gameObject, attacker);
 
+
+        //  Show damage text
         if(defending)
             FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, temp, DamageTextCanvas.damageType.defended);
         else
@@ -54,7 +60,7 @@ public abstract class UnitClass : MonoBehaviour {
 
     public void takePoisonDamage() {
         if(stats.u_poisonCount > 0) {
-            float temp = (stats.u_maxHealth / 100.0f) * stats.u_poisonCount;
+            float temp = (stats.getModifiedMaxHealth() / 100.0f) * stats.u_poisonCount;
             stats.u_health -= temp;
 
             FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, temp, DamageTextCanvas.damageType.poison);
@@ -69,9 +75,11 @@ public abstract class UnitClass : MonoBehaviour {
             die();
             return;
         }
-        stats.u_health += h;
-        if(stats.u_health > stats.u_maxHealth)
-            stats.u_health = stats.u_maxHealth;
+        stats.u_health = Mathf.Clamp(stats.u_health + h, -1.0f, stats.getModifiedMaxHealth());
+        if(stats.u_health <= 0.0f) {
+            die();
+            return;
+        }
     }
 
 
@@ -80,13 +88,26 @@ public abstract class UnitClass : MonoBehaviour {
             i.dehighlightUnit(gameObject);
         }
 
-        Inventory.addItem(stats.equippedItem);
-        stats.equippedItem = null;
+        if(stats.equippedItem != null && !stats.equippedItem.isEmpty()) {
+            Inventory.removeItem(stats.equippedItem);
+            stats.equippedItem = null;
+        }
         FindObjectOfType<ItemUser>().resetInplayItems();
+
+        if(stats.equippedWeapon != null && !stats.equippedWeapon.isEmpty()) {
+            Inventory.removeWeapon(stats.equippedWeapon);
+            stats.equippedWeapon = null;
+        }
+
+        if(stats.equippedArmor != null && !stats.equippedArmor.isEmpty()) {
+            Inventory.removeArmor(stats.equippedArmor);
+            stats.equippedArmor = null;
+        }
 
         FindObjectOfType<AudioManager>().playDieSound();
         FindObjectOfType<TurnOrderSorter>().removeUnitFromList(gameObject);
         FindObjectOfType<HealthBarCanvas>().destroyHealthBarForUnit(gameObject);
+        FindObjectOfType<DamageTextCanvas>().removeTextsWithUnit(gameObject);
         Party.removeUnit(stats);
         Destroy(gameObject);
     }
@@ -136,46 +157,18 @@ public abstract class UnitClass : MonoBehaviour {
     }
 
     public void attackUnit(GameObject unit) {
-        float dmg = stats.u_power;
+        //  Trigger weapon attributes
         if(stats.equippedWeapon != null && !stats.equippedWeapon.isEmpty()) {
             stats.equippedWeapon.applyAttributesAfterAttack(gameObject, unit);
-            dmg += stats.equippedWeapon.w_power + stats.equippedWeapon.getPowerBonusDamage();
         }
-        dmg = applyCritDamage(dmg);
 
         FindObjectOfType<AudioManager>().playHitSound();
 
+        //  Attack animation
         gameObject.transform.DOPunchPosition(unit.transform.position - transform.position, 0.25f);
-        unit.GetComponent<UnitClass>().takeDamage(gameObject, dmg);
+        unit.GetComponent<UnitClass>().takeDamage(gameObject, stats.getDamageGiven());
 
         attacking = false;
-    }
-
-
-    float applyCritDamage(float dmg) {
-        //  normal mod
-        dmg /= 2.0f;
-        dmg *= Random.Range(1.75f, 2.25f);
-
-        //  crit mod
-        if(Random.Range(0, 101) == 0)
-            dmg *= Random.Range(2.0f, 3.0f);
-
-        return dmg;
-    }
-
-    public float haveArmorReduceDamage(float dmg) {
-        float dmgBlocked = 0.0f;
-        if(!defending)
-            dmgBlocked = dmg * (stats.equippedArmor.a_defence / 100.0f);
-        else if(defending)
-            dmgBlocked = dmg * 1.5f * (stats.equippedArmor.a_defence / 100.0f);
-
-        dmgBlocked += stats.equippedArmor.getTurtleBonusDefence();
-
-        if(dmgBlocked >= dmg)
-            return 0.0f;
-        return dmg - dmgBlocked;
     }
 
     public void setEquippedWeapon(Weapon w = null) {

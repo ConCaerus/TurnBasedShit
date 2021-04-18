@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class PresetLibrary : MonoBehaviour {
     //  Units
-    [SerializeField] EnemyUnitInstance[] enemies;
+    [SerializeField] GameObject[] playerUnits;
+    [SerializeField] GameObject[] enemies;
+    [SerializeField] UnitTraitPreset[] unitTraits;
 
     //  Equipment
     [SerializeField] WeaponPreset[] weapons;
@@ -17,33 +19,67 @@ public class PresetLibrary : MonoBehaviour {
 
 
     //  Units
-    public UnitClassStats getRandomEnemy(GameInfo.diffLvl diff = (GameInfo.diffLvl)(-1)) {
+    public UnitStats createRandomUnit() {
+        UnitStats stats = new UnitStats();
+        stats.u_name = NameLibrary.getRandomUsableName();
+
+        stats.setBaseMaxHealth(Random.Range(25, 125));
+        stats.u_health = stats.getModifiedMaxHealth();
+        stats.u_sprite.setSprite(playerUnits[Random.Range(0, playerUnits.Length)].GetComponent<SpriteRenderer>().sprite);
+        stats.u_color = playerUnits[Random.Range(0, playerUnits.Length)].GetComponent<SpriteRenderer>().color;
+        stats.u_power = Random.Range(1, 15);
+        stats.u_speed = Random.Range(-5, 10);
+
+        return stats;
+    }
+    public UnitStats getRandomEnemy(GameInfo.diffLvl diff = (GameInfo.diffLvl)(-1)) {
         //  no specified difficulty level
         if(diff == (GameInfo.diffLvl)(-1))
-            return enemies[Random.Range(0, enemies.Length)].stats;
+            return enemies[Random.Range(0, enemies.Length)].GetComponent<UnitClass>().stats;
 
-        List<UnitClassStats> useables = new List<UnitClassStats>();
+        List<UnitStats> useables = new List<UnitStats>();
         foreach(var i in enemies) {
             //  same difficulty
-            if(i.enemyDiff == diff)
-                useables.Add(i.stats);
+            if(i.GetComponent<EnemyUnitInstance>().enemyDiff == diff)
+                useables.Add(i.GetComponent<EnemyUnitInstance>().stats);
 
             //  higher difficulty
-            else if(i.enemyDiff == diff + 1) {
+            else if(i.GetComponent<EnemyUnitInstance>().enemyDiff == diff + 1) {
                 if(Random.Range(0, 101) <= 25)
-                    useables.Add(i.stats);
+                    useables.Add(i.GetComponent<EnemyUnitInstance>().stats);
             }
 
             //  lower difficulty
-            else if(i.enemyDiff == diff - 1) {
+            else if(i.GetComponent<EnemyUnitInstance>().enemyDiff == diff - 1) {
                 if(Random.Range(0, 101) <= 25)
-                    useables.Add(i.stats);
+                    useables.Add(i.GetComponent<EnemyUnitInstance>().stats);
             }
         }
 
         if(useables.Count > 0)
             return useables[Random.Range(0, useables.Count)];
         return null;
+    }
+    public UnitTrait getRandomGoodUnitTrait() {
+        List<UnitTrait> goods = new List<UnitTrait>();
+        foreach(var i in unitTraits) {
+            if(i.preset.t_isGood)
+                goods.Add(i.preset);
+        }
+
+        return goods[Random.Range(0, goods.Count)];
+    }
+    public UnitTrait getRandomBadUnitTrait() {
+        List<UnitTrait> bads = new List<UnitTrait>();
+        foreach(var i in unitTraits) {
+            if(!i.preset.t_isGood)
+                bads.Add(i.preset);
+        }
+
+        return bads[Random.Range(0, bads.Count)];
+    }
+    public UnitTrait getRandomUnitTrait() {
+        return unitTraits[Random.Range(0, unitTraits.Length)].preset;
     }
 
     //  Equipment
@@ -188,7 +224,7 @@ public class PresetLibrary : MonoBehaviour {
         loc.difficulty = lvl;
 
         //  enemies
-        int enemyCount = Random.Range(2, 6);
+        int enemyCount = Random.Range(2, 5);
         for(int i = 0; i < enemyCount; i++) {
             loc.enemies.Add(Randomizer.randomizeUnitStats(getRandomEnemy(lvl), true));
         }

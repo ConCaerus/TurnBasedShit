@@ -40,16 +40,16 @@ public class InfoBox : MonoBehaviour {
         infoBox.SetActive(true);
         deleteAddDataTexts();
         //  cannot use a switch for some reason
-        if(t.GetType() == typeof(UnitClassStats)) {
-            var s = (UnitClassStats)t;
+        if(t.GetType() == typeof(UnitStats)) {
+            var s = (UnitStats)t;
             if(s.isEmpty()) {
                 infoBox.SetActive(false);
                 return;
             }
             nameText.text = FindObjectOfType<TextCreator>().createColoredText(s.u_name);
             createNewDataText(FindObjectOfType<TextCreator>().createColoredText("NUM: " + s.u_order.ToString(), 1));
-            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("POW: " + s.u_power.ToString(), 1));
-            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("SPD: " + s.u_speed.ToString(), 1));
+            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("POW: " + s.u_power.ToString("0.0"), 1));
+            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("SPD: " + s.u_speed.ToString("0.0"), 1));
         }
 
         else if(t.GetType() == typeof(Weapon)) {
@@ -59,11 +59,16 @@ public class InfoBox : MonoBehaviour {
                 return;
             }
             nameText.text = FindObjectOfType<TextCreator>().createColoredText(w.w_name);
-            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("POW: " + w.w_power.ToString(), 1));
-            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("SPED: " + w.w_speedMod.ToString(), 1));
+            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("POW: " + w.w_power.ToString("0.0"), 1));
+            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("SPED: " + w.w_speedMod.ToString("0.0"), 1));
 
-            for(int i = 0; i < w.w_attributes.Count; i++) {
-                createNewDataText(FindObjectOfType<TextCreator>().createColoredText(w.w_attributes[i].ToString().ToUpper() + " " + w.howManyOfAttribute(w.w_attributes[i]).ToString(), 1));
+            for(int i = 0; i < Weapon.attributeCount; i++) {
+                foreach(var a in w.w_attributes) {
+                    if((int)a == i) {
+                        createNewDataText(FindObjectOfType<TextCreator>().createColoredText(a.ToString().ToUpper() + " " + w.howManyOfAttribute(a).ToString(), 1));
+                        break;
+                    }
+                }
             }
         }
 
@@ -74,11 +79,16 @@ public class InfoBox : MonoBehaviour {
                 return;
             }
             nameText.text = FindObjectOfType<TextCreator>().createColoredText(a.a_name);
-            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("DEF: " + a.a_defence.ToString(), 1));
-            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("SPED: " + a.a_speedMod.ToString(), 1));
+            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("DEF: " + a.a_defence.ToString("0.0"), 1));
+            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("SPED: " + a.a_speedMod.ToString("0.0"), 1));
 
-            for(int i = 0; i < a.a_attributes.Count; i++) {
-                createNewDataText(FindObjectOfType<TextCreator>().createColoredText(a.a_attributes[i].ToString().ToUpper() + " " + a.howManyOfAttribute(a.a_attributes[i]).ToString(), 1));
+            for(int i = 0; i < Armor.attributeCount; i++) {
+                foreach(var s in a.a_attributes) {
+                    if((int)s == i) {
+                        createNewDataText(FindObjectOfType<TextCreator>().createColoredText(s.ToString().ToUpper() + " " + a.howManyOfAttribute(s).ToString(), 1));
+                        break;
+                    }
+                }
             }
         }
 
@@ -91,7 +101,7 @@ public class InfoBox : MonoBehaviour {
             nameText.text = FindObjectOfType<TextCreator>().createColoredText(c.c_name);
             createNewDataText(FindObjectOfType<TextCreator>().createColoredText("EFCT: " + c.c_effect.ToString().ToUpper(), 1));
             if(c.c_effectAmount > 0)
-                createNewDataText(FindObjectOfType<TextCreator>().createColoredText("AMT: " + c.c_effectAmount.ToString(), 1));
+                createNewDataText(FindObjectOfType<TextCreator>().createColoredText("AMT: " + c.c_effectAmount.ToString("0.0"), 1));
         }
     }
 

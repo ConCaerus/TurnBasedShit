@@ -7,7 +7,7 @@ using UnityEditor;
 public static class Inventory {
     const string coinCount = "Coin Count";
 
-    static string objectCount(System.Type type) {
+    static string objectCountTag(System.Type type) {
         if(type == typeof(Weapon))
             return "Inventory Weapon Count";
         if(type == typeof(Armor))
@@ -43,28 +43,28 @@ public static class Inventory {
         clearCoins();
     }
     public static void clearWeapons() {
-        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Weapon))); i++) {
+        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Weapon))); i++) {
             SaveData.deleteKey(objectTag(i, typeof(Weapon)));
         }
-        SaveData.deleteKey(objectCount(typeof(Weapon)));
+        SaveData.deleteKey(objectCountTag(typeof(Weapon)));
     }
     public static void clearArmor() {
-        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Armor))); i++) {
+        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Armor))); i++) {
             SaveData.deleteKey(objectTag(i, typeof(Armor)));
         }
-        SaveData.deleteKey(objectCount(typeof(Armor)));
+        SaveData.deleteKey(objectCountTag(typeof(Armor)));
     }
     public static void clearConsumables() {
-        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Consumable))); i++) {
+        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Consumable))); i++) {
             SaveData.deleteKey(objectTag(i, typeof(Consumable)));
         }
-        SaveData.deleteKey(objectCount(typeof(Consumable)));
+        SaveData.deleteKey(objectCountTag(typeof(Consumable)));
     }
     public static void clearItems() {
-        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Item))); i++) {
+        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Item))); i++) {
             SaveData.deleteKey(objectTag(i, typeof(Item)));
         }
-        SaveData.deleteKey(objectCount(typeof(Item)));
+        SaveData.deleteKey(objectCountTag(typeof(Item)));
     }
     public static void clearCoins() {
         SaveData.deleteKey(coinCount);
@@ -76,7 +76,7 @@ public static class Inventory {
         w.w_sprite.setSprite();
         var data = JsonUtility.ToJson(w);
         SaveData.setString(objectTag(index, typeof(Weapon)), data);
-        SaveData.setInt(objectCount(typeof(Weapon)), index + 1);
+        SaveData.setInt(objectCountTag(typeof(Weapon)), index + 1);
     }
     public static void addArmor(Armor a) {
         int index = getTypeCount(typeof(Armor));
@@ -84,7 +84,7 @@ public static class Inventory {
         a.a_sprite.setSprite();
         var data = JsonUtility.ToJson(a);
         SaveData.setString(objectTag(index, typeof(Armor)), data);
-        SaveData.setInt(objectCount(typeof(Armor)), index + 1);
+        SaveData.setInt(objectCountTag(typeof(Armor)), index + 1);
     }
     public static void addConsumable(Consumable c) {
         int index = getTypeCount(typeof(Consumable));
@@ -92,7 +92,7 @@ public static class Inventory {
         c.c_sprite.setSprite();
         var data = JsonUtility.ToJson(c);
         SaveData.setString(objectTag(index, typeof(Consumable)), data);
-        SaveData.setInt(objectCount(typeof(Consumable)), index + 1);
+        SaveData.setInt(objectCountTag(typeof(Consumable)), index + 1);
     }
     public static void addItem(Item it) {
         int index = getTypeCount(typeof(Item));
@@ -100,7 +100,7 @@ public static class Inventory {
         it.i_sprite.setSprite();
         var data = JsonUtility.ToJson(it);
         SaveData.setString(objectTag(index, typeof(Item)), data);
-        SaveData.setInt(objectCount(typeof(Item)), index + 1);
+        SaveData.setInt(objectCountTag(typeof(Item)), index + 1);
     }
     public static void addCoins(int count) {
         int temp = SaveData.getInt(coinCount);
@@ -110,7 +110,7 @@ public static class Inventory {
     public static void removeWeapon(Weapon w) {
         var tData = JsonUtility.ToJson(w);
         bool past = false;
-        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Weapon))); i++) {
+        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Weapon))); i++) {
             var data = SaveData.getString(objectTag(i, typeof(Weapon)));
 
             if(data == tData && !past) {
@@ -123,12 +123,12 @@ public static class Inventory {
                 overrideWeapon(i - 1, JsonUtility.FromJson<Weapon>(data));
             }
         }
-        SaveData.setInt(objectCount(typeof(Weapon)), SaveData.getInt(objectCount(typeof(Weapon))) - 1);
+        SaveData.setInt(objectCountTag(typeof(Weapon)), SaveData.getInt(objectCountTag(typeof(Weapon))) - 1);
     }
     public static void removeArmor(Armor a) {
         var tData = JsonUtility.ToJson(a);
         bool past = false;
-        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Armor))); i++) {
+        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Armor))); i++) {
             var data = SaveData.getString(objectTag(i, typeof(Armor)));
 
             if(data == tData && !past) {
@@ -141,12 +141,12 @@ public static class Inventory {
                 overrideArmor(i - 1, JsonUtility.FromJson<Armor>(data));
             }
         }
-        SaveData.setInt(objectCount(typeof(Armor)), SaveData.getInt(objectCount(typeof(Armor))) - 1);
+        SaveData.setInt(objectCountTag(typeof(Armor)), SaveData.getInt(objectCountTag(typeof(Armor))) - 1);
     }
     public static void removeConsumable(Consumable c) {
         var tData = JsonUtility.ToJson(c);
         bool past = false;
-        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Consumable))); i++) {
+        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Consumable))); i++) {
             var data = SaveData.getString(objectTag(i, typeof(Consumable)));
 
             if(data == tData && !past) {
@@ -159,12 +159,12 @@ public static class Inventory {
                 overrideConsumable(i - 1, JsonUtility.FromJson<Consumable>(data));
             }
         }
-        SaveData.setInt(objectCount(typeof(Consumable)), SaveData.getInt(objectCount(typeof(Consumable))) - 1);
+        SaveData.setInt(objectCountTag(typeof(Consumable)), SaveData.getInt(objectCountTag(typeof(Consumable))) - 1);
     }
     public static void removeItem(Item it) {
         var tData = JsonUtility.ToJson(it);
         bool past = false;
-        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Item))); i++) {
+        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Item))); i++) {
             var data = SaveData.getString(objectTag(i, typeof(Item)));
 
             if(data == tData && !past) {
@@ -177,7 +177,7 @@ public static class Inventory {
                 overrideItem(i - 1, JsonUtility.FromJson<Item>(data));
             }
         }
-        SaveData.setInt(objectCount(typeof(Item)), SaveData.getInt(objectCount(typeof(Item))) - 1);
+        SaveData.setInt(objectCountTag(typeof(Item)), SaveData.getInt(objectCountTag(typeof(Item))) - 1);
     }
     public static void removeWeapon(int index) {
         removeWeapon(getWeapon(index));
@@ -219,13 +219,13 @@ public static class Inventory {
 
     public static int getTypeCount(System.Type type) {
         if(type == typeof(Weapon))
-            return SaveData.getInt(objectCount(type));
+            return SaveData.getInt(objectCountTag(type));
         if(type == typeof(Armor))
-            return SaveData.getInt(objectCount(type));
+            return SaveData.getInt(objectCountTag(type));
         if(type == typeof(Consumable))
-            return SaveData.getInt(objectCount(type));
+            return SaveData.getInt(objectCountTag(type));
         if(type == typeof(Item))
-            return SaveData.getInt(objectCount(type));
+            return SaveData.getInt(objectCountTag(type));
         return -1;
     }
     public static int getCoinCount() {
@@ -250,7 +250,7 @@ public static class Inventory {
     }
 
     public static int getWeaponIndex(Weapon w) {
-        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Weapon))); i++) {
+        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Weapon))); i++) {
             var temp = getWeapon(i);
 
             if(temp == w)
@@ -259,7 +259,7 @@ public static class Inventory {
         return -1;
     }
     public static int getArmorIndex(Armor a) {
-        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Armor))); i++) {
+        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Armor))); i++) {
             var temp = getArmor(i);
 
             if(temp == a)
@@ -268,7 +268,7 @@ public static class Inventory {
         return -1;
     }
     public static int getConsumableIndex(Consumable c) {
-        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Consumable))); i++) {
+        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Consumable))); i++) {
             var temp = getConsumable(i);
 
             if(temp == c)
@@ -277,7 +277,7 @@ public static class Inventory {
         return -1;
     }
     public static int getItemIndex(Item it) {
-        for(int i = 0; i < SaveData.getInt(objectCount(typeof(Item))); i++) {
+        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Item))); i++) {
             var temp = getItem(i);
 
             if(temp == it)

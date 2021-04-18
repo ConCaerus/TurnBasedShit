@@ -6,14 +6,14 @@ using UnityEditor;
 public static class Randomizer {
 
 
-    public static UnitClassStats createRandomUnitStats(bool fullHealth) {
-        var stats = new UnitClassStats();
+    public static UnitStats createRandomUnitStats(bool fullHealth) {
+        var stats = new UnitStats();
 
         stats.u_name = NameLibrary.getRandomUsableName();
         if(!fullHealth)
-            stats.u_health = Random.Range(5.0f, stats.u_maxHealth);
+            stats.u_health = Random.Range(5.0f, stats.getModifiedMaxHealth());
         else
-            stats.u_health = stats.u_maxHealth;
+            stats.u_health = stats.getModifiedMaxHealth();
         stats.u_speed = Random.Range(0, 10.0f);
 
         //  at some point, equip the new unit with some random weapon and armor presets.
@@ -22,20 +22,33 @@ public static class Randomizer {
         return stats;
     }
 
-    public static UnitClassStats randomizeUnitStats(UnitClassStats stats, bool fullHealth = true) {
+    public static UnitStats randomizeUnitStats(UnitStats stats, bool fullHealth = true) {
+        UnitStats s = new UnitStats(stats);
         //  health
-        float maxHealthMod = stats.u_maxHealth / 10.0f;
-        stats.u_maxHealth += Random.Range(-maxHealthMod, maxHealthMod);
+        float maxHealthMod = stats.getModifiedMaxHealth() / 10.0f;
+        s.setBaseMaxHealth(stats.getModifiedMaxHealth() + Random.Range(-maxHealthMod, maxHealthMod));
         if(!fullHealth) {
-            float healthMin = stats.u_maxHealth * 0.6f;
-            stats.u_health = Random.Range(healthMin, stats.u_maxHealth);
+            float healthMin = stats.getModifiedMaxHealth() * 0.6f;
+            s.u_health = Random.Range(healthMin, s.getModifiedMaxHealth());
         }
-        else stats.u_health = stats.u_maxHealth;
+        else s.u_health = s.getModifiedMaxHealth();
 
         //  speed
         float speedMod = 2.0f;
-        stats.u_speed += Random.Range(-speedMod, speedMod);
+        s.u_speed = stats.u_speed * Random.Range(-speedMod, speedMod);
 
+        //  power
+        float powerMod = 1.5f;
+        s.u_power = stats.u_power * Random.Range(-powerMod, powerMod);
+
+        return s;
+    }
+
+    public static SlaveStats randomizeSlaveStats(SlaveStats stats) {
+        stats.isSlave = true;
+        stats.escapeDesire = Random.Range(1.0f, 35.0f);
+        stats.scaredModifier = Random.Range(1.15f, 1.85f);
+        stats.idealWeathLevel = (GameInfo.rarityLvl)Random.Range((int)GameInfo.rarityLvl.common, (int)GameInfo.rarityLvl.rare + 1);
         return stats;
     }
 

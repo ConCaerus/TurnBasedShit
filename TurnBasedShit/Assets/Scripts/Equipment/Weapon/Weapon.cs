@@ -5,9 +5,9 @@ using UnityEditor;
 
 [System.Serializable]
 public class Weapon {
-    const int attributeCount = 3;
+    public const int attributeCount = 3;
     public enum attributes {
-        power, poison, healing
+        Power, Poison, Healing
     }
 
 
@@ -27,21 +27,21 @@ public class Weapon {
 
     public void applyAttributesAfterAttack(GameObject weilder, GameObject attackedUnit) {
         foreach(var i in w_attributes) {
-            if(i == attributes.poison) {
+            if(i == attributes.Poison) {
                 attackedUnit.GetComponent<UnitClass>().stats.u_poisonCount++;
             }
 
-            else if(i == attributes.healing) {
-                weilder.GetComponent<UnitClass>().addHealth(weilder.GetComponent<UnitClass>().stats.u_maxHealth * 0.05f);
+            else if(i == attributes.Healing) {
+                weilder.GetComponent<UnitClass>().addHealth(weilder.GetComponent<UnitClass>().stats.getModifiedMaxHealth() * 0.05f);
             }
         }
     }
 
 
-    public float getPowerBonusDamage() {
+    public float getBonusAttributeDamage() {
         float temp = 0.0f;
         foreach(var i in w_attributes) {
-            if(i == attributes.power)
+            if(i == attributes.Power)
                 temp += w_power * 0.15f;
         }
 
@@ -61,6 +61,8 @@ public class Weapon {
     }
 
     public bool isEqualTo(Weapon other) {
+        if(other == null)
+            return false;
         if(w_attributes.Count == other.w_attributes.Count) {
             for(int i = 0; i < w_attributes.Count; i++) {
                 if(w_attributes[i] != other.w_attributes[i]) {

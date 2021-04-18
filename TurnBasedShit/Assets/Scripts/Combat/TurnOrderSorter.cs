@@ -51,12 +51,12 @@ public class TurnOrderSorter : MonoBehaviour {
     public GameObject setNextInTurnOrder() {
         //  removes current unit from list
         if(playingUnit != null) {
-            FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterTurn, playingUnit.GetComponent<UnitClass>());
+            FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterTurn, playingUnit.GetComponent<UnitClass>(), true);
             playingUnit.GetComponent<UnitClass>().stunned = false;
             FindObjectOfType<UnitTurnOrderHighlighting>().dehighlightUnit(playingUnit);
             unitsInPlay.Remove(playingUnit);
             FindObjectOfType<PartyObject>().saveParty();
-            FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterEachTurn, playingUnit.GetComponent<UnitClass>());
+            FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterEachTurn, playingUnit.GetComponent<UnitClass>(), false);
         }
 
         //  kills dead units
@@ -76,14 +76,15 @@ public class TurnOrderSorter : MonoBehaviour {
         //  resets round if needed
         if(unitsInPlay.Count == 0) {
             FindObjectOfType<UnitBattleMech>().resetBattleRound();
-            FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterRound, playingUnit.GetComponent<UnitClass>());
+            FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterRound, playingUnit.GetComponent<UnitClass>(), false);
+            return null;
         }
 
         //  sets next to unit with most speed
         var next = unitsInPlay[0];
         foreach(var i in unitsInPlay) {
             if(i != null) {
-                if(i.GetComponent<UnitClass>().stats.u_speed > next.GetComponent<UnitClass>().stats.u_speed)
+                if(i.GetComponent<UnitClass>().stats.getModifiedSpeed() > next.GetComponent<UnitClass>().stats.getModifiedSpeed())
                     next = i.gameObject;
             }
         }
@@ -94,8 +95,8 @@ public class TurnOrderSorter : MonoBehaviour {
         playingUnit.GetComponent<UnitClass>().prepareUnitForNextRound();
         FindObjectOfType<BattleOptionsCanvas>().runCombatLogic();
 
-        FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeTurn, playingUnit.GetComponent<UnitClass>());
-        FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeEachTurn, playingUnit.GetComponent<UnitClass>());
+        FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeTurn, playingUnit.GetComponent<UnitClass>(), true);
+        FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeEachTurn, playingUnit.GetComponent<UnitClass>(), false);
 
         return playingUnit;
     }

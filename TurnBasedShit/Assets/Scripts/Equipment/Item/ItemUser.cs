@@ -15,9 +15,9 @@ public class ItemUser : MonoBehaviour {
     List<ItemInfo> inplayItems = new List<ItemInfo>();
 
 
-    public void triggerTime(Item.useTimes time, UnitClass playingUnit) {
+    public void triggerTime(Item.useTimes time, UnitClass relevantUnit, bool needsRelevantUnitToBeHolder) {
         foreach(var i in inplayItems) {
-            if(canItemBeUsed(i, time, playingUnit))
+            if(canItemBeUsed(i, time, relevantUnit, needsRelevantUnitToBeHolder))
                 useItem(i);
         }
     }
@@ -34,20 +34,14 @@ public class ItemUser : MonoBehaviour {
     }
 
 
-    bool canItemBeUsed(ItemInfo itemInfo, Item.useTimes time, UnitClass playingUnit) {
+    bool canItemBeUsed(ItemInfo itemInfo, Item.useTimes time, UnitClass relevantUnit, bool needsRelevantUnitToBeHolder) {
         bool timeCondition = false;
         foreach(var i in itemInfo.item.i_useTimes) {
-            if(i == Item.useTimes.beforeTurn && i == time && playingUnit == itemInfo.holder) {
+            if(i == time && needsRelevantUnitToBeHolder && relevantUnit == itemInfo.holder) {
                 timeCondition = true;
                 break;
             }
-
-            else if(i == Item.useTimes.afterTurn && i == time && playingUnit == itemInfo.holder) {
-                timeCondition = true;
-                break;
-            }
-
-            else if(i == time) {
+            else if(i == time && !needsRelevantUnitToBeHolder) {
                 timeCondition = true;
                 break;
             }
@@ -62,11 +56,19 @@ public class ItemUser : MonoBehaviour {
 
     void useItem(ItemInfo itemInfo) {
         for(int i = 0; i < itemInfo.item.i_useEffects.Count; i++) {
-            switch(itemInfo.item.i_useEffects[i]) {
+            switch(itemInfo.item.i_useEffects[i].effect) {
                 //  recovers the holders health by the percentage of max health the mod is (Ex. mod = 1 - recovers 1% of max health)
-                case Item.useEffects.recoverHealth:
-                    float recoverPercentage = itemInfo.item.i_effectMods[i] / 100.0f;
-                    itemInfo.holder.addHealth(itemInfo.holder.stats.u_maxHealth * recoverPercentage);
+                case Item.useEffectTypes.modHealth:
+                    float healedAmount = itemInfo.holder.stats.getModifiedMaxHealth() * itemInfo.item.getHealthMod();
+                    float emptyHealth = itemInfo.holder.stats.getModifiedMaxHealth() - itemInfo.holder.stats.u_health;
+                    if(emptyHealth <= 0.0f) {
+                        itemInfo.holder.stats.u_health = itemInfo.holder.stats.getModifiedMaxHealth();
+                        break;
+                    }
+                    if(healedAmount > emptyHealth)
+                        healedAmount = emptyHealth;
+                    itemInfo.holder.addHealth(healedAmount);
+                    FindObjectOfType<DamageTextCanvas>().showTextForUnit(itemInfo.holder.gameObject, healedAmount, DamageTextCanvas.damageType.healed);
                     break;
             }
         }

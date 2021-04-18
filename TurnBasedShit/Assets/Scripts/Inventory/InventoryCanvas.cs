@@ -15,10 +15,10 @@ public class InventoryCanvas : MonoBehaviour {
     int activePage = 0;
 
     [SerializeField] GameObject weaponCanvas, armorCanvas, consumableCanvas, itemCanvas;
-    [SerializeField] GameObject unitWeaponImage, unitArmorImage;
+    [SerializeField] GameObject unitWeaponImage, unitArmorImage, unitItemImage;
 
     [SerializeField] GameObject shownUnitInformation;
-    UnitClassStats shownUnit = null;
+    UnitStats shownUnit = null;
 
     [SerializeField] TextMeshProUGUI coinCountText;
 
@@ -77,6 +77,8 @@ public class InventoryCanvas : MonoBehaviour {
                 wantedHit = unitWeaponImage.transform.parent.gameObject;
             if(armorCanvas.activeInHierarchy && hit.collider == unitArmorImage.transform.parent.GetComponent<Collider2D>())
                 wantedHit = unitArmorImage.transform.parent.gameObject;
+            if(itemCanvas.activeInHierarchy && hit.collider == unitItemImage.transform.parent.GetComponent<Collider2D>())
+                wantedHit = unitItemImage.transform.parent.gameObject;
 
             //  hit is a wanted object
             if(wantedHit != null) {
@@ -105,6 +107,8 @@ public class InventoryCanvas : MonoBehaviour {
             return shownUnit.equippedWeapon;
         if(slot == unitArmorImage.transform.parent.gameObject)
             return shownUnit.equippedArmor;
+        if(slot == unitItemImage.transform.parent.gameObject)
+            return shownUnit.equippedItem;
 
         int index = getSlotIndex(slot);
         if(index >= activeSlots.Count || index < 0)
@@ -154,10 +158,11 @@ public class InventoryCanvas : MonoBehaviour {
         heldObject = thing;
         if(thing == null)
             heldObject = null;
-        else if(thing.GetType() == typeof(Weapon) && ((Weapon)thing).isEmpty()) {
+        else if(thing.GetType() == typeof(Weapon) && ((Weapon)thing).isEmpty())
             heldObject = null;
-        }
         else if(thing.GetType() == typeof(Armor) && ((Armor)thing).isEmpty())
+            heldObject = null;
+        else if(thing.GetType() == typeof(Item) && ((Item)thing).isEmpty())
             heldObject = null;
         heldObjectPicture.SetActive(thing != null);
 
@@ -167,6 +172,9 @@ public class InventoryCanvas : MonoBehaviour {
 
             else if(thing.GetType() == typeof(Armor))
                 heldObjectPicture.GetComponent<Image>().sprite = ((Armor)thing).a_sprite.getSprite();
+
+            else if(thing.GetType() == typeof(Item))
+                heldObjectPicture.GetComponent<Image>().sprite = ((Item)thing).i_sprite.getSprite();
 
             else if(thing.GetType() == typeof(Consumable))
                 heldObjectPicture.GetComponent<Image>().sprite = ((Consumable)thing).c_sprite.getSprite();
@@ -179,6 +187,9 @@ public class InventoryCanvas : MonoBehaviour {
 
         else if(heldObject.GetType() == typeof(Armor))
             return ((Armor)heldObject).a_sprite.getSprite();
+
+        else if(heldObject.GetType() == typeof(Item))
+            return ((Item)heldObject).i_sprite.getSprite();
 
         else if(heldObject.GetType() == typeof(Consumable))
             return ((Consumable)heldObject).c_sprite.getSprite();
@@ -213,7 +224,7 @@ public class InventoryCanvas : MonoBehaviour {
     void updateUnitChange() {
         shownUnitInformation.transform.GetChild(2).GetComponent<Image>().sprite = shownUnit.u_sprite.getSprite();
         shownUnitInformation.transform.GetChild(2).GetComponent<Image>().color = shownUnit.u_color;
-        shownUnitInformation.GetComponentInChildren<Slider>().maxValue = shownUnit.u_maxHealth;
+        shownUnitInformation.GetComponentInChildren<Slider>().maxValue = shownUnit.getModifiedMaxHealth();
         shownUnitInformation.GetComponentInChildren<Slider>().value = shownUnit.u_health;
         shownUnitInformation.GetComponentInChildren<TextMeshProUGUI>().text = shownUnit.u_name;
 
@@ -228,6 +239,7 @@ public class InventoryCanvas : MonoBehaviour {
                 unitWeaponImage.GetComponent<Image>().sprite = shownUnit.equippedWeapon.w_sprite.getSprite();
             }
         }
+        //  equipped armor
         else if(armorCanvas.activeInHierarchy) {
             if(shownUnit.equippedArmor == null || shownUnit.equippedArmor.isEmpty()) {
                 unitArmorImage.GetComponent<Image>().sprite = null;
@@ -238,6 +250,17 @@ public class InventoryCanvas : MonoBehaviour {
                 unitArmorImage.GetComponent<Image>().sprite = shownUnit.equippedArmor.a_sprite.getSprite();
             }
         }
+        //  equipped item
+        else if(itemCanvas.activeInHierarchy) {
+            if(shownUnit.equippedItem == null || shownUnit.equippedItem.isEmpty()) {
+                unitItemImage.GetComponent<Image>().sprite = null;
+                unitItemImage.GetComponent<Image>().enabled = false;
+            }
+            else {
+                unitItemImage.GetComponent<Image>().enabled = true;
+                unitItemImage.GetComponent<Image>().sprite = shownUnit.equippedItem.i_sprite.getSprite();
+            }
+        }
     }
 
     public void selectObjectFromSlot() {
@@ -246,7 +269,7 @@ public class InventoryCanvas : MonoBehaviour {
         var obj = getObjectInSlot(slot);
 
         //  used slot is not in the active slots list
-        if(index < 0 && slot != unitWeaponImage.transform.parent.gameObject && slot != unitArmorImage.transform.parent.gameObject && slot != shownUnitInformation.transform.GetChild(2).transform.gameObject)
+        if(index < 0 && slot != unitWeaponImage.transform.parent.gameObject && slot != unitArmorImage.transform.parent.gameObject && slot != unitItemImage.transform.parent.gameObject && slot != shownUnitInformation.transform.GetChild(2).transform.gameObject)
             return;
 
         //  nothing to do
@@ -257,7 +280,7 @@ public class InventoryCanvas : MonoBehaviour {
             //  put down the current held object
             if(heldObject != null) {
                 //  slot is not a unit equipment
-                if(slot != unitWeaponImage.transform.parent.gameObject && slot != unitArmorImage.transform.parent.gameObject) {
+                if(slot != unitWeaponImage.transform.parent.gameObject && slot != unitArmorImage.transform.parent.gameObject && slot != unitItemImage.transform.parent.gameObject) {
                     activeObjects[index] = heldObject;
                     activeSlots[index].transform.GetChild(0).GetComponent<Image>().enabled = true;
                     activeSlots[index].transform.GetChild(0).GetComponent<Image>().sprite = getHeldObjectSprite();
@@ -265,6 +288,7 @@ public class InventoryCanvas : MonoBehaviour {
 
                 //  slot is a unit equipment
                 else {
+                    //  Weapon
                     if(weaponCanvas.activeInHierarchy) {
                         //  sets the unit's weapon to the held object
                         shownUnit.equippedWeapon = (Weapon)heldObject;
@@ -282,6 +306,7 @@ public class InventoryCanvas : MonoBehaviour {
                         unitWeaponImage.GetComponent<Image>().enabled = true;
                         unitWeaponImage.GetComponent<Image>().sprite = getHeldObjectSprite();
                     }
+                    //  Armor 
                     else if(armorCanvas.activeInHierarchy) {
                         shownUnit.equippedArmor = (Armor)heldObject;
                         FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
@@ -296,13 +321,28 @@ public class InventoryCanvas : MonoBehaviour {
                         unitArmorImage.GetComponent<Image>().enabled = true;
                         unitArmorImage.GetComponent<Image>().sprite = getHeldObjectSprite();
                     }
+                    //  Item
+                    else if(itemCanvas.activeInHierarchy) {
+                        shownUnit.equippedItem = (Item)heldObject;
+                        FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
+
+                        if(obj != null && !((Item)obj).isEmpty())
+                            Inventory.addItem((Item)obj);
+                        else
+                            obj = null;
+
+                        Inventory.removeItem((Item)heldObject);
+
+                        unitItemImage.GetComponent<Image>().enabled = true;
+                        unitItemImage.GetComponent<Image>().sprite = getHeldObjectSprite();
+                    }
                 }
             }
 
             //   takes object in slot
             else {
                 //  slot is not a unit equipment
-                if(slot != unitWeaponImage.transform.parent.gameObject && slot != unitArmorImage.transform.parent.gameObject) {
+                if(slot != unitWeaponImage.transform.parent.gameObject && slot != unitArmorImage.transform.parent.gameObject && slot != unitItemImage.transform.parent.gameObject) {
                     activeObjects[index] = null;
                     slot.transform.GetChild(0).GetComponent<Image>().sprite = null;
                     slot.transform.GetChild(0).GetComponent<Image>().enabled = false;
@@ -310,6 +350,7 @@ public class InventoryCanvas : MonoBehaviour {
 
                 //  slot is a unit equipment
                 else {
+                    //  Weapon
                     if(weaponCanvas.activeInHierarchy) {
                         shownUnit.equippedWeapon = null;
                         FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
@@ -321,6 +362,7 @@ public class InventoryCanvas : MonoBehaviour {
                         if(obj != null && !((Weapon)obj).isEmpty())
                             Inventory.addWeapon((Weapon)obj);
                     }
+                    //  Armor
                     else if(armorCanvas.activeInHierarchy) {
                         shownUnit.equippedArmor = null;
                         FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
@@ -330,6 +372,17 @@ public class InventoryCanvas : MonoBehaviour {
 
                         if(obj != null && !((Armor)obj).isEmpty())
                             Inventory.addArmor((Armor)obj);
+                    }
+                    //  Item
+                    else if(itemCanvas.activeInHierarchy) {
+                        shownUnit.equippedItem = null;
+                        FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
+
+                        unitItemImage.GetComponent<Image>().sprite = null;
+                        unitItemImage.GetComponent<Image>().enabled = false;
+
+                        if(obj != null && !((Item)obj).isEmpty())
+                            Inventory.addItem((Item)obj);
                     }
                 }
             }
@@ -463,6 +516,22 @@ public class InventoryCanvas : MonoBehaviour {
             }
         }
 
+        //  item
+        else if(itemCanvas.activeInHierarchy) {
+            for(int i = 0; i < activeSlots.Count; i++) {
+                activeSlots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
+                activeObjects.Add(null);
+
+                Item it = Inventory.getItem(i + (activeSlots.Count * activePage));
+                if(it != null) {
+                    activeSlots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
+                    activeSlots[i].transform.GetChild(0).GetComponent<Image>().sprite = it.i_sprite.getSprite();
+
+                    activeObjects[i] = it;
+                }
+            }
+        }
+
         //  consumable
         else if(consumableCanvas.activeInHierarchy) {
             List<List<Consumable>> groups = new List<List<Consumable>>();
@@ -505,22 +574,6 @@ public class InventoryCanvas : MonoBehaviour {
                     activeSlots[i].transform.GetChild(1).GetComponent<Image>().sprite = cons[0].c_sprite.getSprite();
 
                     activeObjects[i] = cons[0];
-                }
-            }
-        }
-
-        //  item
-        else if(itemCanvas.activeInHierarchy) {
-            for(int i = 0; i < activeSlots.Count; i++) {
-                activeSlots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
-                activeObjects.Add(null);
-
-                Item it = Inventory.getItem(i + (activeSlots.Count * activePage));
-                if(it != null) {
-                    activeSlots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
-                    activeSlots[i].transform.GetChild(0).GetComponent<Image>().sprite = it.i_sprite.getSprite();
-
-                    activeObjects[i] = it;
                 }
             }
         }

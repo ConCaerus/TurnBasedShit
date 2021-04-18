@@ -18,16 +18,15 @@ public class EnemyUnitSpawner : MonoBehaviour {
 
         foreach(var i in info.enemies) {
             var obj = Instantiate(enemyPreset.gameObject);
-            Randomizer.randomizeUnitStats(i);
-            obj.name = "Enemy: " + i.u_name;
-            obj.GetComponent<SpriteRenderer>().sprite = i.u_sprite.getSprite();
+            UnitStats stats = Randomizer.randomizeUnitStats(i);
+            obj.name = "Enemy: " + stats.u_name;
+            obj.GetComponent<SpriteRenderer>().sprite = stats.u_sprite.getSprite();
+            obj.GetComponent<UnitClass>().stats = stats;
 
             //  sets a random position
             var rand = Random.Range(0, unusedSpawnPoses.Count);
             obj.transform.position = unusedSpawnPoses[rand].transform.position;
             unusedSpawnPoses.RemoveAt(rand);
-
-            obj.GetComponent<UnitClass>().stats = i;
         }
     }
 }

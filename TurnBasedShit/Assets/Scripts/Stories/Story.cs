@@ -17,7 +17,7 @@ public class Story : ScriptableObject {
     public string chooseUnitToAffectPrompt = "";
     public float affectedUnitMod = 0.0f;
     public partyAffectors affect;
-    UnitClassStats affectedUnit = null;
+    UnitStats affectedUnit = null;
 
     public bool isEnd = false;
     public List<Choice> choices = new List<Choice>();
@@ -91,7 +91,7 @@ public class Story : ScriptableObject {
             case partyAffectors.unitHealth:
                 //  adds or removes the health
                 if(affectedUnitMod > 0.0f) {
-                    affectedUnit.u_health = Mathf.Clamp(affectedUnit.u_health + affectedUnitMod, -100.0f, affectedUnit.u_maxHealth);
+                    affectedUnit.u_health = Mathf.Clamp(affectedUnit.u_health + affectedUnitMod, -100.0f, affectedUnit.getModifiedMaxHealth());
 
                     c1.text = affectedUnit.u_name + " gained " + affectedUnitMod.ToString() + " HP";
                 }
@@ -105,7 +105,7 @@ public class Story : ScriptableObject {
                 //  checks if the unit died
                 if(affectedUnit.u_health <= 0.0f) {
                     c2.text = affectedUnit.u_name + " died";
-                    Party.removeUnitAtIndex(affectedUnit.u_order);
+                    Party.removeUnit(affectedUnit.u_order);
                 }
                 break;
 
@@ -116,13 +116,13 @@ public class Story : ScriptableObject {
                 break;
 
             case partyAffectors.killUnit:
-                Party.removeUnitAtIndex(affectedUnit.u_order);
+                Party.removeUnit(affectedUnit.u_order);
 
                 c1.text = affectedUnit.u_name + " has died";
                 break;
 
             case partyAffectors.killRandUnit:
-                Party.removeUnitAtIndex(affectedUnit.u_order);
+                Party.removeUnit(affectedUnit.u_order);
 
                 c1.text = affectedUnit.u_name + " has died";
                 break;
@@ -143,10 +143,10 @@ public class Story : ScriptableObject {
         }
         return chooseUnitStory;
     }
-    public string getRelevantUnitInformation(UnitClassStats stats) {
+    public string getRelevantUnitInformation(UnitStats stats) {
         switch(affect) {
             case partyAffectors.unitHealth:
-                return ": " + stats.u_health.ToString() + " / " + stats.u_maxHealth.ToString();
+                return ": " + stats.u_health.ToString() + " / " + stats.getModifiedMaxHealth().ToString();
         }
         return "";
     }

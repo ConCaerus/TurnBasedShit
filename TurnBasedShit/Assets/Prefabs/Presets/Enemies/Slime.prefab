@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 6037864551336239585}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.75, y: 1.96, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -123,7 +123,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.4, y: 1.055}
+    oldSize: {x: 1.92, y: 0.844}
     newSize: {x: 0.5, y: 0.5}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -154,10 +154,11 @@ MonoBehaviour:
   armor: {fileID: 0}
   stats:
     u_name: Slime
-    u_health: 48.672474
-    u_maxHealth: 48.672474
-    u_speed: -4.297677
+    u_maxHealth: 50
+    u_health: 50
+    u_speed: 0
     u_power: 1
+    u_critChance: 0
     u_poisonCount: 0
     u_order: 0
     equippedWeapon:
@@ -180,8 +181,24 @@ MonoBehaviour:
       a_sprite:
         sprite: {fileID: 0}
         sInfo: 
+    equippedItem:
+      i_name: 
+      i_rarity: 0
+      i_useTimes: 
+      i_useConditions: 
+      i_useEffects: []
+      i_coinCost: 0
+      i_sprite:
+        sprite: {fileID: 0}
+        sInfo: 
     u_sprite:
       sprite: {fileID: 21300000, guid: 2071b404b24180349b61f141df41aedb, type: 3}
       sInfo: 
     u_color: {r: 1, g: 1, b: 1, a: 1}
+    u_slaveStats:
+      isSlave: 0
+      escapeDesire: 0
+      scaredModifier: 1.5
+      idealWeathLevel: 2
+    u_traits: []
   enemyDiff: 1

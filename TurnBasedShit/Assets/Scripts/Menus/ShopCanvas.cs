@@ -9,9 +9,9 @@ public class ShopCanvas : MonoBehaviour {
     [SerializeField] TextMeshProUGUI costText;
     [SerializeField] GameObject slotHolder, slotObject;
 
-    [SerializeField] float slotTopY, slotBotY;
+    [SerializeField] float slotTopY = 120, slotBotY = -120;
     [SerializeField] float slotBuffer = 10.0f;
-    [SerializeField] float scrollSpeed = 1.0f;
+    [SerializeField] float scrollSpeed = 35.0f;
 
     List<GameObject> slots = new List<GameObject>();
     GameObject selectedSlot;
@@ -19,7 +19,7 @@ public class ShopCanvas : MonoBehaviour {
     //  0 - Buying, 1 - Selling
     int shopState = 0;
 
-    //  0 - Weapon, 1 - armor, 2 - consumable, 3 - item
+    //  0 - Weapon, 1 - armor, 2 - consumable, 3 - item, 4 - slave
     int slotState = 0;
 
     private void Start() {
@@ -32,6 +32,9 @@ public class ShopCanvas : MonoBehaviour {
         if(Input.GetMouseButtonDown(0) && getMousedOverSlot() != null) {
             selectedSlot = getMousedOverSlot();
             updateInfo();
+
+            if(selectedSlot != null && slotState == 4)
+                Debug.Log(ShopInventory.getSlave(FindObjectOfType<TownInstance>().town.t_index, getSelectedSlotIndex()).u_slaveStats.escapeDesire);
         }
     }
 
@@ -87,7 +90,7 @@ public class ShopCanvas : MonoBehaviour {
         return -1;
     }
 
-    void updateInfo() {
+    public void updateInfo() {
         Town currentTown = FindObjectOfType<TownInstance>().town;
         coinCounter.text = Inventory.getCoinCount().ToString();
         if(shopState == 0) {
@@ -107,7 +110,7 @@ public class ShopCanvas : MonoBehaviour {
                 i.GetComponent<Image>().color = Color.black;
         }
 
-        if(selectedSlot != null && getSelectedSlotIndex() > -1) {
+        if(selectedSlot != null && getSelectedSlotIndex() > -1 && slots.Count > 0) { 
             selectedSlot.GetComponent<Image>().color = Color.grey;
 
             switch(slotState) {
@@ -115,15 +118,17 @@ public class ShopCanvas : MonoBehaviour {
                 case 0:
                     //  Buying 
                     if(shopState == 0) {
-                        nameText.text = ((Weapon)ShopInventory.getObject(currentTown.t_index, getSelectedSlotIndex(), typeof(Weapon))).w_name;
-                        costText.text = getBuyPrice(((Weapon)ShopInventory.getObject(currentTown.t_index, getSelectedSlotIndex(), typeof(Weapon))).w_coinCost).ToString() + "c";
+                        Weapon w = ShopInventory.getWeapon(currentTown.t_index, getSelectedSlotIndex());
+                        nameText.text = w.w_name;
+                        costText.text = getBuyPrice(w.w_coinCost).ToString() + "c";
                         break;
                     }
 
                     //  Selling
                     else if(shopState == 1) {
-                        nameText.text = Inventory.getWeapon(getSelectedSlotIndex()).w_name;
-                        costText.text = getSellPrice(Inventory.getWeapon(getSelectedSlotIndex()).w_coinCost).ToString() + "c";
+                        Weapon w = Inventory.getWeapon(getSelectedSlotIndex());
+                        nameText.text = w.w_name;
+                        costText.text = getSellPrice(w.w_coinCost).ToString() + "c";
                         break;
                     }
                     break;
@@ -131,15 +136,17 @@ public class ShopCanvas : MonoBehaviour {
                 //  Armor
                 case 1://  Buying 
                     if(shopState == 0) {
-                        nameText.text = ((Armor)ShopInventory.getObject(currentTown.t_index, getSelectedSlotIndex(), typeof(Armor))).a_name;
-                        costText.text = getBuyPrice(((Armor)ShopInventory.getObject(currentTown.t_index, getSelectedSlotIndex(), typeof(Armor))).a_coinCost).ToString() + "c";
+                        Armor a = ShopInventory.getArmor(currentTown.t_index, getSelectedSlotIndex());
+                        nameText.text = a.a_name;
+                        costText.text = getBuyPrice(a.a_coinCost).ToString() + "c";
                         break;
                     }
 
                     //  Selling
                     else if(shopState == 1) {
-                        nameText.text = Inventory.getArmor(getSelectedSlotIndex()).a_name;
-                        costText.text = getSellPrice(Inventory.getArmor(getSelectedSlotIndex()).a_coinCost).ToString() + "c";
+                        Armor a = Inventory.getArmor(getSelectedSlotIndex());
+                        nameText.text = a.a_name;
+                        costText.text = getSellPrice(a.a_coinCost).ToString() + "c";
                         break;
                     }
                     break;
@@ -148,15 +155,17 @@ public class ShopCanvas : MonoBehaviour {
                 case 2:
                     //  Buying 
                     if(shopState == 0) {
-                        nameText.text = ((Consumable)ShopInventory.getObject(currentTown.t_index, getSelectedSlotIndex(), typeof(Consumable))).c_name;
-                        costText.text = getBuyPrice(((Consumable)ShopInventory.getObject(currentTown.t_index, getSelectedSlotIndex(), typeof(Consumable))).c_coinCost).ToString() + "c";
+                        Consumable c = ShopInventory.getConsumable(currentTown.t_index, getSelectedSlotIndex());
+                        nameText.text = c.c_name;
+                        costText.text = getBuyPrice(c.c_coinCost).ToString() + "c";
                         break;
                     }
 
                     //  Selling
                     else if(shopState == 1) {
-                        nameText.text = (Inventory.getConsumable(getSelectedSlotIndex())).c_name;
-                        costText.text = getSellPrice(Inventory.getConsumable(getSelectedSlotIndex()).c_coinCost).ToString() + "c";
+                        Consumable c = Inventory.getConsumable(getSelectedSlotIndex());
+                        nameText.text = c.c_name;
+                        costText.text = getSellPrice(c.c_coinCost).ToString() + "c";
                         break;
                     }
                     break;
@@ -165,15 +174,36 @@ public class ShopCanvas : MonoBehaviour {
                 case 3:
                     //  Buying 
                     if(shopState == 0) {
-                        nameText.text = ((Item)ShopInventory.getObject(currentTown.t_index, getSelectedSlotIndex(), typeof(Item))).i_name;
-                        costText.text = getBuyPrice(((Item)ShopInventory.getObject(currentTown.t_index, getSelectedSlotIndex(), typeof(Item))).i_coinCost).ToString() + "c";
+                        Item i = ShopInventory.getItem(currentTown.t_index, getSelectedSlotIndex());
+                        nameText.text = i.i_name;
+                        costText.text = getBuyPrice(i.i_coinCost).ToString() + "c";
                         break;
                     }
 
                     //  Selling
                     else if(shopState == 1) {
-                        nameText.text = Inventory.getItem(getSelectedSlotIndex()).i_name;
-                        costText.text = getSellPrice(Inventory.getItem(getSelectedSlotIndex()).i_coinCost).ToString() + "c";
+                        Item i = Inventory.getItem(getSelectedSlotIndex());
+                        nameText.text = i.i_name;
+                        costText.text = getSellPrice(i.i_coinCost).ToString() + "c";
+                        break;
+                    }
+                    break;
+
+                //  Slave
+                case 4:
+                    //  Buying 
+                    if(shopState == 0) {
+                        UnitStats stats = ShopInventory.getSlave(currentTown.t_index, getSelectedSlotIndex());
+                        nameText.text = stats.u_name;
+                        costText.text = getBuyPrice(stats.determineCost()).ToString() + "c";
+                        break;
+                    }
+
+                    //  Selling
+                    else if(shopState == 1) {
+                        UnitStats stats = Party.getMemberStats(getSelectedSlotIndex());
+                        nameText.text = stats.u_name;
+                        costText.text = getSellPrice(stats.determineCost()).ToString() + "c";
                         break;
                     }
                     break;
@@ -200,29 +230,48 @@ public class ShopCanvas : MonoBehaviour {
                 //  Weapons
                 case 0:
                     int weaponCount = ShopInventory.getTypeCount(currentTown.t_index, typeof(Weapon));
+                    if(weaponCount <= 0)
+                        break;
                     for(int i = 0; i < weaponCount; i++)
-                        createNewSlot(i, ((Weapon)ShopInventory.getObject(currentTown.t_index, i, typeof(Weapon))).w_sprite.getSprite());
+                        createNewSlot(i, ShopInventory.getWeapon(currentTown.t_index, i).w_sprite.getSprite(), Color.white);
                     break;
 
                 //  Armor
                 case 1:
                     int armorCount = ShopInventory.getTypeCount(currentTown.t_index, typeof(Armor));
+                    if(armorCount <= 0)
+                        break;
                     for(int i = 0; i < armorCount; i++)
-                        createNewSlot(i, ((Armor)ShopInventory.getObject(currentTown.t_index, i, typeof(Armor))).a_sprite.getSprite());
+                        createNewSlot(i, ShopInventory.getArmor(currentTown.t_index, i).a_sprite.getSprite(), Color.white);
                     break;
 
                 //  Consumable
                 case 2:
                     int consumableCount = ShopInventory.getTypeCount(currentTown.t_index, typeof(Consumable));
+                    if(consumableCount <= 0)
+                        break;
                     for(int i = 0; i < consumableCount; i++)
-                        createNewSlot(i, ((Consumable)ShopInventory.getObject(currentTown.t_index, i, typeof(Consumable))).c_sprite.getSprite());
+                        createNewSlot(i, ShopInventory.getConsumable(currentTown.t_index, i).c_sprite.getSprite(), Color.white);
                     break;
 
                 //  Item
                 case 3:
                     int itemCount = ShopInventory.getTypeCount(currentTown.t_index, typeof(Item));
+                    if(itemCount <= 0)
+                        break;
                     for(int i = 0; i < itemCount; i++)
-                        createNewSlot(i, ((Item)ShopInventory.getObject(currentTown.t_index, i, typeof(Item))).i_sprite.getSprite());
+                        createNewSlot(i, ShopInventory.getItem(currentTown.t_index, i).i_sprite.getSprite(), Color.white);
+                    break;
+
+                //  Slave
+                case 4:
+                    int slaveCount = ShopInventory.getTypeCount(currentTown.t_index, typeof(UnitStats));
+                    if(slaveCount <= 0)
+                        break;
+                    for(int i = 0; i < slaveCount; i++) {
+                        ShopInventory.getSlave(currentTown.t_index, i).u_sprite.setSprite();
+                        createNewSlot(i, ShopInventory.getSlave(currentTown.t_index, i).u_sprite.getSprite(), ShopInventory.getSlave(currentTown.t_index, i).u_color);
+                    }
                     break;
             }
         }
@@ -232,49 +281,56 @@ public class ShopCanvas : MonoBehaviour {
             switch(slotState) {
                 //  Weapons
                 case 0:
-                    if(Inventory.getTypeCount(typeof(Weapon)) == 0)
+                    if(Inventory.getTypeCount(typeof(Weapon)) <= 0)
                         break;
 
                     for(int i = 0; i < Inventory.getTypeCount(typeof(Weapon)); i++)
-                        createNewSlot(i, Inventory.getWeapon(i).w_sprite.getSprite());
+                        createNewSlot(i, Inventory.getWeapon(i).w_sprite.getSprite(), Color.white);
                     break;
 
                 //  Armor
                 case 1:
-                    if(Inventory.getTypeCount(typeof(Armor)) == 0)
+                    if(Inventory.getTypeCount(typeof(Armor)) <= 0)
                         break;
 
                     for(int i = 0; i < Inventory.getTypeCount(typeof(Armor)); i++)
-                        createNewSlot(i, Inventory.getArmor(i).a_sprite.getSprite());
+                        createNewSlot(i, Inventory.getArmor(i).a_sprite.getSprite(), Color.white);
                     break;
 
                 //  Consumable
                 case 2:
-                    if(Inventory.getTypeCount(typeof(Consumable)) == 0)
+                    if(Inventory.getTypeCount(typeof(Consumable)) <= 0)
                         break;
 
                     for(int i = 0; i < Inventory.getTypeCount(typeof(Consumable)); i++)
-                        createNewSlot(i, Inventory.getConsumable(i).c_sprite.getSprite());
+                        createNewSlot(i, Inventory.getConsumable(i).c_sprite.getSprite(), Color.white);
                     break;
 
                 //  Item
                 case 3:
-                    if(Inventory.getTypeCount(typeof(Item)) == 0)
+                    if(Inventory.getTypeCount(typeof(Item)) <= 0)
                         break;
 
                     for(int i = 0; i < Inventory.getTypeCount(typeof(Item)); i++)
-                        createNewSlot(i, Inventory.getItem(i).i_sprite.getSprite());
+                        createNewSlot(i, Inventory.getItem(i).i_sprite.getSprite(), Color.white);
+                    break;
+
+                //  Slave
+                case 4:
+                    if(Party.getPartySize() <= 0)
+                        break;
+
+                    for(int i = 0; i < Party.getPartySize(); i++)
+                        createNewSlot(i, Party.getMemberStats(i).u_sprite.getSprite(), Party.getMemberStats(i).u_color);
                     break;
             }
-
-            selectedSlot = slots[0];
         }
 
         if(slots.Count > 0)
             scrollThoughList();
         updateInfo();
     }
-    GameObject createNewSlot(int index, Sprite sp) {
+    GameObject createNewSlot(int index, Sprite sp, Color spriteColor) {
         var obj = Instantiate(slotObject, slotHolder.transform);
 
         //  position and scale
@@ -290,6 +346,7 @@ public class ShopCanvas : MonoBehaviour {
         //  text and images
         obj.GetComponentInChildren<TextMeshProUGUI>().text = index.ToString();
         obj.transform.GetChild(1).GetComponent<Image>().sprite = sp;
+        obj.transform.GetChild(1).GetComponent<Image>().color = spriteColor;
 
         slots.Add(obj);
         return obj;
@@ -339,51 +396,64 @@ public class ShopCanvas : MonoBehaviour {
                 switch(slotState) {
                     //  Weapon
                     case 0:
-                        Weapon weaponInSlot = (Weapon)ShopInventory.getObject(townIndex, getSelectedSlotIndex(), typeof(Weapon));
+                        Weapon weaponInSlot = ShopInventory.getWeapon(townIndex, getSelectedSlotIndex());
                         var wPrice = getBuyPrice(weaponInSlot.w_coinCost);
 
                         if(Inventory.getCoinCount() >= wPrice) {
                             Inventory.removeCoins(wPrice);
                             Inventory.addWeapon(weaponInSlot);
-                            ShopInventory.removeFromIndex(townIndex, getSelectedSlotIndex(), typeof(Weapon));
+                            ShopInventory.removeWeapon(townIndex, getSelectedSlotIndex());
                         }
                         break;
 
                     //  Armor
                     case 1:
-                        Armor armorInSlot = (Armor)ShopInventory.getObject(townIndex, getSelectedSlotIndex(), typeof(Armor));
+                        Armor armorInSlot = ShopInventory.getArmor(townIndex, getSelectedSlotIndex());
                         var aPrice = getBuyPrice(armorInSlot.a_coinCost);
 
                         if(Inventory.getCoinCount() >= aPrice) {
                             Inventory.removeCoins(aPrice);
                             Inventory.addArmor(armorInSlot);
-                            ShopInventory.removeFromIndex(townIndex, getSelectedSlotIndex(), typeof(Armor));
+                            ShopInventory.removeArmor(townIndex, getSelectedSlotIndex());
                         }
                         break;
 
                     //  Consumable
                     case 2:
-                        Consumable consumableInSlot = (Consumable)ShopInventory.getObject(townIndex, getSelectedSlotIndex(), typeof(Consumable));
+                        Consumable consumableInSlot = ShopInventory.getConsumable(townIndex, getSelectedSlotIndex());
                         var cPrice = getBuyPrice(consumableInSlot.c_coinCost);
 
                         if(Inventory.getCoinCount() >= cPrice) {
                             Inventory.removeCoins(cPrice);
                             Inventory.addConsumable(consumableInSlot);
-                            ShopInventory.removeFromIndex(townIndex, getSelectedSlotIndex(), typeof(Consumable));
+                            ShopInventory.removeConsumable(townIndex, getSelectedSlotIndex());
                         }
                         break;
 
                     //  Item
                     case 3:
-                        Item itemInSlot = (Item)ShopInventory.getObject(townIndex, getSelectedSlotIndex(), typeof(Item));
+                        Item itemInSlot = ShopInventory.getItem(townIndex, getSelectedSlotIndex());
                         var iPrice = getBuyPrice(itemInSlot.i_coinCost);
 
                         if(Inventory.getCoinCount() >= iPrice) {
                             Inventory.removeCoins(iPrice);
                             Inventory.addItem(itemInSlot);
-                            ShopInventory.removeFromIndex(townIndex, getSelectedSlotIndex(), typeof(Item));
+                            ShopInventory.removeItem(townIndex, getSelectedSlotIndex());
                         }
                         break;
+
+                    //  Slaves
+                    case 4:
+                        UnitStats statsInSlot = ShopInventory.getSlave(townIndex, getSelectedSlotIndex());
+                        var uPrice = statsInSlot.determineCost();
+
+                        if(Inventory.getCoinCount() >= uPrice) {
+                            Inventory.removeCoins(uPrice);
+                            Party.addNewUnit(statsInSlot);
+                            ShopInventory.removeSlave(townIndex, getSelectedSlotIndex());
+                        }
+                        break;
+                        
                 }
             }
 
@@ -413,8 +483,15 @@ public class ShopCanvas : MonoBehaviour {
                         Inventory.addCoins(getSellPrice(Inventory.getItem(getSelectedSlotIndex()).i_coinCost));
                         Inventory.removeItem(getSelectedSlotIndex());
                         break;
+
+                    //  Slave
+                    case 4:
+                        Inventory.addCoins(getSellPrice(Party.getMemberStats(getSelectedSlotIndex()).determineCost()));
+                        Party.removeUnit(getSelectedSlotIndex());
+                        break;
                 }
             }
+            selectedSlot = null;
             createSlots();
             updateInfo();
         }
@@ -426,5 +503,12 @@ public class ShopCanvas : MonoBehaviour {
 
     public int getSellPrice(float originalPrice) {
         return (int)Mathf.Clamp(originalPrice - (originalPrice * FindObjectOfType<TownInstance>().town.shopSellReduction), 1, Mathf.Infinity);
+    }
+
+    public void resetShop() {
+        ShopInventory.populateShop(FindObjectOfType<TownInstance>().town.t_index, GameInfo.getDiffRegion(), FindObjectOfType<PresetLibrary>());
+
+        createSlots();
+        updateInfo();
     }
 }

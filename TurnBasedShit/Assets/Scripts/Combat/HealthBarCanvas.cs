@@ -16,7 +16,7 @@ public class HealthBarCanvas : MonoBehaviour {
         }
 
         public void setMaxBarValue() {
-            bar.maxValue = unit.GetComponent<UnitClass>().stats.u_maxHealth;
+            bar.maxValue = unit.GetComponent<UnitClass>().stats.getModifiedMaxHealth();
         }
 
         public void destroyHealthBar() {
@@ -48,10 +48,10 @@ public class HealthBarCanvas : MonoBehaviour {
 
     public void createHealthBar(UnitClass unit) {
         var bar = Instantiate(barPrefab, transform);
-        var yOffset = new Vector3(0.0f, unit.gameObject.transform.localScale.y / 1.0f, 0.0f);
+        var yOffset = new Vector3(0.0f, unit.gameObject.transform.localScale.y / 0.5f, 0.0f);
         var target = unit.gameObject.transform.position + yOffset;
         bar.transform.position = new Vector3(target.x, target.y, bar.transform.position.z);
-        bar.maxValue = unit.stats.u_maxHealth;
+        bar.maxValue = unit.stats.getModifiedMaxHealth();
         bar.value = unit.stats.u_health;
         var temp = new healthBar();
         temp.unit = unit.gameObject;

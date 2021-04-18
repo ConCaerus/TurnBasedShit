@@ -4,9 +4,9 @@ using UnityEngine;
 
 [System.Serializable]
 public class Armor {
-    const int attributeCount = 3;
+    public const int attributeCount = 3;
     public enum attributes {
-        turtle, reflex, healing
+        Turtle, Reflex, Healing
     }
 
     public string a_name;
@@ -26,21 +26,26 @@ public class Armor {
     //          weapon class has its function called by the attacker
     public void applyAttributesAfterAttack(GameObject weilder, GameObject attacker) {
         foreach(var i in a_attributes) {
-            if(i == attributes.reflex && !weilder.GetComponent<UnitClass>().attacking) {
+            if(i == attributes.Reflex && !weilder.GetComponent<UnitClass>().attacking) {
                 weilder.GetComponent<UnitClass>().attackUnit(attacker);
             }
-            else if(i == attributes.healing) {
+            else if(i == attributes.Healing) {
                 weilder.GetComponent<UnitClass>().addHealth(a_defence * 0.25f);
             }
         }
     }
 
 
-    public float getTurtleBonusDefence() {
+    public float getDefenceMult() {
+        return a_defence / 100.0f;
+    }
+
+
+    public float getBonusAttributeDefenceMult() {
         float temp = 0.0f;
         foreach(var i in a_attributes) {
-            if(i == attributes.turtle) {
-                temp += a_defence * 0.15f;
+            if(i == attributes.Turtle) {
+                temp += 0.15f;
             }
         }
         return temp;
@@ -59,6 +64,8 @@ public class Armor {
     }
 
     public bool isEqualTo(Armor other) {
+        if(other == null)
+            return false;
         if(a_attributes.Count == other.a_attributes.Count) {
             for(int i = 0; i < a_attributes.Count; i++) {
                 if(a_attributes[i] != other.a_attributes[i]) {

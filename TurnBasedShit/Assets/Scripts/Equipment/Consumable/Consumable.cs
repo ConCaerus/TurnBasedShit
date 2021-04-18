@@ -20,7 +20,7 @@ public class Consumable {
     public SpriteLoader c_sprite;
 
     
-    public UnitClassStats applyEffect(GameObject unit) {
+    public UnitStats applyEffect(GameObject unit) {
         var uc = unit.GetComponent<UnitClass>();
         switch(c_effect) {
             case effects.heal:
