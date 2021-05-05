@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class UnitBattleMech : MonoBehaviour {
     [SerializeField] GameObject battleResultsCanvas;
+
+    [SerializeField] ParticleSystem bloodParticles;
 
     bool battleEnded = false;
 
@@ -31,6 +34,9 @@ public class UnitBattleMech : MonoBehaviour {
 
 
     public void endBattle() {
+        //  flair
+        FindObjectOfType<CombatCameraController>().moveToMiddle();
+
         //  enemies killed all of the players units
         if(FindObjectsOfType<PlayerUnitInstance>().Length == 0) {
             //  do stuff.

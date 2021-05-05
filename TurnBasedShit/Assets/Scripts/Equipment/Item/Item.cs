@@ -7,7 +7,7 @@ public class Item {
     //  times at which the item is used
     [System.Serializable]
     public enum useTimes {
-        beforeEachTurn, afterEachTurn, beforeTurn, afterTurn, afterRound, beforeAttacked
+        beforeEachTurn, afterEachTurn, beforeTurn, afterTurn, afterRound, beforeDefending, beforeAttacking
     }
     //  conditions that have to be met before the item can be used
     [System.Serializable]
@@ -118,7 +118,29 @@ public class Item {
         return name && rarity && cost;
     }
 
+    public void setEqualTo(Item other) {
+
+        i_useTimes.Clear();
+        for(int i = 0; i < i_useTimes.Count; i++) {
+            i_useTimes[i] = other.i_useTimes[i];
+        }
+
+        i_useConditions.Clear();
+        for(int i = 0; i < i_useConditions.Count; i++) {
+            i_useConditions[i] = other.i_useConditions[i];
+        }
+
+        i_useEffects.Clear();
+        for(int i = 0; i < i_useEffects.Count; i++) {
+            i_useEffects[i] = other.i_useEffects[i];
+        }
+
+        i_name = other.i_name;
+        i_rarity = other.i_rarity;
+        i_coinCost = other.i_coinCost;
+    }
+
     public bool isEmpty() {
-        return string.IsNullOrEmpty(i_name) && i_useTimes.Count == 0 && i_useConditions.Count == 0 && i_useEffects.Count == 0;
+        return string.IsNullOrEmpty(i_name) && i_useTimes.Count == 0 && i_useConditions.Count == 0 && i_useEffects.Count == 0 && i_sprite.getSprite(true) == null;
     }
 }

@@ -34,13 +34,12 @@ public class TownInstance : MonoBehaviour {
     public List<Vector2> buildingSpawnPoses = new List<Vector2>();
 
     private void Awake() {
-        if(GameInfo.getCurrentTownIndex() == -1) {
+        if(GameInfo.getCurrentMapLocation() == null || GameInfo.getCurrentMapLocation().type != MapLocation.locationType.town) {
             town = TownLibrary.addNewTownAndSetIndex(new Town(buildingCount));
             ShopInventory.populateShop(town.t_index, GameInfo.getDiffRegion(), FindObjectOfType<PresetLibrary>());
-            GameInfo.setCurrentTownIndex(town.t_index - 1);
         }
         else
-            town = TownLibrary.getTown(GameInfo.getCurrentTownIndex());
+            town = TownLibrary.getTown(((TownLocation)GameInfo.getCurrentMapLocation()).town.t_index);
     }
 
 

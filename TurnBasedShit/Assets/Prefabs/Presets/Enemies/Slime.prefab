@@ -145,8 +145,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackingTarget: {fileID: 0}
+  bloodParticles: {fileID: 2915087688519792205, guid: 4fdf5a70cefb9dc409fa113f55c33321,
+    type: 3}
+  hitColor: {r: 0.83137256, g: 0.22352941, b: 0.22352941, a: 1}
   isPlayerUnit: 0
-  attacking: 0
   defending: 0
   stunned: 0
   isMouseOverUnit: 0
@@ -154,7 +156,7 @@ MonoBehaviour:
   armor: {fileID: 0}
   stats:
     u_name: Slime
-    u_maxHealth: 50
+    u_baseMaxHealth: 50
     u_health: 50
     u_speed: 0
     u_power: 1
@@ -164,6 +166,7 @@ MonoBehaviour:
     equippedWeapon:
       w_name: Slime Weapon
       w_rarity: 0
+      w_element: 0
       w_attributes: 
       w_power: 10
       w_speedMod: 0
@@ -174,6 +177,7 @@ MonoBehaviour:
     equippedArmor:
       a_name: Slime Armor
       a_rarity: 0
+      a_element: 0
       a_attributes: 
       a_defence: 10
       a_speedMod: 2
@@ -202,3 +206,5 @@ MonoBehaviour:
       idealWeathLevel: 2
     u_traits: []
   enemyDiff: 1
+  weakTo: 1
+  strongTo: 3

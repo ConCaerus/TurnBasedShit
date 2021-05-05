@@ -5,9 +5,11 @@ using DG.Tweening;
 
 public abstract class UnitClass : MonoBehaviour {
     public GameObject attackingTarget = null;
+    public ParticleSystem bloodParticles;
+    public Color hitColor;
 
     public bool isPlayerUnit = true;
-    public bool attacking = false, defending = false;
+    public bool defending = false;
     public bool stunned = false;
     public bool isMouseOverUnit = false;
 
@@ -34,82 +36,40 @@ public abstract class UnitClass : MonoBehaviour {
         else
             name = stats.u_name;
 
-        Party.resaveUnit(stats);
+        Party.overrideUnit(stats);
     }
 
 
-    public void takeDamage(GameObject attacker, float dmg) {
-        //  Trigger Items
-        FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeAttacked, this, true);
 
-        //  Take damage
-        float temp = stats.getModifiedDamageTaken(dmg);
-        stats.u_health -= temp;
-
-
-        //  Trigger armor events 
-        stats.equippedArmor.applyAttributesAfterAttack(gameObject, attacker);
-
-
-        //  Show damage text
-        if(defending)
-            FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, temp, DamageTextCanvas.damageType.defended);
-        else
-            FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, temp, DamageTextCanvas.damageType.weapon);
-    }
-
-    public void takePoisonDamage() {
-        if(stats.u_poisonCount > 0) {
-            float temp = (stats.getModifiedMaxHealth() / 100.0f) * stats.u_poisonCount;
+    public void takeBleedDamage() {
+        if(stats.u_bleedCount > 0) {
+            float temp = (stats.getModifiedMaxHealth() / 100.0f) * stats.u_bleedCount;
             stats.u_health -= temp;
+
+            checkIfDead();
 
             FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, temp, DamageTextCanvas.damageType.poison);
         }
     }
-    public void curePoison() {
-        stats.u_poisonCount = 0;
+    public void cureBleed() {
+        stats.u_bleedCount = 0;
+    }
+
+    public bool checkIfDead() {
+        if(stats.u_health <= 0.0f) {
+            die();
+            return true;
+        }
+        return false;
     }
 
     public void addHealth(float h) {
-        if(stats.u_health <= 0.0f) {
-            die();
+        if(checkIfDead())
             return;
-        }
+
         stats.u_health = Mathf.Clamp(stats.u_health + h, -1.0f, stats.getModifiedMaxHealth());
-        if(stats.u_health <= 0.0f) {
-            die();
-            return;
-        }
-    }
 
-
-    public void die() {
-        foreach(var i in FindObjectsOfType<UnitHighlighting>()) {
-            i.dehighlightUnit(gameObject);
-        }
-
-        if(stats.equippedItem != null && !stats.equippedItem.isEmpty()) {
-            Inventory.removeItem(stats.equippedItem);
-            stats.equippedItem = null;
-        }
-        FindObjectOfType<ItemUser>().resetInplayItems();
-
-        if(stats.equippedWeapon != null && !stats.equippedWeapon.isEmpty()) {
-            Inventory.removeWeapon(stats.equippedWeapon);
-            stats.equippedWeapon = null;
-        }
-
-        if(stats.equippedArmor != null && !stats.equippedArmor.isEmpty()) {
-            Inventory.removeArmor(stats.equippedArmor);
-            stats.equippedArmor = null;
-        }
-
-        FindObjectOfType<AudioManager>().playDieSound();
-        FindObjectOfType<TurnOrderSorter>().removeUnitFromList(gameObject);
-        FindObjectOfType<HealthBarCanvas>().destroyHealthBarForUnit(gameObject);
-        FindObjectOfType<DamageTextCanvas>().removeTextsWithUnit(gameObject);
-        Party.removeUnit(stats);
-        Destroy(gameObject);
+        checkIfDead();
     }
 
 
@@ -117,14 +77,85 @@ public abstract class UnitClass : MonoBehaviour {
         stats.u_speed += s;
     }
 
-
-
     public void prepareUnitForNextRound() {
-        attacking = false;
         attackingTarget = null;
         defending = false;
 
-        takePoisonDamage();
+        takeBleedDamage();
+    }
+
+
+    public void attack(GameObject defender) {
+        //  triggers
+        FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeAttacking, this, true);
+
+        //  Attack unit
+        defender.GetComponent<UnitClass>().defend(gameObject, stats.getDamageGiven());
+
+        //  triggers
+        stats.equippedWeapon.applyAttributesAfterAttack(gameObject, defender);
+
+        //  Flair
+        gameObject.transform.DOPunchPosition(defender.transform.position - transform.position, 0.25f);
+        FindObjectOfType<AudioManager>().playHitSound();
+    }
+    public void defend(GameObject attacker, float dmg) {
+        //  triggers
+        FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeDefending, this, true);
+
+
+        //  if defender is an enemy, check if it's weak or strong to the attack
+        if(!isPlayerUnit) {
+            //  check if it's weak to the attack
+            if(GetComponent<EnemyUnitInstance>().weakTo == attacker.GetComponent<UnitClass>().stats.equippedWeapon.w_element)
+                dmg *= 1.25f;
+            else if(GetComponent<EnemyUnitInstance>().strongTo == attacker.GetComponent<UnitClass>().stats.equippedWeapon.w_element)
+                dmg *= 0.75f;
+        }
+
+        dmg = stats.getModifiedDamageTaken(dmg, defending);
+
+        //  take damage
+        stats.u_health = Mathf.Clamp(stats.u_health - dmg, -1.0f, stats.getModifiedMaxHealth());
+
+        //  Flair
+        if(defending)
+            FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, dmg, DamageTextCanvas.damageType.defended);
+        else
+            FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, dmg, DamageTextCanvas.damageType.weapon);
+        var blood = Instantiate(bloodParticles);
+        Destroy(blood.gameObject, blood.main.startLifetimeMultiplier);
+        blood.gameObject.transform.position = transform.position;
+        StartCoroutine(hitEffect());
+
+        //  triggers
+        int armorReaction = stats.equippedArmor.applyAttributesAfterAttack(gameObject, attacker);
+        //  reflex
+        if(armorReaction == 1) {
+            return;
+        }
+
+        //  check if any unit died in the attack
+        attacker.GetComponent<UnitClass>().checkIfDead();
+        checkIfDead();
+
+        //  end battle turn
+        FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
+    }
+
+    public void die() {
+        //  things to do with removing the unit from the party and what to do with equippment
+        if(isPlayerUnit)
+            stats.die();
+
+        //  flair
+        FindObjectOfType<AudioManager>().playDieSound();
+
+        //  removes unit from game world
+        FindObjectOfType<TurnOrderSorter>().removeUnitFromList(gameObject);
+        FindObjectOfType<HealthBarCanvas>().destroyHealthBarForUnit(gameObject);
+        FindObjectOfType<DamageTextCanvas>().removeTextsWithUnit(gameObject);
+        Destroy(gameObject);
     }
 
 
@@ -150,27 +181,6 @@ public abstract class UnitClass : MonoBehaviour {
         }
     }
 
-    public void attackTargetUnit() {
-        if(attackingTarget != null) {
-            attackUnit(attackingTarget);
-        }
-    }
-
-    public void attackUnit(GameObject unit) {
-        //  Trigger weapon attributes
-        if(stats.equippedWeapon != null && !stats.equippedWeapon.isEmpty()) {
-            stats.equippedWeapon.applyAttributesAfterAttack(gameObject, unit);
-        }
-
-        FindObjectOfType<AudioManager>().playHitSound();
-
-        //  Attack animation
-        gameObject.transform.DOPunchPosition(unit.transform.position - transform.position, 0.25f);
-        unit.GetComponent<UnitClass>().takeDamage(gameObject, stats.getDamageGiven());
-
-        attacking = false;
-    }
-
     public void setEquippedWeapon(Weapon w = null) {
         if(w == null && weapon != null) {
             w = weapon.preset;
@@ -179,7 +189,7 @@ public abstract class UnitClass : MonoBehaviour {
         if(w == null) return;
         stats.equippedWeapon = w;
 
-        Party.resaveUnit(stats);
+        Party.overrideUnit(stats);
     }
     public void removeEquippedWeapon() {
         stats.equippedWeapon = null;
@@ -193,7 +203,7 @@ public abstract class UnitClass : MonoBehaviour {
         if(a == null) return;
         stats.equippedArmor = a;
 
-        Party.resaveUnit(stats);
+        Party.overrideUnit(stats);
     }
     public void removeEquippedArmor() {
         stats.equippedArmor = null;
@@ -219,7 +229,7 @@ public abstract class UnitClass : MonoBehaviour {
         else
             stats.equippedArmor.setToPreset(armor);
 
-        Party.resaveUnit(stats);
+        Party.overrideUnit(stats);
     }
 
     public void populateEmptyEquippment() {
@@ -234,11 +244,11 @@ public abstract class UnitClass : MonoBehaviour {
         else if(!stats.equippedArmor.isEmpty())
             armor = stats.equippedArmor.armorToPreset();
 
-        Party.resaveUnit(stats);
+        Party.overrideUnit(stats);
     }
 
     public void setNewRandomName() {
-        stats.u_name = NameLibrary.getRandomName();
+        stats.u_name = NameLibrary.getRandomPlayerName();
         name = stats.u_name;
     }
 
@@ -246,5 +256,13 @@ public abstract class UnitClass : MonoBehaviour {
         stats.u_sprite.setSprite(GetComponent<SpriteRenderer>().sprite);
         if(stats.u_color == new Color())
             stats.u_color = GetComponent<SpriteRenderer>().color;
+    }
+
+    IEnumerator hitEffect() {
+        GetComponent<SpriteRenderer>().DOColor(hitColor, 0.05f);
+
+        yield return new WaitForSeconds(0.1f);
+
+        GetComponent<SpriteRenderer>().DOColor(stats.u_color, 0.25f);
     }
 }

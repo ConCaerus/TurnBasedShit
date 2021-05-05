@@ -4,9 +4,14 @@ using UnityEngine;
 using DG.Tweening;
 
 public class PlayerUnitInstance : UnitClass {
+    public GameObject heldWeapon;
 
     private void Awake() {
         isPlayerUnit = true;
+    }
+
+    private void Start() {
+        updateHeldWeapon();
     }
 
 
@@ -16,12 +21,12 @@ public class PlayerUnitInstance : UnitClass {
 
 
     void attackingLogic() {
-        if(attacking && attackingTarget == null) {
+        if(FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject && attackingTarget == null) {
             setAttackingTarget();
         }
 
-        else if(attacking && attackingTarget != null && FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject) {
-            attackTargetUnit();
+        else if(attackingTarget != null && FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject) {
+            attack(attackingTarget);
         }
     }
 
@@ -34,5 +39,16 @@ public class PlayerUnitInstance : UnitClass {
                 }
             }
         }
+    }
+
+    public void updateHeldWeapon() {
+        var w = stats.equippedWeapon;
+        if(w == null || w.isEmpty())
+            return;
+
+        heldWeapon.transform.localPosition = new Vector2(w.heldX, w.heldY);
+        heldWeapon.transform.localScale = new Vector3(-w.heldSize, w.heldSize, 0.0f);
+        heldWeapon.transform.rotation = Quaternion.Euler(0.0f, 0.0f, w.heldRot);
+        heldWeapon.GetComponent<SpriteRenderer>().sprite = w.w_sprite.getSprite();
     }
 }

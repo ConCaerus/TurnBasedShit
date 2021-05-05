@@ -9,7 +9,7 @@ public static class Randomizer {
     public static UnitStats createRandomUnitStats(bool fullHealth) {
         var stats = new UnitStats();
 
-        stats.u_name = NameLibrary.getRandomUsableName();
+        stats.u_name = NameLibrary.getRandomUsablePlayerName();
         if(!fullHealth)
             stats.u_health = Random.Range(5.0f, stats.getModifiedMaxHealth());
         else
@@ -48,41 +48,110 @@ public static class Randomizer {
         stats.isSlave = true;
         stats.escapeDesire = Random.Range(1.0f, 35.0f);
         stats.scaredModifier = Random.Range(1.15f, 1.85f);
-        stats.idealWeathLevel = (GameInfo.rarityLvl)Random.Range((int)GameInfo.rarityLvl.common, (int)GameInfo.rarityLvl.rare + 1);
+        stats.idealWeathLevel = (GameInfo.rarityLvl)Random.Range((int)GameInfo.rarityLvl.Common, (int)GameInfo.rarityLvl.Rare + 1);
         return stats;
     }
 
 
-    public static Weapon randomizeWeapon(Weapon we) {
-        //  sets random attributes
-        for(int i = 0; i < Random.Range(0, 3); i++) {
-            we.w_attributes.Add(we.getRandAttribute());
+    public static Weapon randomizeWeapon(Weapon we, GameInfo.diffLvl diff) {
+        var temp = new Weapon();
+        temp = randomizeWeaponStats(we);    //  I know that I pass we only in the first function, don't mess with it.
+        temp = randomizeWeaponAttributesBasedOnRegion(temp, diff);
+
+        return temp;
+    }
+    //  Eventually make it so the stats are affected by the region that the player is in
+    public static Weapon randomizeWeaponStats(Weapon we) {
+        var temp = new Weapon();
+        temp.setEqualTo(we);
+        temp.w_power = Mathf.Clamp(we.w_power + Random.Range(-10.0f, 25.0f), 1.0f, Mathf.Infinity);
+        temp.w_speedMod = we.w_speedMod + Random.Range(-10.0f, 10.0f);
+
+        return temp;
+    }
+    public static Weapon randomizeWeaponAttributesBasedOnRegion(Weapon we, GameInfo.diffLvl diff) {
+        int count = 0;
+        switch((int)diff) {
+            case 0:
+                count = Random.Range(0, 1);
+                break;
+
+            case 1:
+            case 2:
+                count = Random.Range(0, 2);
+                break;
+
+            case 3:
+            case 4:
+                count = Random.Range(0, 3);
+                break;
+
+            case 5:
+                count = Random.Range(1, 4);
+                break;
+
+            case 6:
+                count = Random.Range(1, 5);
+                break;
         }
 
-        //  sets random values
-        we.w_power = Mathf.Clamp(we.w_power + Random.Range(-10.0f, 25.0f), 1.0f, Mathf.Infinity);
-        we.w_speedMod += Random.Range(-10.0f, 10.0f);
+        var temp = new Weapon();
+        temp.setEqualTo(we);
 
+        for(int i = 0; i < count; i++)
+            temp.w_attributes.Add(temp.getRandAttribute());
 
-        return we;
+        return temp;
     }
-    public static Armor randomizeArmor(Armor ar) {
-        //  sets random attributes
-        for(int i = 0; i < Random.Range(0, 3); i++) {
-            ar.a_attributes.Add(ar.getRandomAttribute());
+
+    public static Armor randomizeArmor(Armor ar, GameInfo.diffLvl diff) {
+        var temp = new Armor();
+        temp = randomizeArmorStats(ar);
+        temp = randomizeArmorAttributesBasedOnRegion(temp, diff);
+
+        return temp;
+    }
+    public static Armor randomizeArmorStats(Armor ar) {
+        var temp = new Armor();
+        temp.setEqualTo(ar);
+        temp.a_defence = Mathf.Clamp(ar.a_defence + Random.Range(-10.0f, 25.0f), 1.0f, Mathf.Infinity);
+        temp.a_speedMod = ar.a_speedMod + Random.Range(-10.0f, 10.0f);
+
+        return temp;
+    }
+    public static Armor randomizeArmorAttributesBasedOnRegion(Armor ar, GameInfo.diffLvl diff) {
+        int count = 0;
+        switch((int)diff) {
+            case 0:
+                count = Random.Range(0, 2);
+                break;
+
+            case 1:
+            case 2:
+                count = Random.Range(0, 3);
+                break;
+
+            case 3:
+            case 4:
+                count = Random.Range(0, 4);
+                break;
+
+            case 5:
+                count = Random.Range(1, 4);
+                break;
+
+            case 6:
+                count = Random.Range(1, 5);
+                break;
         }
 
-        //  sets random values
-        ar.a_defence = Mathf.Clamp(ar.a_defence + Random.Range(-10.0f, 25.0f), 1.0f, Mathf.Infinity);
-        ar.a_speedMod += Random.Range(-10.0f, 10.0f);
+        var temp = new Armor();
+        temp.setEqualTo(ar);
 
-        return ar;
-    }
-    public static Consumable randomizeConsumable(Consumable con) {
-        //  sets random attributes
-        con.c_effectAmount = Random.Range(5.0f, 50.0f);
+        for(int i = 0; i < count; i++)
+            temp.a_attributes.Add(temp.getRandAttribute());
 
-        return con;
+        return temp;
     }
 
     public static CombatLocation randomizeCombatLocation(CombatLocation cl) {

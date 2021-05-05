@@ -6,12 +6,12 @@ using UnityEngine;
 public class UnitStats {
     public string u_name = "";
 
-    [SerializeField] float u_maxHealth;
+    [SerializeField] float u_baseMaxHealth;
     public float u_health = 100.0f;
     public float u_speed = 0.0f;
     public float u_power = 0.0f;
     public float u_critChance = 0.0f;
-    public int u_poisonCount = 0;
+    public int u_bleedCount = 0;
 
     public int u_order = 0;
 
@@ -36,12 +36,14 @@ public class UnitStats {
 
     public UnitStats() { }
     public UnitStats(UnitStats other) {
+        if(other == null)
+            return;
         u_name = other.u_name;
         u_health = other.u_health;
-        u_maxHealth = other.u_maxHealth;
+        u_baseMaxHealth = other.u_baseMaxHealth;
         u_speed = other.u_speed;
         u_power = other.u_power;
-        u_poisonCount = other.u_poisonCount;
+        u_bleedCount = other.u_bleedCount;
 
         u_order = other.u_order;
 
@@ -58,7 +60,7 @@ public class UnitStats {
     public bool equals(UnitStats other) {
         bool names = u_name == other.u_name;
         bool health = u_health == other.u_health;
-        bool maxHealth = u_maxHealth == other.u_maxHealth;
+        bool maxHealth = u_baseMaxHealth == other.u_baseMaxHealth;
         bool speed = u_speed == other.u_speed;
         bool power = u_power == other.u_power;
         bool order = u_order == other.u_order;
@@ -110,23 +112,24 @@ public class UnitStats {
 
     //  Defence amount
     public float getDefenceMult(bool defending = false) {
-        float temp = 0.0f;
+        //  starts with 100%
+        float temp = 1.0f;
 
         //  Trigger Traits
         foreach(var i in u_traits) {
-            temp += i.getDamageGivenMod();
+            temp -= i.getDamageGivenMod();
         }
 
         //  Have Armor reduce damage
         if(equippedArmor != null && !equippedArmor.isEmpty()) {
-            temp += equippedArmor.getDefenceMult();
-            temp += equippedArmor.getBonusAttributeDefenceMult();
+            temp -= equippedArmor.getDefenceMult();
+            temp -= equippedArmor.getBonusAttributeDefenceMult();
         }
 
 
         //  defending mult
         if(defending)
-            temp += 0.2f;
+            temp -= 0.2f;
 
         //  Clamps temp to useful values
         temp = Mathf.Clamp01(temp);
@@ -134,11 +137,11 @@ public class UnitStats {
         return temp;
     }
     public float getModifiedDamageTaken(float damage, bool defending = false) {
-        return damage - (damage * getDefenceMult(defending));
+        return damage * getDefenceMult(defending);
     }
 
     public float getModifiedMaxHealth() {
-        float temp = u_maxHealth;
+        float temp = u_baseMaxHealth;
         if(equippedItem != null && !equippedItem.isEmpty())
             temp += equippedItem.getMaxHealthMod();
 
@@ -159,7 +162,7 @@ public class UnitStats {
     }
 
     public void setBaseMaxHealth(float f) {
-        u_maxHealth = f;
+        u_baseMaxHealth = f;
     }
 
     public int determineCost() {
@@ -170,9 +173,26 @@ public class UnitStats {
 
         int avgMaxHealth = 50;
         int healthSteps = 10;
-        int steps = (int)((u_maxHealth - avgMaxHealth) / healthSteps);
+        int steps = (int)((u_baseMaxHealth - avgMaxHealth) / healthSteps);
         cost += steps;
 
         return cost;
+    }
+
+    public void die() {
+        //  add equipped things back into the inventory
+        if(equippedWeapon != null && !equippedWeapon.isEmpty())
+            Inventory.addWeapon(equippedWeapon);
+        if(equippedArmor != null && !equippedArmor.isEmpty())
+            Inventory.addArmor(equippedArmor);
+        if(equippedItem != null && !equippedItem.isEmpty())
+            Inventory.addItem(equippedItem);
+
+        equippedWeapon = null;
+        equippedArmor = null;
+        equippedItem = null;
+
+        //  remove from party
+        Party.removeUnit(u_order);
     }
 }

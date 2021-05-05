@@ -15,9 +15,10 @@ MonoBehaviour:
   preset:
     a_name: Priest Robes
     a_rarity: 6
-    a_attributes: 
-    a_defence: 50
-    a_speedMod: 15
+    a_element: 0
+    a_attributes: 01000000
+    a_defence: 15
+    a_speedMod: 5
     a_coinCost: 100
     a_sprite:
       sprite: {fileID: 21300000, guid: d599639198bd9ef4ea8d2ba5f1c65eba, type: 3}

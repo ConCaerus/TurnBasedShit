@@ -6,7 +6,7 @@ using UnityEngine;
 public class Consumable {
     const int numOfEffects = 4;
     public enum effects {
-        heal, curePoison, cureBleed
+        heal, cureBleed
     }
 
     public string c_name;
@@ -27,16 +27,12 @@ public class Consumable {
                 uc.addHealth(c_effectAmount);
                 break;
 
-            case effects.curePoison:
-                uc.curePoison();
-                break;
-
             case effects.cureBleed:
-                //  add a bleed status to the unit class before you can heal it.
+                uc.cureBleed();
                 break;
         }
 
-        Party.resaveUnit(uc.stats);
+        Party.overrideUnit(uc.stats);
         return uc.stats;
     }
 
@@ -49,7 +45,7 @@ public class Consumable {
     }
 
     public bool isEmpty() {
-        return string.IsNullOrEmpty(c_name) && c_maxStackCount == 0 && c_effectAmount == 0;
+        return string.IsNullOrEmpty(c_name) && c_maxStackCount == 0 && c_effectAmount == 0 && c_sprite.getSprite(true) == null;
     }
 }
 

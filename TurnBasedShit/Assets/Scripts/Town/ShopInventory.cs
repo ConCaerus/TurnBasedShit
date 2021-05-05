@@ -77,7 +77,7 @@ public static class ShopInventory {
         int weaponCount = Random.Range(1, 11);
         for(int i = 0; i < weaponCount; i++) {
             Weapon temp = library.getRandomWeapon((GameInfo.rarityLvl)lvl);
-            temp = Randomizer.randomizeWeapon(temp);
+            temp = Randomizer.randomizeWeapon(temp, lvl);
 
             addWeapon(townIndex, temp);
         }
@@ -85,7 +85,7 @@ public static class ShopInventory {
         int armorCount = Random.Range(1, 11);
         for(int i = 0; i < armorCount; i++) {
             Armor temp = library.getRandomArmor((GameInfo.rarityLvl)lvl);
-            temp = Randomizer.randomizeArmor(temp);
+            temp = Randomizer.randomizeArmor(temp, lvl);
 
             addArmor(townIndex, temp);
         }
@@ -93,7 +93,6 @@ public static class ShopInventory {
         int consumableCount = Random.Range(1, 11);
         for(int i = 0; i < consumableCount; i++) {
             Consumable temp = library.getRandomConsumable((GameInfo.rarityLvl)lvl);
-            temp = Randomizer.randomizeConsumable(temp);
 
             addConsumable(townIndex, temp);
         }

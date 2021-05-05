@@ -11,9 +11,8 @@ public class PartyObject : MonoBehaviour {
 
     public void instantiatePartyMembers() {
         //  Deletes all existing objects
-        foreach(var i in FindObjectsOfType<PlayerUnitInstance>()) {
-            i.die();
-        }
+        for(int i = 0; i < FindObjectsOfType<PlayerUnitInstance>().Length; i++)
+            Destroy(FindObjectsOfType<PlayerUnitInstance>()[i].gameObject);
 
         List<GameObject> unusedSpawnPoses = spawnPoses;
         for(int i = 0; i < Party.getPartySize(); i++) {
@@ -27,7 +26,7 @@ public class PartyObject : MonoBehaviour {
             //  sets up stats
             obj.GetComponent<UnitClass>().stats = Party.getMemberStats(i);
             if(string.IsNullOrEmpty(obj.GetComponent<UnitClass>().stats.u_name)) {
-                obj.GetComponent<UnitClass>().stats.u_name = NameLibrary.getRandomUsableName();
+                obj.GetComponent<UnitClass>().stats.u_name = NameLibrary.getRandomUsablePlayerName();
             }
             obj.name = obj.GetComponent<UnitClass>().stats.u_name;
 
@@ -48,7 +47,7 @@ public class PartyObject : MonoBehaviour {
             //  does other shit
             FindObjectOfType<HealthBarCanvas>().createHealthBar(obj.GetComponent<UnitClass>());
 
-            Party.resaveUnit(obj.GetComponent<UnitClass>().stats);
+            Party.overrideUnit(obj.GetComponent<UnitClass>().stats);
         }
     }
 
@@ -63,7 +62,7 @@ public class PartyObject : MonoBehaviour {
     }
 
     public void resaveInstantiatedUnit(UnitStats stats) {
-        Party.resaveUnit(stats);
+        Party.overrideUnit(stats);
 
         foreach(var i in FindObjectsOfType<PlayerUnitInstance>()) {
             if(i.stats.u_order == stats.u_order) {
@@ -76,7 +75,7 @@ public class PartyObject : MonoBehaviour {
 
     public void saveParty() {
         foreach(var i in FindObjectsOfType<PlayerUnitInstance>()) {
-            Party.resaveUnit(i.stats);
+            Party.overrideUnit(i.stats);
         }
     }
 
@@ -118,7 +117,7 @@ public static class Party {
 
             stats.equippedWeapon.resetWeaponStats();
             stats.equippedArmor.resetArmorStats();
-            resaveUnit(stats);
+            overrideUnit(stats);
         }
     }
 
@@ -142,30 +141,22 @@ public static class Party {
         SaveData.setInt(partyLeaderTag, stats.u_order);
     }
     public static void removeUnit(UnitStats stats) {
-        int index = 0;
-        bool shrinkCount = false;
-
+        var tData = JsonUtility.ToJson(stats);
+        bool past = false;
         for(int i = 0; i < SaveData.getInt(partySizeTag); i++) {
             var data = SaveData.getString(memberTag(i));
-            var temp = JsonUtility.FromJson<UnitStats>(data);
 
-            //  remove this unit
-            if(temp.equals(stats)) {
-                shrinkCount = true;
+            if(data == tData && !past) {
+                SaveData.deleteKey(memberTag(i));
+                past = true;
+                continue;
             }
-
-            //  else set new order for the unit
-            else {
-                temp.u_order = index;
-                data = JsonUtility.ToJson(temp);
-                SaveData.setString(memberTag(index), data);
-                index++;
+            else if(past) {
+                SaveData.deleteKey(memberTag(i));
+                overrideUnit(i - 1, JsonUtility.FromJson<UnitStats>(data));
             }
         }
-        if(shrinkCount) {
-            SaveData.deleteKey(memberTag(getPartySize() - 1));
-            SaveData.setInt(partySizeTag, SaveData.getInt(partySizeTag) - 1);
-        }
+        SaveData.setInt(partySizeTag, SaveData.getInt(partySizeTag) - 1);
     }
     public static void removeUnit(int order) {
         removeUnit(getMemberStats(order));
@@ -174,9 +165,13 @@ public static class Party {
         SaveData.deleteKey(partyLeaderTag);
     }
 
-    public static void resaveUnit(UnitStats stats) {
+    public static void overrideUnit(UnitStats stats) {
         var data = JsonUtility.ToJson(stats);
         SaveData.setString(memberTag(stats.u_order), data);
+    }
+    public static void overrideUnit(int i, UnitStats stats) {
+        var data = JsonUtility.ToJson(stats);
+        SaveData.setString(memberTag(i), data);
     }
 
 

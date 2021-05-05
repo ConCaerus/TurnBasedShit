@@ -7,20 +7,6 @@ public class TurnOrderSorter : MonoBehaviour {
 
     public GameObject playingUnit;
 
-    Coroutine attackWaiter = null;
-
-
-    private void LateUpdate() {
-        if(playingUnit != null) {
-            if(playingUnit.GetComponent<UnitClass>().defending)
-                setNextInTurnOrder();
-            else if(playingUnit.GetComponent<UnitClass>().attacking && attackWaiter == null)
-                attackWaiter = StartCoroutine(waitToFinishAttacking());
-        }
-        else
-            setNextInTurnOrder();
-    }
-
 
     public void resetList() {
         unitsInPlay.Clear();
@@ -51,23 +37,20 @@ public class TurnOrderSorter : MonoBehaviour {
     public GameObject setNextInTurnOrder() {
         //  removes current unit from list
         if(playingUnit != null) {
+            //  triggers
             FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterTurn, playingUnit.GetComponent<UnitClass>(), true);
+            FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterEachTurn, playingUnit.GetComponent<UnitClass>(), false);
+
+            //  resets unit after turn, and removes it from the list of playing units
             playingUnit.GetComponent<UnitClass>().stunned = false;
-            FindObjectOfType<UnitTurnOrderHighlighting>().dehighlightUnit(playingUnit);
             unitsInPlay.Remove(playingUnit);
             FindObjectOfType<PartyObject>().saveParty();
-            FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterEachTurn, playingUnit.GetComponent<UnitClass>(), false);
-        }
-
-        //  kills dead units
-        //  for the love of god do not change these parameters. He will find you
-        foreach(var i in FindObjectsOfType<UnitClass>()) {
-            if(i.GetComponent<UnitClass>().stats.u_health <= 0.0f)
-                i.GetComponent<UnitClass>().die();
         }
 
         //  removes units that dont exist
         foreach(GameObject i in unitsInPlay.ToArray()) {
+            if(i != null)
+                i.GetComponent<UnitClass>().checkIfDead();
             if(i == null)
                 unitsInPlay.Remove(i);
         }
@@ -91,25 +74,16 @@ public class TurnOrderSorter : MonoBehaviour {
 
         //  sets playing unit to next
         playingUnit = next;
-        FindObjectOfType<UnitTurnOrderHighlighting>().highlightUnit(playingUnit);
         playingUnit.GetComponent<UnitClass>().prepareUnitForNextRound();
-        FindObjectOfType<BattleOptionsCanvas>().runCombatLogic();
+        FindObjectOfType<BattleOptionsCanvas>().runCombatOptions();
 
+        //  flair
+        FindObjectOfType<CombatCameraController>().moveToPlayingUnit();
+
+        //  triggers
         FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeTurn, playingUnit.GetComponent<UnitClass>(), true);
         FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeEachTurn, playingUnit.GetComponent<UnitClass>(), false);
 
         return playingUnit;
-    }
-
-
-    IEnumerator waitToFinishAttacking() {
-        yield return new WaitForEndOfFrame();
-
-        if(playingUnit.GetComponent<UnitClass>().attacking)
-            attackWaiter = StartCoroutine(waitToFinishAttacking());
-        else {
-            setNextInTurnOrder();
-            attackWaiter = null;
-        }
     }
 }

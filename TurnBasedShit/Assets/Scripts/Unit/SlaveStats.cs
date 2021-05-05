@@ -9,7 +9,7 @@ public class SlaveStats {
 
     //  Values that affect chance of escape
     public float scaredModifier = 1.5f;
-    public GameInfo.rarityLvl idealWeathLevel = GameInfo.rarityLvl.uncommon;
+    public GameInfo.rarityLvl idealWeathLevel = GameInfo.rarityLvl.Uncommon;
 
 
     public void modifyEscapeDesire(float f) {

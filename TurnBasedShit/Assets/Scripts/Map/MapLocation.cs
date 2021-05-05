@@ -5,35 +5,23 @@ using System;
 using UnityEngine.SceneManagement;
 
 [Serializable]
-public class MapLocation {
+public abstract class MapLocation {
+
+    [Serializable]
+    public enum locationType {
+        empty, town, equipmentPickup, equipmentUpgrade
+    }
+
+
+
     public Vector2 pos;
-    public locationType type;
+    public locationType type = locationType.empty;
     public SpriteLoader sprite = new SpriteLoader();
 
     public CombatLocation combatLocation = null;
 
+    public abstract void enterLocation();
 
-    [Serializable]
-    public enum locationType {
-        town, equipmentPickup
-    }
-
-    public void enterLocation() {
-        switch(type) {
-            case locationType.town:
-                GameInfo.resetCombatDetails();
-                GameInfo.setCurrentTownIndex(((TownLocation)this).town.t_index);
-                SceneManager.LoadScene("Town");
-                break;
-
-            case locationType.equipmentPickup:
-                GameInfo.setCombatDetails(combatLocation);
-                GameInfo.resetCurrentTownIndex();
-                MapLocationHolder.removeLocation(this);
-                SceneManager.LoadScene("Combat");
-                break;
-        }
-    }
     public bool equals(MapLocation other) {
         return pos == other.pos && type == other.type;
     }

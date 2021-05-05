@@ -4,13 +4,15 @@ using UnityEngine;
 
 [System.Serializable]
 public class Armor {
-    public const int attributeCount = 3;
+    public const int attributeCount = 2;
     public enum attributes {
-        Turtle, Reflex, Healing
+        Turtle, Reflex
     }
 
     public string a_name;
     public GameInfo.rarityLvl a_rarity;
+
+    public GameInfo.element a_element;
 
     public List<attributes> a_attributes = new List<attributes>();
 
@@ -24,15 +26,14 @@ public class Armor {
 
     //  NOTE: this function is applied by the defending unit while the 
     //          weapon class has its function called by the attacker
-    public void applyAttributesAfterAttack(GameObject weilder, GameObject attacker) {
+    public int applyAttributesAfterAttack(GameObject weilder, GameObject attacker) {
         foreach(var i in a_attributes) {
-            if(i == attributes.Reflex && !weilder.GetComponent<UnitClass>().attacking) {
-                weilder.GetComponent<UnitClass>().attackUnit(attacker);
-            }
-            else if(i == attributes.Healing) {
-                weilder.GetComponent<UnitClass>().addHealth(a_defence * 0.25f);
+            if(i == attributes.Reflex) {
+                weilder.GetComponent<UnitClass>().attack(attacker);
+                return 1;
             }
         }
+        return 0;
     }
 
 
@@ -55,12 +56,13 @@ public class Armor {
     public void resetArmorStats() {
         a_defence = 0;
         a_speedMod = 0;
+        a_element = 0;
         a_attributes.Clear();
         a_sprite.clear();
     }
 
     public bool isEmpty() {
-        return a_attributes.Count == 0 && a_defence == 0 && a_speedMod == 0;
+        return a_attributes.Count == 0 && a_defence == 0 && a_speedMod == 0 && a_sprite.getSprite(true) == null;
     }
 
     public bool isEqualTo(Armor other) {
@@ -77,10 +79,11 @@ public class Armor {
 
         bool defence = a_defence == other.a_defence;
         bool speed = a_speedMod == other.a_speedMod;
+        bool ele = a_element == other.a_element;
         bool rarity = a_rarity == other.a_rarity;
 
 
-        return defence && speed && rarity;
+        return defence && speed && ele && rarity;
     }
 
 
@@ -89,6 +92,7 @@ public class Armor {
         a_defence = temp.a_defence;
         a_speedMod = temp.a_speedMod;
         a_attributes = temp.a_attributes;
+        a_element = temp.a_element;
         a_sprite = temp.a_sprite;
         a_rarity = temp.a_rarity;
     }
@@ -97,6 +101,16 @@ public class Armor {
         ArmorPreset preset = (ArmorPreset)ScriptableObject.CreateInstance("ArmorPreset");
         preset.preset = this;
         return preset;
+    }
+
+    public void setEqualTo(Armor other) {
+        a_name = other.a_name;
+        a_defence = other.a_defence;
+        a_speedMod = other.a_speedMod;
+        a_attributes = other.a_attributes;
+        a_element = other.a_element;
+        a_sprite = other.a_sprite;
+        a_rarity = other.a_rarity;
     }
 
 
@@ -110,7 +124,7 @@ public class Armor {
     }
 
 
-    public attributes getRandomAttribute() {
+    public attributes getRandAttribute() {
         var rand = Random.Range(0, 101);
         float step = 100.0f / (float)attributeCount;
 

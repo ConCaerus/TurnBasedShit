@@ -100,7 +100,7 @@ public class Story : ScriptableObject {
                     c1.text = affectedUnit.u_name + " lost " + Mathf.Abs(affectedUnitMod).ToString() + " HP";
                 }
 
-                Party.resaveUnit(affectedUnit);
+                Party.overrideUnit(affectedUnit);
 
                 //  checks if the unit died
                 if(affectedUnit.u_health <= 0.0f) {

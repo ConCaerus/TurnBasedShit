@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class TownLocation : MapLocation {
@@ -12,5 +13,11 @@ public class TownLocation : MapLocation {
         pos = p;
         sprite.setSprite(s);
         town = TownLibrary.addNewTownAndSetIndex(t);
+    }
+
+    public override void enterLocation() {
+        GameInfo.resetCombatDetails();
+        GameInfo.setCurrentMapLocation(MapLocationHolder.getIndex(this));
+        SceneManager.LoadScene("Town");
     }
 }

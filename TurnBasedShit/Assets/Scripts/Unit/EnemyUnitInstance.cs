@@ -4,32 +4,24 @@ using UnityEngine;
 
 public class EnemyUnitInstance : UnitClass {
     public GameInfo.diffLvl enemyDiff = 0;
+    public GameInfo.element weakTo, strongTo;
 
-    Coroutine combatTurnWaitor = null;
 
     private void Awake() {
         isPlayerUnit = false;
     }
 
 
-    private void Update() {
-        if((attacking || defending) && combatTurnWaitor == null && FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject) {
-            combatTurnWaitor = StartCoroutine(combatTurn());
-        }
-    }
-
-
-    IEnumerator combatTurn() {
+    public IEnumerator combatTurn() {
         yield return new WaitForSeconds(0.5f);
-
-        if(attacking && attackingTarget == null) {
+        if(this != null && FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject && attackingTarget == null) {
             setRandomAttackingTarget();
+
+            yield return new WaitForSeconds(0.5f);
+
+            if(this != null && FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject) {
+                attack(attackingTarget);
+            }
         }
-
-        yield return new WaitForSeconds(0.5f);
-
-        if(attacking)
-            attackTargetUnit();
-        combatTurnWaitor = null;
     }
 }

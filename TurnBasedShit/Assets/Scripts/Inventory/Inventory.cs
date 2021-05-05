@@ -197,12 +197,10 @@ public static class Inventory {
     }
 
     public static void overrideWeapon(int index, Weapon w) {
-        w.w_sprite.setSprite();
         var data = JsonUtility.ToJson(w);
         SaveData.setString(objectTag(index, typeof(Weapon)), data);
     }
     public static void overrideArmor(int index, Armor a) {
-        a.a_sprite.setSprite();
         var data = JsonUtility.ToJson(a);
         SaveData.setString(objectTag(index, typeof(Armor)), data);
     }

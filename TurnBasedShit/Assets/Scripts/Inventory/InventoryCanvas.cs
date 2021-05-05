@@ -156,28 +156,49 @@ public class InventoryCanvas : MonoBehaviour {
 
     public void setHeldObject(object thing) {
         heldObject = thing;
-        if(thing == null)
-            heldObject = null;
-        else if(thing.GetType() == typeof(Weapon) && ((Weapon)thing).isEmpty())
-            heldObject = null;
-        else if(thing.GetType() == typeof(Armor) && ((Armor)thing).isEmpty())
-            heldObject = null;
-        else if(thing.GetType() == typeof(Item) && ((Item)thing).isEmpty())
-            heldObject = null;
-        heldObjectPicture.SetActive(thing != null);
 
-        if(heldObject != null) {
-            if(thing.GetType() == typeof(Weapon))
-                heldObjectPicture.GetComponent<Image>().sprite = ((Weapon)thing).w_sprite.getSprite();
+        //  Weapon
+        if(weaponCanvas.activeInHierarchy) {
+            Weapon w = (Weapon)thing;
+            if(thing == null || w.isEmpty())
+                heldObject = null;
 
-            else if(thing.GetType() == typeof(Armor))
-                heldObjectPicture.GetComponent<Image>().sprite = ((Armor)thing).a_sprite.getSprite();
+            heldObjectPicture.SetActive(heldObject != null);
+            if(heldObject != null)
+                heldObjectPicture.GetComponent<Image>().sprite = w.w_sprite.getSprite();
+        }
 
-            else if(thing.GetType() == typeof(Item))
-                heldObjectPicture.GetComponent<Image>().sprite = ((Item)thing).i_sprite.getSprite();
+        //  Armor
+        else if(armorCanvas.activeInHierarchy) {
+            Armor a = (Armor)thing;
+            if(thing == null || a.isEmpty())
+                heldObject = null;
 
-            else if(thing.GetType() == typeof(Consumable))
-                heldObjectPicture.GetComponent<Image>().sprite = ((Consumable)thing).c_sprite.getSprite();
+            heldObjectPicture.SetActive(heldObject != null);
+            if(heldObject != null)
+                heldObjectPicture.GetComponent<Image>().sprite = a.a_sprite.getSprite();
+        }
+
+        //  Consumable
+        else if(consumableCanvas.activeInHierarchy) {
+            Consumable c = (Consumable)thing;
+            if(thing == null || c.isEmpty())
+                heldObject = null;
+
+            heldObjectPicture.SetActive(heldObject != null);
+            if(heldObject != null)
+                heldObjectPicture.GetComponent<Image>().sprite = c.c_sprite.getSprite();
+        }
+
+        //  Item
+        else if(itemCanvas.activeInHierarchy) {
+            Item i = (Item)thing;
+            if(thing == null || i.isEmpty())
+                heldObject = null;
+
+            heldObjectPicture.SetActive(heldObject != null);
+            if(heldObject != null)
+                heldObjectPicture.GetComponent<Image>().sprite = i.i_sprite.getSprite();
         }
     }
 
@@ -227,6 +248,8 @@ public class InventoryCanvas : MonoBehaviour {
         shownUnitInformation.GetComponentInChildren<Slider>().maxValue = shownUnit.getModifiedMaxHealth();
         shownUnitInformation.GetComponentInChildren<Slider>().value = shownUnit.u_health;
         shownUnitInformation.GetComponentInChildren<TextMeshProUGUI>().text = shownUnit.u_name;
+        foreach(var i in FindObjectsOfType<PlayerUnitInstance>())
+            i.updateHeldWeapon();
 
         //  equipped weapon
         if(weaponCanvas.activeInHierarchy) {
@@ -266,17 +289,17 @@ public class InventoryCanvas : MonoBehaviour {
     public void selectObjectFromSlot() {
         var slot = getMousedOverCollider();
         var index = getSlotIndex(slot);
-        var obj = getObjectInSlot(slot);
+        var objInSlot = getObjectInSlot(slot);
 
         //  used slot is not in the active slots list
         if(index < 0 && slot != unitWeaponImage.transform.parent.gameObject && slot != unitArmorImage.transform.parent.gameObject && slot != unitItemImage.transform.parent.gameObject && slot != shownUnitInformation.transform.GetChild(2).transform.gameObject)
             return;
 
         //  nothing to do
-        if(obj == null && heldObject == null)
+        if(objInSlot == null && heldObject == null)
             return;
 
-        if((obj == null || obj.GetType() != typeof(Consumable)) && (heldObject == null || heldObject.GetType() != typeof(Consumable))) {
+        if(!consumableCanvas.activeInHierarchy) {
             //  put down the current held object
             if(heldObject != null) {
                 //  slot is not a unit equipment
@@ -294,10 +317,11 @@ public class InventoryCanvas : MonoBehaviour {
                         shownUnit.equippedWeapon = (Weapon)heldObject;
                         FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
 
-                        if(obj != null && !((Weapon)obj).isEmpty())
-                            Inventory.addWeapon((Weapon)obj);
+                        if(objInSlot != null && !((Weapon)objInSlot).isEmpty()) {
+                            Inventory.addWeapon((Weapon)objInSlot);
+                        }
                         else
-                            obj = null;
+                            objInSlot = null;
 
                         //  removes the held object from the inventory
                         Inventory.removeWeapon((Weapon)heldObject);
@@ -311,10 +335,10 @@ public class InventoryCanvas : MonoBehaviour {
                         shownUnit.equippedArmor = (Armor)heldObject;
                         FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
 
-                        if(obj != null && !((Armor)obj).isEmpty())
-                            Inventory.addArmor((Armor)obj);
+                        if(objInSlot != null && !((Armor)objInSlot).isEmpty())
+                            Inventory.addArmor((Armor)objInSlot);
                         else
-                            obj = null;
+                            objInSlot = null;
 
                         Inventory.removeArmor((Armor)heldObject);
 
@@ -326,10 +350,10 @@ public class InventoryCanvas : MonoBehaviour {
                         shownUnit.equippedItem = (Item)heldObject;
                         FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
 
-                        if(obj != null && !((Item)obj).isEmpty())
-                            Inventory.addItem((Item)obj);
+                        if(objInSlot != null && !((Item)objInSlot).isEmpty())
+                            Inventory.addItem((Item)objInSlot);
                         else
-                            obj = null;
+                            objInSlot = null;
 
                         Inventory.removeItem((Item)heldObject);
 
@@ -359,8 +383,8 @@ public class InventoryCanvas : MonoBehaviour {
                         unitWeaponImage.GetComponent<Image>().sprite = null;
                         unitWeaponImage.GetComponent<Image>().enabled = false;
 
-                        if(obj != null && !((Weapon)obj).isEmpty())
-                            Inventory.addWeapon((Weapon)obj);
+                        if(objInSlot != null && !((Weapon)objInSlot).isEmpty())
+                            Inventory.addWeapon((Weapon)objInSlot);
                     }
                     //  Armor
                     else if(armorCanvas.activeInHierarchy) {
@@ -370,8 +394,8 @@ public class InventoryCanvas : MonoBehaviour {
                         unitArmorImage.GetComponent<Image>().sprite = null;
                         unitArmorImage.GetComponent<Image>().enabled = false;
 
-                        if(obj != null && !((Armor)obj).isEmpty())
-                            Inventory.addArmor((Armor)obj);
+                        if(objInSlot != null && !((Armor)objInSlot).isEmpty())
+                            Inventory.addArmor((Armor)objInSlot);
                     }
                     //  Item
                     else if(itemCanvas.activeInHierarchy) {
@@ -381,19 +405,19 @@ public class InventoryCanvas : MonoBehaviour {
                         unitItemImage.GetComponent<Image>().sprite = null;
                         unitItemImage.GetComponent<Image>().enabled = false;
 
-                        if(obj != null && !((Item)obj).isEmpty())
-                            Inventory.addItem((Item)obj);
+                        if(objInSlot != null && !((Item)objInSlot).isEmpty())
+                            Inventory.addItem((Item)objInSlot);
                     }
                 }
             }
 
-
-            //  set held object to the object in the slot
-            setHeldObject(obj);
+            foreach(var i in FindObjectsOfType<PlayerUnitInstance>())
+                i.updateHeldWeapon();
+            setHeldObject(objInSlot);
         }
 
         //  consumable things
-        else if((obj == null || obj.GetType() == typeof(Consumable)) || (heldObject == null || heldObject.GetType() == typeof(Consumable))) {
+        else if((objInSlot == null || objInSlot.GetType() == typeof(Consumable)) || (heldObject == null || heldObject.GetType() == typeof(Consumable))) {
             //  put down the current held object
             if(heldObject != null) {
                 //  player is applying the held consumable to the unit
@@ -410,8 +434,8 @@ public class InventoryCanvas : MonoBehaviour {
                     int slotStackCount = getConsumableCountInSlot(slot);
 
                     //  held object does not fit in stack so nothing happens
-                    bool roomInStack = obj == null || (slotStackCount >= 0 && slotStackCount < ((Consumable)obj).c_maxStackCount);
-                    bool sameTypeAsStack = obj == null || ((Consumable)obj).isEqualTo((Consumable)heldObject);
+                    bool roomInStack = objInSlot == null || (slotStackCount >= 0 && slotStackCount < ((Consumable)objInSlot).c_maxStackCount);
+                    bool sameTypeAsStack = objInSlot == null || ((Consumable)objInSlot).isEqualTo((Consumable)heldObject);
 
                     if(!(roomInStack && sameTypeAsStack))
                         return;
@@ -428,9 +452,10 @@ public class InventoryCanvas : MonoBehaviour {
                     activeSlots[index].transform.GetChild(1).GetComponent<Image>().sprite = getHeldObjectSprite();
                 }
 
-                setHeldObject(null);
+                setHeldObject((Weapon)null);
             }
 
+            //  Still consumable things
             //  runs for auto use and for setting the object into a slot
             else {
                 int slotStackCount = getConsumableCountInSlot(slot) - 1;
@@ -449,17 +474,17 @@ public class InventoryCanvas : MonoBehaviour {
 
                 //  if the player did not auto use the object
                 if(!Input.GetMouseButton(1))
-                    setHeldObject(obj);
+                    setHeldObject((Consumable)objInSlot);
 
                 //  player wants to auto use the consumable
                 else {
                     var unit = FindObjectOfType<PartyObject>().getInstantiatedMember(shownUnit);
                     if(unit != null) {
                         //  use the consumable
-                        shownUnit = ((Consumable)obj).applyEffect(unit);
+                        shownUnit = ((Consumable)objInSlot).applyEffect(unit);
                         updateUnitChange();
 
-                        Inventory.removeConsumable((Consumable)obj);
+                        Inventory.removeConsumable((Consumable)objInSlot);
                     }
                 }
             }
@@ -476,7 +501,7 @@ public class InventoryCanvas : MonoBehaviour {
             shownUnit = Party.getMemberStats(0);
         updateUnitChange();
 
-        setHeldObject(null);
+        setHeldObject((Weapon)null);
         activeObjects.Clear();
 
         pageText1.text = activePage.ToString();
@@ -536,7 +561,7 @@ public class InventoryCanvas : MonoBehaviour {
         else if(consumableCanvas.activeInHierarchy) {
             List<List<Consumable>> groups = new List<List<Consumable>>();
             //  sorts the different consumables into groups
-            for(int i = 0; i < Inventory.getTypeCount(typeof(Consumable)); i++) {
+            for(int i = activeSlots.Count * activePage; i < Inventory.getTypeCount(typeof(Consumable)); i++) {
                 Consumable con = Inventory.getConsumable(i);
 
                 //  checks if the consumable can be put into an existing group

@@ -5,47 +5,61 @@ using UnityEngine;
 public static class GameInfo {
 
     public enum state {
-        combat, town, map
+        Combat, Town, Map
     }
     public enum diffLvl {
-        cake, easy, normal, inter, hard, heroic, legendary
+        Cake, Easy, Normal, Inter, Hard, Heroic, Legendary
     }
     public enum rarityLvl {
-        worthless, common, uncommon, unusual, rare, legendary, mythical
+        Worthless, Common, Uncommon, Unusual, Rare, Legendary, Mythical
+    }
+    public enum element {
+        Bronze, Gold, Iron, Obsidian
     }
 
 
     const string stateTag = "Current Game State";
 
     //  current combat location that the player is in
-    public const string combatDetailsTag = "CombatLocation";
+    public const string combatDetails = "CombatLocation";
     public const string currentDiffRegion = "Difficulty Region";
 
-    public const string currentTownIndex = "Current Town Index";
+    public const string currentMapLocationIndex = "Current Map Location Index";
 
 
     public static void resetCombatDetails() {
-        var data = JsonUtility.ToJson(new CombatLocation());
-        SaveData.setString(combatDetailsTag, data);
+        SaveData.deleteKey(combatDetails);
     }
-    public static void resetCurrentTownIndex() {
-        SaveData.setInt(currentTownIndex, -1);
+    public static void resetCurrentMapLocation() {
+        SaveData.deleteKey(currentMapLocationIndex);
     }
 
     public static void setCombatDetails(CombatLocation cl) {
         var data = JsonUtility.ToJson(cl);
-        SaveData.setString(combatDetailsTag, data);
+        SaveData.setString(combatDetails, data);
     }
-    public static void setCurrentTownIndex(int index) {
-        SaveData.setInt(currentTownIndex, index);
+    public static void setCurrentMapLocation(int index) {
+        SaveData.setInt(currentMapLocationIndex, index);
     }
 
     public static CombatLocation getCombatDetails() {
-        var data = SaveData.getString(combatDetailsTag);
+        var data = SaveData.getString(combatDetails);
         return JsonUtility.FromJson<CombatLocation>(data);
     }
-    public static int getCurrentTownIndex() {
-        return SaveData.getInt(currentTownIndex);
+    public static int getCurrentMapLocationIndex() {
+        return SaveData.getInt(currentMapLocationIndex);
+    }
+    public static MapLocation getCurrentMapLocation() {
+        return MapLocationHolder.getMapLocation(SaveData.getInt(currentMapLocationIndex));
+    }
+    public static TownLocation getCurrentMapLocationAsTown() {
+        return MapLocationHolder.getTownLocation(SaveData.getInt(currentMapLocationIndex));
+    }
+    public static PickupLocation getCurrentMapLocationAsPickup() {
+        return MapLocationHolder.getPickupLocation(SaveData.getInt(currentMapLocationIndex));
+    }
+    public static UpgradeLocation getCurrentMapLocationAsUpgrade() {
+        return MapLocationHolder.getUpgradeLocation(SaveData.getInt(currentMapLocationIndex));
     }
     public static diffLvl getDiffRegion() {
         var data = SaveData.getString(currentDiffRegion);

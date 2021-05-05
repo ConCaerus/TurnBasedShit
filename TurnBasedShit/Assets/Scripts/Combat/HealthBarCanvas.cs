@@ -12,7 +12,13 @@ public class HealthBarCanvas : MonoBehaviour {
 
 
         public void update() {
+            //  value
             bar.value = Mathf.Lerp(bar.value, unit.GetComponent<UnitClass>().stats.u_health, 50.0f * Time.deltaTime);
+
+            //  position
+            var yOffset = new Vector3(0.0f, unit.gameObject.transform.localScale.y / 0.5f, 0.0f);
+            var target = unit.gameObject.transform.position + yOffset;
+            bar.transform.position = new Vector3(target.x, target.y, bar.transform.position.z);
         }
 
         public void setMaxBarValue() {

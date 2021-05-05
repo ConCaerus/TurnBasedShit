@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class UpgradeCanvas : MonoBehaviour {
     //  0 - weapon, 1 - armor
     public int state = 0;
 
     float statInc = 0.0f;
-    Weapon.attributes weaponUpgrade;
+    Weapon.attribute weaponUpgrade;
     Armor.attributes armorUpgrade;
     [SerializeField] TextMeshProUGUI attributeText, statText;
 
@@ -25,7 +26,10 @@ public class UpgradeCanvas : MonoBehaviour {
     GameObject selectedSlot = null;
 
     private void Start() {
-        reset();
+        if(GameInfo.getCurrentMapLocation() != null && GameInfo.getCurrentMapLocation().type == MapLocation.locationType.equipmentUpgrade)
+            state = GameInfo.getCurrentMapLocationAsUpgrade().state;
+
+        setUpgradeStats();
 
         switch(state) {
             //  Weapon
@@ -102,6 +106,54 @@ public class UpgradeCanvas : MonoBehaviour {
         }
         return -1;
     }
+    Weapon getWeaponInSelectedSlot() {
+        int index = getSelectedSlotIndex();
+
+        //  party weapons
+        for(int i = 0; i < Party.getPartySize(); i++) {
+            if(index <= 0)
+                return Party.getMemberStats(i).equippedWeapon;
+            if(Party.getMemberStats(i).equippedWeapon != null && !Party.getMemberStats(i).equippedWeapon.isEmpty())
+                index--;
+        }
+
+
+        //  Inventory weapons
+        int inventoryWeaponCount = Inventory.getTypeCount(typeof(Weapon));
+
+        if(inventoryWeaponCount > 0) {
+            for(int i = 0; i < inventoryWeaponCount; i++) {
+                if(index <= 0)
+                    return Inventory.getWeapon(i);
+                index--;
+            }
+        }
+        return null;
+    }
+    Armor getArmorInSelectedSlot() {
+        int index = getSelectedSlotIndex();
+
+        //  party weapons
+        for(int i = 0; i < Party.getPartySize(); i++) {
+            if(index <= 0)
+                return Party.getMemberStats(i).equippedArmor;
+            if(Party.getMemberStats(i).equippedArmor != null && !Party.getMemberStats(i).equippedArmor.isEmpty())
+                index--;
+        }
+
+
+        //  Inventory weapons
+        int inventoryArmorCount = Inventory.getTypeCount(typeof(Armor));
+
+        if(inventoryArmorCount > 0) {
+            for(int i = 0; i < inventoryArmorCount; i++) {
+                if(index <= 0)
+                    return Inventory.getArmor(i);
+                index--;
+            }
+        }
+        return null;
+    }
 
     void updateInfo() {
         switch(state) {
@@ -133,23 +185,51 @@ public class UpgradeCanvas : MonoBehaviour {
         switch(state) {
             //  Weapons
             case 0:
-                int weaponCount = Inventory.getTypeCount(typeof(Weapon));
-                Debug.Log(weaponCount);
+                //  party weapons
+                List<int> partyMembersWithWeapons = new List<int>();
+                for(int i = 0; i < Party.getPartySize(); i++) {
+                    if(Party.getMemberStats(i).equippedWeapon != null && !Party.getMemberStats(i).equippedWeapon.isEmpty())
+                        partyMembersWithWeapons.Add(i);
+                }
 
-                if(weaponCount <= 0)
-                    break;
-                for(int i = 0; i < weaponCount; i++)
-                    createNewSlot(i, Inventory.getWeapon(i).w_sprite.getSprite(), Color.white);
+                if(partyMembersWithWeapons.Count > 0) {
+                    for(int i = 0; i < partyMembersWithWeapons.Count; i++) {
+                        createNewSlot(i, Party.getMemberStats(partyMembersWithWeapons[i]).equippedWeapon.w_sprite.getSprite(), Party.getMemberStats(partyMembersWithWeapons[i]).u_name);
+                    }
+                }
+
+                //  Inventory weapons
+                int inventoryWeaponCount = Inventory.getTypeCount(typeof(Weapon));
+
+                if(inventoryWeaponCount > 0) {
+                    for(int i = 0; i < inventoryWeaponCount; i++)
+                        createNewSlot(i + partyMembersWithWeapons.Count, Inventory.getWeapon(i).w_sprite.getSprite());
+                }
                 break;
 
             //  Armor
             case 1:
+                //  party armor
+                List<int> partyMembersWithArmor = new List<int>();
+                for(int i = 0; i < Party.getPartySize(); i++) {
+                    if(Party.getMemberStats(i).equippedArmor != null && !Party.getMemberStats(i).equippedArmor.isEmpty())
+                        partyMembersWithArmor.Add(i);
+                }
+
+                if(partyMembersWithArmor.Count > 0) {
+                    for(int i = 0; i < partyMembersWithArmor.Count; i++) {
+                        createNewSlot(i, Party.getMemberStats(partyMembersWithArmor[i]).equippedArmor.a_sprite.getSprite(), Party.getMemberStats(partyMembersWithArmor[i]).u_name);
+                    }
+                }
+
+
+                //  Inventory Armor
                 int armorCount = Inventory.getTypeCount(typeof(Armor));
 
                 if(armorCount <= 0)
                     break;
                 for(int i = 0; i < armorCount; i++)
-                    createNewSlot(i, Inventory.getArmor(i).a_sprite.getSprite(), Color.white);
+                    createNewSlot(i + partyMembersWithArmor.Count, Inventory.getArmor(i).a_sprite.getSprite());
                 break;
         }
 
@@ -157,7 +237,7 @@ public class UpgradeCanvas : MonoBehaviour {
             scrollThoughList();
         updateInfo();
     }
-    GameObject createNewSlot(int index, Sprite sp, Color spriteColor) {
+    GameObject createNewSlot(int index, Sprite sp, string unitName = null) {
         var obj = Instantiate(slotObject, slotHolder.transform);
 
         //  position and scale
@@ -171,9 +251,12 @@ public class UpgradeCanvas : MonoBehaviour {
         obj.GetComponent<BoxCollider2D>().size = new Vector2(x, y);
 
         //  text and images
-        obj.GetComponentInChildren<TextMeshProUGUI>().text = index.ToString();
+        if(!string.IsNullOrEmpty(unitName))
+            obj.GetComponentInChildren<TextMeshProUGUI>().text = unitName + "'s equipment";
+        else
+            obj.GetComponentInChildren<TextMeshProUGUI>().text = index.ToString();
         obj.transform.GetChild(1).GetComponent<Image>().sprite = sp;
-        obj.transform.GetChild(1).GetComponent<Image>().color = spriteColor;
+        obj.transform.GetChild(1).GetComponent<Image>().color = Color.white;
 
         slots.Add(obj);
         return obj;
@@ -209,28 +292,67 @@ public class UpgradeCanvas : MonoBehaviour {
             switch(state) {
                 //  Weapon
                 case 0:
-                    Weapon w = Inventory.getWeapon(getSelectedSlotIndex());
+                    Weapon w = new Weapon();
+                    Weapon weaponInSlot = getWeaponInSelectedSlot();
+                    w.setEqualTo(weaponInSlot);
                     w.w_power += statInc;
                     w.w_attributes.Add(weaponUpgrade);
-                    Inventory.overrideWeapon(getSelectedSlotIndex(), w);
+
+                    //  upgraded weapon is in the party
+                    for(int i = 0; i < Party.getPartySize(); i++) {
+                        if(Party.getMemberStats(i).equippedWeapon.isEqualTo(weaponInSlot)) {
+                            var unit = Party.getMemberStats(i);
+                            unit.equippedWeapon = w;
+                            Party.overrideUnit(unit);
+                            break;
+                        }
+                    }
+
+                    //  upgraded weapon is in the inventory
+                    for(int i = 0; i < Inventory.getTypeCount(typeof(Weapon)); i++) {
+                        if(Inventory.getWeapon(i).isEqualTo(weaponInSlot)) {
+                            Inventory.overrideWeapon(i, w);
+                            break;
+                        }
+                    }
                     break;
 
                 //  Armor
                 case 1:
-                    Armor a = Inventory.getArmor(getSelectedSlotIndex());
+                    Armor a = new Armor();
+                    Armor armorInSlot = getArmorInSelectedSlot();
+                    a.setEqualTo(armorInSlot);
                     a.a_defence += statInc;
                     a.a_attributes.Add(armorUpgrade);
-                    Inventory.overrideArmor(getSelectedSlotIndex(), a);
+
+                    //  upgraded weapon is in the party
+                    for(int i = 0; i < Party.getPartySize(); i++) {
+                        if(Party.getMemberStats(i).equippedArmor.isEqualTo(armorInSlot)) {
+                            var unit = Party.getMemberStats(i);
+                            unit.equippedArmor = a;
+                            Party.overrideUnit(unit);
+                            break;
+                        }
+                    }
+
+                    //  upgraded weapon is in the inventory
+                    for(int i = 0; i < Inventory.getTypeCount(typeof(Armor)); i++) {
+                        if(Inventory.getArmor(i).isEqualTo(armorInSlot)) {
+                            Inventory.overrideArmor(i, a);
+                            break;
+                        }
+                    }
                     break;
             }
 
             //  return to map
+            SceneManager.LoadScene("Map");
         }
     }
 
-    public void reset() {
+    public void setUpgradeStats() {
         statInc = Random.Range(0.0f, 5.0f);
-        weaponUpgrade = (Weapon.attributes)(Random.Range(0, Weapon.attributeCount));
+        weaponUpgrade = (Weapon.attribute)(Random.Range(0, Weapon.attributeCount));
         armorUpgrade = (Armor.attributes)(Random.Range(0, Armor.attributeCount));
         updateInfo();
     }

@@ -11,8 +11,10 @@ public class LeaderSelectionCanvas : MonoBehaviour {
     UnitStats shownUnit;
 
     private void Start() {
-        FindObjectOfType<MapTrail>().enabled = false;
-        updateInfo();
+        if(Party.getLeaderID() == -1) {
+            FindObjectOfType<MapTrailRenderer>().enabled = false;
+            updateInfo();
+        }
     }
 
     void updateInfo() {
@@ -50,6 +52,6 @@ public class LeaderSelectionCanvas : MonoBehaviour {
     public void select() {
         Party.setLeader(shownUnit);
         canvas.SetActive(false);
-        FindObjectOfType<MapTrail>().enabled = true;
+        FindObjectOfType<MapTrailRenderer>().enabled = true;
     }
 }

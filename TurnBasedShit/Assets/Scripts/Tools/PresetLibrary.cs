@@ -21,7 +21,7 @@ public class PresetLibrary : MonoBehaviour {
     //  Units
     public UnitStats createRandomUnit() {
         UnitStats stats = new UnitStats();
-        stats.u_name = NameLibrary.getRandomUsableName();
+        stats.u_name = NameLibrary.getRandomUsablePlayerName();
 
         stats.setBaseMaxHealth(Random.Range(25, 125));
         stats.u_health = stats.getModifiedMaxHealth();
@@ -58,7 +58,8 @@ public class PresetLibrary : MonoBehaviour {
 
         if(useables.Count > 0)
             return useables[Random.Range(0, useables.Count)];
-        return null;
+        //  not useable enemies, return random enemy from all enemies
+        return enemies[Random.Range(0, enemies.Length)].GetComponent<EnemyUnitInstance>().stats;
     }
     public UnitTrait getRandomGoodUnitTrait() {
         List<UnitTrait> goods = new List<UnitTrait>();
@@ -84,15 +85,19 @@ public class PresetLibrary : MonoBehaviour {
 
     //  Equipment
     public Weapon getWeapon(string name) {
+        Weapon temp = null;
         foreach(var i in weapons) {
             if(i.preset.w_name == name)
-                return i.preset;
+                temp.setEqualTo(i.preset);
         }
-        return null;
+        return temp;
     }
     public Weapon getRandomWeapon(GameInfo.rarityLvl lvl = (GameInfo.rarityLvl)(-1)) {
-        if(lvl == (GameInfo.rarityLvl)(-1))
-            return weapons[Random.Range(0, weapons.Length)].preset;
+        var temp = new Weapon();
+        if(lvl == (GameInfo.rarityLvl)(-1)) {
+            temp.setEqualTo(weapons[Random.Range(0, weapons.Length)].preset);
+            return temp;
+        }
 
         List<Weapon> useables = new List<Weapon>();
         foreach(var i in weapons) {
@@ -109,21 +114,29 @@ public class PresetLibrary : MonoBehaviour {
             }
         }
 
-        if(useables.Count > 0)
-            return useables[Random.Range(0, useables.Count)];
-        return null;
+        if(useables.Count > 0) {
+            temp.setEqualTo(useables[Random.Range(0, useables.Count)]);
+            return temp;
+        }
+        temp.setEqualTo(weapons[Random.Range(0, weapons.Length)].preset);
+        return temp;
     }
 
     public Armor getArmor(string name) {
+        Armor temp = null;
         foreach(var i in armor) {
             if(i.preset.a_name == name)
-                return i.preset;
+                temp.setEqualTo(i.preset);
         }
-        return null;
+        return temp;
     }
     public Armor getRandomArmor(GameInfo.rarityLvl lvl = (GameInfo.rarityLvl)(-1)) {
-        if(lvl == (GameInfo.rarityLvl)(-1))
-            return armor[Random.Range(0, armor.Length)].preset;
+        Armor temp = new Armor();
+
+        if(lvl == (GameInfo.rarityLvl)(-1)) {
+            temp.setEqualTo(armor[Random.Range(0, armor.Length)].preset);
+            return temp;
+        }
 
         List<Armor> useables = new List<Armor>();
         foreach(var i in armor) {
@@ -140,9 +153,13 @@ public class PresetLibrary : MonoBehaviour {
             }
         }
 
-        if(useables.Count > 0)
-            return useables[Random.Range(0, useables.Count)];
-        return null;
+        if(useables.Count > 0) {
+            temp.setEqualTo(useables[Random.Range(0, useables.Count)]);
+            return temp;
+        }
+        //  if no useables, return random from all
+        temp.setEqualTo(armor[Random.Range(0, armor.Length)].preset);
+        return temp;
     }
 
     public Consumable getConsumable(string name) {
@@ -173,7 +190,7 @@ public class PresetLibrary : MonoBehaviour {
 
         if(useables.Count > 0)
             return useables[Random.Range(0, useables.Count)];
-        return null;
+        return consumables[Random.Range(0, consumables.Length)].preset;
     }
 
     public Item getItem(string name) {
@@ -184,8 +201,12 @@ public class PresetLibrary : MonoBehaviour {
         return null;
     }
     public Item getRandomItem(GameInfo.rarityLvl lvl = (GameInfo.rarityLvl)(-1)) {
-        if(lvl == (GameInfo.rarityLvl)(-1))
-            return items[Random.Range(0, items.Length)].preset;
+        var temp = new Item();
+
+        if(lvl == (GameInfo.rarityLvl)(-1)) {
+            temp.setEqualTo(items[Random.Range(0, items.Length)].preset);
+            return temp;
+        }
 
         List<Item> useables = new List<Item>();
         foreach(var i in items) {
@@ -202,9 +223,12 @@ public class PresetLibrary : MonoBehaviour {
             }
         }
 
-        if(useables.Count > 0)
-            return useables[Random.Range(0, useables.Count)];
-        return null;
+        if(useables.Count > 0) {
+            temp.setEqualTo(useables[Random.Range(0, useables.Count)]);
+            return temp;
+        }
+        temp.setEqualTo(items[Random.Range(0, items.Length)].preset);
+        return temp;
     }
 
     //  Map
@@ -226,7 +250,9 @@ public class PresetLibrary : MonoBehaviour {
         //  enemies
         int enemyCount = Random.Range(2, 5);
         for(int i = 0; i < enemyCount; i++) {
-            loc.enemies.Add(Randomizer.randomizeUnitStats(getRandomEnemy(lvl), true));
+            var enemy = Randomizer.randomizeUnitStats(getRandomEnemy(lvl), true);
+            enemy.u_name = NameLibrary.getRandomEnemyName();
+            loc.enemies.Add(enemy);
         }
 
         loc.coinReward = (2 * (int)lvl); // default value
@@ -234,11 +260,11 @@ public class PresetLibrary : MonoBehaviour {
 
         //  chance for weapon
         while(Random.Range(0, 101) < 20 && loc.weapons.Count < 3)
-            loc.weapons.Add(Randomizer.randomizeWeapon(getRandomWeapon((GameInfo.rarityLvl)lvl)));
+            loc.weapons.Add(Randomizer.randomizeWeapon(getRandomWeapon((GameInfo.rarityLvl)lvl), lvl));
 
         //  chance for armor
         while(Random.Range(0, 101) < 20 && loc.armor.Count < 3)
-            loc.armor.Add(Randomizer.randomizeArmor(getRandomArmor((GameInfo.rarityLvl)lvl)));
+            loc.armor.Add(Randomizer.randomizeArmor(getRandomArmor((GameInfo.rarityLvl)lvl), lvl));
 
         //  chance for consumable
         while(Random.Range(0, 101) < 40 && loc.consumables.Count < 5)

@@ -9,19 +9,38 @@ public class BattleResultsCanvas : MonoBehaviour {
 
 
     public void showCombatLocationEquipment() {
-        var weapons = GameInfo.getCombatDetails().getAndAddWeaponReward(FindObjectOfType<PresetLibrary>());
-        var armor = GameInfo.getCombatDetails().getAndAddArmorReward(FindObjectOfType<PresetLibrary>());
-        var consumables = GameInfo.getCombatDetails().getAndAddConsumableReward(FindObjectOfType<PresetLibrary>());
-        var items = GameInfo.getCombatDetails().getAndAddItemReward(FindObjectOfType<PresetLibrary>());
+        var weapons = GameInfo.getCombatDetails().weapons;
+        var armor = GameInfo.getCombatDetails().armor;
+        var consumables = GameInfo.getCombatDetails().consumables;
+        var items = GameInfo.getCombatDetails().items;
 
-        for(int i = 0; i < weapons.Count; i++)
-            weaponImages[i].sprite = weapons[i].w_sprite.getSprite();
-        for(int i = 0; i < armor.Count; i++)
-            armorImages[i].sprite = armor[i].a_sprite.getSprite();
-        for(int i = 0; i < consumables.Count; i++)
-            consumableImages[i].sprite = consumables[i].c_sprite.getSprite();
-        for(int i = 0; i < items.Count; i++)
-            itemImages[i].sprite = items[i].i_sprite.getSprite();
+        for(int i = 0; i < weaponImages.Count; i++) {
+            if(i < weapons.Count)
+                weaponImages[i].sprite = weapons[i].w_sprite.getSprite();
+            else
+                weaponImages[i].enabled = false;
+        }
+
+        for(int i = 0; i < armorImages.Count; i++) {
+            if(i < armor.Count)
+                armorImages[i].sprite = armor[i].a_sprite.getSprite();
+            else
+                armorImages[i].enabled = false;
+        }
+
+        for(int i = 0; i < consumableImages.Count; i++) {
+            if(i < consumables.Count)
+                consumableImages[i].sprite = consumables[i].c_sprite.getSprite();
+            else
+                consumableImages[i].enabled = false;
+        }
+
+        for(int i = 0; i < itemImages.Count; i++) {
+            if(i < items.Count)
+                itemImages[i].sprite = items[i].i_sprite.getSprite();
+            else
+                itemImages[i].enabled = false;
+        }
     }
 
     //  Buttons
