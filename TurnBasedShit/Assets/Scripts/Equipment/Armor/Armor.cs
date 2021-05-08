@@ -10,19 +10,20 @@ public class Armor {
     }
 
     public string a_name;
+
     public GameInfo.rarityLvl a_rarity;
-
     public GameInfo.element a_element;
-
+    public GameInfo.wornState a_wornAmount;
     public List<attributes> a_attributes = new List<attributes>();
 
     public float a_defence;
     public float a_speedMod;
-
     public int a_coinCost;
 
     public SpriteLoader a_sprite;
 
+    //  equipped values
+    public SpriteLoader a_equippedSprite;
 
     //  NOTE: this function is applied by the defending unit while the 
     //          weapon class has its function called by the attacker

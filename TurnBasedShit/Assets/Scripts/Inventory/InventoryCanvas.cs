@@ -249,7 +249,7 @@ public class InventoryCanvas : MonoBehaviour {
         shownUnitInformation.GetComponentInChildren<Slider>().value = shownUnit.u_health;
         shownUnitInformation.GetComponentInChildren<TextMeshProUGUI>().text = shownUnit.u_name;
         foreach(var i in FindObjectsOfType<PlayerUnitInstance>())
-            i.updateHeldWeapon();
+            i.updateShownEquipment();
 
         //  equipped weapon
         if(weaponCanvas.activeInHierarchy) {
@@ -412,7 +412,7 @@ public class InventoryCanvas : MonoBehaviour {
             }
 
             foreach(var i in FindObjectsOfType<PlayerUnitInstance>())
-                i.updateHeldWeapon();
+                i.updateShownEquipment();
             setHeldObject(objInSlot);
         }
 

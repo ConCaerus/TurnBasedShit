@@ -16,6 +16,9 @@ public static class GameInfo {
     public enum element {
         Bronze, Gold, Iron, Obsidian
     }
+    public enum wornState {
+        Torn, Ragged, Used, Good, New
+    }
 
 
     const string stateTag = "Current Game State";
@@ -81,5 +84,8 @@ public static class GameInfo {
         set {
             SaveData.setInt(stateTag, (int)value);
         }
+    }
+    public static wornState getRandomWornState() {
+        return (wornState)Random.Range(0, 5);
     }
 }

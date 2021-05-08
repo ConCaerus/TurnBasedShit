@@ -4,14 +4,15 @@ using UnityEngine;
 using DG.Tweening;
 
 public class PlayerUnitInstance : UnitClass {
-    public GameObject heldWeapon;
+    public GameObject equippedWeaponPosition;
+    public GameObject equippedArmorPosition;
 
     private void Awake() {
         isPlayerUnit = true;
     }
 
     private void Start() {
-        updateHeldWeapon();
+        updateShownEquipment();
     }
 
 
@@ -41,14 +42,25 @@ public class PlayerUnitInstance : UnitClass {
         }
     }
 
-    public void updateHeldWeapon() {
+    public void updateShownEquipment() {
+        //  weapon shit
         var w = stats.equippedWeapon;
-        if(w == null || w.isEmpty())
-            return;
+        if(w != null && !w.isEmpty()) {
+            equippedWeaponPosition.transform.localPosition = new Vector2(w.equippedX, w.equippedY);
+            equippedWeaponPosition.transform.localScale = new Vector3(-w.equippedSize, w.equippedSize, 0.0f);
+            equippedWeaponPosition.transform.rotation = Quaternion.Euler(0.0f, 0.0f, w.equippedRot);
+            equippedWeaponPosition.GetComponent<SpriteRenderer>().sprite = w.w_sprite.getSprite();
+        }
+        else {
+            equippedWeaponPosition.GetComponent<SpriteRenderer>().sprite = null;
+        }
 
-        heldWeapon.transform.localPosition = new Vector2(w.heldX, w.heldY);
-        heldWeapon.transform.localScale = new Vector3(-w.heldSize, w.heldSize, 0.0f);
-        heldWeapon.transform.rotation = Quaternion.Euler(0.0f, 0.0f, w.heldRot);
-        heldWeapon.GetComponent<SpriteRenderer>().sprite = w.w_sprite.getSprite();
+        //  armor shit
+        var a = stats.equippedArmor;
+        if(a != null && !a.isEmpty() && a.a_equippedSprite.getSprite(true) != null) {
+            equippedArmorPosition.GetComponent<SpriteRenderer>().sprite = a.a_equippedSprite.getSprite();
+        }
+        else
+            equippedArmorPosition.GetComponent<SpriteRenderer>().sprite = null;
     }
 }

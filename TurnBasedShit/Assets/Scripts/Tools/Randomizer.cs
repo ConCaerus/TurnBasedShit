@@ -67,6 +67,8 @@ public static class Randomizer {
         temp.w_power = Mathf.Clamp(we.w_power + Random.Range(-10.0f, 25.0f), 1.0f, Mathf.Infinity);
         temp.w_speedMod = we.w_speedMod + Random.Range(-10.0f, 10.0f);
 
+        temp.w_wornAmount = GameInfo.getRandomWornState();
+
         return temp;
     }
     public static Weapon randomizeWeaponAttributesBasedOnRegion(Weapon we, GameInfo.diffLvl diff) {
@@ -116,6 +118,8 @@ public static class Randomizer {
         temp.setEqualTo(ar);
         temp.a_defence = Mathf.Clamp(ar.a_defence + Random.Range(-10.0f, 25.0f), 1.0f, Mathf.Infinity);
         temp.a_speedMod = ar.a_speedMod + Random.Range(-10.0f, 10.0f);
+
+        temp.a_wornAmount = GameInfo.getRandomWornState();
 
         return temp;
     }

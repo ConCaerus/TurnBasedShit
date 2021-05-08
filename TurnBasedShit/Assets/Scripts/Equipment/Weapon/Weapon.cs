@@ -14,6 +14,7 @@ public class Weapon {
     public string w_name;
     public GameInfo.rarityLvl w_rarity;
     public GameInfo.element w_element;
+    public GameInfo.wornState w_wornAmount;
     public List<attribute> w_attributes = new List<attribute>();
 
     public float w_power;
@@ -23,9 +24,9 @@ public class Weapon {
     public SpriteLoader w_sprite;
 
     //  Held information
-    public float heldX, heldY;
-    public float heldRot;
-    public float heldSize;
+    public float equippedX, equippedY;
+    public float equippedRot;
+    public float equippedSize;
 
 
 
