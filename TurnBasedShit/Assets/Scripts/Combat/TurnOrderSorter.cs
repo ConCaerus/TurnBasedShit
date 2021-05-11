@@ -49,8 +49,13 @@ public class TurnOrderSorter : MonoBehaviour {
 
         //  removes units that dont exist
         foreach(GameObject i in unitsInPlay.ToArray()) {
-            if(i != null)
-                i.GetComponent<UnitClass>().checkIfDead();
+            if(i != null) {
+                if(!i.GetComponent<UnitClass>().checkIfDead()) {
+                    if(i.GetComponent<UnitClass>().stats.canLevelUp()) {
+                        FindObjectOfType<LevelUpCanvas>().levelUpUnit(i);
+                    }
+                }
+            }
             if(i == null)
                 unitsInPlay.Remove(i);
         }

@@ -6,10 +6,17 @@ using UnityEngine;
 public class UnitStats {
     public string u_name = "";
 
+    public float u_expCap = 25.0f;
+    public float u_exp = 0.0f;
+    public int u_level = 0;
+
     [SerializeField] float u_baseMaxHealth;
     public float u_health = 100.0f;
+
     public float u_speed = 0.0f;
     public float u_power = 0.0f;
+    public float u_defence = 0.0f;
+
     public float u_critChance = 0.0f;
     public int u_bleedCount = 0;
 
@@ -72,24 +79,48 @@ public class UnitStats {
         return names && health && maxHealth && speed && power && order && weapon && armor && item && color;
     }
 
+    public bool levelUpIfPossible() {
+        if(u_exp >= u_expCap) {
+            levelUp();
+            return true;
+        }
+        return false;
+    }
+    public void levelUp() {
+        u_expCap += u_expCap / 10.0f;
+        u_exp = 0.0f;
+
+        u_level++;
+
+        float healthInc = Random.Range(5.0f, 10.0f);
+        u_baseMaxHealth += healthInc;
+        u_health += healthInc;
+
+        u_speed += Random.Range(0.0f, 2.0f);
+        u_power += Random.Range(0.0f, 2.0f);
+        u_defence += Random.Range(0.0f, 2.0f);
+
+        u_critChance = Mathf.Clamp(u_critChance + Random.Range(0.0f, 0.2f), 0.0f, 100.0f);
+    }
+
     //  Attack amount
-    public float getBaseDamageGiven() {
+    public float getPowerMod() {
         return u_power + equippedWeapon.w_power;
     }
     public float getAverageDamageGiven() {
-        float dmg = getBaseDamageGiven();
+        float dmg = getPowerMod();
 
         //  Weapon
         dmg += equippedWeapon.getBonusAttributeDamage();
 
         //  Traits modify damage
         foreach(var i in u_traits) {
-            dmg += i.getDamageGivenMod() * getBaseDamageGiven();
+            dmg += i.getDamageGivenMod() * getPowerMod();
         }
 
         //  Items modify damage
         if(equippedItem != null && !equippedItem.isEmpty()) {
-            dmg += equippedItem.getDamageGivenMod() * getBaseDamageGiven();
+            dmg += equippedItem.getDamageGivenMod() * getPowerMod();
         }
 
 
@@ -111,19 +142,22 @@ public class UnitStats {
     }
 
     //  Defence amount
+    public float getDefenceMod() {
+        return u_defence + equippedArmor.a_defence;
+    }
     public float getDefenceMult(bool defending = false) {
         //  starts with 100%
         float temp = 1.0f;
 
         //  Trigger Traits
         foreach(var i in u_traits) {
-            temp -= i.getDamageGivenMod();
+            temp -= i.getDamageGivenMod() * getDefenceMod();
         }
 
         //  Have Armor reduce damage
         if(equippedArmor != null && !equippedArmor.isEmpty()) {
-            temp -= equippedArmor.getDefenceMult();
-            temp -= equippedArmor.getBonusAttributeDefenceMult();
+            temp -= equippedArmor.getDefenceMult() * getDefenceMod();
+            temp -= equippedArmor.getBonusAttributeDefenceMult() * getDefenceMod();
         }
 
 
@@ -164,6 +198,9 @@ public class UnitStats {
     public void setBaseMaxHealth(float f) {
         u_baseMaxHealth = f;
     }
+    public float getBaseMaxHealth() {
+        return u_baseMaxHealth;
+    }
 
     public int determineCost() {
         //  smallest cost for human life
@@ -177,6 +214,10 @@ public class UnitStats {
         cost += steps;
 
         return cost;
+    }
+
+    public bool canLevelUp() {
+        return u_exp >= u_expCap;
     }
 
     public void die() {
