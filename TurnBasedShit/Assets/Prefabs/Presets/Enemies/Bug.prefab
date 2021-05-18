@@ -130,7 +130,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2.2, y: 1.31}
+  m_Size: {x: 1.76, y: 1.048}
   m_EdgeRadius: 0
 --- !u!114 &6037864551336239584
 MonoBehaviour:
@@ -155,18 +155,23 @@ MonoBehaviour:
   weapon: {fileID: 0}
   armor: {fileID: 0}
   stats:
-    u_name: Bug
-    u_baseMaxHealth: 25
-    u_health: 25
-    u_speed: 0
-    u_power: 1
+    u_name: Marlin the Handsome
+    u_expCap: 25
+    u_exp: 0
+    u_level: 0
+    u_baseMaxHealth: 24.438961
+    u_health: 24.438961
+    u_speed: -0
+    u_power: 1.4307979
+    u_defence: -0.16341765
     u_critChance: 0
-    u_poisonCount: 0
+    u_bleedCount: 0
     u_order: 0
     equippedWeapon:
       w_name: Bug Weapon
       w_rarity: 0
       w_element: 0
+      w_wornAmount: 0
       w_attributes: 
       w_power: 5
       w_speedMod: 0
@@ -174,15 +179,22 @@ MonoBehaviour:
       w_sprite:
         sprite: {fileID: 0}
         sInfo: 
+      equippedX: 0
+      equippedY: 0
+      equippedRot: 0
+      equippedSize: 0
     equippedArmor:
       a_name: Bug Armor
       a_rarity: 0
-      a_element: 0
+      a_wornAmount: 0
       a_attributes: 
       a_defence: 10
       a_speedMod: 2
       a_coinCost: 0
       a_sprite:
+        sprite: {fileID: 0}
+        sInfo: 
+      a_equippedSprite:
         sprite: {fileID: 0}
         sInfo: 
     equippedItem:
@@ -197,6 +209,12 @@ MonoBehaviour:
         sInfo: 
     u_sprite:
       sprite: {fileID: 21300000, guid: 9f58e729c2121e246865885e0e6b0df2, type: 3}
+      sInfo: 
+    u_attackingSprite:
+      sprite: {fileID: 0}
+      sInfo: 
+    u_defendingSprite:
+      sprite: {fileID: 0}
       sInfo: 
     u_color: {r: 1, g: 1, b: 1, a: 1}
     u_slaveStats:

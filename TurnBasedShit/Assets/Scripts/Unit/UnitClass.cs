@@ -16,6 +16,9 @@ public abstract class UnitClass : MonoBehaviour {
     [SerializeField] WeaponPreset weapon = null;
     [SerializeField] ArmorPreset armor = null;
 
+    Vector2 normalSize;
+    Coroutine attackAnim, defendAnim;
+
 
     public UnitStats stats;
 
@@ -30,13 +33,16 @@ public abstract class UnitClass : MonoBehaviour {
     }
 
     public void setup() {
-        if(stats.u_name == "") {
+        if(string.IsNullOrEmpty(stats.u_name)) {
             setNewRandomName();
         }
         else
             name = stats.u_name;
 
-        Party.overrideUnit(stats);
+        normalSize = transform.localScale;
+
+        if(isPlayerUnit)
+            Party.overrideUnit(stats);
     }
 
 
@@ -96,7 +102,7 @@ public abstract class UnitClass : MonoBehaviour {
         stats.equippedWeapon.applyAttributesAfterAttack(gameObject, defender);
 
         //  Flair
-        gameObject.transform.DOPunchPosition(defender.transform.position - transform.position, 0.25f);
+        attackAnim = StartCoroutine(attackingAnim(defender.transform.position));
         FindObjectOfType<AudioManager>().playHitSound();
     }
     public void defend(GameObject attacker, float dmg) {
@@ -126,7 +132,7 @@ public abstract class UnitClass : MonoBehaviour {
         var blood = Instantiate(bloodParticles);
         Destroy(blood.gameObject, blood.main.startLifetimeMultiplier);
         blood.gameObject.transform.position = transform.position;
-        StartCoroutine(hitEffect());
+        defendAnim = StartCoroutine(defendingAnim());
 
         //  triggers
         int armorReaction = stats.equippedArmor.applyAttributesAfterAttack(gameObject, attacker);
@@ -248,7 +254,10 @@ public abstract class UnitClass : MonoBehaviour {
     }
 
     public void setNewRandomName() {
-        stats.u_name = NameLibrary.getRandomPlayerName();
+        if(isPlayerUnit)
+            stats.u_name = NameLibrary.getRandomPlayerName();
+        else
+            stats.u_name = NameLibrary.getRandomEnemyName();
         name = stats.u_name;
     }
 
@@ -258,11 +267,38 @@ public abstract class UnitClass : MonoBehaviour {
             stats.u_color = GetComponent<SpriteRenderer>().color;
     }
 
-    IEnumerator hitEffect() {
+    IEnumerator defendingAnim() {
+        if(attackAnim != null)
+            StopCoroutine(attackAnim);
+
         GetComponent<SpriteRenderer>().DOColor(hitColor, 0.05f);
+        transform.DOScale(normalSize * 1.5f, 0.15f);
+
+        if(stats.u_defendingSprite != null && stats.u_defendingSprite.getSprite(true) != null)
+            gameObject.GetComponent<SpriteRenderer>().sprite = stats.u_defendingSprite.getSprite();
 
         yield return new WaitForSeconds(0.1f);
 
         GetComponent<SpriteRenderer>().DOColor(stats.u_color, 0.25f);
+
+        yield return new WaitForSeconds(0.25f);
+
+        transform.DOScale(normalSize, 0.15f);
+        gameObject.GetComponent<SpriteRenderer>().sprite = stats.u_sprite.getSprite();
+    }
+    IEnumerator attackingAnim(Vector3 targetPos) {
+        if(defendAnim != null)
+            StopCoroutine(defendAnim);
+
+        gameObject.transform.DOPunchPosition(targetPos - transform.position, 0.25f);
+        transform.DOScale(normalSize * 1.5f, 0.15f);
+
+        if(stats.u_attackingSprite != null && stats.u_attackingSprite.getSprite(true) != null)
+            gameObject.GetComponent<SpriteRenderer>().sprite = stats.u_attackingSprite.getSprite();
+
+        yield return new WaitForSeconds(0.3f);
+
+        transform.DOScale(normalSize, 0.15f);
+        gameObject.GetComponent<SpriteRenderer>().sprite = stats.u_sprite.getSprite();
     }
 }

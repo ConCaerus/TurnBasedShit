@@ -6,6 +6,7 @@ public class PresetLibrary : MonoBehaviour {
     //  Units
     [SerializeField] GameObject[] playerUnits;
     [SerializeField] GameObject[] enemies;
+    [SerializeField] GameObject[] bosses;
     [SerializeField] UnitTraitPreset[] unitTraits;
 
     //  Equipment
@@ -28,9 +29,17 @@ public class PresetLibrary : MonoBehaviour {
         stats.u_sprite.setSprite(playerUnits[Random.Range(0, playerUnits.Length)].GetComponent<SpriteRenderer>().sprite);
         stats.u_color = playerUnits[Random.Range(0, playerUnits.Length)].GetComponent<SpriteRenderer>().color;
         stats.u_power = Random.Range(1, 15);
+        stats.u_defence = Random.Range(1, 15);
         stats.u_speed = Random.Range(-5, 10);
 
         return stats;
+    }
+    public GameObject getEnemy(string name) {
+        foreach(var i in enemies) {
+            if(i.GetComponent<UnitClass>().stats.u_name == name)
+                return i;
+        }
+        return null;
     }
     public UnitStats getRandomEnemy(GameInfo.diffLvl diff = (GameInfo.diffLvl)(-1)) {
         //  no specified difficulty level
@@ -61,6 +70,36 @@ public class PresetLibrary : MonoBehaviour {
         //  not useable enemies, return random enemy from all enemies
         return enemies[Random.Range(0, enemies.Length)].GetComponent<EnemyUnitInstance>().stats;
     }
+    public UnitStats getRandomBoss(GameInfo.diffLvl diff = (GameInfo.diffLvl)(-1)) {
+        //  no specified difficulty level
+        if(diff == (GameInfo.diffLvl)(-1))
+            return bosses[Random.Range(0, bosses.Length)].GetComponent<UnitClass>().stats;
+
+        List<UnitStats> useables = new List<UnitStats>();
+        foreach(var i in bosses) {
+            //  same difficulty
+            if(i.GetComponent<BossUnitInstance>().enemyDiff == diff)
+                useables.Add(i.GetComponent<BossUnitInstance>().stats);
+
+            //  higher difficulty
+            else if(i.GetComponent<BossUnitInstance>().enemyDiff == diff + 1) {
+                if(Random.Range(0, 101) <= 25)
+                    useables.Add(i.GetComponent<BossUnitInstance>().stats);
+            }
+
+            //  lower difficulty
+            else if(i.GetComponent<BossUnitInstance>().enemyDiff == diff - 1) {
+                if(Random.Range(0, 101) <= 25)
+                    useables.Add(i.GetComponent<BossUnitInstance>().stats);
+            }
+        }
+
+        if(useables.Count > 0)
+            return useables[Random.Range(0, useables.Count)];
+        //  not useable enemies, return random enemy from all enemies
+        return bosses[Random.Range(0, bosses.Length)].GetComponent<BossUnitInstance>().stats;
+    }
+
     public UnitTrait getRandomGoodUnitTrait() {
         List<UnitTrait> goods = new List<UnitTrait>();
         foreach(var i in unitTraits) {
@@ -244,19 +283,12 @@ public class PresetLibrary : MonoBehaviour {
     }
 
     public CombatLocation createCombatLocation(GameInfo.diffLvl lvl) {
-        var loc = new CombatLocation();
+        int waveCount = Random.Range(1, 4);
+        var loc = new CombatLocation(lvl, FindObjectOfType<PresetLibrary>(), waveCount);
         loc.difficulty = lvl;
 
-        //  enemies
-        int enemyCount = Random.Range(2, 5);
-        for(int i = 0; i < enemyCount; i++) {
-            var enemy = Randomizer.randomizeUnitStats(getRandomEnemy(lvl), true);
-            enemy.u_name = NameLibrary.getRandomEnemyName();
-            loc.enemies.Add(enemy);
-        }
-
-        loc.coinReward = (2 * (int)lvl); // default value
-        loc.coinReward += (int)Random.Range(-loc.coinReward * 0.1f, (loc.coinReward * 0.1f));   //  randomizes it
+        loc.coinReward = 2 * ((int)lvl + 1) * waveCount; // default value
+        loc.coinReward += (int)Random.Range(loc.coinReward * -0.1f, loc.coinReward * 0.1f);   //  randomizes it
 
         //  chance for weapon
         while(Random.Range(0, 101) < 20 && loc.weapons.Count < 3)

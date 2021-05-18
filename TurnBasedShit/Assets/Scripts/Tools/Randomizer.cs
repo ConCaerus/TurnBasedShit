@@ -41,7 +41,35 @@ public static class Randomizer {
         float powerMod = 1.5f;
         s.u_power = stats.u_power * Random.Range(-powerMod, powerMod);
 
+        //  defence
+        float defenceMod = 1.5f;
+        s.u_defence = stats.u_defence * Random.Range(-defenceMod, defenceMod);
+
         return s;
+    }
+    public static GameObject randomizeUnitStatsOnObject(GameObject unit, bool fullHealth = true) {
+        //  health
+        float maxHealthMod = unit.GetComponent<UnitClass>().stats.getModifiedMaxHealth() / 10.0f;
+        unit.GetComponent<UnitClass>().stats.setBaseMaxHealth(unit.GetComponent<UnitClass>().stats.getModifiedMaxHealth() + Random.Range(-maxHealthMod, maxHealthMod));
+        if(!fullHealth) {
+            float healthMin = unit.GetComponent<UnitClass>().stats.getModifiedMaxHealth() * 0.6f;
+            unit.GetComponent<UnitClass>().stats.u_health = Random.Range(healthMin, unit.GetComponent<UnitClass>().stats.getModifiedMaxHealth());
+        }
+        else unit.GetComponent<UnitClass>().stats.u_health = unit.GetComponent<UnitClass>().stats.getModifiedMaxHealth();
+
+        //  speed
+        float speedMod = 2.0f;
+        unit.GetComponent<UnitClass>().stats.u_speed = unit.GetComponent<UnitClass>().stats.u_speed * Random.Range(-speedMod, speedMod);
+
+        //  power
+        float powerMod = 1.5f;
+        unit.GetComponent<UnitClass>().stats.u_power = unit.GetComponent<UnitClass>().stats.u_power * Random.Range(-powerMod, powerMod);
+
+        //  defence
+        float defenceMod = 1.5f;
+        unit.GetComponent<UnitClass>().stats.u_defence = unit.GetComponent<UnitClass>().stats.u_defence * Random.Range(-defenceMod, defenceMod);
+
+        return unit;
     }
 
     public static SlaveStats randomizeSlaveStats(SlaveStats stats) {
@@ -160,8 +188,10 @@ public static class Randomizer {
 
     public static CombatLocation randomizeCombatLocation(CombatLocation cl) {
         //  randomize enemies
-        for(int i = 0; i < cl.enemies.Count; i++)
-            cl.enemies[i] = randomizeUnitStats(cl.enemies[i], true);
+        for(int j = 0; j < cl.waves.Count; j++) {
+            for(int i = 0; i < cl.waves[j].enemies.Count; i++)
+                cl.waves[j].enemies[i] = randomizeUnitStats(cl.waves[j].enemies[i], true);
+        }
         return cl;
     }
 

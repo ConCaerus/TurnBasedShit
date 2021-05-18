@@ -335,8 +335,10 @@ public class InventoryCanvas : MonoBehaviour {
                         shownUnit.equippedArmor = (Armor)heldObject;
                         FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
 
-                        if(objInSlot != null && !((Armor)objInSlot).isEmpty())
+                        if(objInSlot != null && !((Armor)objInSlot).isEmpty()) {
                             Inventory.addArmor((Armor)objInSlot);
+                            Debug.Log("here");
+                        }
                         else
                             objInSlot = null;
 

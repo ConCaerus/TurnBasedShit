@@ -6,32 +6,32 @@ using UnityEngine.SceneManagement;
 public class PickupLocation : MapLocation {
 
     //  weapon
-    public PickupLocation(Vector2 p, Weapon w, CombatLocation cl) {
+    public PickupLocation(Vector2 p, Weapon w, PresetLibrary lib, GameInfo.diffLvl diff) {
         pos = p;
         type = locationType.equipmentPickup;
         sprite = w.w_sprite;
 
-        combatLocation = cl;
+        combatLocation = lib.createCombatLocation(diff);
         combatLocation.weapons.Add(w);
     }
 
     //  armor
-    public PickupLocation(Vector2 p, Armor a, CombatLocation cl) {
+    public PickupLocation(Vector2 p, Armor a, PresetLibrary lib, GameInfo.diffLvl diff) {
         pos = p;
         type = locationType.equipmentPickup;
         sprite = a.a_sprite;
 
-        combatLocation = cl;
+        combatLocation = lib.createCombatLocation(diff);
         combatLocation.armor.Add(a);
     }
 
     //  item
-    public PickupLocation(Vector2 p, Consumable con, int count, CombatLocation cl) {
+    public PickupLocation(Vector2 p, Consumable con, int count, PresetLibrary lib, GameInfo.diffLvl diff) {
         pos = p;
         type = locationType.equipmentPickup;
         sprite = con.c_sprite;
 
-        combatLocation = cl;
+        combatLocation = lib.createCombatLocation(diff);
         for(int i = 0; i < count; i++)
             combatLocation.consumables.Add(con);
     }

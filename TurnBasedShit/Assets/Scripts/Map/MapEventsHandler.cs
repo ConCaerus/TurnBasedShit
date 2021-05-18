@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using DG.Tweening;
 
 public class MapEventsHandler : MonoBehaviour {
@@ -11,6 +10,8 @@ public class MapEventsHandler : MonoBehaviour {
     }
 
     public void chanceEncounter(GameInfo.diffLvl regionDiff) {
+        //  for debugging perposes
+        triggerEncounter(regionDiff);
         switch(regionDiff) {
             case GameInfo.diffLvl.Cake:
             case GameInfo.diffLvl.Easy:
@@ -27,7 +28,7 @@ public class MapEventsHandler : MonoBehaviour {
                 break;
 
             case GameInfo.diffLvl.Legendary:
-                if(Random.Range(0, 101) == 26)    //  25%
+                if(Random.Range(0, 101) <= 26)    //  25%
                     triggerEncounter(regionDiff);
                 break;
         }
@@ -48,6 +49,7 @@ public class MapEventsHandler : MonoBehaviour {
             //  Party is over a map location
             if(partyPos == loc.pos) {
                 FindObjectOfType<EnounterCanvas>().showEnemyEncounterAlert(loc);
+                Debug.Log("here");
                 return;
             }
         }

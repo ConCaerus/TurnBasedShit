@@ -47,6 +47,7 @@ public class TurnOrderSorter : MonoBehaviour {
             FindObjectOfType<PartyObject>().saveParty();
         }
 
+
         //  removes units that dont exist
         foreach(GameObject i in unitsInPlay.ToArray()) {
             if(i != null) {
@@ -60,6 +61,7 @@ public class TurnOrderSorter : MonoBehaviour {
                 unitsInPlay.Remove(i);
         }
         FindObjectOfType<ItemUser>().resetInplayItems();
+
 
         //  resets round if needed
         if(unitsInPlay.Count == 0) {

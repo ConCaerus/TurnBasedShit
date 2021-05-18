@@ -27,6 +27,7 @@ public class UnitStats {
     public Item equippedItem;
 
     public SpriteLoader u_sprite = new SpriteLoader();
+    public SpriteLoader u_attackingSprite = new SpriteLoader(), u_defendingSprite = new SpriteLoader();
     public Color u_color;
 
     public SlaveStats u_slaveStats = new SlaveStats();
@@ -43,7 +44,7 @@ public class UnitStats {
 
     public UnitStats() { }
     public UnitStats(UnitStats other) {
-        if(other == null)
+        if(other == null || other.isEmpty())
             return;
         u_name = other.u_name;
         u_health = other.u_health;
@@ -58,8 +59,15 @@ public class UnitStats {
         equippedArmor = other.equippedArmor;
         equippedItem = other.equippedItem;
 
-        u_sprite.setSprite(other.u_sprite.getSprite());
-        u_color = other.u_color;
+        if(other.u_sprite.getSprite(true) != null) {
+            u_sprite.setSprite(other.u_sprite.getSprite());
+            u_color = other.u_color;
+        }
+
+        if(other.u_attackingSprite.getSprite(true) != null)
+            u_attackingSprite.setSprite(other.u_attackingSprite.getSprite());
+        if(other.u_defendingSprite.getSprite(true) != null)
+            u_defendingSprite.setSprite(other.u_defendingSprite.getSprite());
 
         u_slaveStats = other.u_slaveStats;
     }
@@ -148,16 +156,17 @@ public class UnitStats {
     public float getDefenceMult(bool defending = false) {
         //  starts with 100%
         float temp = 1.0f;
+        temp -= getDefenceMod() / 100.0f;
 
         //  Trigger Traits
         foreach(var i in u_traits) {
-            temp -= i.getDamageGivenMod() * getDefenceMod();
+            temp -= i.getDamageGivenMod();
         }
 
         //  Have Armor reduce damage
         if(equippedArmor != null && !equippedArmor.isEmpty()) {
-            temp -= equippedArmor.getDefenceMult() * getDefenceMod();
-            temp -= equippedArmor.getBonusAttributeDefenceMult() * getDefenceMod();
+            temp -= equippedArmor.getDefenceMult();
+            temp -= equippedArmor.getBonusAttributeDefenceMult();
         }
 
 

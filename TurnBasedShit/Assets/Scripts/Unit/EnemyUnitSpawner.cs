@@ -1,32 +1,41 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class EnemyUnitSpawner : MonoBehaviour {
     [SerializeField] List<GameObject> enemySpawnPoses;
     [SerializeField] GameObject enemyPreset;
 
-    public void spawnEnemies() {
-        var info = FindObjectOfType<PresetLibrary>().createCombatLocation(GameInfo.getDiffRegion());
+    [SerializeField] float showingSpeed = 0.15f;
 
-        if(info == null || info.enemies.Count == 0)
-            info = FindObjectOfType<PresetLibrary>().createCombatLocation(0);
+    public void spawnEnemies(int waveIndex) {
+        var info = GameInfo.getCombatDetails();
 
         List<GameObject> unusedSpawnPoses = new List<GameObject>();
         foreach(var i in enemySpawnPoses)
             unusedSpawnPoses.Add(i.gameObject);
 
-        foreach(var i in info.enemies) {
+        foreach(var i in info.waves[waveIndex].enemies) {
             var obj = Instantiate(enemyPreset.gameObject);
-            UnitStats stats = Randomizer.randomizeUnitStats(i);
-            obj.name = "Enemy: " + stats.u_name;
-            obj.GetComponent<SpriteRenderer>().sprite = stats.u_sprite.getSprite();
-            obj.GetComponent<UnitClass>().stats = stats;
+            obj.name = "Enemy: " + i.u_name;
+            obj.GetComponent<SpriteRenderer>().sprite = i.u_sprite.getSprite();
+            obj.GetComponent<UnitClass>().stats = i;
+
+            obj.GetComponent<UnitClass>().setup();
 
             //  sets a random position
             var rand = Random.Range(0, unusedSpawnPoses.Count);
             obj.transform.position = unusedSpawnPoses[rand].transform.position;
+            animateEnemy(obj);
             unusedSpawnPoses.RemoveAt(rand);
         }
+    }
+
+    public void animateEnemy(GameObject thing) {
+        var target = thing.transform.position;
+
+        thing.transform.position = new Vector3(thing.transform.position.x + 5.0f, thing.transform.position.y, 0.0f);
+        thing.transform.DOMove(target, showingSpeed);
     }
 }

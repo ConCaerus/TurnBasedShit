@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class BattleResultsCanvas : MonoBehaviour {
     [SerializeField] List<Image> weaponImages, armorImages, itemImages, consumableImages;
+    [SerializeField] TextMeshProUGUI coinsText;
 
 
     public void showCombatLocationEquipment() {
@@ -13,6 +14,8 @@ public class BattleResultsCanvas : MonoBehaviour {
         var armor = GameInfo.getCombatDetails().armor;
         var consumables = GameInfo.getCombatDetails().consumables;
         var items = GameInfo.getCombatDetails().items;
+
+        coinsText.text = "Coins Earned: " + GameInfo.getCombatDetails().coinReward.ToString();
 
         for(int i = 0; i < weaponImages.Count; i++) {
             if(i < weapons.Count)
@@ -45,6 +48,6 @@ public class BattleResultsCanvas : MonoBehaviour {
 
     //  Buttons
     public void returnToMap() {
-        SceneManager.LoadScene("Map");
+        FindObjectOfType<TransitionCanvas>().loadSceneWithTransition("Map");
     }
 }

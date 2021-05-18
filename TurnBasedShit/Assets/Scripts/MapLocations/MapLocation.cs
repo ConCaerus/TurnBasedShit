@@ -9,7 +9,7 @@ public abstract class MapLocation {
 
     [Serializable]
     public enum locationType {
-        empty, town, equipmentPickup, equipmentUpgrade
+        empty, town, equipmentPickup, equipmentUpgrade, rescue, nest, boss
     }
 
 

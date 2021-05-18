@@ -24,7 +24,11 @@ public class UnitClassEditor : Editor {
 
         if(GUILayout.Button("Set Sprite")) {
             unit.resetSpriteAndColor();
-        }
+            if(unit.stats.u_attackingSprite != null && unit.stats.u_attackingSprite.getSprite(true) != null)
+                unit.stats.u_attackingSprite.setSprite();
+            if(unit.stats.u_defendingSprite != null && unit.stats.u_defendingSprite.getSprite(true) != null)
+                unit.stats.u_defendingSprite.setSprite();
+        } 
     }
 }
 

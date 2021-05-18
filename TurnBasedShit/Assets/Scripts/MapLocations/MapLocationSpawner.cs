@@ -8,7 +8,7 @@ public class MapLocationSpawner : MonoBehaviour {
 
     [SerializeField] GameObject iconPreset;
 
-    [SerializeField] Sprite weaponUpgradeIcon, armorUpgradeIcon;
+    [SerializeField] Sprite weaponUpgradeIcon, armorUpgradeIcon, nestIcon, bossIcon;
 
 
 
@@ -52,25 +52,23 @@ public class MapLocationSpawner : MonoBehaviour {
         var randX = Random.Range(-18.0f, 18.0f);
         var randY = Random.Range(-18.0f, 18.0f);
 
-        //  gets a relevant combatlocation
-        CombatLocation cl = FindObjectOfType<PresetLibrary>().createCombatLocation(FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(randX));
-        cl = Randomizer.randomizeCombatLocation(cl);
+        GameInfo.diffLvl diff = FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(randX);
 
         PickupLocation temp = null;
 
         var rand = Random.Range(0, 3);
         if(rand == 0) {
             Weapon we = FindObjectOfType<PresetLibrary>().getRandomWeapon();
-            temp = new PickupLocation(new Vector2(randX, randY), Randomizer.randomizeWeapon(we, cl.difficulty), cl);
+            temp = new PickupLocation(new Vector2(randX, randY), Randomizer.randomizeWeapon(we, diff), FindObjectOfType<PresetLibrary>(), diff);
         }
         else if(rand == 1) {
             Armor ar = FindObjectOfType<PresetLibrary>().getRandomArmor();
-            temp = new PickupLocation(new Vector2(randX, randY), Randomizer.randomizeArmor(ar, cl.difficulty), cl);
+            temp = new PickupLocation(new Vector2(randX, randY), Randomizer.randomizeArmor(ar, diff), FindObjectOfType<PresetLibrary>(), diff);
         }
         else if(rand == 2) {
-            Consumable con = FindObjectOfType<PresetLibrary>().getRandomConsumable((GameInfo.rarityLvl)cl.difficulty);
+            Consumable con = FindObjectOfType<PresetLibrary>().getRandomConsumable((GameInfo.rarityLvl)diff);
             int conCount = con.c_maxStackCount;
-            temp = new PickupLocation(new Vector2(randX, randY), con, Random.Range(1, conCount + 1), cl);
+            temp = new PickupLocation(new Vector2(randX, randY), con, Random.Range(1, conCount + 1), FindObjectOfType<PresetLibrary>(), diff);
         }
 
         //  creates an icon for the TownLocation
@@ -110,6 +108,46 @@ public class MapLocationSpawner : MonoBehaviour {
         MapLocationHolder.saveNewLocation(temp);
     }
 
+    public void createNewRandomNest() {
+        //  creates a new TownLocation
+        var randX = Random.Range(-18.0f, 18.0f);
+        var randY = Random.Range(-18.0f, 18.0f);
+
+        GameInfo.diffLvl diff = FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(randX);
+
+        NestLocation temp = new NestLocation(new Vector2(randX, randY), nestIcon, Random.Range(3, 6), FindObjectOfType<PresetLibrary>(), diff);
+
+        //  creates an icon for the TownLocation
+        var obj = Instantiate(iconPreset.gameObject);
+        obj.transform.position = temp.pos;
+        obj.transform.SetParent(transform);
+        obj.GetComponent<SpriteRenderer>().sprite = temp.sprite.getSprite();
+
+
+        //  saves the TownLocation
+        MapLocationHolder.saveNewLocation(temp);
+    }
+
+    public void createNewBoss() {
+        //  creates a new TownLocation
+        var randX = Random.Range(-18.0f, 18.0f);
+        var randY = Random.Range(-18.0f, 18.0f);
+
+        GameInfo.diffLvl diff = FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(randX);
+
+        BossLocation temp = new BossLocation(new Vector2(randX, randY), bossIcon, FindObjectOfType<PresetLibrary>().getRandomBoss(), diff, FindObjectOfType<PresetLibrary>());
+
+        //  creates an icon for the TownLocation
+        var obj = Instantiate(iconPreset.gameObject);
+        obj.transform.position = temp.pos;
+        obj.transform.SetParent(transform);
+        obj.GetComponent<SpriteRenderer>().sprite = temp.sprite.getSprite();
+
+
+        //  saves the TownLocation
+        MapLocationHolder.saveNewLocation(temp);
+    }
+
     public void createLocations() {
         //  towns
         for(int i = 0; i < numberOfTowns; i++) {
@@ -133,5 +171,13 @@ public class MapLocationSpawner : MonoBehaviour {
         for(int i = 0; i < numberOfEquipmentPickups; i++) {
             createNewRandomEquipmentPickup();
         }
+    }
+
+
+    public List<GameObject> getShownLocationObjects() {
+        List<GameObject> temp = new List<GameObject>();
+        foreach(var i in GetComponentsInChildren<SpriteRenderer>())
+            temp.Add(i.gameObject);
+        return temp;
     }
 }

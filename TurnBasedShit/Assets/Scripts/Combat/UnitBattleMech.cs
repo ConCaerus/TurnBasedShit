@@ -8,23 +8,25 @@ public class UnitBattleMech : MonoBehaviour {
 
     [SerializeField] ParticleSystem bloodParticles;
 
+    int waveIndex = 0;
+
     bool battleEnded = false;
 
     private void Awake() {
-        FindObjectOfType<PartyObject>().instantiatePartyMembers();
-        FindObjectOfType<EnemyUnitSpawner>().spawnEnemies();
-        battleResultsCanvas.SetActive(false);
+        StartCoroutine(FindObjectOfType<TransitionCanvas>().runAfterLoading(setUp));
     }
 
-    private void Start() {
-        resetBattleRound();
-    }
-
-    private void Update() {
-        if(!battleEnded && (FindObjectsOfType<PlayerUnitInstance>().Length == 0 || FindObjectsOfType<EnemyUnitInstance>().Length == 0)) {
-            battleEnded = true;
-            endBattle();
+    void setUp() {
+        if(GameInfo.getCombatDetails() == null || GameInfo.getCombatDetails().waves == null || GameInfo.getCombatDetails().waves.Count == 0) {
+            GameInfo.setCombatDetails(FindObjectOfType<PresetLibrary>().createCombatLocation(0));
+            Debug.Log("created");
         }
+
+        FindObjectOfType<PartyObject>().instantiatePartyMembers();
+        FindObjectOfType<EnemyUnitSpawner>().spawnEnemies(0);
+        battleResultsCanvas.SetActive(false);
+        resetBattleRound();
+        StartCoroutine(checkIfBattleEnded());
     }
 
     public void resetBattleRound() {
@@ -44,13 +46,52 @@ public class UnitBattleMech : MonoBehaviour {
 
         //  player killed all enemies and the battle is over
         else if(FindObjectsOfType<EnemyUnitInstance>().Length == 0) {
-            GameInfo.getCombatDetails().addSpoilsToInventory();
+            GameInfo.getCombatDetails().addSpoils();
             showBattleResults();
             battleResultsCanvas.GetComponent<BattleResultsCanvas>().showCombatLocationEquipment();
         }
+
+        GameInfo.setCombatDetails(null);
     }
 
     void showBattleResults() {
         battleResultsCanvas.SetActive(true);
+    }
+
+
+    IEnumerator checkIfBattleEnded() {
+        yield return new WaitForEndOfFrame();
+
+        bool runAgain = true;
+
+        if(FindObjectOfType<TransitionCanvas>().loaded && !battleEnded && (FindObjectsOfType<PlayerUnitInstance>().Length == 0 || FindObjectsOfType<EnemyUnitInstance>().Length == 0)) {
+            //  Player won
+            if(FindObjectsOfType<EnemyUnitInstance>().Length == 0 && FindObjectsOfType<PlayerUnitInstance>().Length > 0) {
+                //  check that there are no more waves
+                if(GameInfo.getCombatDetails() != null && waveIndex >= GameInfo.getCombatDetails().waves.Count - 1) {
+                    battleEnded = true;
+                    endBattle();
+                    runAgain = false;
+                }
+
+                //  spawn next wave
+                else if(GameInfo.getCombatDetails() != null && waveIndex < GameInfo.getCombatDetails().waves.Count - 1) {
+                    waveIndex++;
+                    FindObjectOfType<TurnOrderSorter>().resetList();
+                    FindObjectOfType<EnemyUnitSpawner>().spawnEnemies(waveIndex);
+                }
+            }
+
+
+            //  Player lost
+            else if(FindObjectsOfType<PlayerUnitInstance>().Length == 0) {
+                //  fuckin' do shit
+                battleEnded = true;
+                endBattle();
+                runAgain = false;
+            }
+        }
+        if(runAgain)
+            StartCoroutine(checkIfBattleEnded());
     }
 }

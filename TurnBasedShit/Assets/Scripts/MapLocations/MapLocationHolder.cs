@@ -32,6 +32,24 @@ public static class MapLocationHolder {
 
         SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) + 1);
     }
+    public static void saveNewLocation(RescueLocation loc) {
+        var data = JsonUtility.ToJson(loc);
+        SaveData.setString(locationTag(getLocationCount()), data);
+
+        SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) + 1);
+    }
+    public static void saveNewLocation(NestLocation loc) {
+        var data = JsonUtility.ToJson(loc);
+        SaveData.setString(locationTag(getLocationCount()), data);
+
+        SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) + 1);
+    }
+    public static void saveNewLocation(BossLocation loc) {
+        var data = JsonUtility.ToJson(loc);
+        SaveData.setString(locationTag(getLocationCount()), data);
+
+        SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) + 1);
+    }
 
     public static void removeLocation(MapLocation loc) {
         switch(loc.type) {
@@ -121,6 +139,81 @@ public static class MapLocationHolder {
             SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) - 1);
         }
     }
+    public static void removeUpgradeLocation(RescueLocation loc) {
+        int index = 0;
+        bool shrinkCount = false;
+
+        for(int i = 0; i < SaveData.getInt(locationCountTag()); i++) {
+            var data = SaveData.getString(locationTag(i));
+            var temp = JsonUtility.FromJson<RescueLocation>(data);
+
+            //  remove this location
+            if(temp.equals(loc)) {
+                shrinkCount = true;
+            }
+
+            //  else set new order for the unit
+            else {
+                data = JsonUtility.ToJson(temp);
+                SaveData.setString(locationTag(index), data);
+                index++;
+            }
+        }
+        if(shrinkCount) {
+            SaveData.deleteKey(locationTag(getLocationCount() - 1));
+            SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) - 1);
+        }
+    }
+    public static void removeNestLocation(NestLocation loc) {
+        int index = 0;
+        bool shrinkCount = false;
+
+        for(int i = 0; i < SaveData.getInt(locationCountTag()); i++) {
+            var data = SaveData.getString(locationTag(i));
+            var temp = JsonUtility.FromJson<NestLocation>(data);
+
+            //  remove this location
+            if(temp.equals(loc)) {
+                shrinkCount = true;
+            }
+
+            //  else set new order for the unit
+            else {
+                data = JsonUtility.ToJson(temp);
+                SaveData.setString(locationTag(index), data);
+                index++;
+            }
+        }
+        if(shrinkCount) {
+            SaveData.deleteKey(locationTag(getLocationCount() - 1));
+            SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) - 1);
+        }
+    }
+    public static void removeBossLocation(BossLocation loc) {
+        int index = 0;
+        bool shrinkCount = false;
+
+        for(int i = 0; i < SaveData.getInt(locationCountTag()); i++) {
+            var data = SaveData.getString(locationTag(i));
+            var temp = JsonUtility.FromJson<BossLocation>(data);
+
+            //  remove this location
+            if(temp.equals(loc)) {
+                shrinkCount = true;
+            }
+
+            //  else set new order for the unit
+            else {
+                data = JsonUtility.ToJson(temp);
+                SaveData.setString(locationTag(index), data);
+                index++;
+            }
+        }
+        if(shrinkCount) {
+            SaveData.deleteKey(locationTag(getLocationCount() - 1));
+            SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) - 1);
+        }
+    }
 
 
     public static int getLocationCount() {
@@ -152,6 +245,36 @@ public static class MapLocationHolder {
         for(int i = 0; i < getLocationCount(); i++) {
             var data = SaveData.getString(locationTag(i));
             if(JsonUtility.FromJson<UpgradeLocation>(data).type == MapLocation.locationType.equipmentUpgrade)
+                count++;
+        }
+        return count;
+    }
+    public static int getRescueCount() {
+        int count = 0;
+
+        for(int i = 0; i < getLocationCount(); i++) {
+            var data = SaveData.getString(locationTag(i));
+            if(JsonUtility.FromJson<RescueLocation>(data).type == MapLocation.locationType.rescue)
+                count++;
+        }
+        return count;
+    }
+    public static int getNestCount() {
+        int count = 0;
+
+        for(int i = 0; i < getLocationCount(); i++) {
+            var data = SaveData.getString(locationTag(i));
+            if(JsonUtility.FromJson<NestLocation>(data).type == MapLocation.locationType.nest)
+                count++;
+        }
+        return count;
+    }
+    public static int getBossCount() {
+        int count = 0;
+
+        for(int i = 0; i < getLocationCount(); i++) {
+            var data = SaveData.getString(locationTag(i));
+            if(JsonUtility.FromJson<BossLocation>(data).type == MapLocation.locationType.boss)
                 count++;
         }
         return count;
@@ -194,6 +317,30 @@ public static class MapLocationHolder {
             return temp;
         return null;
     }
+    public static RescueLocation getRescueLocation(int index) {
+        var data = SaveData.getString(locationTag(index));
+        var temp = JsonUtility.FromJson<RescueLocation>(data);
+
+        if(temp != null && temp.type == MapLocation.locationType.rescue)
+            return temp;
+        return null;
+    }
+    public static NestLocation getNestLocation(int index) {
+        var data = SaveData.getString(locationTag(index));
+        var temp = JsonUtility.FromJson<NestLocation>(data);
+
+        if(temp != null && temp.type == MapLocation.locationType.nest)
+            return temp;
+        return null;
+    }
+    public static BossLocation getBossLocation(int index) {
+        var data = SaveData.getString(locationTag(index));
+        var temp = JsonUtility.FromJson<BossLocation>(data);
+
+        if(temp != null && temp.type == MapLocation.locationType.boss)
+            return temp;
+        return null;
+    }
 
 
     public static int getIndex(MapLocation loc) {
@@ -218,6 +365,27 @@ public static class MapLocationHolder {
         return -1;
     }
     public static int getIndex(UpgradeLocation loc) {
+        for(int i = 0; i < getLocationCount(); i++) {
+            if(getMapLocation(i) == loc)
+                return i;
+        }
+        return -1;
+    }
+    public static int getIndex(RescueLocation loc) {
+        for(int i = 0; i < getLocationCount(); i++) {
+            if(getMapLocation(i) == loc)
+                return i;
+        }
+        return -1;
+    }
+    public static int getIndex(NestLocation loc) {
+        for(int i = 0; i < getLocationCount(); i++) {
+            if(getMapLocation(i) == loc)
+                return i;
+        }
+        return -1;
+    }
+    public static int getIndex(BossLocation loc) {
         for(int i = 0; i < getLocationCount(); i++) {
             if(getMapLocation(i) == loc)
                 return i;

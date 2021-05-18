@@ -25,10 +25,7 @@ public class PartyObject : MonoBehaviour {
 
             //  sets up stats
             obj.GetComponent<UnitClass>().stats = Party.getMemberStats(i);
-            if(string.IsNullOrEmpty(obj.GetComponent<UnitClass>().stats.u_name)) {
-                obj.GetComponent<UnitClass>().stats.u_name = NameLibrary.getRandomUsablePlayerName();
-            }
-            obj.name = obj.GetComponent<UnitClass>().stats.u_name;
+            obj.GetComponent<UnitClass>().setup();
 
             //  adds a trait if traits are empty
             if(Party.getMemberStats(i).u_traits.Count == 0)

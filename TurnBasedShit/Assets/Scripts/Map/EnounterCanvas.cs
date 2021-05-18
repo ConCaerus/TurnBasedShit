@@ -30,8 +30,8 @@ public class EnounterCanvas : MonoBehaviour {
         yield return new WaitForSeconds(1.0f);
 
         if(loc == null)
-            SceneManager.LoadScene("Combat");
+            FindObjectOfType<TransitionCanvas>().loadSceneWithTransition("Combat");
         else
-            loc.enterLocation();
+            FindObjectOfType<TransitionCanvas>().loadSceneWithFunction(loc.enterLocation);
     }
 }

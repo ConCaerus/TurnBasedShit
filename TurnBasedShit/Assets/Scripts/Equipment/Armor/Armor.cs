@@ -12,7 +12,6 @@ public class Armor {
     public string a_name;
 
     public GameInfo.rarityLvl a_rarity;
-    public GameInfo.element a_element;
     public GameInfo.wornState a_wornAmount;
     public List<attributes> a_attributes = new List<attributes>();
 
@@ -57,7 +56,6 @@ public class Armor {
     public void resetArmorStats() {
         a_defence = 0;
         a_speedMod = 0;
-        a_element = 0;
         a_attributes.Clear();
         a_sprite.clear();
     }
@@ -80,11 +78,10 @@ public class Armor {
 
         bool defence = a_defence == other.a_defence;
         bool speed = a_speedMod == other.a_speedMod;
-        bool ele = a_element == other.a_element;
         bool rarity = a_rarity == other.a_rarity;
 
 
-        return defence && speed && ele && rarity;
+        return defence && speed && rarity;
     }
 
 
@@ -93,7 +90,6 @@ public class Armor {
         a_defence = temp.a_defence;
         a_speedMod = temp.a_speedMod;
         a_attributes = temp.a_attributes;
-        a_element = temp.a_element;
         a_sprite = temp.a_sprite;
         a_rarity = temp.a_rarity;
     }
@@ -109,7 +105,6 @@ public class Armor {
         a_defence = other.a_defence;
         a_speedMod = other.a_speedMod;
         a_attributes = other.a_attributes;
-        a_element = other.a_element;
         a_sprite = other.a_sprite;
         a_rarity = other.a_rarity;
     }

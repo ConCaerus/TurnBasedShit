@@ -130,7 +130,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2.4, y: 1.055}
+  m_Size: {x: 1.92, y: 0.844}
   m_EdgeRadius: 0
 --- !u!114 &6037864551336239584
 MonoBehaviour:
@@ -155,18 +155,23 @@ MonoBehaviour:
   weapon: {fileID: 0}
   armor: {fileID: 0}
   stats:
-    u_name: Slime
-    u_baseMaxHealth: 50
-    u_health: 50
-    u_speed: 0
-    u_power: 1
+    u_name: Todd of the Forrest
+    u_expCap: 25
+    u_exp: 0
+    u_level: 0
+    u_baseMaxHealth: 68.84619
+    u_health: 68.84619
+    u_speed: -0
+    u_power: -0.07799058
+    u_defence: -5.6574855
     u_critChance: 0
-    u_poisonCount: 0
+    u_bleedCount: 0
     u_order: 0
     equippedWeapon:
       w_name: Slime Weapon
       w_rarity: 0
       w_element: 0
+      w_wornAmount: 0
       w_attributes: 
       w_power: 10
       w_speedMod: 0
@@ -174,15 +179,22 @@ MonoBehaviour:
       w_sprite:
         sprite: {fileID: 0}
         sInfo: 
+      equippedX: 0
+      equippedY: 0
+      equippedRot: 0
+      equippedSize: 0
     equippedArmor:
       a_name: Slime Armor
       a_rarity: 0
-      a_element: 0
+      a_wornAmount: 0
       a_attributes: 
       a_defence: 10
       a_speedMod: 2
       a_coinCost: 0
       a_sprite:
+        sprite: {fileID: 0}
+        sInfo: 
+      a_equippedSprite:
         sprite: {fileID: 0}
         sInfo: 
     equippedItem:
@@ -197,6 +209,12 @@ MonoBehaviour:
         sInfo: 
     u_sprite:
       sprite: {fileID: 21300000, guid: 2071b404b24180349b61f141df41aedb, type: 3}
+      sInfo: 
+    u_attackingSprite:
+      sprite: {fileID: 21300000, guid: aab8c29107c90494e92eeb88eb01f68a, type: 3}
+      sInfo: 
+    u_defendingSprite:
+      sprite: {fileID: 21300000, guid: 42abda8016d965e4d8f1975f3cb682b8, type: 3}
       sInfo: 
     u_color: {r: 1, g: 1, b: 1, a: 1}
     u_slaveStats:
