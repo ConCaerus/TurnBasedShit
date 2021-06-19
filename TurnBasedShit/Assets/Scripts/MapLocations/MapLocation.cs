@@ -16,7 +16,6 @@ public abstract class MapLocation {
 
     public Vector2 pos;
     public locationType type = locationType.empty;
-    public SpriteLoader sprite = new SpriteLoader();
 
     public CombatLocation combatLocation = null;
 

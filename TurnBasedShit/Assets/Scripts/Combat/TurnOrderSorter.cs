@@ -86,10 +86,12 @@ public class TurnOrderSorter : MonoBehaviour {
 
         //  flair
         FindObjectOfType<CombatCameraController>().moveToPlayingUnit();
+        FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
 
         //  triggers
         FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeTurn, playingUnit.GetComponent<UnitClass>(), true);
         FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeEachTurn, playingUnit.GetComponent<UnitClass>(), false);
+        FindObjectOfType<BattleOptionsCanvas>().attackState = false;
 
         return playingUnit;
     }

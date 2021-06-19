@@ -268,8 +268,8 @@ public class MapTrailRenderer : MonoBehaviour {
             }
         }
 
-        MapAnchorPositionSaver.overrideAnchor(getAnchorIndex(movingAnchor), movingAnchor);
-        MapAnchorPositionSaver.setPartyAnchor(partyAnchor);
+       // MapAnchorPositionSaver.overrideAnchor(getAnchorIndex(movingAnchor), movingAnchor);
+       // MapAnchorPositionSaver.setPartyAnchor(partyAnchor);
         movingAnchor = null;
         drawLine();
     }
@@ -277,20 +277,20 @@ public class MapTrailRenderer : MonoBehaviour {
     void loadSavedAnchors() {
         anchors.Clear();
         //  party anchor pos
-        if(MapAnchorPositionSaver.getPartyPos() == Vector2.zero) {
+        //if(MapAnchorPositionSaver.getPartyPos() == Vector2.zero) {
             partyAnchor.transform.position = startingPos;
-            MapAnchorPositionSaver.setPartyAnchor(partyAnchor);
-        }
-        else
-            partyAnchor.transform.position = MapAnchorPositionSaver.getPartyPos();
+           // MapAnchorPositionSaver.setPartyAnchor(partyAnchor);
+      //  }
+      //  else
+          //  partyAnchor.transform.position = MapAnchorPositionSaver.getPartyPos();
 
         //  normal anchor poses
         if(MapAnchorPositionSaver.getAnchorCount() == 0) {
-            createNewAnchorAtPos(MapAnchorPositionSaver.getPartyPos());
+          //  createNewAnchorAtPos(MapAnchorPositionSaver.getPartyPos());
         }
         else {
             for(int i = 0; i < MapAnchorPositionSaver.getAnchorCount(); i++) {
-                createNewAnchorAtPos(MapAnchorPositionSaver.getAnchorPos(i));
+                //createNewAnchorAtPos(MapAnchorPositionSaver.getAnchorPos(i));
             }
         }
     }
@@ -307,7 +307,7 @@ public class MapTrailRenderer : MonoBehaviour {
                 Destroy(temp.gameObject);
 
                 MapAnchorPositionSaver.removeAnchor(0);
-                MapAnchorPositionSaver.setPartyAnchor(partyAnchor);
+               // MapAnchorPositionSaver.setPartyAnchor(partyAnchor);
                 FindObjectOfType<MapEventsHandler>().triggerAnchorEvents(partyAnchor.transform.position);
 
 

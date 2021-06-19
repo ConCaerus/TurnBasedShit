@@ -7,7 +7,7 @@ public class Item {
     //  times at which the item is used
     [System.Serializable]
     public enum useTimes {
-        beforeEachTurn, afterEachTurn, beforeTurn, afterTurn, afterRound, beforeDefending, beforeAttacking
+        beforeEachTurn, afterEachTurn, beforeTurn, afterTurn, afterRound, beforeDefending, beforeAttacking, afterKill
     }
     //  conditions that have to be met before the item can be used
     [System.Serializable]
@@ -33,7 +33,7 @@ public class Item {
     }
 
 
-
+    public int i_instanceID = -1;
 
     public string i_name;
     public GameInfo.rarityLvl i_rarity;
@@ -44,7 +44,7 @@ public class Item {
 
     public int i_coinCost;
 
-    public SpriteLoader i_sprite;
+    [SerializeField] ItemSpriteHolder i_sprite;
 
     public float getHealthMod() {
         float temp = 0.0f;
@@ -141,6 +141,16 @@ public class Item {
     }
 
     public bool isEmpty() {
-        return string.IsNullOrEmpty(i_name) && i_useTimes.Count == 0 && i_useConditions.Count == 0 && i_useEffects.Count == 0 && i_sprite.getSprite(true) == null;
+        return string.IsNullOrEmpty(i_name) && i_useTimes.Count == 0 && i_useConditions.Count == 0 && i_useEffects.Count == 0;
     }
+
+    public ItemSpriteHolder getSpriteHolder() {
+        return i_sprite;
+    }
+}
+
+
+[System.Serializable]
+public class ItemSpriteHolder {
+    public Sprite sprite;
 }

@@ -46,10 +46,10 @@ public class PlayerUnitInstance : UnitClass {
         //  weapon shit
         var w = stats.equippedWeapon;
         if(w != null && !w.isEmpty()) {
-            equippedWeaponPosition.transform.localPosition = new Vector2(w.equippedX, w.equippedY);
-            equippedWeaponPosition.transform.localScale = new Vector3(-w.equippedSize, w.equippedSize, 0.0f);
-            equippedWeaponPosition.transform.rotation = Quaternion.Euler(0.0f, 0.0f, w.equippedRot);
-            equippedWeaponPosition.GetComponent<SpriteRenderer>().sprite = w.w_sprite.getSprite();
+            equippedWeaponPosition.transform.localPosition = new Vector2(FindObjectOfType<PresetLibrary>().getWeaponSprite(w).equippedX, FindObjectOfType<PresetLibrary>().getWeaponSprite(w).equippedY);
+            equippedWeaponPosition.transform.localScale = new Vector3(-FindObjectOfType<PresetLibrary>().getWeaponSprite(w).equippedSize, FindObjectOfType<PresetLibrary>().getWeaponSprite(w).equippedSize, 0.0f);
+            equippedWeaponPosition.transform.rotation = Quaternion.Euler(0.0f, 0.0f, FindObjectOfType<PresetLibrary>().getWeaponSprite(w).equippedRot);
+            equippedWeaponPosition.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(w).sprite;
         }
         else {
             equippedWeaponPosition.GetComponent<SpriteRenderer>().sprite = null;
@@ -57,8 +57,8 @@ public class PlayerUnitInstance : UnitClass {
 
         //  armor shit
         var a = stats.equippedArmor;
-        if(a != null && !a.isEmpty() && a.a_equippedSprite.getSprite(true) != null) {
-            equippedArmorPosition.GetComponent<SpriteRenderer>().sprite = a.a_equippedSprite.getSprite();
+        if(a != null && !a.isEmpty()) {
+            equippedArmorPosition.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(a).equippedSprite;
         }
         else
             equippedArmorPosition.GetComponent<SpriteRenderer>().sprite = null;

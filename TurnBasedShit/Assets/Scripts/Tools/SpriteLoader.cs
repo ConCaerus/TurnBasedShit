@@ -4,8 +4,9 @@ using UnityEngine;
 
 [System.Serializable]
 public class SpriteLoader {
-    [SerializeField] Sprite sprite = null;
-    [SerializeField] string sInfo = "";
+    [SerializeField] Sprite sprite;
+    [SerializeField] string sInfo;
+
 
     public void setSprite(Sprite s = null) {
         if(s == null && sprite != null) {
@@ -63,20 +64,24 @@ public class SpriteLoader {
     public void setInfoString(byte[] info) {
         sInfo = System.Convert.ToBase64String(info);
     }
-    public Sprite getSprite(bool canBeNull = false) {
+    public Sprite getSprite() {
         if(!string.IsNullOrEmpty(sInfo)) {
             return getSpriteFromInfo();
         }
         if(sprite != null) {
             return sprite;
         }
-        if(!canBeNull)
-            Debug.LogError("Tried to get null sprite");
+        Debug.LogError("Tried to get null sprite");
         return null;
     }
 
     public void clear() {
         sprite = null;
         sInfo = string.Empty;
+    }
+
+    public bool hasSprite() {
+        if(sprite == null && string.IsNullOrEmpty(getInfoString())) return false;
+        return true;
     }
 }

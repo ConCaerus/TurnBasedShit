@@ -63,7 +63,7 @@ public class TransitionCanvas : MonoBehaviour {
         funcToRun();
     }
 
-
+    //  FUCKING REMEMBER: when calling this function you need to use StartCoroutine();
     public IEnumerator runAfterLoading(func funcToRun) {
         yield return new WaitForEndOfFrame();
 

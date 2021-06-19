@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: Chainmail
   m_EditorClassIdentifier: 
   preset:
+    a_instanceID: -1
     a_name: Chainmail
     a_rarity: 0
-    a_element: 0
+    a_wornAmount: 0
     a_attributes: 
     a_defence: 25
     a_speedMod: 5
     a_coinCost: 10
     a_sprite:
       sprite: {fileID: 21300000, guid: 29b76a7b1e9c241428ac4209976dceb5, type: 3}
-      sInfo: 
+      equippedSprite: {fileID: 0}

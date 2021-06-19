@@ -17,7 +17,7 @@ public static class GameInfo {
         Bronze, Gold, Iron, Obsidian
     }
     public enum wornState {
-        Torn, Ragged, Used, Good, New
+        Old, Used, Normal, New, Perfect
     }
 
 

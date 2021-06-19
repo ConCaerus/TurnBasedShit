@@ -73,33 +73,33 @@ public static class Inventory {
     public static void addWeapon(Weapon w) {
         int index = getTypeCount(typeof(Weapon));
 
-        w.w_sprite.setSprite();
+        w.w_instanceID = getNextWeaponInstanceID();
         var data = JsonUtility.ToJson(w);
-        SaveData.setString(objectTag(index, typeof(Weapon)), data);
+        SaveData.setString(objectTag(w.w_instanceID, typeof(Weapon)), data);
         SaveData.setInt(objectCountTag(typeof(Weapon)), index + 1);
     }
     public static void addArmor(Armor a) {
         int index = getTypeCount(typeof(Armor));
 
-        a.a_sprite.setSprite();
+        a.a_instanceID = getNextArmorInstanceID();
         var data = JsonUtility.ToJson(a);
-        SaveData.setString(objectTag(index, typeof(Armor)), data);
+        SaveData.setString(objectTag(a.a_instanceID, typeof(Armor)), data);
         SaveData.setInt(objectCountTag(typeof(Armor)), index + 1);
     }
     public static void addConsumable(Consumable c) {
         int index = getTypeCount(typeof(Consumable));
 
-        c.c_sprite.setSprite();
+        c.c_instanceID = getNextConsumableInstanceID();
         var data = JsonUtility.ToJson(c);
-        SaveData.setString(objectTag(index, typeof(Consumable)), data);
+        SaveData.setString(objectTag(c.c_instanceID, typeof(Consumable)), data);
         SaveData.setInt(objectCountTag(typeof(Consumable)), index + 1);
     }
     public static void addItem(Item it) {
         int index = getTypeCount(typeof(Item));
 
-        it.i_sprite.setSprite();
+        it.i_instanceID = getNextItemInstanceID();
         var data = JsonUtility.ToJson(it);
-        SaveData.setString(objectTag(index, typeof(Item)), data);
+        SaveData.setString(objectTag(it.i_instanceID, typeof(Item)), data);
         SaveData.setInt(objectCountTag(typeof(Item)), index + 1);
     }
     public static void addCoins(int count) {
@@ -205,12 +205,10 @@ public static class Inventory {
         SaveData.setString(objectTag(index, typeof(Armor)), data);
     }
     public static void overrideConsumable(int index, Consumable c) {
-        c.c_sprite.setSprite();
         var data = JsonUtility.ToJson(c);
         SaveData.setString(objectTag(index, typeof(Consumable)), data);
     }
     public static void overrideItem(int index, Item it) {
-        it.i_sprite.setSprite();
         var data = JsonUtility.ToJson(it);
         SaveData.setString(objectTag(index, typeof(Item)), data);
     }
@@ -281,6 +279,39 @@ public static class Inventory {
             if(temp == it)
                 return i;
         }
+        return -1;
+    }
+
+    static int getNextWeaponInstanceID() {
+        for(int i = 0; i < getTypeCount(typeof(Weapon)) + 1; i++) {
+            if(getWeapon(i) == null)
+                return i;
+        }
+        Debug.LogError("Could not find next weapon instance ID");
+        return -1;
+    }
+    static int getNextArmorInstanceID() {
+        for(int i = 0; i < getTypeCount(typeof(Armor)) + 1; i++) {
+            if(getArmor(i) == null)
+                return i;
+        }
+        Debug.LogError("Could not find next armor instance ID");
+        return -1;
+    }
+    static int getNextConsumableInstanceID() {
+        for(int i = 0; i < getTypeCount(typeof(Consumable)) + 1; i++) {
+            if(getConsumable(i) == null)
+                return i;
+        }
+        Debug.LogError("Could not find next cons instance ID");
+        return -1;
+    }
+    static int getNextItemInstanceID() {
+        for(int i = 0; i < getTypeCount(typeof(Item)) + 1; i++) {
+            if(getItem(i) == null)
+                return i;
+        }
+        Debug.LogError("Could not find next item instance ID");
         return -1;
     }
 }

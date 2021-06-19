@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Simple Shirt
   m_EditorClassIdentifier: 
   preset:
+    a_instanceID: -1
     a_name: Simple Shirt
     a_rarity: 0
     a_wornAmount: 0
@@ -22,7 +23,4 @@ MonoBehaviour:
     a_coinCost: 2
     a_sprite:
       sprite: {fileID: 21300000, guid: 659edf7ddf4c930488e38ecd5c72668f, type: 3}
-      sInfo: 
-    a_equippedSprite:
-      sprite: {fileID: 21300000, guid: f3297d1a17f799a42b6a88cde4f12b1e, type: 3}
-      sInfo: 
+      equippedSprite: {fileID: 21300000, guid: f3297d1a17f799a42b6a88cde4f12b1e, type: 3}

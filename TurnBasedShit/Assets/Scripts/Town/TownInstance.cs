@@ -21,7 +21,6 @@ public class TownEditor : Editor {
         if(GUILayout.Button("Instantiate Buildings")) {
             foreach(var i in FindObjectsOfType<BuildingInstance>())
                 DestroyImmediate(i.gameObject);
-            ti.instantiateBuildings();
         }
     }
 }
@@ -35,11 +34,15 @@ public class TownInstance : MonoBehaviour {
 
     private void Awake() {
         if(GameInfo.getCurrentMapLocation() == null || GameInfo.getCurrentMapLocation().type != MapLocation.locationType.town) {
-            town = TownLibrary.addNewTownAndSetIndex(new Town(buildingCount));
+            town = TownLibrary.addNewTownAndSetIndex(new Town(buildingCount, GameInfo.getDiffRegion(), FindObjectOfType<PresetLibrary>()));
             ShopInventory.populateShop(town.t_index, GameInfo.getDiffRegion(), FindObjectOfType<PresetLibrary>());
         }
         else
             town = TownLibrary.getTown(((TownLocation)GameInfo.getCurrentMapLocation()).town.t_index);
+    }
+
+    private void Start() {
+        instantiateBuildings();
     }
 
 
@@ -66,7 +69,7 @@ public class TownInstance : MonoBehaviour {
         }
     }
     
-    public void instantiateBuildings() {
+    void instantiateBuildings() {
         List<Vector2> unusedSpawnPoses = new List<Vector2>();
         foreach(var i in buildingSpawnPoses)
             unusedSpawnPoses.Add(i);
@@ -90,6 +93,7 @@ public class TownInstance : MonoBehaviour {
             temp.transform.position = unusedSpawnPoses[rand];
             unusedSpawnPoses.RemoveAt(rand);
             temp.transform.SetParent(transform);
+            temp.transform.localScale = new Vector3(0.75f, 0.75f, 0.0f);
         }
     }
 }
@@ -99,20 +103,23 @@ public class Town {
     public int t_index = -1;
     public int t_buildingCount;
 
+    public bool deliveryLocation = false;
+
     //  shop information
     public float shopSellReduction = 0.05f;
     public float shopPriceMod = 0.0f;
 
     public List<Building> t_buildings = new List<Building>();
 
-    public Town(int buildingCount) {
+    public Town(int buildingCount, GameInfo.diffLvl diff, PresetLibrary lib) {
         t_buildingCount = buildingCount;
         t_buildings.Clear();
         for(int i = 0; i < t_buildingCount; i++) {
-            t_buildings.Add(new Building());
+            t_buildings.Add(lib.getRandomBuilding());
         }
 
         //  shop shit
+        ShopInventory.populateShop(t_index, diff, lib);
         shopSellReduction = Random.Range(0.0f, 0.15f);
         shopPriceMod = Random.Range(-0.2f, 0.2f);
     }

@@ -165,7 +165,7 @@ public class InventoryCanvas : MonoBehaviour {
 
             heldObjectPicture.SetActive(heldObject != null);
             if(heldObject != null)
-                heldObjectPicture.GetComponent<Image>().sprite = w.w_sprite.getSprite();
+                heldObjectPicture.GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(w).sprite;
         }
 
         //  Armor
@@ -176,7 +176,7 @@ public class InventoryCanvas : MonoBehaviour {
 
             heldObjectPicture.SetActive(heldObject != null);
             if(heldObject != null)
-                heldObjectPicture.GetComponent<Image>().sprite = a.a_sprite.getSprite();
+                heldObjectPicture.GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(a).sprite;
         }
 
         //  Consumable
@@ -187,7 +187,7 @@ public class InventoryCanvas : MonoBehaviour {
 
             heldObjectPicture.SetActive(heldObject != null);
             if(heldObject != null)
-                heldObjectPicture.GetComponent<Image>().sprite = c.c_sprite.getSprite();
+                heldObjectPicture.GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getConsumableSprite(c).sprite;
         }
 
         //  Item
@@ -198,22 +198,22 @@ public class InventoryCanvas : MonoBehaviour {
 
             heldObjectPicture.SetActive(heldObject != null);
             if(heldObject != null)
-                heldObjectPicture.GetComponent<Image>().sprite = i.i_sprite.getSprite();
+                heldObjectPicture.GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(i).sprite;
         }
     }
 
     Sprite getHeldObjectSprite() {
         if(heldObject.GetType() == typeof(Weapon))
-            return ((Weapon)heldObject).w_sprite.getSprite();
+            return FindObjectOfType<PresetLibrary>().getWeaponSprite((Weapon)heldObject).sprite;
 
         else if(heldObject.GetType() == typeof(Armor))
-            return ((Armor)heldObject).a_sprite.getSprite();
+            return FindObjectOfType<PresetLibrary>().getArmorSprite((Armor)heldObject).sprite;
 
         else if(heldObject.GetType() == typeof(Item))
-            return ((Item)heldObject).i_sprite.getSprite();
+            return FindObjectOfType<PresetLibrary>().getItemSprite((Item)heldObject).sprite;
 
         else if(heldObject.GetType() == typeof(Consumable))
-            return ((Consumable)heldObject).c_sprite.getSprite();
+            return FindObjectOfType<PresetLibrary>().getConsumableSprite((Consumable)heldObject).sprite;
 
         return null;
     }
@@ -243,7 +243,7 @@ public class InventoryCanvas : MonoBehaviour {
     }
 
     void updateUnitChange() {
-        shownUnitInformation.transform.GetChild(2).GetComponent<Image>().sprite = shownUnit.u_sprite.getSprite();
+        shownUnitInformation.transform.GetChild(2).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getPlayerUnitSprite().sprite;
         shownUnitInformation.transform.GetChild(2).GetComponent<Image>().color = shownUnit.u_color;
         shownUnitInformation.GetComponentInChildren<Slider>().maxValue = shownUnit.getModifiedMaxHealth();
         shownUnitInformation.GetComponentInChildren<Slider>().value = shownUnit.u_health;
@@ -259,7 +259,7 @@ public class InventoryCanvas : MonoBehaviour {
             }
             else {
                 unitWeaponImage.GetComponent<Image>().enabled = true;
-                unitWeaponImage.GetComponent<Image>().sprite = shownUnit.equippedWeapon.w_sprite.getSprite();
+                unitWeaponImage.GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(shownUnit.equippedWeapon).sprite;
             }
         }
         //  equipped armor
@@ -270,7 +270,7 @@ public class InventoryCanvas : MonoBehaviour {
             }
             else {
                 unitArmorImage.GetComponent<Image>().enabled = true;
-                unitArmorImage.GetComponent<Image>().sprite = shownUnit.equippedArmor.a_sprite.getSprite();
+                unitArmorImage.GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(shownUnit.equippedArmor).sprite;
             }
         }
         //  equipped item
@@ -281,7 +281,7 @@ public class InventoryCanvas : MonoBehaviour {
             }
             else {
                 unitItemImage.GetComponent<Image>().enabled = true;
-                unitItemImage.GetComponent<Image>().sprite = shownUnit.equippedItem.i_sprite.getSprite();
+                unitItemImage.GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(shownUnit.equippedItem).sprite;
             }
         }
     }
@@ -520,7 +520,7 @@ public class InventoryCanvas : MonoBehaviour {
                 Weapon we = Inventory.getWeapon(i + (activeSlots.Count * activePage));
                 if(we != null) {
                     activeSlots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
-                    activeSlots[i].transform.GetChild(0).GetComponent<Image>().sprite = we.w_sprite.getSprite();
+                    activeSlots[i].transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(we).sprite;
 
                     activeObjects[i] = we;
                 }
@@ -536,7 +536,7 @@ public class InventoryCanvas : MonoBehaviour {
                 Armor ar = Inventory.getArmor(i + (activeSlots.Count * activePage));
                 if(ar != null) {
                     activeSlots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
-                    activeSlots[i].transform.GetChild(0).GetComponent<Image>().sprite = ar.a_sprite.getSprite();
+                    activeSlots[i].transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(ar).sprite;
 
                     activeObjects[i] = ar;
                 }
@@ -552,7 +552,7 @@ public class InventoryCanvas : MonoBehaviour {
                 Item it = Inventory.getItem(i + (activeSlots.Count * activePage));
                 if(it != null) {
                     activeSlots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
-                    activeSlots[i].transform.GetChild(0).GetComponent<Image>().sprite = it.i_sprite.getSprite();
+                    activeSlots[i].transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(it).sprite;
 
                     activeObjects[i] = it;
                 }
@@ -598,7 +598,7 @@ public class InventoryCanvas : MonoBehaviour {
                         activeSlots[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = cons.Count.ToString();
                     }
                     activeSlots[i].transform.GetChild(1).GetComponent<Image>().enabled = true;
-                    activeSlots[i].transform.GetChild(1).GetComponent<Image>().sprite = cons[0].c_sprite.getSprite();
+                    activeSlots[i].transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getConsumableSprite(cons[0]).sprite;
 
                     activeObjects[i] = cons[0];
                 }
@@ -653,5 +653,9 @@ public class InventoryCanvas : MonoBehaviour {
         shownUnit.u_name = s;
         FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
         updateUnitChange();
+    }
+
+    public bool isOpen() {
+        return transform.GetChild(1).gameObject.activeInHierarchy;
     }
 }

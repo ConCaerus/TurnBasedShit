@@ -10,6 +10,8 @@ public class UnitStats {
     public float u_exp = 0.0f;
     public int u_level = 0;
 
+    public Color u_color = Color.white;
+
     [SerializeField] float u_baseMaxHealth;
     public float u_health = 100.0f;
 
@@ -25,10 +27,6 @@ public class UnitStats {
     public Weapon equippedWeapon;
     public Armor equippedArmor;
     public Item equippedItem;
-
-    public SpriteLoader u_sprite = new SpriteLoader();
-    public SpriteLoader u_attackingSprite = new SpriteLoader(), u_defendingSprite = new SpriteLoader();
-    public Color u_color;
 
     public SlaveStats u_slaveStats = new SlaveStats();
 
@@ -54,20 +52,11 @@ public class UnitStats {
         u_bleedCount = other.u_bleedCount;
 
         u_order = other.u_order;
+        u_color = other.u_color;
 
         equippedWeapon = other.equippedWeapon;
         equippedArmor = other.equippedArmor;
         equippedItem = other.equippedItem;
-
-        if(other.u_sprite.getSprite(true) != null) {
-            u_sprite.setSprite(other.u_sprite.getSprite());
-            u_color = other.u_color;
-        }
-
-        if(other.u_attackingSprite.getSprite(true) != null)
-            u_attackingSprite.setSprite(other.u_attackingSprite.getSprite());
-        if(other.u_defendingSprite.getSprite(true) != null)
-            u_defendingSprite.setSprite(other.u_defendingSprite.getSprite());
 
         u_slaveStats = other.u_slaveStats;
     }
@@ -111,12 +100,23 @@ public class UnitStats {
         u_critChance = Mathf.Clamp(u_critChance + Random.Range(0.0f, 0.2f), 0.0f, 100.0f);
     }
 
-    //  Attack amount
-    public float getPowerMod() {
-        return u_power + equippedWeapon.w_power;
+    //  modifying stats
+    public void addPower(float p) {
+        u_power += p;
     }
-    public float getAverageDamageGiven() {
-        float dmg = getPowerMod();
+    public void addDefence(float d) {
+        u_defence += d;
+    }
+    public void addSpeed(float s) {
+        u_speed += s;
+    }
+
+    //  Attack amount
+    public float getPowerMod(float tempPower = 0.0f) {
+        return u_power + equippedWeapon.w_power + tempPower;
+    }
+    public float getAverageDamageGiven(float tempPower = 0.0f) {
+        float dmg = getPowerMod(tempPower);
 
         //  Weapon
         dmg += equippedWeapon.getBonusAttributeDamage();
@@ -134,10 +134,10 @@ public class UnitStats {
 
         return dmg;
     }
-    public float getDamageGiven() {
-        return randomizeDamage(getAverageDamageGiven());
+    public float getDamageGiven(float tempPower = 0.0f) {
+        return randomizeDamage(getAverageDamageGiven(tempPower));
     }
-    float randomizeDamage(float dmg) {
+    float randomizeDamage(float dmg = 0.0f) {
         //  normal mod
         dmg /= 2.0f;
         dmg *= Random.Range(1.75f, 2.25f);
@@ -150,13 +150,13 @@ public class UnitStats {
     }
 
     //  Defence amount
-    public float getDefenceMod() {
-        return u_defence + equippedArmor.a_defence;
+    public float getDefenceMod(float tempDefence = 0.0f) {
+        return u_defence + equippedArmor.a_defence + tempDefence;
     }
-    public float getDefenceMult(bool defending = false) {
+    public float getDefenceMult(bool defending = false, float tempDefence = 0.0f) {
         //  starts with 100%
         float temp = 1.0f;
-        temp -= getDefenceMod() / 100.0f;
+        temp -= getDefenceMod(tempDefence) / 100.0f;
 
         //  Trigger Traits
         foreach(var i in u_traits) {
@@ -179,8 +179,8 @@ public class UnitStats {
 
         return temp;
     }
-    public float getModifiedDamageTaken(float damage, bool defending = false) {
-        return damage * getDefenceMult(defending);
+    public float getModifiedDamageTaken(float damage, bool defending = false, float tempDefence = 0.0f) {
+        return damage * getDefenceMult(defending, tempDefence);
     }
 
     public float getModifiedMaxHealth() {

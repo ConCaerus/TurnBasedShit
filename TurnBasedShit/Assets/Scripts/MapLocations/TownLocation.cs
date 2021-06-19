@@ -8,10 +8,15 @@ public class TownLocation : MapLocation {
     public Town town;
 
 
-    public TownLocation(Vector2 p, Sprite s, Town t) {
+    public TownLocation(Vector2 p, GameInfo.diffLvl diff, PresetLibrary lib, Town t = null) {
         type = locationType.town;
         pos = p;
-        sprite.setSprite(s);
+
+        //  create a random town
+        if(t == null) {
+            t = lib.createRandomTown(diff);
+        }
+
         town = TownLibrary.addNewTownAndSetIndex(t);
     }
 

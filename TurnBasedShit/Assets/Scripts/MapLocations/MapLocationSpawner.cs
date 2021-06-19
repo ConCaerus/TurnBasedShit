@@ -8,19 +8,18 @@ public class MapLocationSpawner : MonoBehaviour {
 
     [SerializeField] GameObject iconPreset;
 
-    [SerializeField] Sprite weaponUpgradeIcon, armorUpgradeIcon, nestIcon, bossIcon;
-
 
 
     private void Start() {
-        //createLocations();
         //MapLocationHolder.clearSaveData();
         //Inventory.clearInventory();
-        if(MapLocationHolder.getLocationCount() <= 1) {
+        if(MapLocationHolder.getLocationCount() <= 3) {
             if(MapLocationHolder.getPickupCount() == 0)
                 createNewRandomEquipmentPickup();
             if(MapLocationHolder.getUpgradeCount() == 0)
                 createNewRandomEquipmentUpgrade();
+            if(MapLocationHolder.getTownCount() == 0)
+                createNewRandomTown();
         }
 
         createIcons();
@@ -34,18 +33,33 @@ public class MapLocationSpawner : MonoBehaviour {
             Destroy(i.gameObject);
 
         for(int i = 0; i < MapLocationHolder.getLocationCount(); i++) {
-            var loc = MapLocationHolder.getMapLocation(i);
+            MapLocation loc = MapLocationHolder.getMapLocation(i);
             //  equipmentUpgrade shit
-            if(loc.sprite.getSprite(true) != null) {
-                var obj = Instantiate(iconPreset.gameObject);
-                obj.transform.position = loc.pos;
-                obj.GetComponent<SpriteRenderer>().sprite = loc.sprite.getSprite();
-                obj.transform.SetParent(transform);
-            }
+            var obj = Instantiate(iconPreset.gameObject);
+            obj.transform.position = loc.pos;
+            obj.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getMapLocationSprite(loc);
+            obj.transform.SetParent(transform);
         }
     }
 
 
+    public void createNewRandomTown() {
+        var pos = Map.getRandPos();
+        GameInfo.diffLvl diff = FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(pos.x);
+
+        TownLocation temp = new TownLocation(pos, diff, FindObjectOfType<PresetLibrary>());
+
+
+        //  creates an icon for the TownLocation
+        var obj = Instantiate(iconPreset.gameObject);
+        obj.transform.position = temp.pos;
+        obj.transform.SetParent(transform);
+        obj.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getMapLocationSprite(temp);
+
+
+        //  saves the TownLocation
+        MapLocationHolder.saveNewLocation(temp);
+    }
 
     public void createNewRandomEquipmentPickup() {
         //  creates a new TownLocation
@@ -57,6 +71,7 @@ public class MapLocationSpawner : MonoBehaviour {
         PickupLocation temp = null;
 
         var rand = Random.Range(0, 3);
+        rand = 0;
         if(rand == 0) {
             Weapon we = FindObjectOfType<PresetLibrary>().getRandomWeapon();
             temp = new PickupLocation(new Vector2(randX, randY), Randomizer.randomizeWeapon(we, diff), FindObjectOfType<PresetLibrary>(), diff);
@@ -75,7 +90,7 @@ public class MapLocationSpawner : MonoBehaviour {
         var obj = Instantiate(iconPreset.gameObject);
         obj.transform.position = temp.pos;
         obj.transform.SetParent(transform);
-        obj.GetComponent<SpriteRenderer>().sprite = temp.sprite.getSprite();
+        obj.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getPickupLocationSprite(temp);
 
 
         //  saves the TownLocation
@@ -91,17 +106,17 @@ public class MapLocationSpawner : MonoBehaviour {
 
         var rand = Random.Range(0, 2);
         if(rand == 0) {
-            temp = new UpgradeLocation(new Vector2(randX, randY), weaponUpgradeIcon, 0);
+            temp = new UpgradeLocation(new Vector2(randX, randY), 0);
         }
         else if(rand == 1) {
-            temp = new UpgradeLocation(new Vector2(randX, randY), armorUpgradeIcon, 1);
+            temp = new UpgradeLocation(new Vector2(randX, randY), 1);
         }
 
         //  creates an icon for the TownLocation
         var obj = Instantiate(iconPreset.gameObject);
         obj.transform.position = temp.pos;
         obj.transform.SetParent(transform);
-        obj.GetComponent<SpriteRenderer>().sprite = temp.sprite.getSprite();
+        obj.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getUpgradeLocationSprite(temp);
 
 
         //  saves the TownLocation
@@ -115,13 +130,13 @@ public class MapLocationSpawner : MonoBehaviour {
 
         GameInfo.diffLvl diff = FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(randX);
 
-        NestLocation temp = new NestLocation(new Vector2(randX, randY), nestIcon, Random.Range(3, 6), FindObjectOfType<PresetLibrary>(), diff);
+        NestLocation temp = new NestLocation(new Vector2(randX, randY), Random.Range(3, 6), FindObjectOfType<PresetLibrary>(), diff);
 
         //  creates an icon for the TownLocation
         var obj = Instantiate(iconPreset.gameObject);
         obj.transform.position = temp.pos;
         obj.transform.SetParent(transform);
-        obj.GetComponent<SpriteRenderer>().sprite = temp.sprite.getSprite();
+        obj.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getNestLocationSprite();
 
 
         //  saves the TownLocation
@@ -135,42 +150,17 @@ public class MapLocationSpawner : MonoBehaviour {
 
         GameInfo.diffLvl diff = FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(randX);
 
-        BossLocation temp = new BossLocation(new Vector2(randX, randY), bossIcon, FindObjectOfType<PresetLibrary>().getRandomBoss(), diff, FindObjectOfType<PresetLibrary>());
+        BossLocation temp = new BossLocation(new Vector2(randX, randY), FindObjectOfType<PresetLibrary>().getRandomBoss(), diff, FindObjectOfType<PresetLibrary>());
 
         //  creates an icon for the TownLocation
         var obj = Instantiate(iconPreset.gameObject);
         obj.transform.position = temp.pos;
         obj.transform.SetParent(transform);
-        obj.GetComponent<SpriteRenderer>().sprite = temp.sprite.getSprite();
+        obj.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getBossFightLocationSprite(temp);
 
 
         //  saves the TownLocation
         MapLocationHolder.saveNewLocation(temp);
-    }
-
-    public void createLocations() {
-        //  towns
-        for(int i = 0; i < numberOfTowns; i++) {
-            //  creates a new TownLocation
-            var randX = Random.Range(-8.0f, 8.0f);
-            var randY = Random.Range(-8.0f, 8.0f);
-
-            var temp = new TownLocation(new Vector2(randX, randY), iconPreset.GetComponent<SpriteRenderer>().sprite, Randomizer.createRandomTown());
-
-            //  creates an icon for the TownLocation
-            var obj = Instantiate(iconPreset.gameObject);
-            obj.transform.position = temp.pos;
-            obj.transform.SetParent(transform);
-
-
-            //  saves the TownLocation
-            MapLocationHolder.saveNewLocation(temp);
-        }
-
-        //  equipmentPickup
-        for(int i = 0; i < numberOfEquipmentPickups; i++) {
-            createNewRandomEquipmentPickup();
-        }
     }
 
 

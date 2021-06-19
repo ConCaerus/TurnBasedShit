@@ -139,7 +139,7 @@ public static class MapLocationHolder {
             SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) - 1);
         }
     }
-    public static void removeUpgradeLocation(RescueLocation loc) {
+    public static void removeRescueLocation(RescueLocation loc) {
         int index = 0;
         bool shrinkCount = false;
 
@@ -291,6 +291,12 @@ public static class MapLocationHolder {
             return getPickupLocation(index);
         if(getUpgradeLocation(index) != null)
             return getUpgradeLocation(index);
+        if(getRescueLocation(index) != null)
+            return getRescueLocation(index);
+        if(getNestLocation(index) != null)
+            return getNestLocation(index);
+        if(getBossLocation(index) != null)
+            return getBossLocation(index);
         return null;
     }
     public static TownLocation getTownLocation(int index) {

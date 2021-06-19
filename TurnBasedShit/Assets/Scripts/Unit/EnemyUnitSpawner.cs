@@ -16,11 +16,9 @@ public class EnemyUnitSpawner : MonoBehaviour {
         foreach(var i in enemySpawnPoses)
             unusedSpawnPoses.Add(i.gameObject);
 
-        foreach(var i in info.waves[waveIndex].enemies) {
-            var obj = Instantiate(enemyPreset.gameObject);
-            obj.name = "Enemy: " + i.u_name;
-            obj.GetComponent<SpriteRenderer>().sprite = i.u_sprite.getSprite();
-            obj.GetComponent<UnitClass>().stats = i;
+        foreach(var i in info.waves[waveIndex].enemies) { 
+            var obj = Instantiate(i.gameObject);
+            obj.name = "Enemy: " + i.GetComponent<UnitClass>().stats.u_name;
 
             obj.GetComponent<UnitClass>().setup();
 

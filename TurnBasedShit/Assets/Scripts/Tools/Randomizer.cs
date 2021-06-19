@@ -189,18 +189,12 @@ public static class Randomizer {
     public static CombatLocation randomizeCombatLocation(CombatLocation cl) {
         //  randomize enemies
         for(int j = 0; j < cl.waves.Count; j++) {
-            for(int i = 0; i < cl.waves[j].enemies.Count; i++)
-                cl.waves[j].enemies[i] = randomizeUnitStats(cl.waves[j].enemies[i], true);
+            for(int i = 0; i < cl.waves[j].enemies.Count; i++) {
+                var enemy = cl.waves[j].enemies[i];
+                enemy.GetComponent<UnitClass>().stats = randomizeUnitStats(enemy.GetComponent<UnitClass>().stats, true);
+                cl.waves[j].enemies[i] = enemy;
+            }
         }
         return cl;
-    }
-
-
-    public static Town createRandomTown() {
-        var town = new Town(Random.Range(3, 9));
-        town.shopPriceMod = Random.Range(-0.1f, 0.1f);
-        town.shopSellReduction = Random.Range(0.0f, 0.15f);
-
-        return town;
     }
 }

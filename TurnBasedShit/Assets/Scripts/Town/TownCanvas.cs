@@ -11,17 +11,13 @@ public class TownCanvas : MonoBehaviour {
 
 
     private void Update() {
-        if(getShownBuilding() != null) {
+        if(getShownBuilding() != null && !FindObjectOfType<QuestSelectionCanvas>().showing()) {
             buildingDetails.SetActive(true);
             setBuildingDetails();
             buildingDetailsToFollowMouse();
         }
         else
             buildingDetails.SetActive(false);
-    }
-
-    public Vector2 getMousePos() {
-        return Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 
     public void setBuildingDetails() {
@@ -32,7 +28,7 @@ public class TownCanvas : MonoBehaviour {
             buildingIsOpen.text = "Closed";
     }
     void buildingDetailsToFollowMouse() {
-        buildingDetails.transform.position = getMousePos() + detailsMouseOffset;
+        buildingDetails.transform.position = GameInfo.getMousePos() + detailsMouseOffset;
     }
 
     public Building getShownBuilding() {

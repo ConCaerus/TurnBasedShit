@@ -4,13 +4,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class UpgradeLocation : MapLocation {
+    //  0 - weapon, 1 - armor
     public int state = 0;
 
 
-    public UpgradeLocation(Vector2 p, Sprite s, int st) {
+    public UpgradeLocation(Vector2 p, int st) {
         type = locationType.equipmentUpgrade;
         pos = p;
-        sprite.setSprite(s);
         state = st;
     }
 

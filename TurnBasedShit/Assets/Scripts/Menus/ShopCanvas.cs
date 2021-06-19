@@ -233,7 +233,7 @@ public class ShopCanvas : MonoBehaviour {
                     if(weaponCount <= 0)
                         break;
                     for(int i = 0; i < weaponCount; i++)
-                        createNewSlot(i, ShopInventory.getWeapon(currentTown.t_index, i).w_sprite.getSprite(), Color.white);
+                        createNewSlot(i, FindObjectOfType<PresetLibrary>().getWeaponSprite(ShopInventory.getWeapon(currentTown.t_index, i)).sprite, Color.white);
                     break;
 
                 //  Armor
@@ -242,7 +242,7 @@ public class ShopCanvas : MonoBehaviour {
                     if(armorCount <= 0)
                         break;
                     for(int i = 0; i < armorCount; i++)
-                        createNewSlot(i, ShopInventory.getArmor(currentTown.t_index, i).a_sprite.getSprite(), Color.white);
+                        createNewSlot(i, FindObjectOfType<PresetLibrary>().getArmorSprite(ShopInventory.getArmor(currentTown.t_index, i)).sprite, Color.white);
                     break;
 
                 //  Consumable
@@ -251,7 +251,7 @@ public class ShopCanvas : MonoBehaviour {
                     if(consumableCount <= 0)
                         break;
                     for(int i = 0; i < consumableCount; i++)
-                        createNewSlot(i, ShopInventory.getConsumable(currentTown.t_index, i).c_sprite.getSprite(), Color.white);
+                        createNewSlot(i, FindObjectOfType<PresetLibrary>().getConsumableSprite(ShopInventory.getConsumable(currentTown.t_index, i)).sprite, Color.white);
                     break;
 
                 //  Item
@@ -260,7 +260,7 @@ public class ShopCanvas : MonoBehaviour {
                     if(itemCount <= 0)
                         break;
                     for(int i = 0; i < itemCount; i++)
-                        createNewSlot(i, ShopInventory.getItem(currentTown.t_index, i).i_sprite.getSprite(), Color.white);
+                        createNewSlot(i, FindObjectOfType<PresetLibrary>().getItemSprite(ShopInventory.getItem(currentTown.t_index, i)).sprite, Color.white);
                     break;
 
                 //  Slave
@@ -269,8 +269,7 @@ public class ShopCanvas : MonoBehaviour {
                     if(slaveCount <= 0)
                         break;
                     for(int i = 0; i < slaveCount; i++) {
-                        ShopInventory.getSlave(currentTown.t_index, i).u_sprite.setSprite();
-                        createNewSlot(i, ShopInventory.getSlave(currentTown.t_index, i).u_sprite.getSprite(), ShopInventory.getSlave(currentTown.t_index, i).u_color);
+                        createNewSlot(i, FindObjectOfType<PresetLibrary>().getPlayerUnitSprite().sprite, ShopInventory.getSlave(currentTown.t_index, i).u_color);
                     }
                     break;
             }
@@ -285,7 +284,7 @@ public class ShopCanvas : MonoBehaviour {
                         break;
 
                     for(int i = 0; i < Inventory.getTypeCount(typeof(Weapon)); i++)
-                        createNewSlot(i, Inventory.getWeapon(i).w_sprite.getSprite(), Color.white);
+                        createNewSlot(i, FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getWeapon(i)).sprite, Color.white);
                     break;
 
                 //  Armor
@@ -294,7 +293,7 @@ public class ShopCanvas : MonoBehaviour {
                         break;
 
                     for(int i = 0; i < Inventory.getTypeCount(typeof(Armor)); i++)
-                        createNewSlot(i, Inventory.getArmor(i).a_sprite.getSprite(), Color.white);
+                        createNewSlot(i, FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getArmor(i)).sprite, Color.white);
                     break;
 
                 //  Consumable
@@ -303,7 +302,7 @@ public class ShopCanvas : MonoBehaviour {
                         break;
 
                     for(int i = 0; i < Inventory.getTypeCount(typeof(Consumable)); i++)
-                        createNewSlot(i, Inventory.getConsumable(i).c_sprite.getSprite(), Color.white);
+                        createNewSlot(i, FindObjectOfType<PresetLibrary>().getConsumableSprite(Inventory.getConsumable(i)).sprite, Color.white);
                     break;
 
                 //  Item
@@ -312,7 +311,7 @@ public class ShopCanvas : MonoBehaviour {
                         break;
 
                     for(int i = 0; i < Inventory.getTypeCount(typeof(Item)); i++)
-                        createNewSlot(i, Inventory.getItem(i).i_sprite.getSprite(), Color.white);
+                        createNewSlot(i, FindObjectOfType<PresetLibrary>().getItemSprite(Inventory.getItem(i)).sprite, Color.white);
                     break;
 
                 //  Slave
@@ -321,7 +320,7 @@ public class ShopCanvas : MonoBehaviour {
                         break;
 
                     for(int i = 0; i < Party.getPartySize(); i++)
-                        createNewSlot(i, Party.getMemberStats(i).u_sprite.getSprite(), Party.getMemberStats(i).u_color);
+                        createNewSlot(i, FindObjectOfType<PresetLibrary>().getPlayerUnitSprite().sprite, Party.getMemberStats(i).u_color);
                     break;
             }
         }

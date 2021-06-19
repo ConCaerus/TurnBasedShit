@@ -10,6 +10,7 @@ public class Weapon {
         Power, Bleed, Healing
     }
 
+    public int w_instanceID = -1;
 
     public string w_name;
     public GameInfo.rarityLvl w_rarity;
@@ -21,12 +22,7 @@ public class Weapon {
     public float w_speedMod;
     public int w_coinCost;
 
-    public SpriteLoader w_sprite;
-
-    //  Held information
-    public float equippedX, equippedY;
-    public float equippedRot;
-    public float equippedSize;
+    [SerializeField] WeaponSpriteHolder w_sprite;
 
 
 
@@ -60,11 +56,10 @@ public class Weapon {
         w_speedMod = 0;
         w_attributes.Clear();
         w_element = 0;
-        w_sprite.clear();
     }
 
     public bool isEmpty() {
-        return w_attributes.Count == 0 && w_power == 0 && w_speedMod == 0 && w_sprite.getSprite(true) == null;
+        return w_attributes.Count == 0 && w_power == 0 && w_speedMod == 0;
     }
 
     public bool isEqualTo(Weapon other) {
@@ -86,6 +81,12 @@ public class Weapon {
 
 
         return power && speed && ele && rarity;
+    }
+
+    public bool isSameInstanceAs(Weapon other) {
+        if(other.w_instanceID == -1)
+            return false;
+        return w_instanceID == other.w_instanceID;
     }
 
 
@@ -140,5 +141,17 @@ public class Weapon {
 
         return (attribute)index;
     }
+
+
+    public WeaponSpriteHolder getSpriteHolder() {
+        return w_sprite;
+    }
 }
 
+
+[System.Serializable]
+public class WeaponSpriteHolder {
+    public Sprite sprite;
+
+    public float equippedX, equippedY, equippedRot, equippedSize;
+}

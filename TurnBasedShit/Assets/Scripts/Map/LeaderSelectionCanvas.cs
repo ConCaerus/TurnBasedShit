@@ -21,7 +21,7 @@ public class LeaderSelectionCanvas : MonoBehaviour {
         if(shownUnit == null)
             shownUnit = Party.getMemberStats(0);
 
-        unitImage.GetComponent<Image>().sprite = shownUnit.u_sprite.getSprite();
+        unitImage.GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getPlayerUnitSprite().sprite;
         unitImage.GetComponent<Image>().color = shownUnit.u_color;
         nameText.text = shownUnit.u_name;
     }

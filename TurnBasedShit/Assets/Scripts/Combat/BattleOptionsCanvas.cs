@@ -5,6 +5,8 @@ using UnityEngine;
 public class BattleOptionsCanvas : MonoBehaviour {
     [SerializeField] GameObject optionsObject;
 
+    public bool attackState = false;
+
 
     public void runCombatOptions() {
         if(FindObjectOfType<TurnOrderSorter>().playingUnit != null) {
@@ -60,11 +62,18 @@ public class BattleOptionsCanvas : MonoBehaviour {
 
     //  Buttons 
 
+    public void attack() {
+        attackState = !attackState;
+        FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
+    }
+
     public void defend() {
         FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().defending = true;
         FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
+        FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
     }
 
     public void item() {
+        FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
     }
 }

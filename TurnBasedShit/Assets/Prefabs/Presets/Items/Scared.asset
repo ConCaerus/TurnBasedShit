@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c50175b1ce807ce4d84b5e99f5ff832c, type: 3}
+  m_Name: Scared
+  m_EditorClassIdentifier: 
+  preset:
+    i_instanceID: -1
+    i_name: Scared
+    i_rarity: 4
+    i_useTimes: 05000000
+    i_useConditions: 
+    i_useEffects:
+    - effect: 2
+      effectAmount: 0.005
+    - effect: 4
+      effectAmount: 0.001
+    i_coinCost: 15
+    i_sprite:
+      sprite: {fileID: 21300000, guid: 03c4bffc5f21bd349b4df07953046f07, type: 3}
+      sInfo: 

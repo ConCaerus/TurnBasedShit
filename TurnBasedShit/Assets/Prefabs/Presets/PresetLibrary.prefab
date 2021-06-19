@@ -44,12 +44,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac4bd32f1410fd34dae38fffc64470b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerUnits:
-  - {fileID: 2150725456124683392, guid: 0f7e8ba4920db974598a9f8b50a5495f, type: 3}
+  playerUnit: {fileID: 2150725456124683392, guid: 0f7e8ba4920db974598a9f8b50a5495f,
+    type: 3}
   enemies:
   - {fileID: 6037864551336239585, guid: 08b421165bf5c6b45b8a47228b8e066a, type: 3}
+  - {fileID: 6037864551336239585, guid: fb3126fcca0afed4bbb4af94c35fe9b0, type: 3}
   - {fileID: 6037864551336239585, guid: 7e2d0e1460eb0d041b27304ca7917a33, type: 3}
-  - {fileID: 6037864551336239585, guid: 9caccd85bad0b5c49949de30df7f2b30, type: 3}
   - {fileID: 6037864551336239585, guid: 9aad8b0a006824b4b88b7c2f62bb7d90, type: 3}
   bosses:
   - {fileID: 6037864551336239585, guid: 021ed20cc3c35ee4e87aaea09b917065, type: 3}
@@ -62,6 +62,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: cc62de2a3a7f61e46b02425a6397991b, type: 2}
   - {fileID: 11400000, guid: 14f4232e1df3eea438bf76700851cd67, type: 2}
   - {fileID: 11400000, guid: 518cd7358d1b7bd48a37bccff16f060c, type: 2}
+  combatScars:
+  - sprite: {fileID: 21300000, guid: 39ec644c379dfa5429bc12fc2c4c4390, type: 3}
+    scale: 0
+    rot: 0
   weapons:
   - {fileID: 11400000, guid: ea5fe6f9629f7b04eba4614bd981b91c, type: 2}
   - {fileID: 11400000, guid: 220aca2325dfbbc43ba1ff7dd240297f, type: 2}
@@ -75,6 +79,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5c009d0053d629b49900d27e49e4b1a2, type: 2}
   - {fileID: 11400000, guid: f371fe708aff91643adcad487dd41d62, type: 2}
   - {fileID: 11400000, guid: 7f56514f17ed06942bf90fc03be97ed4, type: 2}
+  - {fileID: 11400000, guid: 133d2d295e0dca448acd2942809d0926, type: 2}
+  - {fileID: 11400000, guid: ae839ef41072bea44a5985e4da74f1df, type: 2}
+  - {fileID: 11400000, guid: 8efb7e0c114b69a43a458afb8696c3e7, type: 2}
+  - {fileID: 11400000, guid: e99f21bf0769702409936f8a32d6470c, type: 2}
   armor:
   - {fileID: 11400000, guid: c35ec3980a4a9a94b8c3a1bb7fc85faf, type: 2}
   - {fileID: 11400000, guid: 30ccb2a1f14fbe84db341f5a49465d02, type: 2}
@@ -83,17 +91,32 @@ MonoBehaviour:
   consumables:
   - {fileID: 11400000, guid: b8620bd6f554fa140a2994562098ac50, type: 2}
   - {fileID: 11400000, guid: eaaa276422f32644e8a7c22ea54d6abd, type: 2}
+  - {fileID: 11400000, guid: 21f8efd1e0297674ca81db911611ef5a, type: 2}
+  - {fileID: 11400000, guid: 8f31cdc438a29524786b606297115de9, type: 2}
+  - {fileID: 11400000, guid: 311478953160c4e42a965da6c640c5d5, type: 2}
+  - {fileID: 11400000, guid: 6885b8ed171a3f04fbb5b84fabe68ed6, type: 2}
+  - {fileID: 11400000, guid: bbf6c66157dd71a4c89c103704c857e5, type: 2}
+  - {fileID: 11400000, guid: a5da8af493f16d24599f07d95f854e83, type: 2}
+  - {fileID: 11400000, guid: e30866f17d5b3a141b09f558cd340ec7, type: 2}
+  - {fileID: 11400000, guid: fb4a168cf11d6864d8d6cb7cd9fbb542, type: 2}
+  - {fileID: 11400000, guid: e5aa9abeeb517ce4da4e660d9ff89088, type: 2}
   items:
   - {fileID: 11400000, guid: a1360cb066af6ea42ae443178cfa1c45, type: 2}
+  - {fileID: 11400000, guid: fb25e940b8f74494f945b8ee69b3e5cc, type: 2}
+  - {fileID: 11400000, guid: 29457c53658dd9d4d8e805d9af52d7dc, type: 2}
+  - {fileID: 11400000, guid: 16ee4cf2b0422774bb019ae493d6fbde, type: 2}
+  - {fileID: 11400000, guid: d1daeb2d3ebdb1b45b38c1687c56d223, type: 2}
   buildings:
-  - {fileID: 11400000, guid: 3528bd5d6f8e4fa4c9e165ae886dce16, type: 2}
-  - {fileID: 11400000, guid: b0f1de034a736c442829c0743584bbe8, type: 2}
-  - {fileID: 11400000, guid: 6c8a405e950020b4984ae5f6b521b572, type: 2}
-  - {fileID: 11400000, guid: b18032dfd9347d24f9e98e106bcfe017, type: 2}
-  - {fileID: 11400000, guid: dbe9d87c187d67243b0d74baca8a47fa, type: 2}
-  - {fileID: 11400000, guid: ebb6b5c75a302c54bb245738a9412b3c, type: 2}
-  - {fileID: 11400000, guid: df8dea74604716b4a90216229f9a97ca, type: 2}
-  - {fileID: 11400000, guid: 368746f8d26790c4ba913240151f2c16, type: 2}
+  - {fileID: 3953769566449601916, guid: daaf7acece435e44985f2f64659931be, type: 3}
+  - {fileID: 3953769566449601916, guid: 199c26ebb27a8ad408fd00611e57eb7a, type: 3}
+  - {fileID: 3953769566449601916, guid: 72d490a3f239d1d4c80723e47ff14764, type: 3}
+  - {fileID: 8276380999552465835, guid: 2041b81f4fbd6324ea21719bdfaa1a06, type: 3}
+  - {fileID: 9107170868353817479, guid: c3fc084b8a016344bbcf0b00aecabc40, type: 3}
+  - {fileID: 3582552737713610914, guid: e311c03c3d6525d46982b602ad6d2ed2, type: 3}
+  weaponUpgradeIcon: {fileID: 21300000, guid: 6a9e316e969930d4a83e20329bff5914, type: 3}
+  armorUpgradeIcon: {fileID: 21300000, guid: 0841e42a349068b41b77bf46f939c41c, type: 3}
+  nestIcon: {fileID: 21300000, guid: 03c4bffc5f21bd349b4df07953046f07, type: 3}
+  townIcon: {fileID: 21300000, guid: d93611e6911589c41aa6aea04827566f, type: 3}
 --- !u!114 &9152197614094743713
 MonoBehaviour:
   m_ObjectHideFlags: 0

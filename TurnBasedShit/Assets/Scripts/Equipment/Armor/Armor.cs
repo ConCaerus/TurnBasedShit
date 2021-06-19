@@ -9,6 +9,8 @@ public class Armor {
         Turtle, Reflex
     }
 
+    public int a_instanceID = -1;
+
     public string a_name;
 
     public GameInfo.rarityLvl a_rarity;
@@ -19,10 +21,7 @@ public class Armor {
     public float a_speedMod;
     public int a_coinCost;
 
-    public SpriteLoader a_sprite;
-
-    //  equipped values
-    public SpriteLoader a_equippedSprite;
+    [SerializeField] ArmorSpriteHolder a_sprite;
 
     //  NOTE: this function is applied by the defending unit while the 
     //          weapon class has its function called by the attacker
@@ -57,11 +56,10 @@ public class Armor {
         a_defence = 0;
         a_speedMod = 0;
         a_attributes.Clear();
-        a_sprite.clear();
     }
 
     public bool isEmpty() {
-        return a_attributes.Count == 0 && a_defence == 0 && a_speedMod == 0 && a_sprite.getSprite(true) == null;
+        return a_attributes.Count == 0 && a_defence == 0 && a_speedMod == 0;
     }
 
     public bool isEqualTo(Armor other) {
@@ -132,4 +130,15 @@ public class Armor {
 
         return (attributes)index;
     }
+
+
+    public ArmorSpriteHolder getSpriteHolder() {
+        return a_sprite;
+    }
+}
+
+
+[System.Serializable]
+public class ArmorSpriteHolder {
+    public Sprite sprite, equippedSprite;
 }

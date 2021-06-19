@@ -4,25 +4,27 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class RescueLocation : MapLocation {
-
+    public UnitStats unit = null;
 
     public RescueLocation(Vector2 p, UnitStats stats, PresetLibrary lib, GameInfo.diffLvl diff) {
         pos = p;
         type = locationType.rescue;
-        sprite = stats.u_sprite;
 
         combatLocation = lib.createCombatLocation(diff);
         combatLocation.rescuedUnits.Add(stats);
+
+        unit = stats;
     }
     public RescueLocation(Vector2 p, PresetLibrary lib, GameInfo.diffLvl diff) {
         pos = p;
         type = locationType.rescue;
 
         var stats = Randomizer.createRandomUnitStats(false);
-        sprite = stats.u_sprite;
 
         combatLocation = lib.createCombatLocation(diff);
         combatLocation.rescuedUnits.Add(stats);
+
+        unit = stats;
     }
 
     public override void enterLocation() {

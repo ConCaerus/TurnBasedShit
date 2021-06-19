@@ -19,28 +19,28 @@ public class BattleResultsCanvas : MonoBehaviour {
 
         for(int i = 0; i < weaponImages.Count; i++) {
             if(i < weapons.Count)
-                weaponImages[i].sprite = weapons[i].w_sprite.getSprite();
+                weaponImages[i].sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(weapons[i]).sprite;
             else
                 weaponImages[i].enabled = false;
         }
 
         for(int i = 0; i < armorImages.Count; i++) {
             if(i < armor.Count)
-                armorImages[i].sprite = armor[i].a_sprite.getSprite();
+                armorImages[i].sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(armor[i]).sprite;
             else
                 armorImages[i].enabled = false;
         }
 
         for(int i = 0; i < consumableImages.Count; i++) {
             if(i < consumables.Count)
-                consumableImages[i].sprite = consumables[i].c_sprite.getSprite();
+                consumableImages[i].sprite = FindObjectOfType<PresetLibrary>().getConsumableSprite(consumables[i]).sprite;
             else
                 consumableImages[i].enabled = false;
         }
 
         for(int i = 0; i < itemImages.Count; i++) {
             if(i < items.Count)
-                itemImages[i].sprite = items[i].i_sprite.getSprite();
+                itemImages[i].sprite = FindObjectOfType<PresetLibrary>().getItemSprite(items[i]).sprite;
             else
                 itemImages[i].enabled = false;
         }

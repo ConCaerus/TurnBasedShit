@@ -6,12 +6,18 @@ using DG.Tweening;
 public abstract class UnitClass : MonoBehaviour {
     public GameObject attackingTarget = null;
     public ParticleSystem bloodParticles;
+
+    [SerializeField] UnitSpriteHolder u_sprite;
     public Color hitColor;
 
     public bool isPlayerUnit = true;
     public bool defending = false;
     public bool stunned = false;
     public bool isMouseOverUnit = false;
+
+    public float tempPower = 0.0f;
+    public float tempDefence = 0.0f;
+    public float tempSpeed = 0.0f;
 
     [SerializeField] WeaponPreset weapon = null;
     [SerializeField] ArmorPreset armor = null;
@@ -25,14 +31,26 @@ public abstract class UnitClass : MonoBehaviour {
 
 
     private void OnMouseEnter() {
+        if(FindObjectOfType<InventoryCanvas>().isOpen() || FindObjectOfType<BattleResultsCanvas>() != null) {
+            isMouseOverUnit = false;
+            FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
+            return;
+        }
         isMouseOverUnit = true;
+        FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
     }
 
     private void OnMouseExit() {
         isMouseOverUnit = false;
+        FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
     }
 
     public void setup() {
+        if(isPlayerUnit)
+            u_sprite = FindObjectOfType<PresetLibrary>().getPlayerUnitSprite();
+        else
+            u_sprite = FindObjectOfType<PresetLibrary>().getEnemyUnitSprite(gameObject.GetComponent<EnemyUnitInstance>());
+
         if(string.IsNullOrEmpty(stats.u_name)) {
             setNewRandomName();
         }
@@ -78,11 +96,6 @@ public abstract class UnitClass : MonoBehaviour {
         checkIfDead();
     }
 
-
-    public void addSpeed(float s) {
-        stats.u_speed += s;
-    }
-
     public void prepareUnitForNextRound() {
         attackingTarget = null;
         defending = false;
@@ -96,7 +109,7 @@ public abstract class UnitClass : MonoBehaviour {
         FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeAttacking, this, true);
 
         //  Attack unit
-        defender.GetComponent<UnitClass>().defend(gameObject, stats.getDamageGiven());
+        defender.GetComponent<UnitClass>().defend(gameObject, stats.getDamageGiven(tempPower));
 
         //  triggers
         stats.equippedWeapon.applyAttributesAfterAttack(gameObject, defender);
@@ -119,7 +132,7 @@ public abstract class UnitClass : MonoBehaviour {
                 dmg *= 0.75f;
         }
 
-        dmg = stats.getModifiedDamageTaken(dmg, defending);
+        dmg = stats.getModifiedDamageTaken(dmg, defending, tempDefence);
 
         //  take damage
         stats.u_health = Mathf.Clamp(stats.u_health - dmg, -1.0f, stats.getModifiedMaxHealth());
@@ -153,14 +166,24 @@ public abstract class UnitClass : MonoBehaviour {
         //  things to do with removing the unit from the party and what to do with equippment
         if(isPlayerUnit)
             stats.die();
+        else {
+            //  triggers items
+            FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterKill, this, false);
+
+            //  increases acc quest counter
+            for(int i = 0; i < ActiveQuests.getQuestTypeCount(typeof(AccumulativeQuest)); i++) {
+                if(ActiveQuests.getAccumulativeQuest(i).questType == AccumulativeQuest.type.killEnemies)
+                    ActiveQuests.getAccumulativeQuest(i).count++;
+            }
+        }
 
         //  flair
         FindObjectOfType<AudioManager>().playDieSound();
 
         //  removes unit from game world
         FindObjectOfType<TurnOrderSorter>().removeUnitFromList(gameObject);
-        FindObjectOfType<HealthBarCanvas>().destroyHealthBarForUnit(gameObject);
         FindObjectOfType<DamageTextCanvas>().removeTextsWithUnit(gameObject);
+        FindObjectOfType<UnitCombatInformationCanvas>().removeInfoForUnit(gameObject);
         Destroy(gameObject);
     }
 
@@ -256,15 +279,7 @@ public abstract class UnitClass : MonoBehaviour {
     public void setNewRandomName() {
         if(isPlayerUnit)
             stats.u_name = NameLibrary.getRandomPlayerName();
-        else
-            stats.u_name = NameLibrary.getRandomEnemyName();
         name = stats.u_name;
-    }
-
-    public void resetSpriteAndColor() {
-        stats.u_sprite.setSprite(GetComponent<SpriteRenderer>().sprite);
-        if(stats.u_color == new Color())
-            stats.u_color = GetComponent<SpriteRenderer>().color;
     }
 
     IEnumerator defendingAnim() {
@@ -274,8 +289,10 @@ public abstract class UnitClass : MonoBehaviour {
         GetComponent<SpriteRenderer>().DOColor(hitColor, 0.05f);
         transform.DOScale(normalSize * 1.5f, 0.15f);
 
-        if(stats.u_defendingSprite != null && stats.u_defendingSprite.getSprite(true) != null)
-            gameObject.GetComponent<SpriteRenderer>().sprite = stats.u_defendingSprite.getSprite();
+        if(u_sprite.defendingSprite != null) {
+            gameObject.GetComponent<SpriteRenderer>().sprite = u_sprite.defendingSprite;
+            GetComponentInChildren<ShadowObject>().updateSprite(u_sprite.defendingSprite);
+        }
 
         yield return new WaitForSeconds(0.1f);
 
@@ -284,7 +301,8 @@ public abstract class UnitClass : MonoBehaviour {
         yield return new WaitForSeconds(0.25f);
 
         transform.DOScale(normalSize, 0.15f);
-        gameObject.GetComponent<SpriteRenderer>().sprite = stats.u_sprite.getSprite();
+        gameObject.GetComponent<SpriteRenderer>().sprite = u_sprite.sprite;
+        GetComponentInChildren<ShadowObject>().updateSprite(u_sprite.sprite);
     }
     IEnumerator attackingAnim(Vector3 targetPos) {
         if(defendAnim != null)
@@ -293,12 +311,20 @@ public abstract class UnitClass : MonoBehaviour {
         gameObject.transform.DOPunchPosition(targetPos - transform.position, 0.25f);
         transform.DOScale(normalSize * 1.5f, 0.15f);
 
-        if(stats.u_attackingSprite != null && stats.u_attackingSprite.getSprite(true) != null)
-            gameObject.GetComponent<SpriteRenderer>().sprite = stats.u_attackingSprite.getSprite();
+        if(u_sprite.attackingSprite != null) {
+            gameObject.GetComponent<SpriteRenderer>().sprite = u_sprite.attackingSprite;
+            GetComponentInChildren<ShadowObject>().updateSprite(u_sprite.attackingSprite);
+        }
 
         yield return new WaitForSeconds(0.3f);
 
         transform.DOScale(normalSize, 0.15f);
-        gameObject.GetComponent<SpriteRenderer>().sprite = stats.u_sprite.getSprite();
+        gameObject.GetComponent<SpriteRenderer>().sprite = u_sprite.sprite;
+        GetComponentInChildren<ShadowObject>().updateSprite(u_sprite.sprite);
+    }
+
+
+    public UnitSpriteHolder getSpriteHolder() {
+        return u_sprite;
     }
 }

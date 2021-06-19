@@ -17,9 +17,8 @@ public class PartyObject : MonoBehaviour {
         List<GameObject> unusedSpawnPoses = spawnPoses;
         for(int i = 0; i < Party.getPartySize(); i++) {
             var obj = Instantiate(unitPrefab);
-            if(Party.getMemberStats(i) == null || Party.getMemberStats(i).isEmpty() || Party.getMemberStats(i).u_sprite.getSprite(true) == null) {
+            if(Party.getMemberStats(i) == null || Party.getMemberStats(i).isEmpty()) {
                 obj.gameObject.GetComponent<UnitClass>().setEquipment();
-                obj.gameObject.GetComponent<UnitClass>().resetSpriteAndColor();
                 Party.addUnitAtIndex(i, obj.gameObject.GetComponent<UnitClass>().stats);
             }
 
@@ -33,7 +32,6 @@ public class PartyObject : MonoBehaviour {
 
 
             //  sets sprite
-            obj.GetComponent<SpriteRenderer>().sprite = Party.getMemberStats(i).u_sprite.getSprite();
             obj.GetComponent<SpriteRenderer>().color = Party.getMemberStats(i).u_color;
 
             //  sets pos
@@ -41,20 +39,16 @@ public class PartyObject : MonoBehaviour {
             obj.transform.position = unusedSpawnPoses[randIndex].transform.position;
             unusedSpawnPoses.RemoveAt(randIndex);
 
-            //  does other shit
-            FindObjectOfType<HealthBarCanvas>().createHealthBar(obj.GetComponent<UnitClass>());
-
             Party.overrideUnit(obj.GetComponent<UnitClass>().stats);
         }
     }
 
     public void addUnitToAdd() {
-        if(unitToAdd != null) {
-            unitToAdd.GetComponent<UnitClass>().setEquipment();
-            unitToAdd.GetComponent<UnitClass>().resetSpriteAndColor();
-            Party.addNewUnit(unitToAdd.GetComponent<UnitClass>().stats);
-            saveParty();
-        }
+        if(unitToAdd == null)
+            unitToAdd = unitPrefab.gameObject;
+        unitToAdd.GetComponent<UnitClass>().setEquipment();
+        Party.addNewUnit(unitToAdd.GetComponent<UnitClass>().stats);
+        saveParty();
         unitToAdd = null;
     }
 

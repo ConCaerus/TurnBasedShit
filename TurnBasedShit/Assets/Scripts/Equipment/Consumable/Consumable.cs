@@ -6,8 +6,10 @@ using UnityEngine;
 public class Consumable {
     const int numOfEffects = 4;
     public enum effects {
-        heal, cureBleed
+        heal, cureBleed, powerBuff, speedBuff, defenceBuff
     }
+
+    public int c_instanceID = -1;
 
     public string c_name;
     public GameInfo.rarityLvl c_rarity;
@@ -15,9 +17,9 @@ public class Consumable {
     public int c_maxStackCount;
     public effects c_effect;
     public float c_effectAmount;
-    
 
-    public SpriteLoader c_sprite;
+
+    [SerializeField] ConsumableSpriteHolder c_sprite;
 
     
     public UnitStats applyEffect(GameObject unit) {
@@ -29,6 +31,18 @@ public class Consumable {
 
             case effects.cureBleed:
                 uc.cureBleed();
+                break;
+
+            case effects.powerBuff:
+                uc.tempPower += c_effectAmount;
+                break;
+
+            case effects.defenceBuff:
+                uc.tempDefence += c_effectAmount;
+                break;
+
+            case effects.speedBuff:
+                uc.tempSpeed += c_effectAmount;
                 break;
         }
 
@@ -45,7 +59,16 @@ public class Consumable {
     }
 
     public bool isEmpty() {
-        return string.IsNullOrEmpty(c_name) && c_maxStackCount == 0 && c_effectAmount == 0 && c_sprite.getSprite(true) == null;
+        return string.IsNullOrEmpty(c_name) && c_maxStackCount == 0 && c_effectAmount == 0;
+    }
+
+    public ConsumableSpriteHolder getSpriteHolder() {
+        return c_sprite;
     }
 }
 
+
+[System.Serializable]
+public class ConsumableSpriteHolder {
+    public Sprite sprite;
+}

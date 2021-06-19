@@ -17,7 +17,7 @@ public class UnitBattleMech : MonoBehaviour {
     }
 
     void setUp() {
-        if(GameInfo.getCombatDetails() == null || GameInfo.getCombatDetails().waves == null || GameInfo.getCombatDetails().waves.Count == 0) {
+        if(GameInfo.getCombatDetails() == null || GameInfo.getCombatDetails().waves == null || GameInfo.getCombatDetails().waves.Count == 0 || GameInfo.getCombatDetails().waves[0].enemies.Count == 0 || GameInfo.getCombatDetails().waves[0].enemies[0] == null || true) {
             GameInfo.setCombatDetails(FindObjectOfType<PresetLibrary>().createCombatLocation(0));
             Debug.Log("created");
         }
@@ -26,16 +26,20 @@ public class UnitBattleMech : MonoBehaviour {
         FindObjectOfType<EnemyUnitSpawner>().spawnEnemies(0);
         battleResultsCanvas.SetActive(false);
         resetBattleRound();
+        FindObjectOfType<RoundCounterCanvas>().updateInfo();
         StartCoroutine(checkIfBattleEnded());
     }
 
     public void resetBattleRound() {
         FindObjectOfType<TurnOrderSorter>().resetList();
-        FindObjectOfType<RoundCounterCanvas>().roundCount++;
+        FindObjectOfType<RoundCounterCanvas>().incrementAndUpdateRoundCount();
     }
 
 
     public void endBattle() {
+        //  shit
+        FindObjectOfType<TurnOrderSorter>().enabled = false;
+
         //  flair
         FindObjectOfType<CombatCameraController>().moveToMiddle();
 
@@ -77,6 +81,7 @@ public class UnitBattleMech : MonoBehaviour {
                 //  spawn next wave
                 else if(GameInfo.getCombatDetails() != null && waveIndex < GameInfo.getCombatDetails().waves.Count - 1) {
                     waveIndex++;
+                    FindObjectOfType<RoundCounterCanvas>().incrementAndUpdateWaveCount();
                     FindObjectOfType<TurnOrderSorter>().resetList();
                     FindObjectOfType<EnemyUnitSpawner>().spawnEnemies(waveIndex);
                 }

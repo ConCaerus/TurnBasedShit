@@ -194,7 +194,7 @@ public class UpgradeCanvas : MonoBehaviour {
 
                 if(partyMembersWithWeapons.Count > 0) {
                     for(int i = 0; i < partyMembersWithWeapons.Count; i++) {
-                        createNewSlot(i, Party.getMemberStats(partyMembersWithWeapons[i]).equippedWeapon.w_sprite.getSprite(), Party.getMemberStats(partyMembersWithWeapons[i]).u_name);
+                        createNewSlot(i, FindObjectOfType<PresetLibrary>().getWeaponSprite(Party.getMemberStats(partyMembersWithWeapons[i]).equippedWeapon).sprite, Party.getMemberStats(partyMembersWithWeapons[i]).u_name);
                     }
                 }
 
@@ -203,7 +203,7 @@ public class UpgradeCanvas : MonoBehaviour {
 
                 if(inventoryWeaponCount > 0) {
                     for(int i = 0; i < inventoryWeaponCount; i++)
-                        createNewSlot(i + partyMembersWithWeapons.Count, Inventory.getWeapon(i).w_sprite.getSprite());
+                        createNewSlot(i + partyMembersWithWeapons.Count, FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getWeapon(i)).sprite);
                 }
                 break;
 
@@ -218,7 +218,7 @@ public class UpgradeCanvas : MonoBehaviour {
 
                 if(partyMembersWithArmor.Count > 0) {
                     for(int i = 0; i < partyMembersWithArmor.Count; i++) {
-                        createNewSlot(i, Party.getMemberStats(partyMembersWithArmor[i]).equippedArmor.a_sprite.getSprite(), Party.getMemberStats(partyMembersWithArmor[i]).u_name);
+                        createNewSlot(i, FindObjectOfType<PresetLibrary>().getArmorSprite(Party.getMemberStats(partyMembersWithArmor[i]).equippedArmor).sprite, Party.getMemberStats(partyMembersWithArmor[i]).u_name);
                     }
                 }
 
@@ -229,7 +229,7 @@ public class UpgradeCanvas : MonoBehaviour {
                 if(armorCount <= 0)
                     break;
                 for(int i = 0; i < armorCount; i++)
-                    createNewSlot(i + partyMembersWithArmor.Count, Inventory.getArmor(i).a_sprite.getSprite());
+                    createNewSlot(i + partyMembersWithArmor.Count, FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getArmor(i)).sprite);
                 break;
         }
 

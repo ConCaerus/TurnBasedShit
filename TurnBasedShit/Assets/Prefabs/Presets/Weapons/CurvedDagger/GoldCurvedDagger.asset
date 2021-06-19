@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: GoldCurvedDagger
   m_EditorClassIdentifier: 
   preset:
+    w_instanceID: -1
     w_name: Curved Dagger
     w_rarity: 4
     w_element: 1
@@ -22,9 +23,8 @@ MonoBehaviour:
     w_speedMod: 0
     w_coinCost: 14
     w_sprite:
-      sprite: {fileID: 21300000, guid: 8d269c34fef512d40a82735577bcc52b, type: 3}
-      sInfo: 
-    equippedX: 1.44
-    equippedY: -0.09
-    equippedRot: -98.81
-    equippedSize: 0.3
+      sprite: {fileID: 21300000, guid: 6a5a46afd5a52784888ccd0038ea5533, type: 3}
+      equippedX: 1.54
+      equippedY: 0.08
+      equippedRot: -101.268
+      equippedSize: 0.5

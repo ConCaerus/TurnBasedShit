@@ -11,7 +11,9 @@ public class MapEventsHandler : MonoBehaviour {
 
     public void chanceEncounter(GameInfo.diffLvl regionDiff) {
         //  for debugging perposes
-        triggerEncounter(regionDiff);
+        //triggerEncounter(regionDiff);
+        //  also for debugging perposes
+        //return;
         switch(regionDiff) {
             case GameInfo.diffLvl.Cake:
             case GameInfo.diffLvl.Easy:
@@ -49,7 +51,6 @@ public class MapEventsHandler : MonoBehaviour {
             //  Party is over a map location
             if(partyPos == loc.pos) {
                 FindObjectOfType<EnounterCanvas>().showEnemyEncounterAlert(loc);
-                Debug.Log("here");
                 return;
             }
         }

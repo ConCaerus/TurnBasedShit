@@ -31,8 +31,7 @@ public class CombatLocation {
             int enemyCount = Random.Range(minNumberOfEnemies, maxNumberOfEnemies + 1);
             for(int e = 0; e < enemyCount; e++) {
                 var enemy = lib.getRandomEnemy(diff);
-                enemy = Randomizer.randomizeUnitStats(enemy);
-                enemy.u_name = NameLibrary.getRandomEnemyName();
+                enemy.GetComponent<UnitClass>().stats = Randomizer.randomizeUnitStats(enemy.GetComponent<UnitClass>().stats);
                 temp.enemies.Add(enemy);
             }
             waves.Add(temp);
@@ -62,5 +61,5 @@ public class CombatLocation {
 
 [System.Serializable]
 public class Wave {
-    public List<UnitStats> enemies = new List<UnitStats>();
+    public List<GameObject> enemies = new List<GameObject>();
 }

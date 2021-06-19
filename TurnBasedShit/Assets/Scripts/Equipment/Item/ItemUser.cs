@@ -57,7 +57,7 @@ public class ItemUser : MonoBehaviour {
     void useItem(ItemInfo itemInfo) {
         for(int i = 0; i < itemInfo.item.i_useEffects.Count; i++) {
             switch(itemInfo.item.i_useEffects[i].effect) {
-                //  recovers the holders health by the percentage of max health the mod is (Ex. mod = 1 - recovers 1% of max health)
+                //  recovers the holders health by the percentage of max health the mod is (Ex. mod = 0.01 - recovers 1% of max health)
                 case Item.useEffectTypes.modHealth:
                     float healedAmount = itemInfo.holder.stats.getModifiedMaxHealth() * itemInfo.item.getHealthMod();
                     float emptyHealth = itemInfo.holder.stats.getModifiedMaxHealth() - itemInfo.holder.stats.u_health;
@@ -69,6 +69,34 @@ public class ItemUser : MonoBehaviour {
                         healedAmount = emptyHealth;
                     itemInfo.holder.addHealth(healedAmount);
                     FindObjectOfType<DamageTextCanvas>().showTextForUnit(itemInfo.holder.gameObject, healedAmount, DamageTextCanvas.damageType.healed);
+                    break;
+
+                //  adds to the max health
+                case Item.useEffectTypes.modMaxHealth:
+                    float gainedHealth = itemInfo.holder.stats.getBaseMaxHealth() * itemInfo.item.getMaxHealthMod();
+                    gainedHealth += itemInfo.holder.stats.getBaseMaxHealth();
+                    if(gainedHealth <= 0.0f)
+                        break;
+
+                    itemInfo.holder.stats.setBaseMaxHealth(gainedHealth);
+                    break;
+
+                //  adds to power
+                case Item.useEffectTypes.modDamageGiven:
+                    float gainedPower = itemInfo.holder.stats.u_power * itemInfo.item.getDamageGivenMod();
+                    itemInfo.holder.stats.addPower(gainedPower);
+                    break;
+
+                //  adds to defence
+                case Item.useEffectTypes.modDamageTaken:
+                    float gainedDefence = itemInfo.holder.stats.u_defence * itemInfo.item.getDamageTakenMod();
+                    itemInfo.holder.stats.addDefence(gainedDefence);
+                    break;
+
+                //  adds to the speed
+                case Item.useEffectTypes.modSpeed:
+                    float gainedSpeed = itemInfo.holder.stats.u_speed * itemInfo.item.getSpeedMod();
+                    itemInfo.holder.stats.addSpeed(gainedSpeed);
                     break;
             }
         }

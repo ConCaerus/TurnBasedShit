@@ -106,7 +106,7 @@ public static class ShopInventory {
 
         int slaveCount = Random.Range(0, 3);
         for(int i = 0; i < slaveCount; i++) {
-            UnitStats temp = library.createRandomUnit();
+            UnitStats temp = library.createPlayerUnit().GetComponent<UnitClass>().stats;
             temp = Randomizer.randomizeUnitStats(temp);
             temp.u_slaveStats.isSlave = true;
             temp.u_slaveStats = Randomizer.randomizeSlaveStats(temp.u_slaveStats);
@@ -117,35 +117,30 @@ public static class ShopInventory {
 
     public static void addWeapon(int townIndex, Weapon w) {
         var index = SaveData.getInt(objectCountTag(townIndex, typeof(Weapon)));
-        w.w_sprite.setSprite();
         var data = JsonUtility.ToJson(w);
         SaveData.setString(objectTag(townIndex, index, typeof(Weapon)), data);
         SaveData.setInt(objectCountTag(townIndex, typeof(Weapon)), index + 1);
     }
     public static void addArmor(int townIndex, Armor a) {
         var index = SaveData.getInt(objectCountTag(townIndex, typeof(Armor)));
-        a.a_sprite.setSprite();
         var data = JsonUtility.ToJson(a);
         SaveData.setString(objectTag(townIndex, index, typeof(Armor)), data);
         SaveData.setInt(objectCountTag(townIndex, typeof(Armor)), index + 1);
     }
     public static void addConsumable(int townIndex, Consumable c) {
         var index = SaveData.getInt(objectCountTag(townIndex, typeof(Consumable)));
-        c.c_sprite.setSprite();
         var data = JsonUtility.ToJson(c);
         SaveData.setString(objectTag(townIndex, index, typeof(Consumable)), data);
         SaveData.setInt(objectCountTag(townIndex, typeof(Consumable)), index + 1);
     }
     public static void addItem(int townIndex, Item i) {
         var index = SaveData.getInt(objectCountTag(townIndex, typeof(Item)));
-        i.i_sprite.setSprite();
         var data = JsonUtility.ToJson(i);
         SaveData.setString(objectTag(townIndex, index, typeof(Item)), data);
         SaveData.setInt(objectCountTag(townIndex, typeof(Item)), index + 1);
     }
     public static void addSlave(int townIndex, UnitStats stats) {
         var index = SaveData.getInt(objectCountTag(townIndex, typeof(UnitStats)));
-        stats.u_sprite.setSprite();
         var data = JsonUtility.ToJson(stats);
         SaveData.setString(objectTag(townIndex, index, typeof(UnitStats)), data);
         SaveData.setInt(objectCountTag(townIndex, typeof(UnitStats)), index + 1);
@@ -263,27 +258,22 @@ public static class ShopInventory {
     }
 
     public static void overrideWeapon(int townIndex, int index, Weapon w) {
-        w.w_sprite.setSprite();
         var data = JsonUtility.ToJson(w);
         SaveData.setString(objectTag(townIndex, index, typeof(Weapon)), data);
     }
     public static void overrideArmor(int townIndex, int index, Armor a) {
-        a.a_sprite.setSprite();
         var data = JsonUtility.ToJson(a);
         SaveData.setString(objectTag(townIndex, index, typeof(Armor)), data);
     }
     public static void overrideConsumable(int townIndex, int index, Consumable c) {
-        c.c_sprite.setSprite();
         var data = JsonUtility.ToJson(c);
         SaveData.setString(objectTag(townIndex, index, typeof(Consumable)), data);
     }
     public static void overrideItem(int townIndex, int index, Item i) {
-        i.i_sprite.setSprite();
         var data = JsonUtility.ToJson(i);
         SaveData.setString(objectTag(townIndex, index, typeof(Item)), data);
     }
     public static void overrideSlave(int townIndex, int index, UnitStats stats) {
-        stats.u_sprite.setSprite();
         var data = JsonUtility.ToJson(stats);
         SaveData.setString(objectTag(townIndex, index, typeof(UnitStats)), data);
     }

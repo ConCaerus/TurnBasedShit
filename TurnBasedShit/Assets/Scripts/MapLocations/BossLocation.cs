@@ -5,11 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class BossLocation : MapLocation {
 
-    public BossLocation(Vector2 p, Sprite sp, UnitStats boss, GameInfo.diffLvl diff, PresetLibrary lib, bool areOtherEnemiesBesidesBoss = false) {
+    public BossLocation(Vector2 p, GameObject boss, GameInfo.diffLvl diff, PresetLibrary lib, bool areOtherEnemiesBesidesBoss = false) {
         pos = p;
         type = locationType.boss;
-        sprite = new SpriteLoader();
-        sprite.setSprite(sp);
 
         combatLocation = lib.createCombatLocation(diff);
         if(!areOtherEnemiesBesidesBoss)

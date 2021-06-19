@@ -10,7 +10,7 @@ public class MapCameraController : MonoBehaviour {
     Vector2 moveAnchorPoint;
 
     private void Start() {
-        var target = FindObjectOfType<MapTrailRenderer>().getPartyAnchorPos();
+        var target = FindObjectOfType<RoadRenderer>().getPartyObjectPos();
         Camera.main.transform.position = new Vector3(target.x, target.y, Camera.main.transform.position.z);
     }
 

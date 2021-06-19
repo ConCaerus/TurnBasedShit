@@ -15,11 +15,7 @@ public class BuildingInstance : MonoBehaviour {
     }
 
     private void Start() {
-        if(building.b_type == Building.type.House) {
-            int rand = Random.Range(0, 101);
-            if(rand > 75)
-                building.canBeInteractedWith = true;
-        }
+        building.setup(FindObjectOfType<PresetLibrary>());
 
         if(!building.canBeInteractedWith)
             GetComponent<SpriteRenderer>().color = Color.gray;
@@ -27,16 +23,17 @@ public class BuildingInstance : MonoBehaviour {
 
     private void OnMouseOver() {
         if(building.canBeInteractedWith && Input.GetMouseButtonDown(0)) {
-            FindObjectOfType<StoryCanvas>().playStory(building.getRandStory());
+            if(building.b_quests != null && building.b_quests.Count > 0)
+                FindObjectOfType<QuestSelectionCanvas>().showMenu(building.b_quests);
+            else if(building.b_storyBeginnings.Count > 0)
+                FindObjectOfType<StoryCanvas>().playStory(building.getRandStory());
         }
     }
 
     private void OnMouseEnter() {
         isMouseOver = true;
-        FindObjectOfType<BuildingHighlighting>().highlightUnit(gameObject);
     }
     private void OnMouseExit() {
         isMouseOver = false;
-        FindObjectOfType<BuildingHighlighting>().dehighlightUnit(gameObject);
     }
 }
