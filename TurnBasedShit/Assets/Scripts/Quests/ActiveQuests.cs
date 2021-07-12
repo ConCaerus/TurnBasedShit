@@ -4,8 +4,8 @@ using UnityEngine;
 
 public static class ActiveQuests {
     public static string countTag(System.Type type) {
-        if(type == typeof(AccumulativeQuest))
-            return "AccumulativeQuestCount";
+        if(type == typeof(KillQuest))
+            return "KillQuestCount";
 
         else if(type == typeof(BossFightQuest))
             return "BossFightQuestCount";
@@ -20,8 +20,8 @@ public static class ActiveQuests {
     }
 
     public static string tag(int index, System.Type type) {
-        if(type == typeof(AccumulativeQuest))
-            return "AccumulativeQuest" + index.ToString();
+        if(type == typeof(KillQuest))
+            return "KillQuest" + index.ToString();
 
         else if(type == typeof(BossFightQuest))
             return "BossFightQuest" + index.ToString();
@@ -37,12 +37,12 @@ public static class ActiveQuests {
 
 
     public static void clear() {
-        for(int i = 0; i < getQuestTypeCount(typeof(AccumulativeQuest)); i++) {
-            var data = SaveData.getString(tag(i, typeof(AccumulativeQuest)));
-            var thing = JsonUtility.FromJson<AccumulativeQuest>(data);
+        for(int i = 0; i < getQuestTypeCount(typeof(KillQuest)); i++) {
+            var data = SaveData.getString(tag(i, typeof(KillQuest)));
+            var thing = JsonUtility.FromJson<KillQuest>(data);
             thing.questDestory();
 
-            SaveData.deleteKey(tag(i, typeof(AccumulativeQuest)));
+            SaveData.deleteKey(tag(i, typeof(KillQuest)));
         }
 
         for(int i = 0; i < getQuestTypeCount(typeof(BossFightQuest)); i++) {
@@ -69,20 +69,20 @@ public static class ActiveQuests {
             SaveData.deleteKey(tag(i, typeof(PickupQuest)));
         }
 
-        SaveData.deleteKey(countTag(typeof(AccumulativeQuest)));
+        SaveData.deleteKey(countTag(typeof(KillQuest)));
         SaveData.deleteKey(countTag(typeof(BossFightQuest)));
         SaveData.deleteKey(countTag(typeof(DeliveryQuest)));
         SaveData.deleteKey(countTag(typeof(PickupQuest)));
     }
 
-    public static void addQuest(AccumulativeQuest qu) {
-        int index = getQuestTypeCount(typeof(AccumulativeQuest));
+    public static void addQuest(KillQuest qu) {
+        int index = getQuestTypeCount(typeof(KillQuest));
 
         qu.questInit();
 
         var data = JsonUtility.ToJson(qu);
-        SaveData.setString(tag(index, typeof(AccumulativeQuest)), data);
-        SaveData.setInt(countTag(typeof(AccumulativeQuest)), index + 1);
+        SaveData.setString(tag(index, typeof(KillQuest)), data);
+        SaveData.setInt(countTag(typeof(KillQuest)), index + 1);
     }
     public static void addQuest(BossFightQuest qu) {
         int index = getQuestTypeCount(typeof(BossFightQuest));
@@ -113,15 +113,15 @@ public static class ActiveQuests {
     }
 
 
-    public static void removeQuest(AccumulativeQuest quest) {
-        System.Type type = typeof(AccumulativeQuest);
+    public static void removeQuest(KillQuest quest) {
+        System.Type type = typeof(KillQuest);
         var tData = JsonUtility.ToJson(quest);
         bool past = false;
         for(int i = 0; i < getQuestTypeCount(type); i++) {
             var data = SaveData.getString(tag(i, type));
 
             if(data == tData && !past) {
-                var thing = JsonUtility.FromJson<AccumulativeQuest>(data);
+                var thing = JsonUtility.FromJson<KillQuest>(data);
                 thing.questDestory();
 
                 SaveData.deleteKey(tag(i, type));
@@ -130,7 +130,7 @@ public static class ActiveQuests {
             }
             else if(past) {
                 SaveData.deleteKey(tag(i, type));
-                overrideQuest(i - 1, JsonUtility.FromJson<AccumulativeQuest>(data));
+                overrideQuest(i - 1, JsonUtility.FromJson<KillQuest>(data));
             }
         }
         SaveData.setInt(countTag(type), SaveData.getInt(countTag(type)) - 1);
@@ -202,9 +202,9 @@ public static class ActiveQuests {
         SaveData.setInt(countTag(type), SaveData.getInt(countTag(type)) - 1);
     }
 
-    public static void overrideQuest(int index, AccumulativeQuest qu) {
+    public static void overrideQuest(int index, KillQuest qu) {
         var data = JsonUtility.ToJson(qu);
-        SaveData.setString(tag(index, typeof(AccumulativeQuest)), data);
+        SaveData.setString(tag(index, typeof(KillQuest)), data);
     }
     public static void overrideQuest(int index, BossFightQuest qu) {
         var data = JsonUtility.ToJson(qu);
@@ -219,9 +219,9 @@ public static class ActiveQuests {
         SaveData.setString(tag(index, typeof(PickupQuest)), data);
     }
 
-    public static AccumulativeQuest getAccumulativeQuest(int index) {
-        var data = SaveData.getString(tag(index, typeof(AccumulativeQuest)));
-        return JsonUtility.FromJson<AccumulativeQuest>(data);
+    public static KillQuest getKillQuest(int index) {
+        var data = SaveData.getString(tag(index, typeof(KillQuest)));
+        return JsonUtility.FromJson<KillQuest>(data);
     }
     public static BossFightQuest getBossFightQuest(int index) {
         var data = SaveData.getString(tag(index, typeof(BossFightQuest)));
@@ -241,7 +241,7 @@ public static class ActiveQuests {
     }
     public static int getQuestCount() {
         int count = 0;
-        count += SaveData.getInt(countTag(typeof(AccumulativeQuest)));
+        count += SaveData.getInt(countTag(typeof(KillQuest)));
         count += SaveData.getInt(countTag(typeof(BossFightQuest)));
         count += SaveData.getInt(countTag(typeof(DeliveryQuest)));
         count += SaveData.getInt(countTag(typeof(PickupQuest)));

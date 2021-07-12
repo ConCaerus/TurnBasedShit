@@ -30,6 +30,12 @@ public static class GameInfo {
     public const string currentMapLocationIndex = "Current Map Location Index";
 
 
+    public const string nextWeaponID = "Next Weapon ID";
+    public const string nextArmorID = "Next Armor ID";
+    public const string nextConsumableID = "Next Consumable ID";
+    public const string nextItemID = "Next Item ID";
+
+
     public static void resetCombatDetails() {
         SaveData.deleteKey(combatDetails);
     }
@@ -43,6 +49,10 @@ public static class GameInfo {
     }
     public static void setCurrentMapLocation(int index) {
         SaveData.setInt(currentMapLocationIndex, index);
+    }
+    public static void setCurrentRegionDiff(diffLvl lvl) {
+        int temp = (int)lvl;
+        SaveData.setInt(currentDiffRegion, temp);
     }
 
     public static CombatLocation getCombatDetails() {
@@ -65,10 +75,8 @@ public static class GameInfo {
         return MapLocationHolder.getUpgradeLocation(SaveData.getInt(currentMapLocationIndex));
     }
     public static diffLvl getDiffRegion() {
-        var data = SaveData.getString(currentDiffRegion);
-        if(string.IsNullOrEmpty(data))
-            return 0;
-        return (diffLvl)JsonUtility.FromJson<int>(data);
+        var data = SaveData.getInt(currentDiffRegion);
+        return (diffLvl)data;
     }
 
 
@@ -87,5 +95,30 @@ public static class GameInfo {
     }
     public static wornState getRandomWornState() {
         return (wornState)Random.Range(0, 5);
+    }
+
+    public static int getNextWeaponInstanceID() {
+        int index = SaveData.getInt(nextWeaponID);
+        SaveData.setInt(nextWeaponID, index + 1);
+        Debug.Log("w  "  + index.ToString());
+        return index;
+    }
+    public static int getNextArmorInstanceID() {
+        int index = SaveData.getInt(nextArmorID);
+        SaveData.setInt(nextArmorID, index + 1);
+        Debug.Log("a  " + index.ToString());
+        return index;
+    }
+    public static int getNextConsumableInstanceID() {
+        int index = SaveData.getInt(nextConsumableID);
+        SaveData.setInt(nextConsumableID, index + 1);
+        Debug.Log("c  " + index.ToString());
+        return index;
+    }
+    public static int getNextItemInstanceID() {
+        int index = SaveData.getInt(nextItemID);
+        SaveData.setInt(nextItemID, index + 1);
+        Debug.Log("i  " + index.ToString());
+        return index;
     }
 }

@@ -57,6 +57,7 @@ public abstract class UnitClass : MonoBehaviour {
         else
             name = stats.u_name;
 
+
         normalSize = transform.localScale;
 
         if(isPlayerUnit)
@@ -171,9 +172,9 @@ public abstract class UnitClass : MonoBehaviour {
             FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterKill, this, false);
 
             //  increases acc quest counter
-            for(int i = 0; i < ActiveQuests.getQuestTypeCount(typeof(AccumulativeQuest)); i++) {
-                if(ActiveQuests.getAccumulativeQuest(i).questType == AccumulativeQuest.type.killEnemies)
-                    ActiveQuests.getAccumulativeQuest(i).count++;
+            for(int i = 0; i < ActiveQuests.getQuestTypeCount(typeof(KillQuest)); i++) {
+                if(ActiveQuests.getKillQuest(i).enemyType == GetComponent<EnemyUnitInstance>().enemyType)
+                    ActiveQuests.getKillQuest(i).howManyToKill++;
             }
         }
 
@@ -305,22 +306,36 @@ public abstract class UnitClass : MonoBehaviour {
         GetComponentInChildren<ShadowObject>().updateSprite(u_sprite.sprite);
     }
     IEnumerator attackingAnim(Vector3 targetPos) {
-        if(defendAnim != null)
+        if(defendAnim != null) {
             StopCoroutine(defendAnim);
+            GetComponent<SpriteRenderer>().DOColor(stats.u_color, 0.25f);
+        }
 
         gameObject.transform.DOPunchPosition(targetPos - transform.position, 0.25f);
         transform.DOScale(normalSize * 1.5f, 0.15f);
 
+        if(GetComponent<Animator>() != null)
+            GetComponent<Animator>().SetInteger("state", 1);
         if(u_sprite.attackingSprite != null) {
             gameObject.GetComponent<SpriteRenderer>().sprite = u_sprite.attackingSprite;
             GetComponentInChildren<ShadowObject>().updateSprite(u_sprite.attackingSprite);
         }
 
-        yield return new WaitForSeconds(0.3f);
+        if(u_sprite.attackAnim != null && !u_sprite.attackAnim.empty)
+            yield return new WaitForSeconds(u_sprite.attackAnim.length);
+        else
+            yield return new WaitForSeconds(0.3f);
+    
 
+        if(GetComponent<Animator>() != null)
+            GetComponent<Animator>().SetInteger("state", 0);
         transform.DOScale(normalSize, 0.15f);
-        gameObject.GetComponent<SpriteRenderer>().sprite = u_sprite.sprite;
-        GetComponentInChildren<ShadowObject>().updateSprite(u_sprite.sprite);
+        if(u_sprite.sprite != null)
+            gameObject.GetComponent<SpriteRenderer>().sprite = u_sprite.sprite;
+
+        foreach(var i in GetComponentsInChildren<ShadowObject>()) {
+            i.updateSprite(i.transform.parent.GetComponent<SpriteRenderer>().sprite);
+        }
     }
 
 

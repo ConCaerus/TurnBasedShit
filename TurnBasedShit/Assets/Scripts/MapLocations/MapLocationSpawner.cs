@@ -8,6 +8,8 @@ public class MapLocationSpawner : MonoBehaviour {
 
     [SerializeField] GameObject iconPreset;
 
+    public List<MapLocation> currentLocations = new List<MapLocation>();
+
 
 
     private void Start() {
@@ -39,6 +41,7 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.transform.position = loc.pos;
             obj.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getMapLocationSprite(loc);
             obj.transform.SetParent(transform);
+            currentLocations.Add(loc);
         }
     }
 
@@ -95,6 +98,7 @@ public class MapLocationSpawner : MonoBehaviour {
 
         //  saves the TownLocation
         MapLocationHolder.saveNewLocation(temp);
+        currentLocations.Add(temp);
     }
 
     public void createNewRandomEquipmentUpgrade() {
@@ -121,6 +125,7 @@ public class MapLocationSpawner : MonoBehaviour {
 
         //  saves the TownLocation
         MapLocationHolder.saveNewLocation(temp);
+        currentLocations.Add(temp);
     }
 
     public void createNewRandomNest() {
@@ -141,6 +146,7 @@ public class MapLocationSpawner : MonoBehaviour {
 
         //  saves the TownLocation
         MapLocationHolder.saveNewLocation(temp);
+        currentLocations.Add(temp);
     }
 
     public void createNewBoss() {
@@ -161,6 +167,7 @@ public class MapLocationSpawner : MonoBehaviour {
 
         //  saves the TownLocation
         MapLocationHolder.saveNewLocation(temp);
+        currentLocations.Add(temp);
     }
 
 
@@ -169,5 +176,14 @@ public class MapLocationSpawner : MonoBehaviour {
         foreach(var i in GetComponentsInChildren<SpriteRenderer>())
             temp.Add(i.gameObject);
         return temp;
+    }
+
+
+    public MapLocation getMapLocationForPosition(Vector2 pos) {
+        foreach(var i in currentLocations) {
+            if(i.pos == pos)
+                return i;
+        }
+        return null;
     }
 }

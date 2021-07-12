@@ -316,10 +316,10 @@ public class ShopCanvas : MonoBehaviour {
 
                 //  Slave
                 case 4:
-                    if(Party.getPartySize() <= 0)
+                    if(Party.getMemberCount() <= 0)
                         break;
 
-                    for(int i = 0; i < Party.getPartySize(); i++)
+                    for(int i = 0; i < Party.getMemberCount(); i++)
                         createNewSlot(i, FindObjectOfType<PresetLibrary>().getPlayerUnitSprite().sprite, Party.getMemberStats(i).u_color);
                     break;
             }

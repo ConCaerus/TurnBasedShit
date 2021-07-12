@@ -13,6 +13,8 @@ public static class MapAnchorPositionSaver {
             SaveData.deleteKey(anchorTag(i));
         }
         SaveData.deleteKey(anchorCount);
+
+        SaveData.deleteKey(partyAnchorTag);
     }
 
     public static void addNewMapAnchor(RoadSegmentInfo seg) {

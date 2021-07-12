@@ -18,7 +18,6 @@ public class EnounterCanvas : MonoBehaviour {
     IEnumerator enterMapLocationAnimation(GameObject relevantImage, MapLocation loc = null) {
         //  Turns shit off
         FindObjectOfType<MapCameraController>().enabled = false;
-        FindObjectOfType<MapTrailRenderer>().enabled = false;
 
         //  animation
         relevantImage.SetActive(true);

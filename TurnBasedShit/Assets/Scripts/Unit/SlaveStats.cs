@@ -28,7 +28,7 @@ public class SlaveStats {
 
         float temp = escapeDesire;
         UnitStats stats = null;
-        for(int i = 0; i < Party.getPartySize(); i++) {
+        for(int i = 0; i < Party.getMemberCount(); i++) {
             if(Party.getMemberStats(i).u_slaveStats == this) {
                 stats = Party.getMemberStats(i);
                 break;
@@ -40,7 +40,7 @@ public class SlaveStats {
 
         //  Intimidation
         float intimidationAmount = stats.u_power * scaredModifier;
-        for(int i = 0; i < Party.getPartySize(); i++) {
+        for(int i = 0; i < Party.getMemberCount(); i++) {
             //  big boi in party
             if(Party.getMemberStats(i) != stats && Party.getMemberStats(i).u_power > intimidationAmount) {
                 temp -= Party.getMemberStats(i).u_power / intimidationAmount;

@@ -16,22 +16,22 @@ public class InventoryPopulator : MonoBehaviour {
     public void addAndResetEquippmentToAdd(int count = 0) {
         for(int j = 0; j < count; j++) {
             if(weaponToAdd != null) {
-                Weapon w = weaponToAdd.preset;
+                Weapon w = FindObjectOfType<PresetLibrary>().getWeapon(weaponToAdd.preset);
                 Inventory.addWeapon(w);
             }
 
             if(armorToAdd != null) {
-                Armor a = armorToAdd.preset;
+                Armor a = FindObjectOfType<PresetLibrary>().getArmor(armorToAdd.preset);
                 Inventory.addArmor(a);
             }
 
             if(consumableToAdd != null) {
-                Consumable i = consumableToAdd.preset;
-                Inventory.addConsumable(i);
+                Consumable c = FindObjectOfType<PresetLibrary>().getConsumable(consumableToAdd.preset);
+                Inventory.addConsumable(c);
             }
 
             if(itemToAdd != null) {
-                Item i = itemToAdd.preset;
+                Item i = FindObjectOfType<PresetLibrary>().getItem(itemToAdd.preset);
                 Inventory.addItem(i);
             }
         }

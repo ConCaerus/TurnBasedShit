@@ -12,7 +12,6 @@ public class LeaderSelectionCanvas : MonoBehaviour {
 
     private void Start() {
         if(Party.getLeaderID() == -1) {
-            FindObjectOfType<MapTrailRenderer>().enabled = false;
             updateInfo();
         }
     }
@@ -40,10 +39,10 @@ public class LeaderSelectionCanvas : MonoBehaviour {
             index--;
         }
 
-        if(index >= Party.getPartySize())
+        if(index >= Party.getMemberCount())
             index = 0;
         else if(index < 0)
-            index = Party.getPartySize() - 1;
+            index = Party.getMemberCount() - 1;
 
         shownUnit = Party.getMemberStats(index);
         updateInfo();
@@ -52,6 +51,5 @@ public class LeaderSelectionCanvas : MonoBehaviour {
     public void select() {
         Party.setLeader(shownUnit);
         canvas.SetActive(false);
-        FindObjectOfType<MapTrailRenderer>().enabled = true;
     }
 }

@@ -91,7 +91,7 @@ public static class Randomizer {
     //  Eventually make it so the stats are affected by the region that the player is in
     public static Weapon randomizeWeaponStats(Weapon we) {
         var temp = new Weapon();
-        temp.setEqualTo(we);
+        temp.setEqualTo(we, true);
         temp.w_power = Mathf.Clamp(we.w_power + Random.Range(-10.0f, 25.0f), 1.0f, Mathf.Infinity);
         temp.w_speedMod = we.w_speedMod + Random.Range(-10.0f, 10.0f);
 
@@ -126,7 +126,7 @@ public static class Randomizer {
         }
 
         var temp = new Weapon();
-        temp.setEqualTo(we);
+        temp.setEqualTo(we, true);
 
         for(int i = 0; i < count; i++)
             temp.w_attributes.Add(temp.getRandAttribute());
@@ -143,7 +143,7 @@ public static class Randomizer {
     }
     public static Armor randomizeArmorStats(Armor ar) {
         var temp = new Armor();
-        temp.setEqualTo(ar);
+        temp.setEqualTo(ar, true);
         temp.a_defence = Mathf.Clamp(ar.a_defence + Random.Range(-10.0f, 25.0f), 1.0f, Mathf.Infinity);
         temp.a_speedMod = ar.a_speedMod + Random.Range(-10.0f, 10.0f);
 
@@ -178,7 +178,7 @@ public static class Randomizer {
         }
 
         var temp = new Armor();
-        temp.setEqualTo(ar);
+        temp.setEqualTo(ar, true);
 
         for(int i = 0; i < count; i++)
             temp.a_attributes.Add(temp.getRandAttribute());

@@ -55,7 +55,7 @@ public class Story : ScriptableObject {
 
         //  kills a random unit from the party
         else if(next.affectsParty && next.affect == partyAffectors.killRandUnit) {
-            next.affectedUnit = Party.getMemberStats(Random.Range(0, Party.getPartySize()));
+            next.affectedUnit = Party.getMemberStats(Random.Range(0, Party.getMemberCount()));
         }
 
         //  sets up an "OK" choice for the end of the story
@@ -135,7 +135,7 @@ public class Story : ScriptableObject {
         Story chooseUnitStory = new Story();
         chooseUnitStory.mainText = chooseUnitToAffectPrompt;
 
-        for(int i = 0; i < Party.getPartySize(); i++) {
+        for(int i = 0; i < Party.getMemberCount(); i++) {
             Choice ch = new Choice();
             ch.title = Party.getMemberStats(i).u_name + getRelevantUnitInformation(Party.getMemberStats(i));
             ch.stories.Add(this);

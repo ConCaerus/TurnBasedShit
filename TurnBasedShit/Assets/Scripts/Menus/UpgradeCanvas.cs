@@ -11,7 +11,7 @@ public class UpgradeCanvas : MonoBehaviour {
 
     float statInc = 0.0f;
     Weapon.attribute weaponUpgrade;
-    Armor.attributes armorUpgrade;
+    Armor.attribute armorUpgrade;
     [SerializeField] TextMeshProUGUI attributeText, statText;
 
     [SerializeField] TextMeshProUGUI title;
@@ -110,7 +110,7 @@ public class UpgradeCanvas : MonoBehaviour {
         int index = getSelectedSlotIndex();
 
         //  party weapons
-        for(int i = 0; i < Party.getPartySize(); i++) {
+        for(int i = 0; i < Party.getMemberCount(); i++) {
             if(index <= 0)
                 return Party.getMemberStats(i).equippedWeapon;
             if(Party.getMemberStats(i).equippedWeapon != null && !Party.getMemberStats(i).equippedWeapon.isEmpty())
@@ -134,7 +134,7 @@ public class UpgradeCanvas : MonoBehaviour {
         int index = getSelectedSlotIndex();
 
         //  party weapons
-        for(int i = 0; i < Party.getPartySize(); i++) {
+        for(int i = 0; i < Party.getMemberCount(); i++) {
             if(index <= 0)
                 return Party.getMemberStats(i).equippedArmor;
             if(Party.getMemberStats(i).equippedArmor != null && !Party.getMemberStats(i).equippedArmor.isEmpty())
@@ -187,7 +187,7 @@ public class UpgradeCanvas : MonoBehaviour {
             case 0:
                 //  party weapons
                 List<int> partyMembersWithWeapons = new List<int>();
-                for(int i = 0; i < Party.getPartySize(); i++) {
+                for(int i = 0; i < Party.getMemberCount(); i++) {
                     if(Party.getMemberStats(i).equippedWeapon != null && !Party.getMemberStats(i).equippedWeapon.isEmpty())
                         partyMembersWithWeapons.Add(i);
                 }
@@ -211,7 +211,7 @@ public class UpgradeCanvas : MonoBehaviour {
             case 1:
                 //  party armor
                 List<int> partyMembersWithArmor = new List<int>();
-                for(int i = 0; i < Party.getPartySize(); i++) {
+                for(int i = 0; i < Party.getMemberCount(); i++) {
                     if(Party.getMemberStats(i).equippedArmor != null && !Party.getMemberStats(i).equippedArmor.isEmpty())
                         partyMembersWithArmor.Add(i);
                 }
@@ -294,12 +294,12 @@ public class UpgradeCanvas : MonoBehaviour {
                 case 0:
                     Weapon w = new Weapon();
                     Weapon weaponInSlot = getWeaponInSelectedSlot();
-                    w.setEqualTo(weaponInSlot);
+                    w.setEqualTo(weaponInSlot, true);
                     w.w_power += statInc;
                     w.w_attributes.Add(weaponUpgrade);
 
                     //  upgraded weapon is in the party
-                    for(int i = 0; i < Party.getPartySize(); i++) {
+                    for(int i = 0; i < Party.getMemberCount(); i++) {
                         if(Party.getMemberStats(i).equippedWeapon.isEqualTo(weaponInSlot)) {
                             var unit = Party.getMemberStats(i);
                             unit.equippedWeapon = w;
@@ -321,12 +321,12 @@ public class UpgradeCanvas : MonoBehaviour {
                 case 1:
                     Armor a = new Armor();
                     Armor armorInSlot = getArmorInSelectedSlot();
-                    a.setEqualTo(armorInSlot);
+                    a.setEqualTo(armorInSlot, true);
                     a.a_defence += statInc;
                     a.a_attributes.Add(armorUpgrade);
 
                     //  upgraded weapon is in the party
-                    for(int i = 0; i < Party.getPartySize(); i++) {
+                    for(int i = 0; i < Party.getMemberCount(); i++) {
                         if(Party.getMemberStats(i).equippedArmor.isEqualTo(armorInSlot)) {
                             var unit = Party.getMemberStats(i);
                             unit.equippedArmor = a;
@@ -353,7 +353,7 @@ public class UpgradeCanvas : MonoBehaviour {
     public void setUpgradeStats() {
         statInc = Random.Range(0.0f, 5.0f);
         weaponUpgrade = (Weapon.attribute)(Random.Range(0, Weapon.attributeCount));
-        armorUpgrade = (Armor.attributes)(Random.Range(0, Armor.attributeCount));
+        armorUpgrade = (Armor.attribute)(Random.Range(0, Armor.attributeCount));
         updateInfo();
     }
 }

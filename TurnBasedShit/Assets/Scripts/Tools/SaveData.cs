@@ -72,6 +72,7 @@ public static class SaveData {
     public static void deleteCurrentSave() {
         deleteSave(saveIndex);
     }
+    //  TODO: fucking update this peice of shit
     public static void deleteSave(int i) {
         var prevIndex = saveIndex;
         saveIndex = i;

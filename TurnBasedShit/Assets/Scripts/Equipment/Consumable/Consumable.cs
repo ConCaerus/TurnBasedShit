@@ -50,12 +50,18 @@ public class Consumable {
         return uc.stats;
     }
 
-    public bool isEqualTo(Consumable obj) {
-        if(obj.GetType() != typeof(Consumable))
-            return false;
+    public void setEqualTo(Consumable other, bool takeID) {
+        c_rarity = other.c_rarity;
+        c_coinCost = other.c_coinCost;
+        c_maxStackCount = other.c_maxStackCount;
+        c_effect = other.c_effect;
+        c_effectAmount = other.c_effectAmount;
 
-        return obj.c_effect == c_effect && obj.c_effectAmount == c_effectAmount && 
-            obj.c_name == c_name && obj.c_maxStackCount == c_maxStackCount && c_rarity == obj.c_rarity;
+        if(takeID)
+            c_instanceID = other.c_instanceID;
+    }
+    public bool isEqualTo(Consumable obj) {
+        return c_instanceID == obj.c_instanceID;
     }
 
     public bool isEmpty() {

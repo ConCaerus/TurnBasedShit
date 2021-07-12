@@ -3,20 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PartyObject : MonoBehaviour {
-    [SerializeField] GameObject unitPrefab;
-    [SerializeField] List<GameObject> spawnPoses;
-
-    [SerializeField] GameObject unitToAdd;
-
-
     public void instantiatePartyMembers() {
         //  Deletes all existing objects
         for(int i = 0; i < FindObjectsOfType<PlayerUnitInstance>().Length; i++)
             Destroy(FindObjectsOfType<PlayerUnitInstance>()[i].gameObject);
 
-        List<GameObject> unusedSpawnPoses = spawnPoses;
-        for(int i = 0; i < Party.getPartySize(); i++) {
-            var obj = Instantiate(unitPrefab);
+        List<GameObject> unusedSpawnPoses = new List<GameObject>();
+        foreach(var i in FindObjectsOfType<CombatSpot>()) {
+            if(i.isPlayerSpot())
+                unusedSpawnPoses.Add(i.gameObject);
+        }
+
+        for(int i = 0; i < Party.getMemberCount(); i++) {
+            var obj = Instantiate(FindObjectOfType<PresetLibrary>().getPlayerUnit());
             if(Party.getMemberStats(i) == null || Party.getMemberStats(i).isEmpty()) {
                 obj.gameObject.GetComponent<UnitClass>().setEquipment();
                 Party.addUnitAtIndex(i, obj.gameObject.GetComponent<UnitClass>().stats);
@@ -41,15 +40,6 @@ public class PartyObject : MonoBehaviour {
 
             Party.overrideUnit(obj.GetComponent<UnitClass>().stats);
         }
-    }
-
-    public void addUnitToAdd() {
-        if(unitToAdd == null)
-            unitToAdd = unitPrefab.gameObject;
-        unitToAdd.GetComponent<UnitClass>().setEquipment();
-        Party.addNewUnit(unitToAdd.GetComponent<UnitClass>().stats);
-        saveParty();
-        unitToAdd = null;
     }
 
     public void resaveInstantiatedUnit(UnitStats stats) {
@@ -166,14 +156,14 @@ public static class Party {
     }
 
 
-    public static int getPartySize() {
+    public static int getMemberCount() {
         return SaveData.getInt(partySizeTag);
     }
     public static int getLeaderID() {
         return SaveData.getInt(partyLeaderTag);
     }
     public static int getUnitIndex(UnitStats stats) {
-        for(int i = 0; i < getPartySize(); i++) {
+        for(int i = 0; i < getMemberCount(); i++) {
             if(getMemberStats(i) == stats)
                 return i;
         }

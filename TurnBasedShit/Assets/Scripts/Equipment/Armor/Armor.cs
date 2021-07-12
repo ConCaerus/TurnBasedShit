@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class Armor {
     public const int attributeCount = 2;
-    public enum attributes {
+    public enum attribute {
         Turtle, Reflex
     }
 
@@ -15,7 +15,7 @@ public class Armor {
 
     public GameInfo.rarityLvl a_rarity;
     public GameInfo.wornState a_wornAmount;
-    public List<attributes> a_attributes = new List<attributes>();
+    public List<attribute> a_attributes = new List<attribute>();
 
     public float a_defence;
     public float a_speedMod;
@@ -27,7 +27,7 @@ public class Armor {
     //          weapon class has its function called by the attacker
     public int applyAttributesAfterAttack(GameObject weilder, GameObject attacker) {
         foreach(var i in a_attributes) {
-            if(i == attributes.Reflex) {
+            if(i == attribute.Reflex) {
                 weilder.GetComponent<UnitClass>().attack(attacker);
                 return 1;
             }
@@ -44,7 +44,7 @@ public class Armor {
     public float getBonusAttributeDefenceMult() {
         float temp = 0.0f;
         foreach(var i in a_attributes) {
-            if(i == attributes.Turtle) {
+            if(i == attribute.Turtle) {
                 temp += 0.15f;
             }
         }
@@ -63,23 +63,7 @@ public class Armor {
     }
 
     public bool isEqualTo(Armor other) {
-        if(other == null)
-            return false;
-        if(a_attributes.Count == other.a_attributes.Count) {
-            for(int i = 0; i < a_attributes.Count; i++) {
-                if(a_attributes[i] != other.a_attributes[i]) {
-                    return false;
-                }
-            }
-        }
-
-
-        bool defence = a_defence == other.a_defence;
-        bool speed = a_speedMod == other.a_speedMod;
-        bool rarity = a_rarity == other.a_rarity;
-
-
-        return defence && speed && rarity;
+        return a_instanceID == other.a_instanceID;
     }
 
 
@@ -98,17 +82,20 @@ public class Armor {
         return preset;
     }
 
-    public void setEqualTo(Armor other) {
+    public void setEqualTo(Armor other, bool takeID) {
         a_name = other.a_name;
         a_defence = other.a_defence;
         a_speedMod = other.a_speedMod;
         a_attributes = other.a_attributes;
         a_sprite = other.a_sprite;
         a_rarity = other.a_rarity;
+
+        if(takeID)
+            a_instanceID = other.a_instanceID;
     }
 
 
-    public int howManyOfAttribute(attributes a) {
+    public int howManyOfAttribute(attribute a) {
         var count = 0;
         foreach(var i in a_attributes) {
             if(i == a)
@@ -118,7 +105,7 @@ public class Armor {
     }
 
 
-    public attributes getRandAttribute() {
+    public attribute getRandAttribute() {
         var rand = Random.Range(0, 101);
         float step = 100.0f / (float)attributeCount;
 
@@ -128,7 +115,7 @@ public class Armor {
             index++;
         }
 
-        return (attributes)index;
+        return (attribute)index;
     }
 
 

@@ -12,7 +12,7 @@ public class EnemyUnitInstance : UnitClass {
     [SerializeField] List<GameObject> combatScarsObjects = new List<GameObject>();
 
     public enum type {
-        bug, goblin, slime, snake, spider
+        bug, goblin, slime, snake, spider, slimeInBox
     }
 
 

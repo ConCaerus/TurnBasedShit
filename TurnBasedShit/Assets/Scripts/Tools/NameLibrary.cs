@@ -27,7 +27,7 @@ public static class NameLibrary {
         foreach(var i in playerNames)
             temp.Add(i);
 
-        for(int i = 0; i < Party.getPartySize(); i++) {
+        for(int i = 0; i < Party.getMemberCount(); i++) {
             foreach(var n in temp) {
                 if(Party.getMemberStats(i) != null && !Party.getMemberStats(i).isEmpty() && n == Party.getMemberStats(i).u_name) {
                     temp.Remove(n);

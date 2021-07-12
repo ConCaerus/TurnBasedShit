@@ -5,11 +5,14 @@ using UnityEngine;
 public class BossFightQuest : Quest {
     public BossLocation location;
 
+    public UnitStats bossUnit;
+
 
     public BossFightQuest(BossLocation boss) {
         location = boss;
         q_type = questType.bossFight;
         bossRef = this;
+        bossUnit = boss.bossUnit;
     }
 
 

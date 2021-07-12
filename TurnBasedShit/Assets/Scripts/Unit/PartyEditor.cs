@@ -5,24 +5,24 @@ using UnityEngine;
 using UnityEditor;
 
 
-[CustomEditor(typeof(PartyObject))]
+[CustomEditor(typeof(PartyPopulator))]
 public class PartyEditor : Editor {
 
     public override void OnInspectorGUI() {
         base.OnInspectorGUI();
 
-        var temp = (PartyObject)target;
+        var temp = (PartyPopulator)target;
 
-        if(GUILayout.Button("Reset Party")) {
-            Party.clearParty();
+        if(GUILayout.Button("Clear Party")) {
+            temp.clearParty();
         }
 
-        if(GUILayout.Button("Reset Party Equipment")) {
-            Party.clearPartyEquipment();
+        if(GUILayout.Button("Clear Party Equipment")) {
+            temp.clearPartyEquippment();
         }
 
-        if(GUILayout.Button("Add Unit To Party")) {
-            temp.addUnitToAdd();
+        if(GUILayout.Button("Add Unit")) {
+            temp.addUnit();
         }
     }
 }

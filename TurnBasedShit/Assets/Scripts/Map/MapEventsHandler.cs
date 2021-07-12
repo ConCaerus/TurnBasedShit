@@ -10,10 +10,6 @@ public class MapEventsHandler : MonoBehaviour {
     }
 
     public void chanceEncounter(GameInfo.diffLvl regionDiff) {
-        //  for debugging perposes
-        //triggerEncounter(regionDiff);
-        //  also for debugging perposes
-        //return;
         switch(regionDiff) {
             case GameInfo.diffLvl.Cake:
             case GameInfo.diffLvl.Easy:
@@ -37,10 +33,14 @@ public class MapEventsHandler : MonoBehaviour {
     }
 
     public void triggerEncounter(GameInfo.diffLvl regionDiff) {
+        //  creates a combat location
         var cl = FindObjectOfType<PresetLibrary>().createCombatLocation(regionDiff);
         cl = Randomizer.randomizeCombatLocation(cl);
         GameInfo.setCombatDetails(cl);
 
+        //  flair
+        FindObjectOfType<RoadRenderer>().shrinkPartyObj();
+        FindObjectOfType<RoadRenderer>().canMove = false;
         FindObjectOfType<EnounterCanvas>().showEnemyEncounterAlert();
     }
 

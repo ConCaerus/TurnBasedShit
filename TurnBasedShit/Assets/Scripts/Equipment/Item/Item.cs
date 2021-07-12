@@ -90,36 +90,10 @@ public class Item {
 
 
     public bool isEqualTo(Item other) {
-        if(other == null || this == null)
-            return false;
-
-        if(i_useTimes.Count != other.i_useTimes.Count)
-            return false;
-        for(int i = 0; i < i_useTimes.Count; i++) {
-            if(i_useTimes[i] != other.i_useTimes[i])
-                return false;
-        }
-        if(i_useConditions.Count != other.i_useConditions.Count)
-            return false;
-        for(int i = 0; i < i_useConditions.Count; i++) {
-            if(i_useConditions[i] != other.i_useConditions[i])
-                return false;
-        }
-        if(i_useEffects.Count != other.i_useEffects.Count)
-            return false;
-        for(int i = 0; i < i_useEffects.Count; i++) {
-            if(!i_useEffects[i].isEqualTo(other.i_useEffects[i]))
-                return false;
-        }
-
-        bool name = i_name == other.i_name;
-        bool rarity = i_rarity == other.i_rarity;
-        bool cost = i_coinCost == other.i_coinCost;
-        return name && rarity && cost;
+        return i_instanceID == other.i_instanceID;
     }
 
-    public void setEqualTo(Item other) {
-
+    public void setEqualTo(Item other, bool takeID) {
         i_useTimes.Clear();
         for(int i = 0; i < i_useTimes.Count; i++) {
             i_useTimes[i] = other.i_useTimes[i];
@@ -138,6 +112,9 @@ public class Item {
         i_name = other.i_name;
         i_rarity = other.i_rarity;
         i_coinCost = other.i_coinCost;
+
+        if(takeID)
+            i_instanceID = other.i_instanceID;
     }
 
     public bool isEmpty() {

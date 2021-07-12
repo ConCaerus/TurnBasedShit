@@ -167,11 +167,11 @@ MonoBehaviour:
   weapon: {fileID: 0}
   armor: {fileID: 0}
   stats:
-    u_name: 
+    u_name: Carl
     u_expCap: 25
     u_exp: 0
     u_level: 0
-    u_color: {r: 1, g: 1, b: 1, a: 1}
+    u_color: {r: 0.6260321, g: 0.42259994, b: 0.7264151, a: 1}
     u_baseMaxHealth: 100
     u_health: 100
     u_speed: 0
@@ -219,9 +219,9 @@ MonoBehaviour:
       i_sprite:
         sprite: {fileID: 0}
     u_slaveStats:
-      isSlave: 0
-      escapeDesire: 0
-      scaredModifier: 1.5
+      isSlave: 1
+      escapeDesire: 24.40264
+      scaredModifier: 1.3825283
       idealWeathLevel: 2
     u_traits: []
   equippedWeaponPosition: {fileID: 6491715421042181052}

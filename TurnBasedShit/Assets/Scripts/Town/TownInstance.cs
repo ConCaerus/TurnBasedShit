@@ -100,6 +100,8 @@ public class TownInstance : MonoBehaviour {
 
 [System.Serializable]
 public class Town {
+    public string t_name = "No Name";
+
     public int t_index = -1;
     public int t_buildingCount;
 

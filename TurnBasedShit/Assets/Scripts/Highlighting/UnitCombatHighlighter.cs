@@ -23,7 +23,7 @@ public class UnitCombatHighlighter : MonoBehaviour {
         }
 
         for(int i = 0; i < highlights.Count; i++) {
-            if(highlights[i] == null || highlightedUnits[i] == null) {
+            if(highlights[i] == null || highlightedUnits[i] == null || !highlightedUnits[i].activeInHierarchy) {
                 highlightedUnits.RemoveAt(i);
                 if(highlights[i] != null)
                     highlights[i].GetComponent<CombatHighlightObject>().startEndAnim(true);

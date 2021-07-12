@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class BossLocation : MapLocation {
+    public UnitStats bossUnit;
 
     public BossLocation(Vector2 p, GameObject boss, GameInfo.diffLvl diff, PresetLibrary lib, bool areOtherEnemiesBesidesBoss = false) {
         pos = p;
@@ -16,6 +17,8 @@ public class BossLocation : MapLocation {
             combatLocation.createWaves(diff, lib, 1);
 
         combatLocation.waves[0].enemies.Add(boss);
+
+        bossUnit = boss.GetComponent<UnitClass>().stats;
     }
     
 

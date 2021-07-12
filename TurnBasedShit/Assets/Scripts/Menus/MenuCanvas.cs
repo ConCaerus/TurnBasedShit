@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class MenuCanvas : MonoBehaviour {
     [SerializeField] GameObject menuObj;
+    [SerializeField] GameObject unitCanvas;
 
     bool showing = false;
 
@@ -39,6 +40,12 @@ public class MenuCanvas : MonoBehaviour {
         GetComponent<Animator>().Play("MenuIdle");
         showing = false;
     }
+
+
+    public void showUnitCanvas() {
+        unitCanvas.SetActive(true);
+    }
+
 
     public bool isShowing() {
         return showing;

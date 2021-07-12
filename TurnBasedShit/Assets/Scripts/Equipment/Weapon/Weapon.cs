@@ -63,29 +63,6 @@ public class Weapon {
     }
 
     public bool isEqualTo(Weapon other) {
-        if(other == null)
-            return false;
-        if(w_attributes.Count == other.w_attributes.Count) {
-            for(int i = 0; i < w_attributes.Count; i++) {
-                if(w_attributes[i] != other.w_attributes[i]) {
-                    return false;
-                }
-            }
-        }
-
-
-        bool power = w_power == other.w_power;
-        bool speed = w_speedMod == other.w_speedMod;
-        bool rarity = w_rarity == other.w_rarity;
-        bool ele = w_element == other.w_element;
-
-
-        return power && speed && ele && rarity;
-    }
-
-    public bool isSameInstanceAs(Weapon other) {
-        if(other.w_instanceID == -1)
-            return false;
         return w_instanceID == other.w_instanceID;
     }
 
@@ -106,7 +83,7 @@ public class Weapon {
         return preset;
     }
 
-    public void setEqualTo(Weapon other) {
+    public void setEqualTo(Weapon other, bool takeID) {
         if(other == null)
             return;
         w_name = other.w_name;
@@ -116,6 +93,9 @@ public class Weapon {
         w_element = other.w_element;
         w_sprite = other.w_sprite;
         w_rarity = other.w_rarity;
+
+        if(takeID)
+            w_instanceID = other.w_instanceID;
     }
 
 

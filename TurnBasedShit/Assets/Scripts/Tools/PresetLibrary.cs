@@ -23,10 +23,10 @@ public class PresetLibrary : MonoBehaviour {
 
 
     //  Units
-    public GameObject createPlayerUnit(bool isSlave = false) {
+    public GameObject getPlayerUnit() {
         var temp = playerUnit;
-        temp.GetComponent<UnitClass>().stats.u_slaveStats.isSlave = isSlave;
-        return playerUnit;
+        temp.GetComponent<UnitClass>().stats.u_name = NameLibrary.getRandomPlayerName();
+        return temp;
     }
     public GameObject getEnemy(string name) {
         foreach(var i in enemies) {
@@ -62,7 +62,7 @@ public class PresetLibrary : MonoBehaviour {
             if(useables.Count > 0)
                 enemy = useables[Random.Range(0, useables.Count)];
         }
-        else if(diff == (GameInfo.diffLvl)(-1) || enemy == null) {
+        if(diff == (GameInfo.diffLvl)(-1) || enemy == null) {
             //  not useable enemies, return random enemy from all enemies
             enemy = enemies[Random.Range(0, enemies.Length)];
         }
@@ -128,19 +128,24 @@ public class PresetLibrary : MonoBehaviour {
     }
 
     //  Equipment
-    public Weapon getWeapon(string name) {
-        Weapon temp = null;
+    public Weapon getWeapon(string name, GameInfo.element ele) {
+        Weapon temp = new Weapon();
         foreach(var i in weapons) {
-            if(i.preset.w_name == name)
-                temp.setEqualTo(i.preset);
+            if(i.preset.w_name == name && ele == i.preset.w_element) {
+                temp.setEqualTo(i.preset, false);
+                temp.w_instanceID = GameInfo.getNextWeaponInstanceID();
+                return temp;
+            }
         }
-        return temp;
+
+        return null;
+    }
+    public Weapon getWeapon(Weapon we) {
+        return getWeapon(we.w_name, we.w_element);
     }
     public Weapon getRandomWeapon(GameInfo.rarityLvl lvl = (GameInfo.rarityLvl)(-1)) {
-        var temp = new Weapon();
         if(lvl == (GameInfo.rarityLvl)(-1)) {
-            temp.setEqualTo(weapons[Random.Range(0, weapons.Length)].preset);
-            return temp;
+            return getWeapon(weapons[Random.Range(0, weapons.Length)].preset);
         }
 
         List<Weapon> useables = new List<Weapon>();
@@ -159,27 +164,29 @@ public class PresetLibrary : MonoBehaviour {
         }
 
         if(useables.Count > 0) {
-            temp.setEqualTo(useables[Random.Range(0, useables.Count)]);
-            return temp;
+            return getWeapon(useables[Random.Range(0, useables.Count)]);
         }
-        temp.setEqualTo(weapons[Random.Range(0, weapons.Length)].preset);
-        return temp;
+        return getWeapon(weapons[Random.Range(0, weapons.Length)].preset);
     }
 
     public Armor getArmor(string name) {
-        Armor temp = null;
+        Armor temp = new Armor();
         foreach(var i in armor) {
-            if(i.preset.a_name == name)
-                temp.setEqualTo(i.preset);
+            if(i.preset.a_name == name) {
+                temp.setEqualTo(i.preset, false);
+                temp.a_instanceID = GameInfo.getNextArmorInstanceID();
+                return temp;
+            }
         }
-        return temp;
+
+        return null;
+    }
+    public Armor getArmor(Armor a) {
+        return getArmor(a.a_name);
     }
     public Armor getRandomArmor(GameInfo.rarityLvl lvl = (GameInfo.rarityLvl)(-1)) {
-        Armor temp = new Armor();
-
         if(lvl == (GameInfo.rarityLvl)(-1)) {
-            temp.setEqualTo(armor[Random.Range(0, armor.Length)].preset);
-            return temp;
+            return getArmor(armor[Random.Range(0, armor.Length)].preset);
         }
 
         List<Armor> useables = new List<Armor>();
@@ -198,24 +205,31 @@ public class PresetLibrary : MonoBehaviour {
         }
 
         if(useables.Count > 0) {
-            temp.setEqualTo(useables[Random.Range(0, useables.Count)]);
-            return temp;
+            return getArmor(useables[Random.Range(0, useables.Count)]);
         }
         //  if no useables, return random from all
-        temp.setEqualTo(armor[Random.Range(0, armor.Length)].preset);
-        return temp;
+        return getArmor(armor[Random.Range(0, armor.Length)].preset);
     }
 
     public Consumable getConsumable(string name) {
+        Consumable temp = new Consumable();
         foreach(var i in consumables) {
-            if(i.preset.c_name == name)
-                return i.preset;
+            if(i.preset.c_name == name) {
+                temp.setEqualTo(i.preset, false);
+                temp.c_instanceID = GameInfo.getNextConsumableInstanceID();
+                return temp;
+            }
         }
+
         return null;
     }
+    public Consumable getConsumable(Consumable c) {
+        return getConsumable(c.c_name);
+    }
     public Consumable getRandomConsumable(GameInfo.rarityLvl lvl = (GameInfo.rarityLvl)(-1)) {
-        if(lvl == (GameInfo.rarityLvl)(-1))
-            return consumables[Random.Range(0, consumables.Length)].preset;
+        if(lvl == (GameInfo.rarityLvl)(-1)) {
+            return getConsumable(consumables[Random.Range(0, consumables.Length)].preset);
+        }
 
         List<Consumable> useables = new List<Consumable>();
         foreach(var i in consumables) {
@@ -232,24 +246,30 @@ public class PresetLibrary : MonoBehaviour {
             }
         }
 
-        if(useables.Count > 0)
-            return useables[Random.Range(0, useables.Count)];
-        return consumables[Random.Range(0, consumables.Length)].preset;
+        if(useables.Count > 0) {
+            return getConsumable(useables[Random.Range(0, useables.Count)]);
+        }
+        return getConsumable(consumables[Random.Range(0, consumables.Length)].preset);
     }
 
     public Item getItem(string name) {
+        Item temp = new Item();
         foreach(var i in items) {
-            if(i.preset.i_name == name)
-                return i.preset;
+            if(i.preset.i_name == name) {
+                temp.setEqualTo(i.preset, false);
+                temp.i_instanceID = GameInfo.getNextItemInstanceID();
+                return temp;
+            }
         }
+
         return null;
     }
+    public Item getItem(Item i) {
+        return getItem(i.i_name);
+    }
     public Item getRandomItem(GameInfo.rarityLvl lvl = (GameInfo.rarityLvl)(-1)) {
-        var temp = new Item();
-
         if(lvl == (GameInfo.rarityLvl)(-1)) {
-            temp.setEqualTo(items[Random.Range(0, items.Length)].preset);
-            return temp;
+            return getItem(items[Random.Range(0, items.Length)].preset);
         }
 
         List<Item> useables = new List<Item>();
@@ -268,11 +288,9 @@ public class PresetLibrary : MonoBehaviour {
         }
 
         if(useables.Count > 0) {
-            temp.setEqualTo(useables[Random.Range(0, useables.Count)]);
-            return temp;
+            return getItem(useables[Random.Range(0, useables.Count)]);
         }
-        temp.setEqualTo(items[Random.Range(0, items.Length)].preset);
-        return temp;
+        return getItem(items[Random.Range(0, items.Length)].preset);
     }
 
     //  Map
@@ -298,7 +316,7 @@ public class PresetLibrary : MonoBehaviour {
     //  special locations
     public CombatLocation createCombatLocation(GameInfo.diffLvl lvl) {
         int waveCount = Random.Range(1, 4);
-        var loc = new CombatLocation(lvl, FindObjectOfType<PresetLibrary>(), waveCount);
+        var loc = new CombatLocation(lvl, this, waveCount);
         loc.difficulty = lvl;
 
         loc.coinReward = 2 * ((int)lvl + 1) * waveCount; // default value
@@ -352,8 +370,8 @@ public class PresetLibrary : MonoBehaviour {
             case Quest.questType.equipmentPickup:
                 return new PickupQuest(createRandomPickupLocation());
 
-            case Quest.questType.accumulative:
-                return new AccumulativeQuest((AccumulativeQuest.type)Random.Range(0, 1));   //  change this number too
+            case Quest.questType.kill:
+                return new KillQuest(Random.Range(5, 36), getRandomEnemy().GetComponent<EnemyUnitInstance>().enemyType);   //  change this number too
 
             case Quest.questType.delivery:
                 //  get a random town
@@ -397,7 +415,7 @@ public class PresetLibrary : MonoBehaviour {
                 if(rand == 4) {
                     var things = new List<UnitStats>();
                     for(int i = 0; i < Random.Range(1, 3); i++)
-                        things.Add(createPlayerUnit(true).GetComponent<UnitClass>().stats);
+                        things.Add(getPlayerUnit().GetComponent<UnitClass>().stats);
 
                     return new DeliveryQuest(TownLibrary.getTown(townInd), things);
                 }

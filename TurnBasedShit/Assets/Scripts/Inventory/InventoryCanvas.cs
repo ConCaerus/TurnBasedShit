@@ -620,10 +620,10 @@ public class InventoryCanvas : MonoBehaviour {
             index--;
         }
 
-        if(index >= Party.getPartySize())
+        if(index >= Party.getMemberCount())
             index = 0;
         else if(index < 0)
-            index = Party.getPartySize() - 1;
+            index = Party.getMemberCount() - 1;
 
         shownUnit = Party.getMemberStats(index);
         updateUnitChange();

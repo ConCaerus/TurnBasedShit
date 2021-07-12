@@ -4,7 +4,6 @@ using UnityEngine;
 using DG.Tweening;
 
 public class EnemyUnitSpawner : MonoBehaviour {
-    [SerializeField] List<GameObject> enemySpawnPoses;
     [SerializeField] GameObject enemyPreset;
 
     [SerializeField] float showingSpeed = 0.15f;
@@ -13,8 +12,10 @@ public class EnemyUnitSpawner : MonoBehaviour {
         var info = GameInfo.getCombatDetails();
 
         List<GameObject> unusedSpawnPoses = new List<GameObject>();
-        foreach(var i in enemySpawnPoses)
-            unusedSpawnPoses.Add(i.gameObject);
+        foreach(var i in FindObjectsOfType<CombatSpot>()) {
+            if(!i.isPlayerSpot())
+                unusedSpawnPoses.Add(i.gameObject);
+        }
 
         foreach(var i in info.waves[waveIndex].enemies) { 
             var obj = Instantiate(i.gameObject);

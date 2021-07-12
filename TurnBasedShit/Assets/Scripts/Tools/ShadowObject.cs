@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ShadowObject : MonoBehaviour {
     private void Start() {
+        GetComponent<SpriteRenderer>().sprite = transform.GetComponentInParent<SpriteRenderer>().sprite;
         GetComponent<SpriteRenderer>().sortingOrder = transform.GetComponentInParent<SpriteRenderer>().sortingOrder - 1;
     }
 

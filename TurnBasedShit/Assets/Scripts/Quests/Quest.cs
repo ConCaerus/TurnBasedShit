@@ -5,19 +5,20 @@ using UnityEngine;
 public abstract class Quest {
     /*
      * mapLocation - special map locations like boss fights or weapon pickups
-     * acumlative - things that the player completes over time, such as kill 25 enemies
+     * kill - player has to kill a certain number of enemies
      * delivery - has the player deliver an item or a person to a different location
      * pickup - combat location that has a specific reward
      */
 
     //  when adding new quests, remember to increase the value in the presetLibrary for getting a random quest
     public enum questType {
-        bossFight, equipmentPickup, accumulative, delivery
+        bossFight, equipmentPickup, delivery, kill
     }
 
+    bool q_completed = false;
 
     public questType q_type;
-    public AccumulativeQuest accRef = null;
+    public KillQuest killRef = null;
     public BossFightQuest bossRef = null;
     public DeliveryQuest delRef = null;
     public PickupQuest pickupRef = null;
@@ -50,5 +51,15 @@ public abstract class Quest {
             Inventory.addItem(i);
         foreach(var i in unitReward)
             Party.addNewUnit(i);
+    }
+
+    public bool isCompleted() {
+        if(q_type == questType.kill)
+            q_completed = killRef.killCount >= killRef.howManyToKill;
+
+        return q_completed;
+    }
+    public void setCompleted(bool b) {
+        q_completed = b;
     }
 }

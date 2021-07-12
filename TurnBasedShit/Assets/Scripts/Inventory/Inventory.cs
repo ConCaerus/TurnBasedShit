@@ -41,27 +41,28 @@ public static class Inventory {
         clearConsumables();
         clearItems();
         clearCoins();
+        PlayerPrefs.DeleteAll();
     }
     public static void clearWeapons() {
-        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Weapon))); i++) {
+        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Weapon))) + 10; i++) {
             SaveData.deleteKey(objectTag(i, typeof(Weapon)));
         }
         SaveData.deleteKey(objectCountTag(typeof(Weapon)));
     }
     public static void clearArmor() {
-        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Armor))); i++) {
+        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Armor))) + 10; i++) {
             SaveData.deleteKey(objectTag(i, typeof(Armor)));
         }
         SaveData.deleteKey(objectCountTag(typeof(Armor)));
     }
     public static void clearConsumables() {
-        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Consumable))); i++) {
+        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Consumable))) + 10; i++) {
             SaveData.deleteKey(objectTag(i, typeof(Consumable)));
         }
         SaveData.deleteKey(objectCountTag(typeof(Consumable)));
     }
     public static void clearItems() {
-        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Item))); i++) {
+        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Item))) + 10; i++) {
             SaveData.deleteKey(objectTag(i, typeof(Item)));
         }
         SaveData.deleteKey(objectCountTag(typeof(Item)));
@@ -73,33 +74,29 @@ public static class Inventory {
     public static void addWeapon(Weapon w) {
         int index = getTypeCount(typeof(Weapon));
 
-        w.w_instanceID = getNextWeaponInstanceID();
         var data = JsonUtility.ToJson(w);
-        SaveData.setString(objectTag(w.w_instanceID, typeof(Weapon)), data);
+        SaveData.setString(objectTag(index, typeof(Weapon)), data);
         SaveData.setInt(objectCountTag(typeof(Weapon)), index + 1);
     }
     public static void addArmor(Armor a) {
         int index = getTypeCount(typeof(Armor));
 
-        a.a_instanceID = getNextArmorInstanceID();
         var data = JsonUtility.ToJson(a);
-        SaveData.setString(objectTag(a.a_instanceID, typeof(Armor)), data);
+        SaveData.setString(objectTag(index, typeof(Armor)), data);
         SaveData.setInt(objectCountTag(typeof(Armor)), index + 1);
     }
     public static void addConsumable(Consumable c) {
         int index = getTypeCount(typeof(Consumable));
 
-        c.c_instanceID = getNextConsumableInstanceID();
         var data = JsonUtility.ToJson(c);
-        SaveData.setString(objectTag(c.c_instanceID, typeof(Consumable)), data);
+        SaveData.setString(objectTag(index, typeof(Consumable)), data);
         SaveData.setInt(objectCountTag(typeof(Consumable)), index + 1);
     }
     public static void addItem(Item it) {
         int index = getTypeCount(typeof(Item));
 
-        it.i_instanceID = getNextItemInstanceID();
         var data = JsonUtility.ToJson(it);
-        SaveData.setString(objectTag(it.i_instanceID, typeof(Item)), data);
+        SaveData.setString(objectTag(index, typeof(Item)), data);
         SaveData.setInt(objectCountTag(typeof(Item)), index + 1);
     }
     public static void addCoins(int count) {
@@ -108,76 +105,52 @@ public static class Inventory {
     }
 
     public static void removeWeapon(Weapon w) {
-        var tData = JsonUtility.ToJson(w);
-        bool past = false;
-        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Weapon))); i++) {
-            var data = SaveData.getString(objectTag(i, typeof(Weapon)));
-
-            if(data == tData && !past) {
-                SaveData.deleteKey(objectTag(i, typeof(Weapon)));
-                past = true;
-                continue;
-            }
-            else if(past) {
-                SaveData.deleteKey(objectTag(i, typeof(Weapon)));
-                overrideWeapon(i - 1, JsonUtility.FromJson<Weapon>(data));
-            }
+        List<Weapon> temp = new List<Weapon>();
+        for(int i = 0; i < getTypeCount(typeof(Weapon)); i++) {
+            Weapon invWeapon = getWeapon(i);
+            if(invWeapon != null && !invWeapon.isEqualTo(w))
+                temp.Add(invWeapon);
         }
-        SaveData.setInt(objectCountTag(typeof(Weapon)), SaveData.getInt(objectCountTag(typeof(Weapon))) - 1);
+
+        clearWeapons();
+        foreach(var i in temp)
+            addWeapon(i);
     }
     public static void removeArmor(Armor a) {
-        var tData = JsonUtility.ToJson(a);
-        bool past = false;
-        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Armor))); i++) {
-            var data = SaveData.getString(objectTag(i, typeof(Armor)));
-
-            if(data == tData && !past) {
-                SaveData.deleteKey(objectTag(i, typeof(Armor)));
-                past = true;
-                continue;
-            }
-            else if(past) {
-                SaveData.deleteKey(objectTag(i, typeof(Armor)));
-                overrideArmor(i - 1, JsonUtility.FromJson<Armor>(data));
-            }
+        List<Armor> temp = new List<Armor>();
+        for(int i = 0; i < getTypeCount(typeof(Armor)); i++) {
+            Armor invArmor = getArmor(i);
+            if(invArmor != null && !invArmor.isEqualTo(a))
+                temp.Add(invArmor);
         }
-        SaveData.setInt(objectCountTag(typeof(Armor)), SaveData.getInt(objectCountTag(typeof(Armor))) - 1);
+
+        clearArmor();
+        foreach(var i in temp)
+            addArmor(i);
     }
     public static void removeConsumable(Consumable c) {
-        var tData = JsonUtility.ToJson(c);
-        bool past = false;
-        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Consumable))); i++) {
-            var data = SaveData.getString(objectTag(i, typeof(Consumable)));
-
-            if(data == tData && !past) {
-                SaveData.deleteKey(objectTag(i, typeof(Consumable)));
-                past = true;
-                continue;
-            }
-            else if(past) {
-                SaveData.deleteKey(objectTag(i, typeof(Consumable)));
-                overrideConsumable(i - 1, JsonUtility.FromJson<Consumable>(data));
-            }
+        List<Consumable> temp = new List<Consumable>();
+        for(int i = 0; i < getTypeCount(typeof(Consumable)); i++) {
+            Consumable invCons = getConsumable(i);
+            if(invCons != null && !invCons.isEqualTo(c))
+                temp.Add(invCons);
         }
-        SaveData.setInt(objectCountTag(typeof(Consumable)), SaveData.getInt(objectCountTag(typeof(Consumable))) - 1);
+
+        clearConsumables();
+        foreach(var i in temp)
+            addConsumable(i);
     }
     public static void removeItem(Item it) {
-        var tData = JsonUtility.ToJson(it);
-        bool past = false;
-        for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Item))); i++) {
-            var data = SaveData.getString(objectTag(i, typeof(Item)));
-
-            if(data == tData && !past) {
-                SaveData.deleteKey(objectTag(i, typeof(Item)));
-                past = true;
-                continue;
-            }
-            else if(past) {
-                SaveData.deleteKey(objectTag(i, typeof(Item)));
-                overrideItem(i - 1, JsonUtility.FromJson<Item>(data));
-            }
+        List<Item> temp = new List<Item>();
+        for(int i = 0; i < getTypeCount(typeof(Item)); i++) {
+            Item invItem = getItem(i);
+            if(invItem != null && !invItem.isEqualTo(it))
+                temp.Add(invItem);
         }
-        SaveData.setInt(objectCountTag(typeof(Item)), SaveData.getInt(objectCountTag(typeof(Item))) - 1);
+
+        clearItems();
+        foreach(var i in temp)
+            addItem(i);
     }
     public static void removeWeapon(int index) {
         removeWeapon(getWeapon(index));
@@ -279,39 +252,6 @@ public static class Inventory {
             if(temp == it)
                 return i;
         }
-        return -1;
-    }
-
-    static int getNextWeaponInstanceID() {
-        for(int i = 0; i < getTypeCount(typeof(Weapon)) + 1; i++) {
-            if(getWeapon(i) == null)
-                return i;
-        }
-        Debug.LogError("Could not find next weapon instance ID");
-        return -1;
-    }
-    static int getNextArmorInstanceID() {
-        for(int i = 0; i < getTypeCount(typeof(Armor)) + 1; i++) {
-            if(getArmor(i) == null)
-                return i;
-        }
-        Debug.LogError("Could not find next armor instance ID");
-        return -1;
-    }
-    static int getNextConsumableInstanceID() {
-        for(int i = 0; i < getTypeCount(typeof(Consumable)) + 1; i++) {
-            if(getConsumable(i) == null)
-                return i;
-        }
-        Debug.LogError("Could not find next cons instance ID");
-        return -1;
-    }
-    static int getNextItemInstanceID() {
-        for(int i = 0; i < getTypeCount(typeof(Item)) + 1; i++) {
-            if(getItem(i) == null)
-                return i;
-        }
-        Debug.LogError("Could not find next item instance ID");
         return -1;
     }
 }

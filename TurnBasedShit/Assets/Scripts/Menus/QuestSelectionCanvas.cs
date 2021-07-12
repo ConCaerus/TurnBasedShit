@@ -49,7 +49,7 @@ public class QuestSelectionCanvas : MonoBehaviour {
         for(int i = 0; i < count; i++) {
             int rand = Random.Range(0, 2);
             if(rand == 0) {
-                var temp = new AccumulativeQuest(AccumulativeQuest.type.killEnemies, 25);
+                var temp = new KillQuest(25, FindObjectOfType<PresetLibrary>().getRandomEnemy().GetComponent<EnemyUnitInstance>().enemyType);
                 quests.Add(temp);
             }
 
@@ -85,9 +85,9 @@ public class QuestSelectionCanvas : MonoBehaviour {
             quests.RemoveAt(menu.getSelectedSlotIndex());
             menu.deleteSlotAtIndex(menu.getSelectedSlotIndex());
             switch(qu.q_type) {
-                case Quest.questType.accumulative:
+                case Quest.questType.kill:
                     qu.questInit();
-                    ActiveQuests.addQuest(qu.accRef);
+                    ActiveQuests.addQuest(qu.killRef);
                     Debug.Log(qu.q_type);
                     break;
                 case Quest.questType.bossFight:
