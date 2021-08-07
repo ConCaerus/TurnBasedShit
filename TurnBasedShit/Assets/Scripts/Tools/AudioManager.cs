@@ -3,29 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour {
-    [SerializeField] AudioClip hitSound, swaySound, dieSound;
+    [SerializeField] AudioSource player;
 
-    AudioSource player;
+
+    List<AudioClip> playedClips = new List<AudioClip>();
+
 
     private void Awake() {
-        player = GetComponent<AudioSource>();
+        StartCoroutine(refreshPlaylist());
     }
 
+    public void playSound(AudioClip clip, bool randomize = true) {
+        foreach(var i in playedClips) {
+            if(i == clip)
+                return;
+        }
 
-    public void playHitSound() {
-        randomizePitch();
-        player.PlayOneShot(hitSound);
-    }
-    public void playSwaySound() {
-        randomizePitch();
-        player.PlayOneShot(swaySound);
-    }
-    public void playDieSound() {
-        randomizePitch();
-        player.PlayOneShot(dieSound);
+        if(randomize)
+            randomizePitch();
+        player.PlayOneShot(clip);
+        playedClips.Add(clip);
     }
 
-    void randomizePitch() {
+    public void randomizePitch() {
         player.pitch = Random.Range(0.6f, 1.25f);
+    }
+
+    IEnumerator refreshPlaylist() {
+        yield return new WaitForEndOfFrame();
+
+        playedClips.Clear();
+        StartCoroutine(refreshPlaylist());
     }
 }

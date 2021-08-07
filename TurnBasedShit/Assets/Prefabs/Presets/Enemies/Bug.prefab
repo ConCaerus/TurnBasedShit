@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5005955206079409078}
   - component: {fileID: 8742063354603206101}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: Scars (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5204006744615949344}
   - component: {fileID: 5692304735849119000}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: Scars (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177,7 +177,7 @@ GameObject:
   - component: {fileID: 6037864551336239612}
   - component: {fileID: 6037864551336239613}
   - component: {fileID: 6037864551336239584}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: Bug
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -193,7 +193,7 @@ Transform:
   m_GameObject: {fileID: 6037864551336239585}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.75, y: 1.96, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.35, y: 0.35, z: 1}
   m_Children:
   - {fileID: 6965582936815714309}
   - {fileID: 2506942283104317141}
@@ -239,8 +239,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 921474463
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 9f58e729c2121e246865885e0e6b0df2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -319,6 +319,9 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: 9f58e729c2121e246865885e0e6b0df2, type: 3}
     attackingSprite: {fileID: 0}
     defendingSprite: {fileID: 0}
+    idleAnim: {fileID: 0}
+    attackAnim: {fileID: 0}
+    anim: {fileID: 0}
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   isPlayerUnit: 0
   defending: 0
@@ -327,6 +330,7 @@ MonoBehaviour:
   tempPower: 0
   tempDefence: 0
   tempSpeed: 0
+  spotOffset: 0.2
   weapon: {fileID: 0}
   armor: {fileID: 0}
   stats:
@@ -335,11 +339,11 @@ MonoBehaviour:
     u_exp: 0
     u_level: 0
     u_color: {r: 1, g: 1, b: 1, a: 1}
-    u_baseMaxHealth: 25
-    u_health: 25
-    u_speed: 0
-    u_power: 1
-    u_defence: 1
+    u_baseMaxHealth: 36.36131
+    u_health: 36.36131
+    u_speed: -0
+    u_power: 0.00001961357
+    u_defence: -0.00021180927
     u_critChance: 0
     u_bleedCount: 0
     u_order: 0
@@ -406,7 +410,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2506942283104317141}
   - component: {fileID: 6264506530974681714}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: Scars
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -492,6 +496,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2843839479351521455, guid: 2c757f62bb898be40b3d00e373049010,
         type: 3}
+      propertyPath: m_Layer
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2843839479351521455, guid: 2c757f62bb898be40b3d00e373049010,
+        type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -501,6 +510,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 9f58e729c2121e246865885e0e6b0df2,
         type: 3}
+    - target: {fileID: 3838951662555235325, guid: 2c757f62bb898be40b3d00e373049010,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3838951662555235325, guid: 2c757f62bb898be40b3d00e373049010,
+        type: 3}
+      propertyPath: m_SortingLayerID
+      value: 921474463
+      objectReference: {fileID: 0}
     - target: {fileID: 7452276450506034967, guid: 2c757f62bb898be40b3d00e373049010,
         type: 3}
       propertyPath: m_RootOrder

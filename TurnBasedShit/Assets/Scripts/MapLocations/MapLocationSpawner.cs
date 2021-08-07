@@ -15,14 +15,12 @@ public class MapLocationSpawner : MonoBehaviour {
     private void Start() {
         //MapLocationHolder.clearSaveData();
         //Inventory.clearInventory();
-        if(MapLocationHolder.getLocationCount() <= 3) {
-            if(MapLocationHolder.getPickupCount() == 0)
-                createNewRandomEquipmentPickup();
-            if(MapLocationHolder.getUpgradeCount() == 0)
-                createNewRandomEquipmentUpgrade();
-            if(MapLocationHolder.getTownCount() == 0)
-                createNewRandomTown();
-        }
+        if(MapLocationHolder.getPickupCount() == 0)
+            createNewRandomEquipmentPickup();
+        if(MapLocationHolder.getUpgradeCount() == 0)
+            createNewRandomEquipmentUpgrade();
+        if(MapLocationHolder.getTownCount() == 0)
+            createNewRandomTown();
 
         createIcons();
         GameInfo.resetCombatDetails();
@@ -34,14 +32,13 @@ public class MapLocationSpawner : MonoBehaviour {
         foreach(var i in GetComponentsInChildren<SpriteRenderer>())
             Destroy(i.gameObject);
 
-        for(int i = 0; i < MapLocationHolder.getLocationCount(); i++) {
-            MapLocation loc = MapLocationHolder.getMapLocation(i);
+        foreach(var i in MapLocationHolder.getLocations()) {
             //  equipmentUpgrade shit
             var obj = Instantiate(iconPreset.gameObject);
-            obj.transform.position = loc.pos;
-            obj.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getMapLocationSprite(loc);
+            obj.transform.position = i.pos;
+            obj.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getMapLocationSprite(i);
             obj.transform.SetParent(transform);
-            currentLocations.Add(loc);
+            currentLocations.Add(i);
         }
     }
 
@@ -61,7 +58,7 @@ public class MapLocationSpawner : MonoBehaviour {
 
 
         //  saves the TownLocation
-        MapLocationHolder.saveNewLocation(temp);
+        MapLocationHolder.addLocation(temp);
     }
 
     public void createNewRandomEquipmentPickup() {
@@ -97,7 +94,7 @@ public class MapLocationSpawner : MonoBehaviour {
 
 
         //  saves the TownLocation
-        MapLocationHolder.saveNewLocation(temp);
+        MapLocationHolder.addLocation(temp);
         currentLocations.Add(temp);
     }
 
@@ -124,7 +121,7 @@ public class MapLocationSpawner : MonoBehaviour {
 
 
         //  saves the TownLocation
-        MapLocationHolder.saveNewLocation(temp);
+        MapLocationHolder.addLocation(temp);
         currentLocations.Add(temp);
     }
 
@@ -145,7 +142,7 @@ public class MapLocationSpawner : MonoBehaviour {
 
 
         //  saves the TownLocation
-        MapLocationHolder.saveNewLocation(temp);
+        MapLocationHolder.addLocation(temp);
         currentLocations.Add(temp);
     }
 
@@ -166,7 +163,7 @@ public class MapLocationSpawner : MonoBehaviour {
 
 
         //  saves the TownLocation
-        MapLocationHolder.saveNewLocation(temp);
+        MapLocationHolder.addLocation(temp);
         currentLocations.Add(temp);
     }
 

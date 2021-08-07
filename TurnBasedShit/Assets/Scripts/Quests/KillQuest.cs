@@ -12,12 +12,12 @@ public class KillQuest : Quest {
         howManyToKill = c;
         enemyType = type;
         q_type = Quest.questType.kill;
-        killRef = this;
     }
 
 
-    public override void questInit() {
-        //  something
+    public override void questInit(bool setInstanceID) {
+        if(setInstanceID)
+            q_instanceID = GameInfo.getNextQuestInstanceID();
     }
     public override void questDestory() {
         //  something

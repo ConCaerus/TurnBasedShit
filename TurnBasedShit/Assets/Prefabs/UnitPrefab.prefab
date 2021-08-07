@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2150725456124683403}
   - component: {fileID: 2150725456124683404}
   - component: {fileID: 2150725456124683407}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: UnitPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 2150725456124683392}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3.42, y: -0.04, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.35, y: 0.35, z: 1}
   m_Children:
   - {fileID: 105906137469328628}
   - {fileID: 5620534093897991823}
@@ -74,8 +74,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 921474463
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 026728a4d01cdb549889f7c3fa7f975e, type: 3}
   m_Color: {r: 0.5856176, g: 0.9493212, b: 0.990566, a: 1}
@@ -147,6 +147,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99b1e960874d0d84f831b39cc89d74c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hitSound: {fileID: 8300000, guid: f9ab6cd3341723f4f8a4cb65b539d7c3, type: 3}
+  dieSound: {fileID: 8300000, guid: 5665238162eda3c4e8090423e9059acf, type: 3}
   attackingTarget: {fileID: 0}
   bloodParticles: {fileID: 2915087688519792205, guid: 4fdf5a70cefb9dc409fa113f55c33321,
     type: 3}
@@ -156,6 +158,9 @@ MonoBehaviour:
       type: 3}
     defendingSprite: {fileID: 1465780817400294621, guid: baae3e43bd852014dbbdc6cf491e0473,
       type: 3}
+    idleAnim: {fileID: 0}
+    attackAnim: {fileID: 0}
+    anim: {fileID: 0}
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   isPlayerUnit: 1
   defending: 0
@@ -164,16 +169,17 @@ MonoBehaviour:
   tempPower: 0
   tempDefence: 0
   tempSpeed: 0
+  spotOffset: 0.42
   weapon: {fileID: 0}
   armor: {fileID: 0}
   stats:
-    u_name: Carl
+    u_name: Felix
     u_expCap: 25
     u_exp: 0
     u_level: 0
     u_color: {r: 0.6260321, g: 0.42259994, b: 0.7264151, a: 1}
     u_baseMaxHealth: 100
-    u_health: 100
+    u_health: 14
     u_speed: 0
     u_power: 143.42
     u_defence: 0
@@ -235,7 +241,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5620534093897991823}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: ArmorPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -267,7 +273,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7682868861753007140}
   - component: {fileID: 1823557793330446159}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: ArmorSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -349,7 +355,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6587013134714406323}
   - component: {fileID: 2455625323346049442}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: WeaponSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -430,7 +436,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 105906137469328628}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: WeaponPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -464,12 +470,27 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shadow
       objectReference: {fileID: 0}
+    - target: {fileID: 2843839479351521455, guid: 2c757f62bb898be40b3d00e373049010,
+        type: 3}
+      propertyPath: m_Layer
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 3838951662555235325, guid: 2c757f62bb898be40b3d00e373049010,
         type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 026728a4d01cdb549889f7c3fa7f975e,
         type: 3}
+    - target: {fileID: 3838951662555235325, guid: 2c757f62bb898be40b3d00e373049010,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3838951662555235325, guid: 2c757f62bb898be40b3d00e373049010,
+        type: 3}
+      propertyPath: m_SortingLayerID
+      value: 921474463
+      objectReference: {fileID: 0}
     - target: {fileID: 7452276450506034967, guid: 2c757f62bb898be40b3d00e373049010,
         type: 3}
       propertyPath: m_RootOrder

@@ -12,7 +12,7 @@ public class PickupLocation : MapLocation {
     //  weapon
     public PickupLocation(Vector2 p, Weapon w, PresetLibrary lib, GameInfo.diffLvl diff) {
         pos = p;
-        type = locationType.equipmentPickup;
+        type = locationType.pickup;
 
         combatLocation = lib.createCombatLocation(diff);
         combatLocation.weapons.Add(w);
@@ -23,7 +23,7 @@ public class PickupLocation : MapLocation {
     //  armor
     public PickupLocation(Vector2 p, Armor a, PresetLibrary lib, GameInfo.diffLvl diff) {
         pos = p;
-        type = locationType.equipmentPickup;
+        type = locationType.pickup;
 
         combatLocation = lib.createCombatLocation(diff);
         combatLocation.armor.Add(a);
@@ -34,7 +34,7 @@ public class PickupLocation : MapLocation {
     //  consumable
     public PickupLocation(Vector2 p, Consumable con, int count, PresetLibrary lib, GameInfo.diffLvl diff) {
         pos = p;
-        type = locationType.equipmentPickup;
+        type = locationType.pickup;
 
         combatLocation = lib.createCombatLocation(diff);
         for(int i = 0; i < count; i++)
@@ -46,7 +46,7 @@ public class PickupLocation : MapLocation {
     //  item
     public PickupLocation(Vector2 p, Item it, PresetLibrary lib, GameInfo.diffLvl diff) {
         pos = p;
-        type = locationType.equipmentPickup;
+        type = locationType.pickup;
 
         combatLocation = lib.createCombatLocation(diff);
         combatLocation.items.Add(it);
@@ -57,8 +57,21 @@ public class PickupLocation : MapLocation {
 
     public override void enterLocation() {
         GameInfo.setCombatDetails(combatLocation);
-        GameInfo.setCurrentMapLocation(MapLocationHolder.getIndex((PickupLocation)this));
+        GameInfo.setCurrentLocationAsPickup(this);
         MapLocationHolder.removeLocation(this);
         SceneManager.LoadScene("Combat");
+    }
+
+    public override bool isEqualTo(MapLocation other) {
+        if(other.type != locationType.pickup)
+            return false;
+
+        PickupLocation o = (PickupLocation)other;
+
+        return pos == other.pos &&
+            pickupWeapon.isEqualTo(o.pickupWeapon) &&
+            pickupArmor.isEqualTo(o.pickupArmor) &&
+            pickupConsumable.isEqualTo(o.pickupConsumable) &&
+            pickupItem.isEqualTo(o.pickupItem);           
     }
 }

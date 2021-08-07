@@ -25,7 +25,7 @@ public class EnemyUnitSpawner : MonoBehaviour {
 
             //  sets a random position
             var rand = Random.Range(0, unusedSpawnPoses.Count);
-            obj.transform.position = unusedSpawnPoses[rand].transform.position;
+            obj.transform.position = unusedSpawnPoses[rand].transform.position + new Vector3(0.0f, obj.GetComponent<UnitClass>().spotOffset, 0.0f);
             animateEnemy(obj);
             unusedSpawnPoses.RemoveAt(rand);
         }

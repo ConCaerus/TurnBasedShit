@@ -29,12 +29,12 @@ TagManager:
   - 
   - 
   - 
+  - UnitSpots
   - 
   - 
   - 
   - 
-  - 
-  - 
+  - Units
   - 
   - 
   - 
@@ -49,4 +49,16 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Spot
+    uniqueID: 1723122159
+    locked: 0
+  - name: Unit
+    uniqueID: 921474463
+    locked: 0
+  - name: FrontEnvironment
+    uniqueID: 2830592377
+    locked: 0
+  - name: Highlights
+    uniqueID: 2161149569
     locked: 0

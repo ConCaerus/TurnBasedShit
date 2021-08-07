@@ -13,29 +13,29 @@ public class QuestInfoSlot : MonoBehaviour {
         //  creates the main text for the quest
         switch(q.q_type) {
             case Quest.questType.bossFight:
-                mainText.text = "Kill " + q.bossRef.bossUnit.u_name;
+                mainText.text = "Kill " + ((BossFightQuest)q).bossUnit.u_name;
 
                 break;
 
             case Quest.questType.kill:
-                mainText.text = "Kill " + q.killRef.howManyToKill.ToString() + " " + q.killRef.enemyType.ToString();
+                mainText.text = "Kill " + ((KillQuest)q).howManyToKill.ToString() + " " + ((KillQuest)q).enemyType.ToString();
                 break;
 
-            case Quest.questType.equipmentPickup:
+            case Quest.questType.pickup:
                 mainText.text = "Collect ";
-                if(q.pickupRef.pickupWeapon != null)
-                    mainText.text += q.pickupRef.pickupWeapon.w_name;
-                else if(q.pickupRef.pickupArmor != null)
-                    mainText.text += q.pickupRef.pickupArmor.a_name;
-                else if(q.pickupRef.pickupConsumable != null)
-                    mainText.text += q.pickupRef.pickupConsumable.c_name;
-                else if(q.pickupRef.pickupItem != null)
-                    mainText.text += q.pickupRef.pickupItem.i_name;
+                if(((PickupQuest)q).pickupWeapon != null)
+                    mainText.text += ((PickupQuest)q).pickupWeapon.w_name;
+                else if(((PickupQuest)q).pickupArmor != null)
+                    mainText.text += ((PickupQuest)q).pickupArmor.a_name;
+                else if(((PickupQuest)q).pickupConsumable != null)
+                    mainText.text += ((PickupQuest)q).pickupConsumable.c_name;
+                else if(((PickupQuest)q).pickupItem != null)
+                    mainText.text += ((PickupQuest)q).pickupItem.i_name;
 
                 break;
 
             case Quest.questType.delivery:
-                mainText.text = "Deliver " + q.delRef.type.ToString() + " to " + q.delRef.deliveryLocation.t_name;
+                mainText.text = "Deliver " + ((DeliveryQuest)q).type.ToString() + " to " + ((DeliveryQuest)q).deliveryLocation.t_name;
                 break;
         }
 
@@ -55,16 +55,16 @@ public class QuestInfoSlot : MonoBehaviour {
                 break;
 
             case Quest.questType.kill:
-                progressSlider.maxValue = q.killRef.howManyToKill;
-                progressSlider.value = q.killRef.killCount;
+                progressSlider.maxValue = ((KillQuest)q).howManyToKill;
+                progressSlider.value = ((KillQuest)q).killCount;
 
-                progressText.text = q.killRef.killCount.ToString() + " of " + q.killRef.howManyToKill.ToString();
+                progressText.text = ((KillQuest)q).killCount.ToString() + " of " + ((KillQuest)q).howManyToKill.ToString();
 
                 if(q.isCompleted())
                     progressText.text = "Completed";
                 break;
 
-            case Quest.questType.equipmentPickup:
+            case Quest.questType.pickup:
                 progressSlider.maxValue = 1.0f;
 
                 if(!q.isCompleted()) {

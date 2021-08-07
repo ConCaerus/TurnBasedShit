@@ -247,11 +247,9 @@ public class MapTrailRenderer : MonoBehaviour {
         bool snapped = false;
 
         //  checks for map locations
-        for(int i = 0; i < MapLocationHolder.getLocationCount(); i++) {
-            var loc = MapLocationHolder.getMapLocation(i);
-
-            if(Vector2.Distance(movingAnchor.transform.position, loc.pos) < snappingDist * 2.0f) {
-                movingAnchor.transform.position = loc.pos;
+        foreach(var i in MapLocationHolder.getLocations()) {
+            if(Vector2.Distance(movingAnchor.transform.position, i.pos) < snappingDist * 2.0f) {
+                movingAnchor.transform.position = i.pos;
                 snapped = true;
                 break;
             }

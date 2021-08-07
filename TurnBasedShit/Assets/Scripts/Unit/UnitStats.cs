@@ -10,6 +10,7 @@ public class UnitStats {
     public float u_exp = 0.0f;
     public int u_level = 0;
 
+    public int u_headSpriteIndex = 0, u_faceSpriteIndex = 0, u_bodySpriteIndex = 0;
     public Color u_color = Color.white;
 
     [SerializeField] float u_baseMaxHealth;
@@ -109,6 +110,11 @@ public class UnitStats {
     }
     public void addSpeed(float s) {
         u_speed += s;
+    }
+    public void addHealth(float h) {
+        u_health += h;
+        if(u_health > getModifiedMaxHealth())
+            u_health = getModifiedMaxHealth();
     }
 
     //  Attack amount

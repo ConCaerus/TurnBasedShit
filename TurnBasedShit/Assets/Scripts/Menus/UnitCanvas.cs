@@ -9,6 +9,7 @@ public class UnitCanvas : MonoBehaviour {
     public TextMeshProUGUI nameText, powerText, defenceText, speedText, critText, firstTraitText, secondTraitText, levelText;
     public Slider healthSlider, expSlider;
     public Image unitImage, weaponImage, armorImage, itemImage;
+    public Button leaderButton;
 
     public float equippmentTransitionTime = 0.15f;
     public float timeBtwTransition = 0.05f;
@@ -16,11 +17,35 @@ public class UnitCanvas : MonoBehaviour {
     public UnitStats shownUnit;
 
     public Color worthlessColor, commonColor, uncommonColor, unusualColor, rareColor, legendaryColor, mythicalColor;
+    public Color leaderColor, nonLeaderColor;
+
+    public Slider rSlider, gSlider, bSlider;
+
+
+    List<GameObject> traits = new List<GameObject>();
 
 
     private void Start() {
         shownUnit = Party.getMemberStats(0);
         updateUnitWindow();
+    }
+
+    private void LateUpdate() {
+        if(rSlider.value != shownUnit.u_color.r) {
+            shownUnit.u_color = new Color(rSlider.value, shownUnit.u_color.g, shownUnit.u_color.b);
+            Party.overrideUnit(shownUnit);
+            updateUnitWindow();
+        }
+        if(gSlider.value != shownUnit.u_color.g) {
+            shownUnit.u_color = new Color(shownUnit.u_color.r, gSlider.value, shownUnit.u_color.b);
+            Party.overrideUnit(shownUnit);
+            updateUnitWindow();
+        }
+        if(bSlider.value != shownUnit.u_color.b) {
+            shownUnit.u_color = new Color(shownUnit.u_color.r, shownUnit.u_color.g, bSlider.value);
+            Party.overrideUnit(shownUnit);
+            updateUnitWindow();
+        }
     }
 
 
@@ -32,9 +57,18 @@ public class UnitCanvas : MonoBehaviour {
         expSlider.maxValue = shownUnit.u_expCap;
         expSlider.value = shownUnit.u_exp;
 
+        rSlider.value = shownUnit.u_color.r;
+        gSlider.value = shownUnit.u_color.g;
+        bSlider.value = shownUnit.u_color.b;
+
         weaponImage.transform.parent.GetChild(0).GetComponent<Image>().color = getRarityColor(shownUnit.equippedWeapon.w_rarity);
         armorImage.transform.parent.GetChild(0).GetComponent<Image>().color = getRarityColor(shownUnit.equippedArmor.a_rarity);
         itemImage.transform.parent.GetChild(0).GetComponent<Image>().color = getRarityColor(shownUnit.equippedItem.i_rarity);
+
+        if(shownUnit.u_order == Party.getLeaderID())
+            leaderButton.GetComponent<Image>().color = leaderColor;
+        else
+            leaderButton.GetComponent<Image>().color = nonLeaderColor;
 
         //  stats
         powerText.text = shownUnit.u_power.ToString("0.0");
@@ -42,7 +76,12 @@ public class UnitCanvas : MonoBehaviour {
         speedText.text = shownUnit.u_speed.ToString("0.0");
         critText.text = shownUnit.u_critChance.ToString("0.00");
 
+
         //  traits
+        foreach(var i in traits)
+            Destroy(i.gameObject);
+        traits.Clear();
+
         int traitCount = shownUnit.u_traits.Count;
         firstTraitText.text = "";
         secondTraitText.text = "";
@@ -66,6 +105,7 @@ public class UnitCanvas : MonoBehaviour {
                         var t = Instantiate(firstTraitText, firstTraitText.transform.parent);
                         t.transform.position = prevPos - new Vector2(0.0f, buffer);
                         t.text = shownUnit.u_traits[i].t_name;
+                        traits.Add(t.gameObject);
 
 
                         prevPos = t.transform.position;
@@ -158,6 +198,10 @@ public class UnitCanvas : MonoBehaviour {
             index = Party.getMemberCount() - 1;
 
         shownUnit = Party.getMemberStats(index);
+        updateUnitWindow();
+    }
+    public void setLeader() {
+        Party.setLeader(shownUnit);
         updateUnitWindow();
     }
 }

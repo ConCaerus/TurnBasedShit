@@ -45,8 +45,11 @@ public class MapEventsHandler : MonoBehaviour {
     }
 
     public void triggerAnchorEvents(Vector2 partyPos) {
-        for(int i = 0; i < MapLocationHolder.getLocationCount(); i++) {
-            var loc = MapLocationHolder.getMapLocation(i);
+
+        //  enemy events
+        //  boss
+        for(int i = 0; i < MapLocationHolder.getBossCount(); i++) {
+            var loc = MapLocationHolder.getBossLocation(i);
 
             //  Party is over a map location
             if(partyPos == loc.pos) {
@@ -54,6 +57,7 @@ public class MapEventsHandler : MonoBehaviour {
                 return;
             }
         }
+
 
         //  if the code gets here, the party is not over a map location and the code runs combat chance
         chanceEncounter(FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(partyPos.x));

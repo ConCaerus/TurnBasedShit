@@ -25,8 +25,15 @@ public class BossLocation : MapLocation {
 
     public override void enterLocation() {
         GameInfo.setCombatDetails(combatLocation);
-        GameInfo.setCurrentMapLocation(MapLocationHolder.getIndex((BossLocation)this));
+        GameInfo.setCurrentLocationAsBoss(this);
         MapLocationHolder.removeLocation(this);
         SceneManager.LoadScene("Combat");
+    }
+
+    public override bool isEqualTo(MapLocation other) {
+        if(other.type != locationType.boss)
+            return false;
+
+        return bossUnit == ((BossLocation)other).bossUnit && pos == other.pos;
     }
 }

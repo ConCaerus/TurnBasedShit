@@ -4,6 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 
 public abstract class UnitClass : MonoBehaviour {
+    [SerializeField] AudioClip hitSound, dieSound;
     public GameObject attackingTarget = null;
     public ParticleSystem bloodParticles;
 
@@ -18,6 +19,8 @@ public abstract class UnitClass : MonoBehaviour {
     public float tempPower = 0.0f;
     public float tempDefence = 0.0f;
     public float tempSpeed = 0.0f;
+
+    public float spotOffset = 0.0f;
 
     [SerializeField] WeaponPreset weapon = null;
     [SerializeField] ArmorPreset armor = null;
@@ -117,7 +120,7 @@ public abstract class UnitClass : MonoBehaviour {
 
         //  Flair
         attackAnim = StartCoroutine(attackingAnim(defender.transform.position));
-        FindObjectOfType<AudioManager>().playHitSound();
+        FindObjectOfType<AudioManager>().playSound(hitSound);
     }
     public void defend(GameObject attacker, float dmg) {
         //  triggers
@@ -172,14 +175,14 @@ public abstract class UnitClass : MonoBehaviour {
             FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterKill, this, false);
 
             //  increases acc quest counter
-            for(int i = 0; i < ActiveQuests.getQuestTypeCount(typeof(KillQuest)); i++) {
+            for(int i = 0; i < ActiveQuests.getQuestTypeCount(Quest.questType.kill); i++) {
                 if(ActiveQuests.getKillQuest(i).enemyType == GetComponent<EnemyUnitInstance>().enemyType)
                     ActiveQuests.getKillQuest(i).howManyToKill++;
             }
         }
 
         //  flair
-        FindObjectOfType<AudioManager>().playDieSound();
+        FindObjectOfType<AudioManager>().playSound(dieSound);
 
         //  removes unit from game world
         FindObjectOfType<TurnOrderSorter>().removeUnitFromList(gameObject);
@@ -279,7 +282,7 @@ public abstract class UnitClass : MonoBehaviour {
 
     public void setNewRandomName() {
         if(isPlayerUnit)
-            stats.u_name = NameLibrary.getRandomPlayerName();
+            stats.u_name = NameLibrary.getRandomUsablePlayerName();
         name = stats.u_name;
     }
 
@@ -292,7 +295,7 @@ public abstract class UnitClass : MonoBehaviour {
 
         if(u_sprite.defendingSprite != null) {
             gameObject.GetComponent<SpriteRenderer>().sprite = u_sprite.defendingSprite;
-            GetComponentInChildren<ShadowObject>().updateSprite(u_sprite.defendingSprite);
+            GetComponentInChildren<ShadowObject>().updateSprite();
         }
 
         yield return new WaitForSeconds(0.1f);
@@ -303,7 +306,7 @@ public abstract class UnitClass : MonoBehaviour {
 
         transform.DOScale(normalSize, 0.15f);
         gameObject.GetComponent<SpriteRenderer>().sprite = u_sprite.sprite;
-        GetComponentInChildren<ShadowObject>().updateSprite(u_sprite.sprite);
+        GetComponentInChildren<ShadowObject>().updateSprite();
     }
     IEnumerator attackingAnim(Vector3 targetPos) {
         if(defendAnim != null) {
@@ -318,7 +321,7 @@ public abstract class UnitClass : MonoBehaviour {
             GetComponent<Animator>().SetInteger("state", 1);
         if(u_sprite.attackingSprite != null) {
             gameObject.GetComponent<SpriteRenderer>().sprite = u_sprite.attackingSprite;
-            GetComponentInChildren<ShadowObject>().updateSprite(u_sprite.attackingSprite);
+            GetComponentInChildren<ShadowObject>().updateSprite();
         }
 
         if(u_sprite.attackAnim != null && !u_sprite.attackAnim.empty)
@@ -334,7 +337,7 @@ public abstract class UnitClass : MonoBehaviour {
             gameObject.GetComponent<SpriteRenderer>().sprite = u_sprite.sprite;
 
         foreach(var i in GetComponentsInChildren<ShadowObject>()) {
-            i.updateSprite(i.transform.parent.GetComponent<SpriteRenderer>().sprite);
+            i.updateSprite();
         }
     }
 

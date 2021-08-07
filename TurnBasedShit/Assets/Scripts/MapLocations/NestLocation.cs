@@ -16,8 +16,15 @@ public class NestLocation : MapLocation {
 
     public override void enterLocation() {
         GameInfo.setCombatDetails(combatLocation);
-        GameInfo.setCurrentMapLocation(MapLocationHolder.getIndex((NestLocation)this));
+        GameInfo.setCurrentLocationAsNest(this);
         MapLocationHolder.removeLocation(this);
         SceneManager.LoadScene("Combat");
+    }
+
+    public override bool isEqualTo(MapLocation other) {
+        if(other.type != locationType.nest)
+            return false;
+
+        return pos == other.pos;
     }
 }

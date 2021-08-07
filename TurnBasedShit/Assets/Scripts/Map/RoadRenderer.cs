@@ -287,13 +287,12 @@ public class RoadRenderer : MonoBehaviour {
         }
 
         //  snapping to map location
-        for(int i = 0; i < MapLocationHolder.getLocationCount(); i++) {
-            if(Vector2.Distance(MapLocationHolder.getMapLocation(i).pos, target) < snappingDist) {
-                target = MapLocationHolder.getMapLocation(i).pos;
+        foreach(var i in MapLocationHolder.getLocations()) {
+            if(Vector2.Distance(i.pos, target) < snappingDist) {
+                target = i.pos;
                 break;
             }
         }
-
 
         customPoint.transform.position = target;
         var points = RoadCreator.calcRoadPoints(customPointReferencePoint, target, false);
@@ -471,7 +470,7 @@ public class RoadRenderer : MonoBehaviour {
             //  decide what happens at this location
             GameInfo.setCurrentRegionDiff(FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(partyPoint.x));
             FindObjectOfType<MapEventsHandler>().triggerAnchorEvents(partyPoint);
-            FindObjectOfType<MapEventsHandler>().chanceEncounter(GameInfo.getDiffRegion());
+            FindObjectOfType<MapEventsHandler>().chanceEncounter(GameInfo.getCurrentDiff());
 
             while(hitEnd && Input.GetKey(KeyCode.Space))
                 yield return new WaitForEndOfFrame();

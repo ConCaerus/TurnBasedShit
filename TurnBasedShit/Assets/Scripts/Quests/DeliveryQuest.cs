@@ -19,7 +19,6 @@ public class DeliveryQuest : Quest {
 
 
     public DeliveryQuest(Town t, List<Weapon> w) {
-        t.deliveryLocation = true;
         deliveryLocation = t;
 
         foreach(var i in w)
@@ -27,10 +26,8 @@ public class DeliveryQuest : Quest {
 
         type = deliveryType.weapon;
         q_type = questType.delivery;
-        delRef = this;
     }
     public DeliveryQuest(Town t, List<Armor> a) {
-        t.deliveryLocation = true;
         deliveryLocation = t;
 
         foreach(var i in a)
@@ -38,10 +35,8 @@ public class DeliveryQuest : Quest {
 
         type = deliveryType.armor;
         q_type = questType.delivery;
-        delRef = this;
     }
     public DeliveryQuest(Town t, List<Consumable> c) {
-        t.deliveryLocation = true;
         deliveryLocation = t;
 
         foreach(var i in c)
@@ -49,10 +44,8 @@ public class DeliveryQuest : Quest {
 
         type = deliveryType.consumable;
         q_type = questType.delivery;
-        delRef = this;
     }
     public DeliveryQuest(Town t, List<Item> it) {
-        t.deliveryLocation = true;
         deliveryLocation = t;
 
         foreach(var i in it)
@@ -60,10 +53,8 @@ public class DeliveryQuest : Quest {
 
         type = deliveryType.item;
         q_type = questType.delivery;
-        delRef = this;
     }
     public DeliveryQuest(Town t, List<UnitStats> u) {
-        t.deliveryLocation = true;
         deliveryLocation = t;
 
         foreach(var i in u)
@@ -71,11 +62,13 @@ public class DeliveryQuest : Quest {
 
         type = deliveryType.weapon;
         q_type = questType.delivery;
-        delRef = this;
     }
 
 
-    public override void questInit() {
+    public override void questInit(bool setInstanceID) {
+        if(setInstanceID)
+            q_instanceID = GameInfo.getNextQuestInstanceID();
+
         foreach(var i in weaponsToDeliver)
             Inventory.addWeapon(i);
         foreach(var i in armorToDeliver)

@@ -35,7 +35,7 @@ public class PartyObject : MonoBehaviour {
 
             //  sets pos
             int randIndex = Random.Range(0, unusedSpawnPoses.Count);
-            obj.transform.position = unusedSpawnPoses[randIndex].transform.position;
+            obj.transform.position = unusedSpawnPoses[randIndex].transform.position + new Vector3(0.0f, obj.GetComponent<UnitClass>().spotOffset, 0.0f);
             unusedSpawnPoses.RemoveAt(randIndex);
 
             Party.overrideUnit(obj.GetComponent<UnitClass>().stats);

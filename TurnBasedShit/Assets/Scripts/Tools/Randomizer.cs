@@ -197,4 +197,46 @@ public static class Randomizer {
         }
         return cl;
     }
+
+    public static HospitalBuilding randomizeBuilding(HospitalBuilding hos) {
+        var temp = new HospitalBuilding();
+        temp.setEqualTo(hos);
+        temp.freeHeals = Random.Range(0, 4);
+
+        switch(GameInfo.getCurrentDiff()) {
+            case GameInfo.diffLvl.Cake:
+            case GameInfo.diffLvl.Easy:
+                temp.pricePerHeal = Random.Range(1, 6);
+                break;
+
+            case GameInfo.diffLvl.Normal:
+            case GameInfo.diffLvl.Inter:
+                temp.pricePerHeal = Random.Range(5, 11);
+                break;
+
+            case GameInfo.diffLvl.Hard:
+            case GameInfo.diffLvl.Heroic:
+                temp.pricePerHeal = Random.Range(10, 16);
+                break;
+
+            case GameInfo.diffLvl.Legendary:
+                temp.pricePerHeal = Random.Range(10, 31);
+                break;
+        }
+
+        return temp;
+    }
+    public static ChurchBuilding randomizeBuilding(ChurchBuilding ch) {
+        var temp = new ChurchBuilding();
+        temp.setEqualTo(ch);
+        return temp;
+    }
+    public static ShopBuilding randomizeBuilding(ShopBuilding shop) {
+        var temp = new ShopBuilding();
+        temp.setEqualTo(shop);
+        temp.sellReduction = Random.Range(0.0f, 0.15f);
+        temp.priceMod = Random.Range(-0.2f, 0.2f);
+
+        return temp;
+    }
 }

@@ -9,7 +9,7 @@ public class UpgradeLocation : MapLocation {
 
 
     public UpgradeLocation(Vector2 p, int st) {
-        type = locationType.equipmentUpgrade;
+        type = locationType.upgrade;
         pos = p;
         state = st;
     }
@@ -17,8 +17,15 @@ public class UpgradeLocation : MapLocation {
 
     public override void enterLocation() {
         GameInfo.resetCombatDetails();
-        GameInfo.setCurrentMapLocation(MapLocationHolder.getIndex((UpgradeLocation)this));
+        GameInfo.setCurrentLocationAsUpgrade(this);
         MapLocationHolder.removeLocation(this);
         SceneManager.LoadScene("UpgradeLocation");
+    }
+
+    public override bool isEqualTo(MapLocation other) {
+        if(other.type != locationType.upgrade)
+            return false;
+
+        return state == ((UpgradeLocation)other).state && other.pos == pos;
     }
 }

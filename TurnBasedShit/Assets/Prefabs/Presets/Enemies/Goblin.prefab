@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4928908462783942173}
   - component: {fileID: 8583052276569672617}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: Scars (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5691989060058346979}
   - component: {fileID: 2154557499838914339}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: Scars
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +174,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1495669691717590613}
   - component: {fileID: 6103047983341933572}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: Scars (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -259,7 +259,7 @@ GameObject:
   - component: {fileID: 6037864551336239612}
   - component: {fileID: 6037864551336239613}
   - component: {fileID: 6037864551336239584}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: Goblin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -275,7 +275,7 @@ Transform:
   m_GameObject: {fileID: 6037864551336239585}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.75, y: 1.96, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.35, y: 0.35, z: 1}
   m_Children:
   - {fileID: 441997862946484395}
   - {fileID: 5691989060058346979}
@@ -321,8 +321,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 921474463
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: e8844692a6a439a478a40e82c230f438, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -401,6 +401,9 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: e8844692a6a439a478a40e82c230f438, type: 3}
     attackingSprite: {fileID: 21300000, guid: 89f6687fc09728440bf60647921fe997, type: 3}
     defendingSprite: {fileID: 0}
+    idleAnim: {fileID: 0}
+    attackAnim: {fileID: 0}
+    anim: {fileID: 0}
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   isPlayerUnit: 0
   defending: 0
@@ -409,6 +412,7 @@ MonoBehaviour:
   tempPower: 0
   tempDefence: 0
   tempSpeed: 0
+  spotOffset: 0.682
   weapon: {fileID: 0}
   armor: {fileID: 0}
   stats:
@@ -492,6 +496,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2843839479351521455, guid: 2c757f62bb898be40b3d00e373049010,
         type: 3}
+      propertyPath: m_Layer
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2843839479351521455, guid: 2c757f62bb898be40b3d00e373049010,
+        type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -501,6 +510,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: e8844692a6a439a478a40e82c230f438,
         type: 3}
+    - target: {fileID: 3838951662555235325, guid: 2c757f62bb898be40b3d00e373049010,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3838951662555235325, guid: 2c757f62bb898be40b3d00e373049010,
+        type: 3}
+      propertyPath: m_SortingLayerID
+      value: 921474463
+      objectReference: {fileID: 0}
     - target: {fileID: 7452276450506034967, guid: 2c757f62bb898be40b3d00e373049010,
         type: 3}
       propertyPath: m_RootOrder

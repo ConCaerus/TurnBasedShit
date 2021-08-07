@@ -10,20 +10,6 @@ public class CombatEnvironmentSpawner : MonoBehaviour {
     List<GameObject> instantiatedObjs = new List<GameObject>();
 
 
-    public void replaceCurrentObjs() {
-        foreach(var i in FindObjectsOfType<CombatEnvironment>()) {
-            var holder = new GameObject(i.name);
-            holder.transform.position = i.transform.position;
-            i.transform.position = Vector3.zero;
-            i.transform.SetParent(holder.transform);
-
-            //  if the obj is placed inside the battlefield
-            if(Mathf.Abs(holder.transform.position.x) < battleFeildX || Mathf.Abs(holder.transform.position.y) < battleFeildY)
-                holder.transform.localScale /= 2.0f;
-
-            instantiatedObjs.Add(holder);
-        }
-    }
 
     public void spawnEnivronmentObjects() {
         foreach(var i in instantiatedObjs)

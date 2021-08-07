@@ -26,8 +26,8 @@ public class UpgradeCanvas : MonoBehaviour {
     GameObject selectedSlot = null;
 
     private void Start() {
-        if(GameInfo.getCurrentMapLocation() != null && GameInfo.getCurrentMapLocation().type == MapLocation.locationType.equipmentUpgrade)
-            state = GameInfo.getCurrentMapLocationAsUpgrade().state;
+        if(GameInfo.getCurrentLocationAsUpgrade() != null)
+            state = GameInfo.getCurrentLocationAsUpgrade().state;
 
         setUpgradeStats();
 

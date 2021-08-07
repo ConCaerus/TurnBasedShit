@@ -9,6 +9,11 @@ public class PresetLibrary : MonoBehaviour {
     [SerializeField] GameObject[] bosses;
     [SerializeField] UnitTraitPreset[] unitTraits;
 
+    //  unit customs
+    [SerializeField] Sprite[] unitHeads;
+    [SerializeField] Sprite[] unitFaces;
+    [SerializeField] Sprite[] unitBodies;
+
     [SerializeField] CombatScarSpriteHolder[] combatScars;
 
     //  Equipment
@@ -18,6 +23,7 @@ public class PresetLibrary : MonoBehaviour {
     [SerializeField] ItemPreset[] items;
 
     //  Map
+    [SerializeField] GameObject townMember;
     [SerializeField] GameObject[] buildings;
     [SerializeField] Sprite weaponUpgradeIcon, armorUpgradeIcon, nestIcon, townIcon;
 
@@ -25,7 +31,7 @@ public class PresetLibrary : MonoBehaviour {
     //  Units
     public GameObject getPlayerUnit() {
         var temp = playerUnit;
-        temp.GetComponent<UnitClass>().stats.u_name = NameLibrary.getRandomPlayerName();
+        temp.GetComponent<UnitClass>().stats.u_name = NameLibrary.getRandomUsablePlayerName();
         return temp;
     }
     public GameObject getEnemy(string name) {
@@ -125,6 +131,27 @@ public class PresetLibrary : MonoBehaviour {
     }
     public UnitTrait getRandomUnitTrait() {
         return unitTraits[Random.Range(0, unitTraits.Length)].preset;
+    }
+
+
+    //  unit customs
+    public Sprite getUnitHead(int index) {
+        return unitHeads[index];
+    }
+    public Sprite getUnitFace(int index) {
+        return unitFaces[index];
+    }
+    public Sprite getUnitBody(int index) {
+        return unitBodies[index];
+    }
+    public Sprite[] getUnitHeads() {
+        return unitHeads;
+    }
+    public Sprite[] getUnitFaces() {
+        return unitFaces;
+    }
+    public Sprite[] getUnitBodies() {
+        return unitBodies;
     }
 
     //  Equipment
@@ -295,22 +322,34 @@ public class PresetLibrary : MonoBehaviour {
 
     //  Map
     public Town createRandomTown(GameInfo.diffLvl diff) {
-        var town = new Town(Random.Range(3, 9), diff, this);
-        town.shopPriceMod = Random.Range(-0.1f, 0.1f);
-        town.shopSellReduction = Random.Range(0.0f, 0.15f);
+        var town = new Town(diff, this, true);
 
         return town;
     }
+    public TownMember createRandomTownMember(bool autoHasQuest = false) {
+        return new TownMember(this, true, autoHasQuest);
+    }
+    public GameObject getTownMember(bool autoHasQuest = false) {
+        var member = townMember;
+        member.GetComponentInChildren<TownMemberInstance>().reference.setEqualsTo(createRandomTownMember(), true);
+        return member;
+    }
 
-    public Building getBuilding(Building.type t) {
+    public GameObject getBuilding(Building.type t) {
         foreach(var i in buildings) {
-            if(i.GetComponent<Building>().b_type == t)
-                return i.GetComponent<Building>();
+            if(t == Building.type.Hospital && i.GetComponent<HospitalInstance>() != null)
+                return i.gameObject;
+
+            if(t == Building.type.Church && i.GetComponent<ChurchInstance>() != null)
+                return i.gameObject;
+
+            if(t == Building.type.Shop && i.GetComponent<ShopInstance>() != null)
+                return i.gameObject;
         }
         return null;
     }
-    public Building getRandomBuilding() {
-        return buildings[Random.Range(0, buildings.Length)].GetComponent<BuildingInstance>().building;
+    public GameObject getRandomBuilding() {
+        return buildings[Random.Range(0, buildings.Length)].gameObject;
     }
 
     //  special locations
@@ -341,15 +380,15 @@ public class PresetLibrary : MonoBehaviour {
         return new BossLocation(Map.getRandPos(), boss, boss.GetComponent<BossUnitInstance>().enemyDiff, this);
     }
     public PickupLocation createRandomPickupLocation() {
-        int type = Random.Range(0, 5);
+        int type = Random.Range(0, 4);
         if(type == 0)
-            return new PickupLocation(Map.getRandPos(), getRandomWeapon(), this, GameInfo.getDiffRegion());
+            return new PickupLocation(Map.getRandPos(), getRandomWeapon(), this, GameInfo.getCurrentDiff());
         if(type == 1)
-            return new PickupLocation(Map.getRandPos(), getRandomArmor(), this, GameInfo.getDiffRegion());
+            return new PickupLocation(Map.getRandPos(), getRandomArmor(), this, GameInfo.getCurrentDiff());
         if(type == 2)
-            return new PickupLocation(Map.getRandPos(), getRandomConsumable(), Random.Range(1, 16), this, GameInfo.getDiffRegion());
+            return new PickupLocation(Map.getRandPos(), getRandomConsumable(), Random.Range(1, 16), this, GameInfo.getCurrentDiff());
         if(type == 3)
-            return new PickupLocation(Map.getRandPos(), getRandomItem(), this, GameInfo.getDiffRegion());
+            return new PickupLocation(Map.getRandPos(), getRandomItem(), this, GameInfo.getCurrentDiff());
         return null;
     }
 
@@ -361,13 +400,13 @@ public class PresetLibrary : MonoBehaviour {
         }
 
         //  for debugging shit
-        type = Quest.questType.equipmentPickup;
+        type = Quest.questType.bossFight;
 
         switch(type) {
             case Quest.questType.bossFight:
                 return new BossFightQuest(createRandomBossLocation());
 
-            case Quest.questType.equipmentPickup:
+            case Quest.questType.pickup:
                 return new PickupQuest(createRandomPickupLocation());
 
             case Quest.questType.kill:
@@ -375,10 +414,10 @@ public class PresetLibrary : MonoBehaviour {
 
             case Quest.questType.delivery:
                 //  get a random town
-                int townInd = Random.Range(0, TownLibrary.getTownCount());
-                if(FindObjectOfType<TownInstance>() != null) {
-                    while(townInd == FindObjectOfType<TownInstance>().town.t_index)
-                        townInd = Random.Range(0, TownLibrary.getTownCount());
+                int townInd = Random.Range(0, MapLocationHolder.getTownCount());
+                if(GameInfo.getCurrentLocationAsTown() != null) {
+                    while(MapLocationHolder.getTownLocation(townInd).isEqualTo(GameInfo.getCurrentLocationAsTown()))
+                        townInd = Random.Range(0, MapLocationHolder.getTownCount());
                 }
 
                 //  create delivery objecs
@@ -388,14 +427,14 @@ public class PresetLibrary : MonoBehaviour {
                     for(int i = 0; i < Random.Range(1, 4); i++)
                         things.Add(getRandomWeapon());
 
-                    return new DeliveryQuest(TownLibrary.getTown(townInd), things);
+                    return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd).town, things);
                 }
                 if(rand == 1) {
                     var things = new List<Armor>();
                     for(int i = 0; i < Random.Range(1, 4); i++)
                         things.Add(getRandomArmor());
 
-                    return new DeliveryQuest(TownLibrary.getTown(townInd), things);
+                    return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd).town, things);
                 }
                 if(rand == 2) {
                     var things = new List<Consumable>();
@@ -403,21 +442,21 @@ public class PresetLibrary : MonoBehaviour {
                     for(int i = 0; i < Random.Range(1, 26); i++)
                         things.Add(con);
 
-                    return new DeliveryQuest(TownLibrary.getTown(townInd), things);
+                    return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd).town, things);
                 }
                 if(rand == 3) {
                     var things = new List<Item>();
                     for(int i = 0; i < Random.Range(0, 4); i++)
                         things.Add(getRandomItem());
 
-                    return new DeliveryQuest(TownLibrary.getTown(townInd), things);
+                    return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd).town, things);
                 }
                 if(rand == 4) {
                     var things = new List<UnitStats>();
                     for(int i = 0; i < Random.Range(1, 3); i++)
                         things.Add(getPlayerUnit().GetComponent<UnitClass>().stats);
 
-                    return new DeliveryQuest(TownLibrary.getTown(townInd), things);
+                    return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd).town, things);
                 }
                 break;
         }
@@ -479,7 +518,7 @@ public class PresetLibrary : MonoBehaviour {
             case MapLocation.locationType.town:
                 return getTownLocationSprite();
 
-            case MapLocation.locationType.equipmentUpgrade:
+            case MapLocation.locationType.upgrade:
                 return getUpgradeLocationSprite((UpgradeLocation)loc);
 
             case MapLocation.locationType.nest:
@@ -488,7 +527,7 @@ public class PresetLibrary : MonoBehaviour {
             case MapLocation.locationType.boss:
                 return getBossFightLocationSprite((BossLocation)loc);
 
-            case MapLocation.locationType.equipmentPickup:
+            case MapLocation.locationType.pickup:
                 return getPickupLocationSprite((PickupLocation)loc);
 
             case MapLocation.locationType.rescue:

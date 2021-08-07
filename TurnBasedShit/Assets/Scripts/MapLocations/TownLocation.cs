@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 public class TownLocation : MapLocation {
     public Town town;
 
-
     public TownLocation(Vector2 p, GameInfo.diffLvl diff, PresetLibrary lib, Town t = null) {
         type = locationType.town;
         pos = p;
@@ -17,12 +16,19 @@ public class TownLocation : MapLocation {
             t = lib.createRandomTown(diff);
         }
 
-        town = TownLibrary.addNewTownAndSetIndex(t);
+        town = t;
     }
 
     public override void enterLocation() {
         GameInfo.resetCombatDetails();
-        GameInfo.setCurrentMapLocation(MapLocationHolder.getIndex(this));
+        GameInfo.setCurrentLocationAsTown(this);
         SceneManager.LoadScene("Town");
+    }
+
+    public override bool isEqualTo(MapLocation other) {
+        if(other.type != locationType.town)
+            return false;
+
+        return town.isEqualTo(((TownLocation)other).town);
     }
 }

@@ -12,17 +12,12 @@ public abstract class Quest {
 
     //  when adding new quests, remember to increase the value in the presetLibrary for getting a random quest
     public enum questType {
-        bossFight, equipmentPickup, delivery, kill
+        bossFight, pickup, delivery, kill
     }
 
     bool q_completed = false;
 
     public questType q_type;
-    public KillQuest killRef = null;
-    public BossFightQuest bossRef = null;
-    public DeliveryQuest delRef = null;
-    public PickupQuest pickupRef = null;
-
 
     public int coinReward = 0;
     public List<Weapon> weaponReward = new List<Weapon>();
@@ -31,10 +26,12 @@ public abstract class Quest {
     public List<Item> itemReward = new List<Item>();
     public List<UnitStats> unitReward = new List<UnitStats>();
 
+    public int q_instanceID = -1;
+
 
     //  runs for shit like if the player gets a special item before the quest starts
     protected bool initialized = false;
-    public abstract void questInit();
+    public abstract void questInit(bool setInstanceID);
     public abstract void questDestory();
 
 
@@ -53,13 +50,18 @@ public abstract class Quest {
             Party.addNewUnit(i);
     }
 
-    public bool isCompleted() {
-        if(q_type == questType.kill)
-            q_completed = killRef.killCount >= killRef.howManyToKill;
 
-        return q_completed;
+    public bool isEqualTo(Quest q) {
+        if(q == null || q_instanceID == -1)
+            return false;
+        return q_instanceID == q.q_instanceID;
     }
+
     public void setCompleted(bool b) {
         q_completed = b;
+    }
+
+    public bool isCompleted() {
+        return q_completed;
     }
 }

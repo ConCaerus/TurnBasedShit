@@ -13,18 +13,26 @@ public class PickupQuest : Quest {
 
     public PickupQuest(PickupLocation pickup) {
         location = pickup;
-        q_type = questType.equipmentPickup;
-        pickupRef = this;
+        q_type = questType.pickup;
 
-        pickupWeapon = pickup.pickupWeapon;
-        pickupArmor = pickup.pickupArmor;
-        pickupConsumable = pickup.pickupConsumable;
-        pickupItem = pickup.pickupItem;
+        if(pickup == null)
+            return;
+
+        if(pickup.pickupWeapon != null && !pickup.pickupWeapon.isEmpty())
+            pickupWeapon.setEqualTo(pickup.pickupWeapon, true);
+        if(pickupArmor != null && !pickup.pickupArmor.isEmpty())
+            pickupArmor.setEqualTo(pickup.pickupArmor, true);
+        if(pickup.pickupConsumable != null && !pickup.pickupConsumable.isEmpty())
+            pickupConsumable.setEqualTo(pickup.pickupConsumable, true);
+        if(pickup.pickupItem != null && !pickup.pickupItem.isEmpty())
+            pickupItem.setEqualTo(pickup.pickupItem, true);
     }
 
-    public override void questInit() {
+    public override void questInit(bool setInstanceID) {
         initialized = true;
-        MapLocationHolder.saveNewLocation(location);
+        if(setInstanceID)
+            q_instanceID = GameInfo.getNextQuestInstanceID();
+        MapLocationHolder.addLocation(location);
     }
     public override void questDestory() {
         if(initialized)

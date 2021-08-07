@@ -108,7 +108,7 @@ public static class Inventory {
         List<Weapon> temp = new List<Weapon>();
         for(int i = 0; i < getTypeCount(typeof(Weapon)); i++) {
             Weapon invWeapon = getWeapon(i);
-            if(invWeapon != null && !invWeapon.isEqualTo(w))
+            if(invWeapon != null && !invWeapon.isEmpty() && !invWeapon.isEqualTo(w))
                 temp.Add(invWeapon);
         }
 
@@ -120,7 +120,7 @@ public static class Inventory {
         List<Armor> temp = new List<Armor>();
         for(int i = 0; i < getTypeCount(typeof(Armor)); i++) {
             Armor invArmor = getArmor(i);
-            if(invArmor != null && !invArmor.isEqualTo(a))
+            if(invArmor != null && !invArmor.isEmpty() && !invArmor.isEqualTo(a))
                 temp.Add(invArmor);
         }
 
@@ -132,7 +132,7 @@ public static class Inventory {
         List<Consumable> temp = new List<Consumable>();
         for(int i = 0; i < getTypeCount(typeof(Consumable)); i++) {
             Consumable invCons = getConsumable(i);
-            if(invCons != null && !invCons.isEqualTo(c))
+            if(invCons != null && !invCons.isEmpty() && !invCons.isEqualTo(c))
                 temp.Add(invCons);
         }
 
@@ -144,7 +144,7 @@ public static class Inventory {
         List<Item> temp = new List<Item>();
         for(int i = 0; i < getTypeCount(typeof(Item)); i++) {
             Item invItem = getItem(i);
-            if(invItem != null && !invItem.isEqualTo(it))
+            if(invItem != null && !invItem.isEmpty() && !invItem.isEqualTo(it))
                 temp.Add(invItem);
         }
 
@@ -203,18 +203,26 @@ public static class Inventory {
 
     public static Weapon getWeapon(int i) {
         var data = SaveData.getString(objectTag(i, typeof(Weapon)));
+        if(string.IsNullOrEmpty(data))
+            return null;
         return JsonUtility.FromJson<Weapon>(data);
     }
     public static Armor getArmor(int i) {
         var data = SaveData.getString(objectTag(i, typeof(Armor)));
+        if(string.IsNullOrEmpty(data))
+            return null;
         return JsonUtility.FromJson<Armor>(data);
     }
     public static Consumable getConsumable(int i) {
         var data = SaveData.getString(objectTag(i, typeof(Consumable)));
+        if(string.IsNullOrEmpty(data))
+            return null;
         return JsonUtility.FromJson<Consumable>(data);
     }
     public static Item getItem(int i) {
         var data = SaveData.getString(objectTag(i, typeof(Item)));
+        if(string.IsNullOrEmpty(data))
+            return null;
         return JsonUtility.FromJson<Item>(data);
     }
 

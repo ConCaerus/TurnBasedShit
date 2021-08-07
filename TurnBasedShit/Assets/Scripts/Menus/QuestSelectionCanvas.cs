@@ -57,7 +57,13 @@ public class QuestSelectionCanvas : MonoBehaviour {
                 List<Weapon> things = new List<Weapon>() {
                     FindObjectOfType<PresetLibrary>().getRandomWeapon()
                 };
-                var temp = new DeliveryQuest(TownLibrary.getTown(FindObjectOfType<TownInstance>().town.t_index + 1), things);
+                var towns = MapLocationHolder.getLocations(new List<MapLocation.locationType>() { MapLocation.locationType.town });
+                var useableTowns = new List<TownLocation>();
+                foreach(var t in towns) {
+                    if(!t.isEqualTo(GameInfo.getCurrentLocationAsTown()))
+                        useableTowns.Add((TownLocation)t);
+                }
+                var temp = new DeliveryQuest(useableTowns[Random.Range(0, useableTowns.Count)].town, things);
                 quests.Add(temp);
             }
         }
@@ -86,24 +92,21 @@ public class QuestSelectionCanvas : MonoBehaviour {
             menu.deleteSlotAtIndex(menu.getSelectedSlotIndex());
             switch(qu.q_type) {
                 case Quest.questType.kill:
-                    qu.questInit();
-                    ActiveQuests.addQuest(qu.killRef);
-                    Debug.Log(qu.q_type);
+                    //  handled in the ActiveQuests thing
+                    qu.questInit(false);
+                    ActiveQuests.addQuest((KillQuest)qu);
                     break;
                 case Quest.questType.bossFight:
-                    qu.questInit();
-                    ActiveQuests.addQuest(qu.bossRef);
-                    Debug.Log(qu.q_type);
+                    qu.questInit(false);
+                    ActiveQuests.addQuest((BossFightQuest)qu);
                     break;
                 case Quest.questType.delivery:
-                    qu.questInit();
-                    ActiveQuests.addQuest(qu.delRef);
-                    Debug.Log(qu.q_type);
+                    qu.questInit(false);
+                    ActiveQuests.addQuest((DeliveryQuest)qu);
                     break;
-                case Quest.questType.equipmentPickup:
-                    qu.questInit();
-                    ActiveQuests.addQuest(qu.pickupRef);
-                    Debug.Log(qu.q_type);
+                case Quest.questType.pickup:
+                    qu.questInit(false);
+                    ActiveQuests.addQuest((PickupQuest)qu);
                     break;
             }
 

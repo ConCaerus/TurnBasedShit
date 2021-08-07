@@ -3,52 +3,107 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class MapLocationHolder {
-    static string locationTag(int i) { return "MapLocation" + i.ToString(); }
-    static string locationCountTag() { return "MapLocationCount"; }
+    static string townTag(int i) { return "TownLocation" + i.ToString(); }
+    static string pickupTag(int i) { return "PickupLocation" + i.ToString(); }
+    static string upgradeTag(int i) { return "UpgradeLocation" + i.ToString(); }
+    static string rescueTag(int i) { return "RescueLocation" + i.ToString(); }
+    static string nestTag(int i) { return "NestLocation" + i.ToString(); }
+    static string bossTag(int i) { return "BossLocation" + i.ToString(); }
+
+    static string townCountTag = "TownLocationCount";
+    static string pickupCountTag = "PickupLocationCount";
+    static string upgradeCountTag = "UpgradeLocationCount";
+    static string rescueCountTag = "RescueLocationCount";
+    static string nestCountTag = "NestLocationCount";
+    static string bossCountTag = "BossLocationCount";
 
 
     public static void clearSaveData() {
-        for(int i = 0; i < SaveData.getInt(locationCountTag()); i++) {
-            SaveData.deleteKey(locationTag(i));
+        clearTownLocations();
+        clearPickupLocations();
+        clearUpgradeLocations();
+        clearRescueLocations();
+        clearNestLocations();
+        clearBossLocations();
+    }
+    public static void clearTownLocations() {
+        for(int i = 0; i < getTownCount() + 10; i++) {
+            SaveData.deleteKey(townTag(i));
         }
-        SaveData.deleteKey(locationCountTag());
+
+        SaveData.deleteKey(townCountTag);
+    }
+    public static void clearPickupLocations() {
+        for(int i = 0; i < getPickupCount() + 10; i++) {
+            SaveData.deleteKey(pickupTag(i));
+        }
+
+        SaveData.deleteKey(pickupCountTag);
+    }
+    public static void clearUpgradeLocations() {
+        for(int i = 0; i < getUpgradeCount() + 10; i++) {
+            SaveData.deleteKey(upgradeTag(i));
+        }
+
+        SaveData.deleteKey(upgradeCountTag);
+    }
+    public static void clearRescueLocations() {
+        for(int i = 0; i < getRescueCount() + 10; i++) {
+            SaveData.deleteKey(rescueTag(i));
+        }
+
+        SaveData.deleteKey(rescueCountTag);
+    }
+    public static void clearNestLocations() {
+        for(int i = 0; i < getNestCount() + 10; i++) {
+            SaveData.deleteKey(nestTag(i));
+        }
+
+        SaveData.deleteKey(nestCountTag);
+    }
+    public static void clearBossLocations() {
+        for(int i = 0; i < getBossCount() + 10; i++) {
+            SaveData.deleteKey(bossTag(i));
+        }
+
+        SaveData.deleteKey(bossCountTag);
     }
 
-    public static void saveNewLocation(TownLocation loc) {
+    public static void addLocation(TownLocation loc) {
         var data = JsonUtility.ToJson(loc);
-        SaveData.setString(locationTag(getLocationCount()), data);
+        SaveData.setString(townTag(getTownCount()), data);
 
-        SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) + 1);
+        SaveData.setInt(townCountTag, getTownCount() + 1);
     }
-    public static void saveNewLocation(PickupLocation loc) {
+    public static void addLocation(PickupLocation loc) {
         var data = JsonUtility.ToJson(loc);
-        SaveData.setString(locationTag(getLocationCount()), data);
+        SaveData.setString(pickupTag(getPickupCount()), data);
 
-        SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) + 1);
+        SaveData.setInt(pickupCountTag, getPickupCount() + 1);
     }
-    public static void saveNewLocation(UpgradeLocation loc) {
+    public static void addLocation(UpgradeLocation loc) {
         var data = JsonUtility.ToJson(loc);
-        SaveData.setString(locationTag(getLocationCount()), data);
+        SaveData.setString(upgradeTag(getUpgradeCount()), data);
 
-        SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) + 1);
+        SaveData.setInt(upgradeCountTag, getUpgradeCount() + 1);
     }
-    public static void saveNewLocation(RescueLocation loc) {
+    public static void addLocation(RescueLocation loc) {
         var data = JsonUtility.ToJson(loc);
-        SaveData.setString(locationTag(getLocationCount()), data);
+        SaveData.setString(rescueTag(getRescueCount()), data);
 
-        SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) + 1);
+        SaveData.setInt(rescueCountTag, getRescueCount() + 1);
     }
-    public static void saveNewLocation(NestLocation loc) {
+    public static void addLocation(NestLocation loc) {
         var data = JsonUtility.ToJson(loc);
-        SaveData.setString(locationTag(getLocationCount()), data);
+        SaveData.setString(nestTag(getNestCount()), data);
 
-        SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) + 1);
+        SaveData.setInt(nestCountTag, getNestCount() + 1);
     }
-    public static void saveNewLocation(BossLocation loc) {
+    public static void addLocation(BossLocation loc) {
         var data = JsonUtility.ToJson(loc);
-        SaveData.setString(locationTag(getLocationCount()), data);
+        SaveData.setString(bossTag(getBossCount()), data);
 
-        SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) + 1);
+        SaveData.setInt(bossCountTag, getBossCount() + 1);
     }
 
     public static void removeLocation(MapLocation loc) {
@@ -56,346 +111,259 @@ public static class MapLocationHolder {
             case MapLocation.locationType.town:
                 removeTownLocation((TownLocation)loc);
                 break;
-            case MapLocation.locationType.equipmentPickup:
+            case MapLocation.locationType.pickup:
                 removePickupLocation((PickupLocation)loc);
                 break;
-            case MapLocation.locationType.equipmentUpgrade:
+            case MapLocation.locationType.upgrade:
                 removeUpgradeLocation((UpgradeLocation)loc);
+                break;
+            case MapLocation.locationType.rescue:
+                removeRescueLocation((RescueLocation)loc);
+                break;
+            case MapLocation.locationType.nest:
+                removeNestLocation((NestLocation)loc);
+                break;
+            case MapLocation.locationType.boss:
+                removeBossLocation((BossLocation)loc);
                 break;
         }
     }
     public static void removeTownLocation(TownLocation loc) {
-        int index = 0;
-        bool shrinkCount = false;
-
-        for(int i = 0; i < SaveData.getInt(locationCountTag()); i++) {
-            var data = SaveData.getString(locationTag(i));
-            var temp = JsonUtility.FromJson<TownLocation>(data);
-
-            //  remove this location
-            if(temp.equals(loc)) {
-                shrinkCount = true;
-            }
-
-            //  else set new order for the unit
-            else {
-                data = JsonUtility.ToJson(temp);
-                SaveData.setString(locationTag(index), data);
-                index++;
-            }
+        List<TownLocation> temp = new List<TownLocation>();
+        for(int i = 0; i < getTownCount(); i++) {
+            TownLocation t = getTownLocation(i);
+            if(t != null && !t.isEqualTo(loc))
+                temp.Add(t);
         }
-        if(shrinkCount) {
-            SaveData.deleteKey(locationTag(getLocationCount() - 1));
-            SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) - 1);
-        }
+
+        clearTownLocations();
+        foreach(var i in temp)
+            addLocation(i);
     }
     public static void removePickupLocation(PickupLocation loc) {
-        int index = 0;
-        bool shrinkCount = false;
-
-        for(int i = 0; i < SaveData.getInt(locationCountTag()); i++) {
-            var data = SaveData.getString(locationTag(i));
-            var temp = JsonUtility.FromJson<PickupLocation>(data);
-
-            //  remove this location
-            if(temp.equals(loc)) {
-                shrinkCount = true;
-            }
-
-            //  else set new order for the unit
-            else {
-                data = JsonUtility.ToJson(temp);
-                SaveData.setString(locationTag(index), data);
-                index++;
-            }
+        List<PickupLocation> temp = new List<PickupLocation>();
+        for(int i = 0; i < getPickupCount(); i++) {
+            PickupLocation p = getPickupLocation(i);
+            if(p != null && !p.isEqualTo(loc))
+                temp.Add(p);
         }
-        if(shrinkCount) {
-            SaveData.deleteKey(locationTag(getLocationCount() - 1));
-            SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) - 1);
-        }
+
+        clearPickupLocations();
+        foreach(var i in temp)
+            addLocation(i);
     }
     public static void removeUpgradeLocation(UpgradeLocation loc) {
-        int index = 0;
-        bool shrinkCount = false;
-
-        for(int i = 0; i < SaveData.getInt(locationCountTag()); i++) {
-            var data = SaveData.getString(locationTag(i));
-            var temp = JsonUtility.FromJson<UpgradeLocation>(data);
-
-            //  remove this location
-            if(temp.equals(loc)) {
-                shrinkCount = true;
-            }
-
-            //  else set new order for the unit
-            else {
-                data = JsonUtility.ToJson(temp);
-                SaveData.setString(locationTag(index), data);
-                index++;
-            }
+        List<UpgradeLocation> temp = new List<UpgradeLocation>();
+        for(int i = 0; i < getUpgradeCount(); i++) {
+            UpgradeLocation u = getUpgradeLocation(i);
+            if(u != null && !u.isEqualTo(loc))
+                temp.Add(u);
         }
-        if(shrinkCount) {
-            SaveData.deleteKey(locationTag(getLocationCount() - 1));
-            SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) - 1);
-        }
+
+        clearUpgradeLocations();
+        foreach(var i in temp)
+            addLocation(i);
     }
     public static void removeRescueLocation(RescueLocation loc) {
-        int index = 0;
-        bool shrinkCount = false;
-
-        for(int i = 0; i < SaveData.getInt(locationCountTag()); i++) {
-            var data = SaveData.getString(locationTag(i));
-            var temp = JsonUtility.FromJson<RescueLocation>(data);
-
-            //  remove this location
-            if(temp.equals(loc)) {
-                shrinkCount = true;
-            }
-
-            //  else set new order for the unit
-            else {
-                data = JsonUtility.ToJson(temp);
-                SaveData.setString(locationTag(index), data);
-                index++;
-            }
+        List<RescueLocation> temp = new List<RescueLocation>();
+        for(int i = 0; i < getRescueCount(); i++) {
+            RescueLocation r = getRescueLocation(i);
+            if(r != null && !r.isEqualTo(loc))
+                temp.Add(r);
         }
-        if(shrinkCount) {
-            SaveData.deleteKey(locationTag(getLocationCount() - 1));
-            SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) - 1);
-        }
+
+        clearRescueLocations();
+        foreach(var i in temp)
+            addLocation(i);
     }
     public static void removeNestLocation(NestLocation loc) {
-        int index = 0;
-        bool shrinkCount = false;
-
-        for(int i = 0; i < SaveData.getInt(locationCountTag()); i++) {
-            var data = SaveData.getString(locationTag(i));
-            var temp = JsonUtility.FromJson<NestLocation>(data);
-
-            //  remove this location
-            if(temp.equals(loc)) {
-                shrinkCount = true;
-            }
-
-            //  else set new order for the unit
-            else {
-                data = JsonUtility.ToJson(temp);
-                SaveData.setString(locationTag(index), data);
-                index++;
-            }
+        List<NestLocation> temp = new List<NestLocation>();
+        for(int i = 0; i < getNestCount(); i++) {
+            NestLocation n = getNestLocation(i);
+            if(n != null && !n.isEqualTo(loc))
+                temp.Add(n);
         }
-        if(shrinkCount) {
-            SaveData.deleteKey(locationTag(getLocationCount() - 1));
-            SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) - 1);
-        }
+
+        clearNestLocations();
+        foreach(var i in temp)
+            addLocation(i);
     }
     public static void removeBossLocation(BossLocation loc) {
-        int index = 0;
-        bool shrinkCount = false;
-
-        for(int i = 0; i < SaveData.getInt(locationCountTag()); i++) {
-            var data = SaveData.getString(locationTag(i));
-            var temp = JsonUtility.FromJson<BossLocation>(data);
-
-            //  remove this location
-            if(temp.equals(loc)) {
-                shrinkCount = true;
-            }
-
-            //  else set new order for the unit
-            else {
-                data = JsonUtility.ToJson(temp);
-                SaveData.setString(locationTag(index), data);
-                index++;
-            }
+        List<BossLocation> temp = new List<BossLocation>();
+        for(int i = 0; i < getBossCount(); i++) {
+            BossLocation b = getBossLocation(i);
+            if(b != null && !b.isEqualTo(loc))
+                temp.Add(b);
         }
-        if(shrinkCount) {
-            SaveData.deleteKey(locationTag(getLocationCount() - 1));
-            SaveData.setInt(locationCountTag(), SaveData.getInt(locationCountTag()) - 1);
-        }
+
+        clearBossLocations();
+        foreach(var i in temp)
+            addLocation(i);
     }
 
 
-    public static int getLocationCount() {
-        return SaveData.getInt(locationCountTag());
-    }
     public static int getTownCount() {
-        int count = 0;
-
-        for(int i = 0; i < getLocationCount(); i++) {
-            var data = SaveData.getString(locationTag(i));
-            if(JsonUtility.FromJson<TownLocation>(data).type == MapLocation.locationType.town)
-                count++;
-        }
-        return count;
+        return SaveData.getInt(townCountTag);
     }
     public static int getPickupCount() {
-        int count = 0;
-
-        for(int i = 0; i < getLocationCount(); i++) {
-            var data = SaveData.getString(locationTag(i));
-            if(JsonUtility.FromJson<PickupLocation>(data).type == MapLocation.locationType.equipmentPickup)
-                count++;
-        }
-        return count;
+        return SaveData.getInt(pickupCountTag);
     }
     public static int getUpgradeCount() {
-        int count = 0;
-
-        for(int i = 0; i < getLocationCount(); i++) {
-            var data = SaveData.getString(locationTag(i));
-            if(JsonUtility.FromJson<UpgradeLocation>(data).type == MapLocation.locationType.equipmentUpgrade)
-                count++;
-        }
-        return count;
+        return SaveData.getInt(upgradeCountTag);
     }
     public static int getRescueCount() {
-        int count = 0;
-
-        for(int i = 0; i < getLocationCount(); i++) {
-            var data = SaveData.getString(locationTag(i));
-            if(JsonUtility.FromJson<RescueLocation>(data).type == MapLocation.locationType.rescue)
-                count++;
-        }
-        return count;
+        return SaveData.getInt(rescueCountTag);
     }
     public static int getNestCount() {
-        int count = 0;
-
-        for(int i = 0; i < getLocationCount(); i++) {
-            var data = SaveData.getString(locationTag(i));
-            if(JsonUtility.FromJson<NestLocation>(data).type == MapLocation.locationType.nest)
-                count++;
-        }
-        return count;
+        return SaveData.getInt(nestCountTag);
     }
     public static int getBossCount() {
-        int count = 0;
-
-        for(int i = 0; i < getLocationCount(); i++) {
-            var data = SaveData.getString(locationTag(i));
-            if(JsonUtility.FromJson<BossLocation>(data).type == MapLocation.locationType.boss)
-                count++;
-        }
-        return count;
+        return SaveData.getInt(bossCountTag);
     }
 
-    public static MapLocation.locationType getLocationTypeForMapLocation(int index) {
-        var loc = getMapLocation(index);
-        return loc.type;
-    }
-    public static MapLocation getMapLocation(int index) {
-        if(getTownLocation(index) != null)
-            return getTownLocation(index);
-        if(getPickupLocation(index) != null)
-            return getPickupLocation(index);
-        if(getUpgradeLocation(index) != null)
-            return getUpgradeLocation(index);
-        if(getRescueLocation(index) != null)
-            return getRescueLocation(index);
-        if(getNestLocation(index) != null)
-            return getNestLocation(index);
-        if(getBossLocation(index) != null)
-            return getBossLocation(index);
-        return null;
-    }
     public static TownLocation getTownLocation(int index) {
-        var data = SaveData.getString(locationTag(index));
+        var data = SaveData.getString(townTag(index));
         var temp = JsonUtility.FromJson<TownLocation>(data);
 
-        if(temp != null && temp.type == MapLocation.locationType.town)
+        if(temp != null)
             return temp;
         return null;
     }
     public static PickupLocation getPickupLocation(int index) {
-        var data = SaveData.getString(locationTag(index));
+        var data = SaveData.getString(pickupTag(index));
         var temp = JsonUtility.FromJson<PickupLocation>(data);
 
-        if(temp != null && temp.type == MapLocation.locationType.equipmentPickup)
+        if(temp != null)
             return temp;
         return null;
     }
     public static UpgradeLocation getUpgradeLocation(int index) {
-        var data = SaveData.getString(locationTag(index));
+        var data = SaveData.getString(upgradeTag(index));
         var temp = JsonUtility.FromJson<UpgradeLocation>(data);
 
-        if(temp != null && temp.type == MapLocation.locationType.equipmentUpgrade)
+        if(temp != null)
             return temp;
         return null;
     }
     public static RescueLocation getRescueLocation(int index) {
-        var data = SaveData.getString(locationTag(index));
+        var data = SaveData.getString(rescueTag(index));
         var temp = JsonUtility.FromJson<RescueLocation>(data);
 
-        if(temp != null && temp.type == MapLocation.locationType.rescue)
+        if(temp != null)
             return temp;
         return null;
     }
     public static NestLocation getNestLocation(int index) {
-        var data = SaveData.getString(locationTag(index));
+        var data = SaveData.getString(nestTag(index));
         var temp = JsonUtility.FromJson<NestLocation>(data);
 
-        if(temp != null && temp.type == MapLocation.locationType.nest)
+        if(temp != null)
             return temp;
         return null;
     }
     public static BossLocation getBossLocation(int index) {
-        var data = SaveData.getString(locationTag(index));
+        var data = SaveData.getString(bossTag(index));
         var temp = JsonUtility.FromJson<BossLocation>(data);
 
-        if(temp != null && temp.type == MapLocation.locationType.boss)
+        if(temp != null)
             return temp;
         return null;
     }
 
 
-    public static int getIndex(MapLocation loc) {
-        for(int i = 0; i < getLocationCount(); i++) {
-            if(getMapLocation(i) == loc)
-                return i;
-        }
-        return -1;
-    }
     public static int getIndex(TownLocation loc) {
-        for(int i = 0; i < getLocationCount(); i++) {
-            if(getMapLocation(i) == loc)
+        for(int i = 0; i < getTownCount(); i++) {
+            if(getTownLocation(i).isEqualTo(loc))
                 return i;
         }
         return -1;
     }
     public static int getIndex(PickupLocation loc) {
-        for(int i = 0; i < getLocationCount(); i++) {
-            if(getMapLocation(i) == loc)
+        for(int i = 0; i < getPickupCount(); i++) {
+            if(getPickupLocation(i).isEqualTo(loc))
                 return i;
         }
         return -1;
     }
     public static int getIndex(UpgradeLocation loc) {
-        for(int i = 0; i < getLocationCount(); i++) {
-            if(getMapLocation(i) == loc)
+        for(int i = 0; i < getUpgradeCount(); i++) {
+            if(getUpgradeLocation(i).isEqualTo(loc))
                 return i;
         }
         return -1;
     }
     public static int getIndex(RescueLocation loc) {
-        for(int i = 0; i < getLocationCount(); i++) {
-            if(getMapLocation(i) == loc)
+        for(int i = 0; i < getRescueCount(); i++) {
+            if(getRescueLocation(i).isEqualTo(loc))
                 return i;
         }
         return -1;
     }
     public static int getIndex(NestLocation loc) {
-        for(int i = 0; i < getLocationCount(); i++) {
-            if(getMapLocation(i) == loc)
+        for(int i = 0; i < getNestCount(); i++) {
+            if(getNestLocation(i).isEqualTo(loc))
                 return i;
         }
         return -1;
     }
     public static int getIndex(BossLocation loc) {
-        for(int i = 0; i < getLocationCount(); i++) {
-            if(getMapLocation(i) == loc)
+        for(int i = 0; i < getBossCount(); i++) {
+            if(getBossLocation(i).isEqualTo(loc))
                 return i;
         }
         return -1;
+    }
+
+    public static List<MapLocation> getLocations(List<MapLocation.locationType> includes = null) {
+        if(includes == null) {
+            includes = new List<MapLocation.locationType>() { 
+                MapLocation.locationType.town, MapLocation.locationType.pickup, 
+                MapLocation.locationType.upgrade, MapLocation.locationType.rescue, 
+                MapLocation.locationType.nest, MapLocation.locationType.boss 
+            };
+        }
+        var temp = new List<MapLocation>();
+        
+        for(int i = 0; i < includes.Count; i++) {
+            switch(includes[i]) {
+                case MapLocation.locationType.town:
+                    for(int t = 0; t < getTownCount(); t++) {
+                        temp.Add(getTownLocation(t));
+                    }
+                    break;
+
+                case MapLocation.locationType.pickup:
+                    for(int p = 0; p < getPickupCount(); p++) {
+                        temp.Add(getPickupLocation(p));
+                    }
+                    break;
+
+                case MapLocation.locationType.upgrade:
+                    for(int u = 0; u < getUpgradeCount(); u++) {
+                        temp.Add(getUpgradeLocation(u));
+                    }
+                    break;
+
+                case MapLocation.locationType.rescue:
+                    for(int r = 0; r < getRescueCount(); r++) {
+                        temp.Add(getRescueLocation(r));
+                    }
+                    break;
+
+                case MapLocation.locationType.nest:
+                    for(int n = 0; n < getNestCount(); n++) {
+                        temp.Add(getNestLocation(n));
+                    }
+                    break;
+
+                case MapLocation.locationType.boss:
+                    for(int b = 0; b < getBossCount(); b++) {
+                        temp.Add(getBossLocation(b));
+                    }
+                    break;
+            }
+        }
+
+        return temp;
     }
 }

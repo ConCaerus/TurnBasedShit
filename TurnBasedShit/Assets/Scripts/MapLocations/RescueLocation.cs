@@ -29,8 +29,15 @@ public class RescueLocation : MapLocation {
 
     public override void enterLocation() {
         GameInfo.setCombatDetails(combatLocation);
-        GameInfo.setCurrentMapLocation(MapLocationHolder.getIndex((RescueLocation)this));
+        GameInfo.setCurrentLocationAsRescue(this);
         MapLocationHolder.removeLocation(this);
         SceneManager.LoadScene("Combat");
+    }
+
+    public override bool isEqualTo(MapLocation other) {
+        if(other.type != locationType.rescue)
+            return false;
+
+        return unit == ((RescueLocation)other).unit && pos == other.pos;
     }
 }

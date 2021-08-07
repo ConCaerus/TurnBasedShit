@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3953769566449601919}
   - component: {fileID: 3953769566449601912}
-  - component: {fileID: 3953769566449601913}
   - component: {fileID: 3953769566449601918}
+  - component: {fileID: 6854156815284823016}
   m_Layer: 0
   m_Name: Church
   m_TagString: Untagged
@@ -26,9 +26,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3953769566449601916}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4, y: 3, z: 0}
-  m_LocalScale: {x: 0.75, y: 0.75, z: 1}
+  m_LocalScale: {x: 11.012613, y: 11.375013, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -72,9 +72,9 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: cfa2d5d0e322ee445a0b7cf00ce60ded, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_SortingOrder: 5
+  m_Sprite: {fileID: 21300000, guid: a7abed76ca04a1a49b911b0b0fcc4fae, type: 3}
+  m_Color: {r: 0.6289308, g: 1, b: 0.99621516, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -84,28 +84,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &3953769566449601913
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3953769566449601916}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b28a75cca8335584bb89ad55d8817b7d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  building:
-    b_type: 4
-    isOnlyOne: 1
-    canBeInteractedWith: 1
-    needsSetup: 0
-    b_sprite:
-      sprite: {fileID: 21300000, guid: cfa2d5d0e322ee445a0b7cf00ce60ded, type: 3}
-      sInfo: 
-    b_storyBeginnings: []
-  isMouseOver: 0
 --- !u!61 &3953769566449601918
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -123,7 +101,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.82, y: 3.06}
+    oldSize: {x: 0.5, y: 0.5}
     newSize: {x: 0.5, y: 0.5}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -132,3 +110,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.5, y: 0.5}
   m_EdgeRadius: 0
+--- !u!114 &6854156815284823016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3953769566449601916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f2fa92cda9c88142bd16e7e4d9e457c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  b_type: 2
+  reference:
+    orderInTown: 0
+    b_type: 2
