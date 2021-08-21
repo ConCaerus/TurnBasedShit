@@ -19,7 +19,7 @@ public class RescueLocation : MapLocation {
         pos = p;
         type = locationType.rescue;
 
-        var stats = Randomizer.createRandomUnitStats(false);
+        var stats = lib.createRandomPlayerUnitStats();
 
         combatLocation = lib.createCombatLocation(diff);
         combatLocation.rescuedUnits.Add(stats);

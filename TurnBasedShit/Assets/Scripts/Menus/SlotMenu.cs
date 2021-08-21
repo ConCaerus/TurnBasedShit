@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 
 public class SlotMenu : MonoBehaviour {
@@ -9,66 +10,27 @@ public class SlotMenu : MonoBehaviour {
     float slotBuffer = 10.0f;
     float scrollSpeed = 35.0f;
 
+    float scrollPos = 0.0f;
+
     List<GameObject> slots = new List<GameObject>();
     int selectedSlotIndex = -1;
 
 
+
+
+    //  update func
+    //  returns true when a change in the selected slot could have occured
     public bool run() {
         scrollThoughList();
-        if(getMousedOverSlot() != null && Input.GetMouseButtonDown(0)) {
+        if(Input.GetMouseButtonDown(0)) {
             for(int i = 0; i < slots.Count; i++) {
-                if(getMousedOverSlot() == slots[i]) {
+                if(slots[i].gameObject == EventSystem.current.currentSelectedGameObject) {
                     selectedSlotIndex = i;
-                    break;
                 }
             }
             return true;
         }
         return false;
-    }
-
-
-    public GameObject getMousedOverSlot() {
-        //  return if their are no active slots
-        if(slots.Count == 0) {
-            return null;
-        }
-
-        Ray ray;
-        RaycastHit2D hit;
-
-        List<Collider2D> unwantedHits = new List<Collider2D>();
-
-        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
-
-        //  return if the ray did not hit anything
-        if(hit.collider == null)
-            return null;
-
-        while(true) {
-            //  if the hit is hitting an inventory slot
-            foreach(var i in slots) {
-                if(hit.collider == i.GetComponent<Collider2D>()) {
-                    foreach(var u in unwantedHits)
-                        u.enabled = true;
-                    return i.gameObject;
-                }
-            }
-
-            //  hit is not a wanted object
-            hit.collider.enabled = false;
-            unwantedHits.Add(hit.collider);
-
-            hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
-
-            //  hit has run out of hit objects
-            if(hit.collider == null) {
-                foreach(var i in unwantedHits)
-                    i.enabled = true;
-                return null;
-            }
-        }
     }
 
     public int getSelectedSlotIndex() {
@@ -80,12 +42,16 @@ public class SlotMenu : MonoBehaviour {
         return slots[selectedSlotIndex];
     }
 
-    public GameObject createNewSlot(int index, GameObject slotPreset, Transform holder, Color spriteColor) {
-        GameObject obj = Instantiate(slotPreset, holder);
+    public GameObject createNewSlot(int index, GameObject slotPreset, Transform holder, Color slotColor) {
+        GameObject obj;
+        if(index >= slots.Count)
+            obj = Instantiate(slotPreset, holder);
+        else
+            obj = slots[index];
 
         //  position and scale
         float step = slotPreset.GetComponent<RectTransform>().rect.height + slotBuffer;
-        obj.transform.localPosition = new Vector3(0.0f, slotTopY - (step * index), 0.0f);
+        obj.transform.localPosition = new Vector3(0.0f, slotTopY - (step * index) + scrollPos, 0.0f);
         obj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 
         //  width and height
@@ -94,26 +60,102 @@ public class SlotMenu : MonoBehaviour {
         obj.GetComponent<BoxCollider2D>().size = new Vector2(x, y);
 
         //  text and images
-        obj.transform.GetChild(1).GetComponent<Image>().color = spriteColor;
+        obj.GetComponent<Image>().color = slotColor;
 
-        slots.Add(obj);
+        if(index >= slots.Count)
+            slots.Add(obj);
+
         return obj;
     }
 
+
+    public List<GameObject> createANumberOfSlots(int num, GameObject slotPreset, Transform holder, Color slotColor) {
+        var temp = new List<GameObject>();
+
+        //  delete unusable slots
+        for(int i = 0; i < slots.Count; i++) {
+            if(i >= num) {
+                temp.Add(slots[i]);
+                continue;
+            }
+            if(slots[i].transform.childCount != slotPreset.transform.childCount) {
+                temp.Add(slots[i]);
+            }
+        }
+        foreach(var i in temp) {
+            slots.Remove(i.gameObject);
+            Destroy(i.gameObject);
+        }
+        temp = new List<GameObject>();
+
+        for(int i = 0; i < num; i++) {
+            temp.Add(createNewSlot(i, slotPreset, holder, slotColor));
+        }
+
+        return temp;
+    }
+
     public void deleteSlotAtIndex(int index) {
+        //  destorys slot
         GameObject sl = slots[index];
         slots.RemoveAt(index);
         Destroy(sl.gameObject);
+
+        //  reposition existing slots
+        if(slots.Count == 0)
+            return;
+        float step = slots[0].GetComponent<RectTransform>().rect.height + slotBuffer;
+        for(int i = 0; i < slots.Count; i++) {
+            slots[i].transform.localPosition = new Vector3(0.0f, slotTopY - (step * i) + scrollPos, 0.0f);
+        }
+
+        clampScroll();
+    }
+    public void moveSlot(int slotIndex, int moveToIndex) {
+        if(slotIndex >= slots.Count || moveToIndex >= slots.Count || slotIndex == moveToIndex)
+            return;
+
+        var slot = slots[slotIndex];
+        slots.Insert(moveToIndex, slot);
+        slots.RemoveAt(slotIndex);
+    }
+    public GameObject replaceSlot(int index, GameObject slotPreset, Transform holder, Color slotColor) {
+        //  destroy old slot
+        Destroy(slots[index].gameObject);
+
+        var obj = Instantiate(slotPreset, holder);
+
+        //  position and scale
+        float step = slotPreset.GetComponent<RectTransform>().rect.height + slotBuffer;
+        obj.transform.localPosition = new Vector3(0.0f, slotTopY - (step * index) + scrollPos, 0.0f);
+        obj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+
+        //  width and height
+        var x = obj.GetComponent<RectTransform>().rect.width;
+        var y = obj.GetComponent<RectTransform>().rect.height;
+        obj.GetComponent<BoxCollider2D>().size = new Vector2(x, y);
+
+        //  text and images
+        obj.GetComponent<Image>().color = slotColor;
+
+        slots[index] = obj;
+        return obj;
+
     }
 
     public void scrollThoughList() {
         float scroll = Input.mouseScrollDelta.y;
 
-        if(scroll == 0)
+        if(scroll == 0 || slots.Count == 0)
             return;
-
         scrollSlots(-scroll * scrollSpeed);
 
+        clampScroll();
+    }
+
+    void clampScroll() {
+        if(slots.Count == 0)
+            return;
         //  Top bounds
         if(slots[0].transform.localPosition.y < slotTopY)
             scrollSlots(slotTopY - slots[0].transform.localPosition.y);
@@ -124,12 +166,13 @@ public class SlotMenu : MonoBehaviour {
     }
 
     void scrollSlots(float val) {
+        scrollPos = val;
         foreach(var i in slots) {
             i.transform.localPosition = new Vector3(0.0f, i.transform.localPosition.y + val, 0.0f);
         }
     }
 
-    public void clearSlots() {
+    public void destroySlots() {
         foreach(var i in slots)
             Destroy(i.gameObject);
         slots.Clear();

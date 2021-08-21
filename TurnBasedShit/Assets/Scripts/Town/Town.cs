@@ -11,6 +11,8 @@ public class Town {
     public int interactedBuildingIndex = -1;
     public int townMemberCount = 0;
 
+    public bool visited = false;
+
     //  Building Save Data
     string buildingTag(Building.type t) {
         return "Buildings In Town " + t_instanceID.ToString() + " " + t.ToString();
@@ -90,13 +92,43 @@ public class Town {
     public void addMembers(PresetLibrary lib) {
         clearMembers();
         for(int i = 0; i < townMemberCount; i++) {
-            var data = JsonUtility.ToJson(lib.createRandomTownMember());
+            var mem = lib.createRandomTownMember();
+            var data = JsonUtility.ToJson(mem);
             SaveData.setString(memberTag(i), data);
         }
     }
     public TownMember getMember(int index) {
         var data = SaveData.getString(memberTag(index));
         return JsonUtility.FromJson<TownMember>(data);
+    }
+    public List<TownMember> getMembersWithQuests() {
+        var temp = new List<TownMember>();
+        for(int i = 0; i < townMemberCount; i++) {
+            var mem = getMember(i);
+            if(mem.hasQuest)
+                temp.Add(mem);
+        }
+        return temp;
+    }
+    public List<TownMember> getMembersWithInactiveQuests() {
+        var temp = new List<TownMember>();
+
+        foreach(var i in getMembersWithQuests()) {
+            if(!i.isQuestActive())
+                temp.Add(i);
+        }
+
+        return temp;
+    }
+    public List<TownMember> getMembersWithActiveQuests() {
+        var temp = new List<TownMember>();
+
+        foreach(var i in getMembersWithQuests()) {
+            if(i.isQuestActive())
+                temp.Add(i);
+        }
+
+        return temp;
     }
 
     public bool hasBuilding(Building.type t) {
@@ -119,6 +151,7 @@ public class Town {
         if(giveID)
             t_instanceID = GameInfo.getNextTownInstanceID();
 
+        t_name = NameLibrary.getRandomUsableTownName();
 
         clearBuildings();
         int index = 0;

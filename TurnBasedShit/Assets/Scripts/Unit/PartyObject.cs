@@ -16,6 +16,8 @@ public class PartyObject : MonoBehaviour {
 
         for(int i = 0; i < Party.getMemberCount(); i++) {
             var obj = Instantiate(FindObjectOfType<PresetLibrary>().getPlayerUnit());
+            obj.GetComponent<UnitClass>().stats = FindObjectOfType<PresetLibrary>().createRandomPlayerUnitStats();
+
             if(Party.getMemberStats(i) == null || Party.getMemberStats(i).isEmpty()) {
                 obj.gameObject.GetComponent<UnitClass>().setEquipment();
                 Party.addUnitAtIndex(i, obj.gameObject.GetComponent<UnitClass>().stats);
@@ -31,7 +33,7 @@ public class PartyObject : MonoBehaviour {
 
 
             //  sets sprite
-            obj.GetComponent<SpriteRenderer>().color = Party.getMemberStats(i).u_color;
+            obj.GetComponentInChildren<UnitSpriteHandler>().setEverything(obj.GetComponent<UnitClass>().stats.u_sprite, obj.GetComponent<UnitClass>().stats.equippedWeapon, obj.GetComponent<UnitClass>().stats.equippedArmor);
 
             //  sets pos
             int randIndex = Random.Range(0, unusedSpawnPoses.Count);
@@ -146,9 +148,13 @@ public static class Party {
         SaveData.deleteKey(partyLeaderTag);
     }
 
-    public static void overrideUnit(UnitStats stats) {
+    public static void overrideUnit(UnitStats stats, PartyObject obj = null) {
         var data = JsonUtility.ToJson(stats);
         SaveData.setString(memberTag(stats.u_order), data);
+
+        //  overrides the stats on the existing obj
+        if(obj != null)
+            obj.getInstantiatedMember(stats).GetComponent<UnitClass>().stats = stats;
     }
     public static void overrideUnit(int i, UnitStats stats) {
         var data = JsonUtility.ToJson(stats);

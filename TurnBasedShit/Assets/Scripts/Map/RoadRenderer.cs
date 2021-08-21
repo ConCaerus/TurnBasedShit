@@ -37,9 +37,9 @@ public class RoadRenderer : MonoBehaviour {
         partyObject = Instantiate(partyObjectPreset, Vector2.zero, Quaternion.identity, transform);
         partyObject.transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
         if(Party.getLeaderID() != -1 && Party.getLeaderStats() != null)
-            partyObject.GetComponent<SpriteRenderer>().color = Party.getLeaderStats().u_color;
+            partyObject.GetComponent<SpriteRenderer>().color = Party.getLeaderStats().u_sprite.color;
         else
-            partyObject.GetComponent<SpriteRenderer>().color = Party.getMemberStats(0).u_color;
+            partyObject.GetComponent<SpriteRenderer>().color = Party.getMemberStats(0).u_sprite.color;
         StartCoroutine(FindObjectOfType<TransitionCanvas>().runAfterLoading(growPartyObj));
         loadAndRenderSavedPoints();
         foreach(var i in getAllRoadPoints()) {

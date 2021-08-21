@@ -10,9 +10,9 @@ public class PresetLibrary : MonoBehaviour {
     [SerializeField] UnitTraitPreset[] unitTraits;
 
     //  unit customs
-    [SerializeField] Sprite[] unitHeads;
+    [SerializeField] GameObject[] unitHeads;
     [SerializeField] Sprite[] unitFaces;
-    [SerializeField] Sprite[] unitBodies;
+    [SerializeField] GameObject[] unitBodies;
 
     [SerializeField] CombatScarSpriteHolder[] combatScars;
 
@@ -25,14 +25,20 @@ public class PresetLibrary : MonoBehaviour {
     //  Map
     [SerializeField] GameObject townMember;
     [SerializeField] GameObject[] buildings;
-    [SerializeField] Sprite weaponUpgradeIcon, armorUpgradeIcon, nestIcon, townIcon;
+    [SerializeField] Sprite weaponUpgradeIcon, armorUpgradeIcon, nestIcon, townIcon, rescueIcon, bossIcon;
 
 
     //  Units
+    public UnitStats createRandomPlayerUnitStats() {
+        var stats = new UnitStats(playerUnit.GetComponent<UnitClass>().stats);
+        stats = Randomizer.randomizePlayerUnitStats(stats, this);
+
+        stats.setBaseMaxHealth(100.0f);
+        stats.u_health = stats.getModifiedMaxHealth();
+        return stats;
+    }
     public GameObject getPlayerUnit() {
-        var temp = playerUnit;
-        temp.GetComponent<UnitClass>().stats.u_name = NameLibrary.getRandomUsablePlayerName();
-        return temp;
+        return playerUnit.gameObject;
     }
     public GameObject getEnemy(string name) {
         foreach(var i in enemies) {
@@ -50,27 +56,27 @@ public class PresetLibrary : MonoBehaviour {
             foreach(var i in enemies) {
                 //  same difficulty
                 if(i.GetComponent<EnemyUnitInstance>().enemyDiff == diff)
-                    useables.Add(i);
+                    useables.Add(i.gameObject);
 
                 //  higher difficulty
                 else if(i.GetComponent<EnemyUnitInstance>().enemyDiff == diff + 1) {
                     if(Random.Range(0, 101) <= 25)
-                        useables.Add(i);
+                        useables.Add(i.gameObject);
                 }
 
                 //  lower difficulty
                 else if(i.GetComponent<EnemyUnitInstance>().enemyDiff == diff - 1) {
                     if(Random.Range(0, 101) <= 25)
-                        useables.Add(i);
+                        useables.Add(i.gameObject);
                 }
             }
 
             if(useables.Count > 0)
-                enemy = useables[Random.Range(0, useables.Count)];
+                enemy = useables[Random.Range(0, useables.Count)].gameObject;
         }
         if(diff == (GameInfo.diffLvl)(-1) || enemy == null) {
             //  not useable enemies, return random enemy from all enemies
-            enemy = enemies[Random.Range(0, enemies.Length)];
+            enemy = enemies[Random.Range(0, enemies.Length)].gameObject;
         }
 
         //  makes it so this enemy's stats don't change the preset's stats
@@ -108,6 +114,7 @@ public class PresetLibrary : MonoBehaviour {
             boss = bosses[Random.Range(0, bosses.Length)];
         }
 
+        boss.GetComponent<UnitClass>().stats.u_name = NameLibrary.getRandomEnemyName();
         return boss;
     }
 
@@ -135,23 +142,39 @@ public class PresetLibrary : MonoBehaviour {
 
 
     //  unit customs
-    public Sprite getUnitHead(int index) {
+    public GameObject getUnitHead(int index) {
         return unitHeads[index];
     }
     public Sprite getUnitFace(int index) {
         return unitFaces[index];
     }
-    public Sprite getUnitBody(int index) {
+    public GameObject getUnitBody(int index) {
         return unitBodies[index];
     }
-    public Sprite[] getUnitHeads() {
-        return unitHeads;
+    public GameObject getUnitArm(int index) {
+        return getUnitBody(index).transform.GetChild(0).transform.GetChild(0).gameObject;
     }
-    public Sprite[] getUnitFaces() {
-        return unitFaces;
+    public GameObject getRandomUnitHead() {
+        return getUnitHead(Random.Range(0, unitHeads.Length));
     }
-    public Sprite[] getUnitBodies() {
-        return unitBodies;
+    public Sprite getRandomUnitFace() {
+        return getUnitFace(Random.Range(0, unitFaces.Length));
+    }
+    public GameObject getRandomUnitBody() {
+        return getUnitBody(Random.Range(0, unitBodies.Length));
+    }
+    public GameObject getRandomUnitArm() {
+        return getUnitArm(Random.Range(0, unitBodies.Length));
+    }
+
+    public int getHeadCount() {
+        return unitHeads.Length;
+    }
+    public int getFaceCount() {
+        return unitFaces.Length;
+    }
+    public int getBodyCount() {
+        return unitBodies.Length;
     }
 
     //  Equipment
@@ -321,17 +344,13 @@ public class PresetLibrary : MonoBehaviour {
     }
 
     //  Map
-    public Town createRandomTown(GameInfo.diffLvl diff) {
-        var town = new Town(diff, this, true);
-
-        return town;
-    }
     public TownMember createRandomTownMember(bool autoHasQuest = false) {
         return new TownMember(this, true, autoHasQuest);
     }
-    public GameObject getTownMember(bool autoHasQuest = false) {
+    public GameObject getTownMemberObj(bool createNewStats, bool autoHasQuest = false) {
         var member = townMember;
-        member.GetComponentInChildren<TownMemberInstance>().reference.setEqualsTo(createRandomTownMember(), true);
+        if(createNewStats)
+            member.GetComponentInChildren<TownMemberInstance>().reference.setEqualsTo(createRandomTownMember(), true);
         return member;
     }
 
@@ -383,96 +402,77 @@ public class PresetLibrary : MonoBehaviour {
         int type = Random.Range(0, 4);
         if(type == 0)
             return new PickupLocation(Map.getRandPos(), getRandomWeapon(), this, GameInfo.getCurrentDiff());
-        if(type == 1)
+        else if(type == 1)
             return new PickupLocation(Map.getRandPos(), getRandomArmor(), this, GameInfo.getCurrentDiff());
-        if(type == 2)
+        else if(type == 2)
             return new PickupLocation(Map.getRandPos(), getRandomConsumable(), Random.Range(1, 16), this, GameInfo.getCurrentDiff());
-        if(type == 3)
+        else
             return new PickupLocation(Map.getRandPos(), getRandomItem(), this, GameInfo.getCurrentDiff());
-        return null;
     }
 
 
-    public Quest createRandomQuest(Quest.questType type = (Quest.questType)(-1)) {
-        if(type == (Quest.questType)(-1)) {
-            //  change when adding new quests
-            type = (Quest.questType)Random.Range(0, 4);
+    public BossFightQuest createRandomBossFightQuest(bool setID) {
+        return new BossFightQuest(createRandomBossLocation(), setID);
+    }
+    public PickupQuest createRandomPickupQuest(bool setID) {
+        var pl = createRandomPickupLocation();
+        return new PickupQuest(pl, setID);
+    }
+    public KillQuest createRandomKillQuest(bool setID) {
+        return new KillQuest(Random.Range(5, 36), getRandomEnemy().GetComponent<EnemyUnitInstance>().enemyType, setID);   //  change this number too
+    }
+    public DeliveryQuest createRandomDeliveryQuest(bool setID) {
+        int townInd = 0;
+        //  no towns
+        if(MapLocationHolder.getTownCount() == 0) {
+            Vector2 pos = Map.getRandPos();
+            MapLocationHolder.addLocation(new TownLocation(pos, Map.getDiffForX(pos.x), this));
         }
-
-        //  for debugging shit
-        type = Quest.questType.bossFight;
-
-        switch(type) {
-            case Quest.questType.bossFight:
-                return new BossFightQuest(createRandomBossLocation());
-
-            case Quest.questType.pickup:
-                return new PickupQuest(createRandomPickupLocation());
-
-            case Quest.questType.kill:
-                return new KillQuest(Random.Range(5, 36), getRandomEnemy().GetComponent<EnemyUnitInstance>().enemyType);   //  change this number too
-
-            case Quest.questType.delivery:
-                //  get a random town
-                int townInd = Random.Range(0, MapLocationHolder.getTownCount());
-                if(GameInfo.getCurrentLocationAsTown() != null) {
-                    while(MapLocationHolder.getTownLocation(townInd).isEqualTo(GameInfo.getCurrentLocationAsTown()))
-                        townInd = Random.Range(0, MapLocationHolder.getTownCount());
-                }
-
-                //  create delivery objecs
-                int rand = Random.Range(0, 5);
-                if(rand == 0) {
-                    var things = new List<Weapon>();
-                    for(int i = 0; i < Random.Range(1, 4); i++)
-                        things.Add(getRandomWeapon());
-
-                    return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd).town, things);
-                }
-                if(rand == 1) {
-                    var things = new List<Armor>();
-                    for(int i = 0; i < Random.Range(1, 4); i++)
-                        things.Add(getRandomArmor());
-
-                    return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd).town, things);
-                }
-                if(rand == 2) {
-                    var things = new List<Consumable>();
-                    var con = getRandomConsumable();
-                    for(int i = 0; i < Random.Range(1, 26); i++)
-                        things.Add(con);
-
-                    return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd).town, things);
-                }
-                if(rand == 3) {
-                    var things = new List<Item>();
-                    for(int i = 0; i < Random.Range(0, 4); i++)
-                        things.Add(getRandomItem());
-
-                    return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd).town, things);
-                }
-                if(rand == 4) {
-                    var things = new List<UnitStats>();
-                    for(int i = 0; i < Random.Range(1, 3); i++)
-                        things.Add(getPlayerUnit().GetComponent<UnitClass>().stats);
-
-                    return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd).town, things);
-                }
-                break;
-        }
-
-        return null;
-    }
-
-    //  sprite holders
-    public UnitSpriteHolder getPlayerUnitSprite() {
-        return playerUnit.GetComponent<UnitClass>().getSpriteHolder();
-    }
-    public UnitSpriteHolder getEnemyUnitSprite(EnemyUnitInstance enemy) {
-        foreach(var i in enemies) {
-            if(i.GetComponent<EnemyUnitInstance>().enemyType == enemy.enemyType) {
-                return i.GetComponent<EnemyUnitInstance>().getSpriteHolder();
+        else {
+            townInd = Random.Range(0, MapLocationHolder.getTownCount());
+            if(GameInfo.getCurrentLocationAsTown() != null) {
+                while(MapLocationHolder.getTownLocation(townInd).isEqualTo(GameInfo.getCurrentLocationAsTown()))
+                    townInd = Random.Range(0, MapLocationHolder.getTownCount());
             }
+        }
+
+        //  create delivery objecs
+        int rand = Random.Range(0, 5);
+        if(rand == 0) {
+            var things = new List<Weapon>();
+            for(int i = 0; i < Random.Range(1, 4); i++)
+                things.Add(getRandomWeapon());
+
+            return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd).town, things, setID);
+        }
+        if(rand == 1) {
+            var things = new List<Armor>();
+            for(int i = 0; i < Random.Range(1, 4); i++)
+                things.Add(getRandomArmor());
+
+            return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd).town, things, setID);
+        }
+        if(rand == 2) {
+            var things = new List<Consumable>();
+            var con = getRandomConsumable();
+            for(int i = 0; i < Random.Range(1, 26); i++)
+                things.Add(con);
+
+            return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd).town, things, setID);
+        }
+        if(rand == 3) {
+            var things = new List<Item>();
+            for(int i = 0; i < Random.Range(0, 4); i++)
+                things.Add(getRandomItem());
+
+            return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd).town, things, setID);
+        }
+        if(rand == 4) {
+            var things = new List<UnitStats>();
+            for(int i = 0; i < Random.Range(1, 3); i++)
+                things.Add(createRandomPlayerUnitStats());
+
+            return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd).town, things, setID);
         }
         return null;
     }
@@ -525,7 +525,7 @@ public class PresetLibrary : MonoBehaviour {
                 return getNestLocationSprite();
 
             case MapLocation.locationType.boss:
-                return getBossFightLocationSprite((BossLocation)loc);
+                return getBossFightLocationSprite();
 
             case MapLocation.locationType.pickup:
                 return getPickupLocationSprite((PickupLocation)loc);
@@ -536,15 +536,8 @@ public class PresetLibrary : MonoBehaviour {
 
         return null;
     }
-    public Sprite getBossFightLocationSprite(BossLocation loc) {
-        foreach(var i in loc.combatLocation.waves) {
-            foreach(var j in i.enemies) {
-                if(j.GetComponent<BossUnitInstance>() != null)
-                    return j.GetComponent<BossUnitInstance>().getSpriteHolder().sprite;
-            }
-        }
-
-        return null;
+    public Sprite getBossFightLocationSprite() {
+        return bossIcon;
     }
     public Sprite getPickupLocationSprite(PickupLocation loc) {
         if(loc.pickupWeapon != null && !loc.pickupWeapon.isEmpty())
@@ -568,7 +561,7 @@ public class PresetLibrary : MonoBehaviour {
         return nestIcon;
     }
     public Sprite getRescueLocationSprite() {
-        return getPlayerUnitSprite().sprite;
+        return rescueIcon;
     }
     public Sprite getTownLocationSprite() {
         return townIcon;

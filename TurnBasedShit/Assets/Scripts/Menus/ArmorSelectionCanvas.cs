@@ -75,7 +75,7 @@ public class ArmorSelectionCanvas : SelectionCanvas {
     }
 
     public override void rotateEquipment() {
-        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedItem.isEmpty()) {
+        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor.isEmpty()) {
             Inventory.addArmor(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor);
             FindObjectOfType<UnitCanvas>().setUnitArmor(getArmorInSlot(selectedIndex));
 

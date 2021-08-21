@@ -10,7 +10,9 @@ public class UnitCombatHighlighter : MonoBehaviour {
     List<GameObject> highlightedUnits = new List<GameObject>();
     List<GameObject> highlights = new List<GameObject>();
     float animSpeed = 0.35f;
-    float animMax = 1.05f, animMin = 0.95f;
+    float animMax = 0.55f, animMin = 0.45f;
+
+    Vector2 offset = new Vector2(0.026f, 0.204f);
 
 
     private void Start() {
@@ -22,6 +24,7 @@ public class UnitCombatHighlighter : MonoBehaviour {
             endAllHighlights();
         }
 
+
         for(int i = 0; i < highlights.Count; i++) {
             if(highlights[i] == null || highlightedUnits[i] == null || !highlightedUnits[i].activeInHierarchy) {
                 highlightedUnits.RemoveAt(i);
@@ -30,10 +33,23 @@ public class UnitCombatHighlighter : MonoBehaviour {
                 highlights.RemoveAt(i);
                 return;
             }
-            highlights[i].transform.position = highlightedUnits[i].transform.position;
+            highlights[i].transform.position = (Vector2)highlightedUnits[i].transform.position + offset;
 
             if(i > 0 && highlights[i].GetComponent<CombatHighlightObject>().finishedAnim)
                 highlights[i].transform.localScale = highlights[0].transform.localScale;
+        }
+
+        foreach(var i in FindObjectsOfType<UnitClass>()) {
+            if(i.GetComponentInChildren<UnitSpriteHandler>() != null)
+                i.GetComponentInChildren<UnitSpriteHandler>().setAnimSpeed(1.0f);
+            if(i.GetComponent<Animator>() != null)
+                i.GetComponent<Animator>().speed = 1.0f;
+        }
+        foreach(var i in highlightedUnits) {
+            if(i != null && i.GetComponentInChildren<UnitSpriteHandler>() != null && i.GetComponentInChildren<UnitSpriteHandler>().getAnimState() == 0)
+                i.GetComponentInChildren<UnitSpriteHandler>().setAnimSpeed(2.5f);
+            if(i != null && i.GetComponent<Animator>() != null && i.GetComponent<Animator>().GetInteger("state") == 0)
+                i.GetComponent<Animator>().speed = 2.5f;
         }
     }
 
@@ -140,7 +156,7 @@ public class UnitCombatHighlighter : MonoBehaviour {
         var temp = Instantiate(highlight.gameObject, transform);
 
         temp.GetComponent<CombatHighlightObject>().setColor(col);
-        temp.transform.localPosition = pos;
+        temp.transform.localPosition = pos + offset;
 
         if(index > -1) {
             var obj = highlights[index];

@@ -7,8 +7,6 @@ public abstract class UnitClass : MonoBehaviour {
     [SerializeField] AudioClip hitSound, dieSound;
     public GameObject attackingTarget = null;
     public ParticleSystem bloodParticles;
-
-    [SerializeField] UnitSpriteHolder u_sprite;
     public Color hitColor;
 
     public bool isPlayerUnit = true;
@@ -34,7 +32,7 @@ public abstract class UnitClass : MonoBehaviour {
 
 
     private void OnMouseEnter() {
-        if(FindObjectOfType<InventoryCanvas>().isOpen() || FindObjectOfType<BattleResultsCanvas>() != null) {
+        if(FindObjectOfType<MenuCanvas>().isOpen() || FindObjectOfType<BattleResultsCanvas>() != null) {
             isMouseOverUnit = false;
             FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
             return;
@@ -49,13 +47,12 @@ public abstract class UnitClass : MonoBehaviour {
     }
 
     public void setup() {
-        if(isPlayerUnit)
-            u_sprite = FindObjectOfType<PresetLibrary>().getPlayerUnitSprite();
-        else
-            u_sprite = FindObjectOfType<PresetLibrary>().getEnemyUnitSprite(gameObject.GetComponent<EnemyUnitInstance>());
+        if(isPlayerUnit) {
+            GetComponentInChildren<UnitSpriteHandler>().setEverything(stats.u_sprite, stats.equippedWeapon, stats.equippedArmor);
+        }
 
         if(string.IsNullOrEmpty(stats.u_name)) {
-            setNewRandomName();
+            name = NameLibrary.getRandomUsablePlayerName();
         }
         else
             name = stats.u_name;
@@ -64,7 +61,7 @@ public abstract class UnitClass : MonoBehaviour {
         normalSize = transform.localScale;
 
         if(isPlayerUnit)
-            Party.overrideUnit(stats);
+            Party.overrideUnit(stats, FindObjectOfType<PartyObject>());
     }
 
 
@@ -175,7 +172,7 @@ public abstract class UnitClass : MonoBehaviour {
             FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterKill, this, false);
 
             //  increases acc quest counter
-            for(int i = 0; i < ActiveQuests.getQuestTypeCount(Quest.questType.kill); i++) {
+            for(int i = 0; i < ActiveQuests.getQuestTypeCount(GameInfo.questType.kill); i++) {
                 if(ActiveQuests.getKillQuest(i).enemyType == GetComponent<EnemyUnitInstance>().enemyType)
                     ActiveQuests.getKillQuest(i).howManyToKill++;
             }
@@ -222,7 +219,7 @@ public abstract class UnitClass : MonoBehaviour {
         if(w == null) return;
         stats.equippedWeapon = w;
 
-        Party.overrideUnit(stats);
+        Party.overrideUnit(stats, FindObjectOfType<PartyObject>());
     }
     public void removeEquippedWeapon() {
         stats.equippedWeapon = null;
@@ -236,7 +233,7 @@ public abstract class UnitClass : MonoBehaviour {
         if(a == null) return;
         stats.equippedArmor = a;
 
-        Party.overrideUnit(stats);
+        Party.overrideUnit(stats, FindObjectOfType<PartyObject>());
     }
     public void removeEquippedArmor() {
         stats.equippedArmor = null;
@@ -246,45 +243,9 @@ public abstract class UnitClass : MonoBehaviour {
         setEquippedWeapon(w);
         setEquippedArmor(a);
     }
-    public void removeEquipment() {
-        stats.equippedWeapon = null;
-        stats.equippedArmor = null;
-    }
 
-    public void resetSavedEquippment() {
-        if(weapon == null)
-            stats.equippedWeapon.resetWeaponStats();
-        else
-            stats.equippedWeapon.setToPreset(weapon);
-
-        if(armor == null)
-            stats.equippedArmor.resetArmorStats();
-        else
-            stats.equippedArmor.setToPreset(armor);
-
-        Party.overrideUnit(stats);
-    }
-
-    public void populateEmptyEquippment() {
-        if(stats.equippedWeapon.isEmpty() && weapon != null)
-            stats.equippedWeapon.setToPreset(weapon);
-        else if(!stats.equippedWeapon.isEmpty())
-            weapon = stats.equippedWeapon.weaponToPreset();
-
-
-        if(stats.equippedArmor.isEmpty() && armor != null)
-            stats.equippedArmor.setToPreset(armor);
-        else if(!stats.equippedArmor.isEmpty())
-            armor = stats.equippedArmor.armorToPreset();
-
-        Party.overrideUnit(stats);
-    }
-
-    public void setNewRandomName() {
-        if(isPlayerUnit)
-            stats.u_name = NameLibrary.getRandomUsablePlayerName();
-        name = stats.u_name;
-    }
+    public abstract void setDefendingAnim();
+    public abstract void setAttackingAnim();
 
     IEnumerator defendingAnim() {
         if(attackAnim != null)
@@ -293,56 +254,33 @@ public abstract class UnitClass : MonoBehaviour {
         GetComponent<SpriteRenderer>().DOColor(hitColor, 0.05f);
         transform.DOScale(normalSize * 1.5f, 0.15f);
 
-        if(u_sprite.defendingSprite != null) {
-            gameObject.GetComponent<SpriteRenderer>().sprite = u_sprite.defendingSprite;
-            GetComponentInChildren<ShadowObject>().updateSprite();
-        }
+        setDefendingAnim();
 
         yield return new WaitForSeconds(0.1f);
 
-        GetComponent<SpriteRenderer>().DOColor(stats.u_color, 0.25f);
+        GetComponent<SpriteRenderer>().DOColor(stats.u_sprite.color, 0.25f);
 
         yield return new WaitForSeconds(0.25f);
 
         transform.DOScale(normalSize, 0.15f);
-        gameObject.GetComponent<SpriteRenderer>().sprite = u_sprite.sprite;
-        GetComponentInChildren<ShadowObject>().updateSprite();
     }
     IEnumerator attackingAnim(Vector3 targetPos) {
         if(defendAnim != null) {
             StopCoroutine(defendAnim);
-            GetComponent<SpriteRenderer>().DOColor(stats.u_color, 0.25f);
+            GetComponent<SpriteRenderer>().DOColor(stats.u_sprite.color, 0.25f);
         }
 
         gameObject.transform.DOPunchPosition(targetPos - transform.position, 0.25f);
         transform.DOScale(normalSize * 1.5f, 0.15f);
 
-        if(GetComponent<Animator>() != null)
-            GetComponent<Animator>().SetInteger("state", 1);
-        if(u_sprite.attackingSprite != null) {
-            gameObject.GetComponent<SpriteRenderer>().sprite = u_sprite.attackingSprite;
-            GetComponentInChildren<ShadowObject>().updateSprite();
-        }
+        setAttackingAnim();
 
-        if(u_sprite.attackAnim != null && !u_sprite.attackAnim.empty)
-            yield return new WaitForSeconds(u_sprite.attackAnim.length);
-        else
-            yield return new WaitForSeconds(0.3f);
-    
+        yield return new WaitForSeconds(0.3f);
 
-        if(GetComponent<Animator>() != null)
-            GetComponent<Animator>().SetInteger("state", 0);
         transform.DOScale(normalSize, 0.15f);
-        if(u_sprite.sprite != null)
-            gameObject.GetComponent<SpriteRenderer>().sprite = u_sprite.sprite;
 
         foreach(var i in GetComponentsInChildren<ShadowObject>()) {
             i.updateSprite();
         }
-    }
-
-
-    public UnitSpriteHolder getSpriteHolder() {
-        return u_sprite;
     }
 }

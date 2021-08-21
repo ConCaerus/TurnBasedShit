@@ -55,16 +55,14 @@ public abstract class BuildingCanvas : MonoBehaviour {
             slots.transform.GetChild(i).GetChild(0).gameObject.SetActive(false);
         for(int i = 0; i < Party.getMemberCount(); i++) {
             slots.transform.GetChild(i).GetChild(0).gameObject.SetActive(true);
-            slots.transform.GetChild(i).GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getPlayerUnitSprite().sprite;
-            slots.transform.GetChild(i).GetChild(0).GetComponent<Image>().color = Party.getMemberStats(i).u_color;
+            slots.transform.GetChild(i).GetChild(0).GetComponent<Image>().color = Party.getMemberStats(i).u_sprite.color;
         }
 
         //  main slot
         mainSlot.transform.GetChild(0).gameObject.SetActive(false);
         if(selectedIndex > -1) {
             mainSlot.transform.GetChild(0).gameObject.SetActive(true);
-            mainSlot.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getPlayerUnitSprite().sprite;
-            mainSlot.transform.GetChild(0).GetComponent<Image>().color = Party.getMemberStats(selectedIndex).u_color;
+            mainSlot.transform.GetChild(0).GetComponent<Image>().color = Party.getMemberStats(selectedIndex).u_sprite.color;
         }
 
         updateCustomInfo();
