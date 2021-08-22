@@ -2,52 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class KillQuest {
-    public int q_instanceID = -1;
-
+public class KillQuest : Quest {
     public int howManyToKill;
     public int killCount;
     public EnemyUnitInstance.type enemyType;
 
 
-    public KillQuest(int c, EnemyUnitInstance.type type, bool setID) {
-        if(setID)
-            q_instanceID = GameInfo.getNextQuestInstanceID();
-
+    public KillQuest(int c, EnemyUnitInstance.type type) {
         howManyToKill = c;
         enemyType = type;
+        q_type = Quest.questType.kill;
     }
 
 
-    public void questInit() {
+    public override void questInit(bool setInstanceID) {
+        if(setInstanceID)
+            q_instanceID = GameInfo.getNextQuestInstanceID();
     }
-    public void questDestory() {
+    public override void questDestory() {
         //  something
-    }
-
-
-    public void setEqualTo(KillQuest other, bool takeID) {
-        if(other == null)
-            return;
-
-        if(takeID)
-            q_instanceID = other.q_instanceID;
-
-        howManyToKill = other.howManyToKill;
-        killCount = other.killCount;
-        enemyType = other.enemyType;
-    }
-    public bool isEqualTo(KillQuest other) {
-        return q_instanceID == other.q_instanceID;
-    }
-
-    public bool isInstanced() {
-        return q_instanceID > -1;
-    }
-
-
-    public GameInfo.questType getType() {
-        return GameInfo.questType.kill;
     }
 }

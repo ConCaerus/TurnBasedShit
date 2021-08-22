@@ -31,6 +31,7 @@ public class CombatLocation {
             int enemyCount = Random.Range(minNumberOfEnemies, maxNumberOfEnemies + 1);
             for(int e = 0; e < enemyCount; e++) {
                 var enemy = lib.getRandomEnemy(diff);
+                enemy.GetComponent<UnitClass>().stats = Randomizer.randomizeUnitStats(enemy.GetComponent<UnitClass>().stats);
                 temp.enemies.Add(enemy);
             }
             waves.Add(temp);

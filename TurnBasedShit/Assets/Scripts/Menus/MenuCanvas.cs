@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class MenuCanvas : MonoBehaviour {
     [SerializeField] GameObject menuObj;
-    [SerializeField] GameObject unitCanvas, questCanvas, townCanvas;
+    [SerializeField] GameObject unitCanvas;
 
     bool showing = false;
 
@@ -16,7 +16,7 @@ public class MenuCanvas : MonoBehaviour {
 
     private void Update() {
         if(Input.GetKeyDown(KeyCode.Tab)) {
-            if(isOpen()) {
+            if(isShowing()) {
                 hide();
             }
             else 
@@ -26,13 +26,6 @@ public class MenuCanvas : MonoBehaviour {
 
 
     public void show() {
-        if(FindObjectOfType<UnitCanvas>() != null)
-            FindObjectOfType<UnitCanvas>().setup();
-        else if(FindObjectOfType<QuestCanvas>() != null)
-            FindObjectOfType<QuestCanvas>().updateMenu();
-        else if(FindObjectOfType<TownMenuCanvas>() != null)
-            FindObjectOfType<TownMenuCanvas>().updateSlots();
-
         GetComponent<Animator>().StopPlayback();
         GetComponent<Animator>().Play("MenuOpenAnim");
         showing = true;
@@ -49,40 +42,12 @@ public class MenuCanvas : MonoBehaviour {
     }
 
 
-
-    //  tabs
-    public void unitTab() {
-        unitCanvas.SetActive(true);
-        questCanvas.SetActive(false);
-        townCanvas.SetActive(false);
-
-        FindObjectOfType<UnitCanvas>().setup();
-    }
-    public void inventoryTab() {
-
-    }
-    public void questTab() {
-        questCanvas.SetActive(true);
-        unitCanvas.SetActive(false);
-        townCanvas.SetActive(false);
-
-        FindObjectOfType<QuestCanvas>().updateMenu();
-    }
-    public void townTab() {
-        townCanvas.SetActive(true);
-        unitCanvas.SetActive(false);
-        questCanvas.SetActive(false);
-
-        FindObjectOfType<TownMenuCanvas>().updateSlots();
-    }
-
-
     public void showUnitCanvas() {
         unitCanvas.SetActive(true);
     }
 
 
-    public bool isOpen() {
+    public bool isShowing() {
         return showing;
     }
 }

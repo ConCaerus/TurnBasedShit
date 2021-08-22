@@ -18,7 +18,7 @@ public class TownMovement : LocationMovement {
 
 
     private void LateUpdate() {
-        if(FindObjectOfType<MenuCanvas>().isOpen()) {
+        if(FindObjectOfType<MenuCanvas>().isShowing()) {
             setVisuals();
         }
     }
@@ -43,11 +43,10 @@ public class TownMovement : LocationMovement {
     }
 
     public override void deinteract() {
-        foreach(var i in FindObjectsOfType<TownMemberInstance>()) {
-            if(i.interacting) {
-                FindObjectOfType<TownCameraMovement>().zoomOut();
-                i.interacting = false;
-            }
+        var p = FindObjectOfType<TownPeopleSpawner>().getMemberWithinInteractRange(transform.position.x);
+        if(p != null) {
+            FindObjectOfType<TownCameraMovement>().zoomOut();
+            p.GetComponentInChildren<TownMemberInstance>().interacting = false;
         }
     }
 

@@ -4,34 +4,22 @@ using UnityEngine;
 using DG.Tweening;
 
 public class PlayerUnitInstance : UnitClass {
+    public GameObject equippedWeaponPosition;
+    public GameObject equippedArmorPosition;
+
     private void Awake() {
         isPlayerUnit = true;
     }
 
     private void Start() {
-        updateSprites();
+        updateShownEquipment();
     }
 
 
     private void Update() {
         attackingLogic();
-        if(Input.GetKeyDown(KeyCode.G))
-            GetComponentInChildren<UnitSpriteHandler>().setWeapon(stats.equippedWeapon);
     }
 
-
-    public override void setAttackingAnim() {
-        if(GetComponentInChildren<UnitSpriteHandler>() != null) {
-            GetComponentInChildren<UnitSpriteHandler>().setAnimSpeed(1.0f);
-            GetComponentInChildren<UnitSpriteHandler>().setAnimState(2);
-        }
-    }
-    public override void setDefendingAnim() {
-        if(GetComponentInChildren<UnitSpriteHandler>() != null) {
-            GetComponentInChildren<UnitSpriteHandler>().setAnimSpeed(1.0f);
-            GetComponentInChildren<UnitSpriteHandler>().setAnimState(1);
-        }
-    }
 
     void attackingLogic() {
         if(FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject && attackingTarget == null) {
@@ -54,7 +42,25 @@ public class PlayerUnitInstance : UnitClass {
         }
     }
 
-    public void updateSprites() {
-        GetComponentInChildren<UnitSpriteHandler>().setEverything(stats.u_sprite, stats.equippedWeapon, stats.equippedArmor);
+    public void updateShownEquipment() {
+        //  weapon shit
+        var w = stats.equippedWeapon;
+        if(w != null && !w.isEmpty()) {
+            equippedWeaponPosition.transform.localPosition = new Vector2(FindObjectOfType<PresetLibrary>().getWeaponSprite(w).equippedX, FindObjectOfType<PresetLibrary>().getWeaponSprite(w).equippedY);
+            equippedWeaponPosition.transform.localScale = new Vector3(-FindObjectOfType<PresetLibrary>().getWeaponSprite(w).equippedSize, FindObjectOfType<PresetLibrary>().getWeaponSprite(w).equippedSize, 0.0f);
+            equippedWeaponPosition.transform.rotation = Quaternion.Euler(0.0f, 0.0f, FindObjectOfType<PresetLibrary>().getWeaponSprite(w).equippedRot);
+            equippedWeaponPosition.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(w).sprite;
+        }
+        else {
+            equippedWeaponPosition.GetComponent<SpriteRenderer>().sprite = null;
+        }
+
+        //  armor shit
+        var a = stats.equippedArmor;
+        if(a != null && !a.isEmpty()) {
+            equippedArmorPosition.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(a).equippedSprite;
+        }
+        else
+            equippedArmorPosition.GetComponent<SpriteRenderer>().sprite = null;
     }
 }

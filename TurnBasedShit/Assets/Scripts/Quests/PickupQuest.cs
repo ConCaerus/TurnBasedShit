@@ -2,14 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class PickupQuest {
-
-    public int q_instanceID = -1;
-
+public class PickupQuest : Quest {
     PickupLocation location;
-
-    public PickupLocation.pickupType pType = (PickupLocation.pickupType)(-1);
 
     public Weapon pickupWeapon = null;
     public Armor pickupArmor = null;
@@ -17,66 +11,31 @@ public class PickupQuest {
     public Item pickupItem = null;
 
 
-    public PickupQuest(PickupLocation pickup, bool setID) {
-        if(setID)
-            q_instanceID = GameInfo.getNextQuestInstanceID();
-
+    public PickupQuest(PickupLocation pickup) {
         location = pickup;
-        pType = pickup.pType;
+        q_type = questType.pickup;
 
-        if(pickup == null) {
-            Debug.Log("fucking here");
+        if(pickup == null)
             return;
-        }
 
-        if(pickup.pickupWeapon != null && !pickup.pickupWeapon.isEmpty()) {
-            pickupWeapon = new Weapon();
+        if(pickup.pickupWeapon != null && !pickup.pickupWeapon.isEmpty())
             pickupWeapon.setEqualTo(pickup.pickupWeapon, true);
-        }
-        if(pickupArmor != null && !pickup.pickupArmor.isEmpty()) {
-            pickupArmor = new Armor();
+        if(pickupArmor != null && !pickup.pickupArmor.isEmpty())
             pickupArmor.setEqualTo(pickup.pickupArmor, true);
-        }
-        if(pickup.pickupConsumable != null && !pickup.pickupConsumable.isEmpty()) {
-            pickupConsumable = new Consumable();
+        if(pickup.pickupConsumable != null && !pickup.pickupConsumable.isEmpty())
             pickupConsumable.setEqualTo(pickup.pickupConsumable, true);
-        }
-        if(pickup.pickupItem != null && !pickup.pickupItem.isEmpty()) {
-            pickupItem = new Item();
+        if(pickup.pickupItem != null && !pickup.pickupItem.isEmpty())
             pickupItem.setEqualTo(pickup.pickupItem, true);
-        }
     }
 
-    public void questInit() {
+    public override void questInit(bool setInstanceID) {
+        initialized = true;
+        if(setInstanceID)
+            q_instanceID = GameInfo.getNextQuestInstanceID();
         MapLocationHolder.addLocation(location);
     }
-    public void questDestory() {
-    }
-
-
-    public void setEqualTo(PickupQuest other, bool takeID) {
-        if(other == null)
-            return;
-
-        if(takeID)
-            q_instanceID = other.q_instanceID;
-
-        location = other.location;
-        pickupWeapon = other.pickupWeapon;
-        pickupArmor = other.pickupArmor;
-        pickupConsumable = other.pickupConsumable;
-        pickupItem = other.pickupItem;
-    }
-    public bool isEqualTo(PickupQuest other) {
-        return q_instanceID == other.q_instanceID;
-    }
-
-    public bool isInstanced() {
-        return q_instanceID > -1;
-    }
-
-
-    public GameInfo.questType getType() {
-        return GameInfo.questType.pickup;
+    public override void questDestory() {
+        if(initialized)
+            MapLocationHolder.removePickupLocation(location);
     }
 }

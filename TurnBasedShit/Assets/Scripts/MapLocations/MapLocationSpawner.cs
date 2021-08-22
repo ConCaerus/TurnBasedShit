@@ -159,7 +159,7 @@ public class MapLocationSpawner : MonoBehaviour {
         var obj = Instantiate(iconPreset.gameObject);
         obj.transform.position = temp.pos;
         obj.transform.SetParent(transform);
-        obj.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getBossFightLocationSprite();
+        obj.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getBossFightLocationSprite(temp);
 
 
         //  saves the TownLocation

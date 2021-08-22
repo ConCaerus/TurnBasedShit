@@ -10,7 +10,8 @@ public class UnitStats {
     public float u_exp = 0.0f;
     public int u_level = 0;
 
-    public UnitSpriteInfo u_sprite = new UnitSpriteInfo();
+    public int u_headSpriteIndex = 0, u_faceSpriteIndex = 0, u_bodySpriteIndex = 0;
+    public Color u_color = Color.white;
 
     [SerializeField] float u_baseMaxHealth;
     public float u_health = 100.0f;
@@ -27,6 +28,8 @@ public class UnitStats {
     public Weapon equippedWeapon;
     public Armor equippedArmor;
     public Item equippedItem;
+
+    public SlaveStats u_slaveStats = new SlaveStats();
 
     public List<UnitTrait> u_traits = new List<UnitTrait>();
 
@@ -50,20 +53,16 @@ public class UnitStats {
         u_bleedCount = other.u_bleedCount;
 
         u_order = other.u_order;
-        u_sprite.setEqualTo(other.u_sprite);
+        u_color = other.u_color;
 
-        equippedWeapon.setEqualTo(other.equippedWeapon, true);
-        equippedArmor.setEqualTo(other.equippedArmor, true);
-        equippedItem.setEqualTo(other.equippedItem, true);
+        equippedWeapon = other.equippedWeapon;
+        equippedArmor = other.equippedArmor;
+        equippedItem = other.equippedItem;
 
-        foreach(var i in other.u_traits)
-            u_traits.Add(i);
+        u_slaveStats = other.u_slaveStats;
     }
 
-    public bool isEqualTo(UnitStats other) {
-        if(other == null)
-            return false;
-
+    public bool equals(UnitStats other) {
         bool names = u_name == other.u_name;
         bool health = u_health == other.u_health;
         bool maxHealth = u_baseMaxHealth == other.u_baseMaxHealth;
@@ -73,7 +72,7 @@ public class UnitStats {
         bool weapon = equippedWeapon.isEqualTo(other.equippedWeapon);
         bool armor = equippedArmor.isEqualTo(other.equippedArmor);
         bool item = equippedItem.isEqualTo(other.equippedItem);
-        bool color = u_sprite.isEqualTo(other.u_sprite);
+        bool color = u_color == other.u_color;
 
         return names && health && maxHealth && speed && power && order && weapon && armor && item && color;
     }

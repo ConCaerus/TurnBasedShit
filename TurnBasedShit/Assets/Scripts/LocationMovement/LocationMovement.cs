@@ -7,6 +7,7 @@ public abstract class LocationMovement : MonoBehaviour {
     UnitStats reference;
     public GameObject armorPos;
     public GameObject unit;
+    public GameObject shadow;
 
     public AudioClip walkSound;
 
@@ -29,7 +30,7 @@ public abstract class LocationMovement : MonoBehaviour {
 
 
     private void Update() {
-        if(FindObjectOfType<MenuCanvas>().isOpen())
+        if(FindObjectOfType<MenuCanvas>().isShowing())
             return;
         if(Input.GetKeyDown(KeyCode.W) && FindObjectOfType<TransitionCanvas>().loaded)
             interact();
@@ -38,21 +39,15 @@ public abstract class LocationMovement : MonoBehaviour {
         if((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && canMove && FindObjectOfType<TransitionCanvas>().loaded) {
             isMoving = true;
             move();
-            unit.GetComponent<UnitSpriteHandler>().setAnimState(3);
         }
-        else {
+        else
             isMoving = false;
-            unit.GetComponent<UnitSpriteHandler>().setAnimState(0);
-        }
     }
 
 
     public void setVisuals() {
         reference = Party.getLeaderStats();
-        unit.GetComponent<UnitSpriteHandler>().setColor(reference.u_sprite.color);
-
-        unit.GetComponent<UnitSpriteHandler>().setEverything(reference.u_sprite, null, reference.equippedArmor);
-
+        unit.GetComponent<SpriteRenderer>().color = reference.u_color;
         if(reference.equippedArmor != null && !reference.equippedArmor.isEmpty()) {
             armorPos.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(reference.equippedArmor).equippedSprite;
         }
@@ -90,9 +85,13 @@ public abstract class LocationMovement : MonoBehaviour {
     public void flip() {
         if(movingDir) {
             transform.DORotate(new Vector3(0.0f, 180.0f, 0.0f), flipSpeed);
+            var x = Mathf.Abs(shadow.transform.localPosition.x);
+            shadow.transform.localPosition = new Vector3(x, shadow.transform.localPosition.y, 0.0f);
         }
         else if(!movingDir) {
             transform.DORotate(new Vector3(0.0f, 0.0f, 0.0f), flipSpeed);
+            var x = Mathf.Abs(shadow.transform.localPosition.x);
+            shadow.transform.localPosition = new Vector3(-x, shadow.transform.localPosition.y, 0.0f);
         }
         movingDir = !movingDir;
     }
@@ -109,7 +108,7 @@ public abstract class LocationMovement : MonoBehaviour {
 
         yield return new WaitForSeconds(time);
 
-        while(FindObjectOfType<MenuCanvas>().isOpen())
+        while(FindObjectOfType<MenuCanvas>().isShowing())
             yield return new WaitForEndOfFrame();
 
 

@@ -75,7 +75,7 @@ public class WeaponSelectionCanvas : SelectionCanvas {
     }
 
     public override void rotateEquipment() {
-        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon.isEmpty()) {
+        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedItem.isEmpty()) {
             Inventory.addWeapon(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon);
             FindObjectOfType<UnitCanvas>().setUnitWeapon(getWeaponInSlot(selectedIndex));
 

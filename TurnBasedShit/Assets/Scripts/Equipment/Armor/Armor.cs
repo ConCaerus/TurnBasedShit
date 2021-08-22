@@ -128,6 +128,4 @@ public class Armor {
 [System.Serializable]
 public class ArmorSpriteHolder {
     public Sprite sprite, equippedSprite;
-
-    public float xPos, yPos, scale;
 }

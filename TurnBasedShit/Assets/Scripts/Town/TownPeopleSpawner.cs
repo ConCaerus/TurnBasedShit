@@ -22,9 +22,8 @@ public class TownPeopleSpawner : MonoBehaviour {
             float x = FindObjectOfType<BuildingSpawner>().getXThatIsntInfrontOfADoor();
             
             var pos = new Vector2(x, memberYPos);
-            var obj = Instantiate(FindObjectOfType<PresetLibrary>().getTownMemberObj(false).gameObject);
+            var obj = Instantiate(FindObjectOfType<PresetLibrary>().getTownMember().gameObject);
             obj.GetComponentInChildren<TownMemberInstance>().reference.setEqualsTo(reference.getMember(i), true);
-            obj.GetComponentInChildren<UnitSpriteHandler>().setLayerOffset(-(i + 1) * 10);
 
             obj.transform.position = pos;
 

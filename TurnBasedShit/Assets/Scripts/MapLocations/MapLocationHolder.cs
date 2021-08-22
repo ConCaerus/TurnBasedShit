@@ -201,16 +201,6 @@ public static class MapLocationHolder {
             addLocation(i);
     }
 
-    public static void overrideTownLocation(TownLocation loc) {
-        for(int i = 0; i < getTownCount(); i++) {
-            if(getTownLocation(i).town.t_instanceID == loc.town.t_instanceID) {
-                var data = JsonUtility.ToJson(loc);
-                SaveData.setString(townTag(i), data);
-                return;
-            }
-        }
-    } 
-
 
     public static int getTownCount() {
         return SaveData.getInt(townCountTag);

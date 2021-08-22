@@ -7,17 +7,13 @@ using UnityEngine.SceneManagement;
 public class TownLocation : MapLocation {
     public Town town;
 
-    public int region = -1;
-
     public TownLocation(Vector2 p, GameInfo.diffLvl diff, PresetLibrary lib, Town t = null) {
         type = locationType.town;
         pos = p;
 
-        region = (int)Map.getDiffForX(p.x);
-
         //  create a random town
         if(t == null) {
-            t = new Town(diff, lib, true);
+            t = lib.createRandomTown(diff);
         }
 
         town = t;
@@ -26,7 +22,6 @@ public class TownLocation : MapLocation {
     public override void enterLocation() {
         GameInfo.resetCombatDetails();
         GameInfo.setCurrentLocationAsTown(this);
-        town.visited = true;
         SceneManager.LoadScene("Town");
     }
 

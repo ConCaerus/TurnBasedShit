@@ -31,7 +31,7 @@ public class MapTrailRenderer : MonoBehaviour {
         drawLine();
 
         if(Party.getLeaderID() != -1)
-            partyAnchor.GetComponent<SpriteRenderer>().color = Party.getLeaderStats().u_sprite.color;
+            partyAnchor.GetComponent<SpriteRenderer>().color = Party.getLeaderStats().u_color;
     }
 
     private void Update() {

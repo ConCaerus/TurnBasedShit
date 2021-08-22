@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 
 public class LeaderSelectionCanvas : MonoBehaviour {
-    [SerializeField] GameObject unitImage;
+    [SerializeField] Image unitImage;
     [SerializeField] TextMeshProUGUI nameText;
     [SerializeField] GameObject canvas;
     UnitStats shownUnit;
@@ -20,8 +20,8 @@ public class LeaderSelectionCanvas : MonoBehaviour {
         if(shownUnit == null)
             shownUnit = Party.getMemberStats(0);
 
-        unitImage.GetComponent<UnitSpriteHandler>();
-        unitImage.GetComponent<Image>().color = shownUnit.u_sprite.color;
+        unitImage.GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getPlayerUnitSprite().sprite;
+        unitImage.GetComponent<Image>().color = shownUnit.u_color;
         nameText.text = shownUnit.u_name;
     }
 

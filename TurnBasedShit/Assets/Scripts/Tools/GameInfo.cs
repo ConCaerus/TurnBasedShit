@@ -19,9 +19,6 @@ public static class GameInfo {
     public enum wornState {
         Old, Used, Normal, New, Perfect
     }
-    public enum questType {
-        bossFight, pickup, delivery, kill
-    }
 
 
     const string stateTag = "Current Game State";
@@ -137,12 +134,6 @@ public static class GameInfo {
     public static wornState getRandomWornState() {
         return (wornState)Random.Range(0, 5);
     }
-    public static questType getRandomQuestType() {
-        return (questType)Random.Range(0, 4);
-    }
-    public static diffLvl getRandomDiff() {
-        return (diffLvl)Random.Range(0, 7);
-    }
 
     public static int getNextWeaponInstanceID() {
         int index = SaveData.getInt(nextWeaponID);
@@ -179,34 +170,5 @@ public static class GameInfo {
         int index = SaveData.getInt(nextQuestID);
         SaveData.setInt(nextQuestID, index + 1);
         return index;
-    }
-
-    public static void clearInventoryInstanceIDQueue() {
-        clearWeaponInstanceIDQueue();
-        clearArmorInstanceIDQueue();
-        clearConsumableInstanceIDQueue();
-        clearItemInstanceIDQueue();
-    }
-    public static void clearWeaponInstanceIDQueue() {
-        SaveData.deleteKey(nextWeaponID);
-    }
-    public static void clearArmorInstanceIDQueue() {
-        SaveData.deleteKey(nextArmorID);
-    }
-    public static void clearConsumableInstanceIDQueue() {
-        SaveData.deleteKey(nextConsumableID);
-    }
-    public static void clearItemInstanceIDQueue() {
-        SaveData.deleteKey(nextItemID);
-    }
-
-    public static void clearTownInstanceIDQueue() {
-        SaveData.deleteKey(nextTownID);
-    }
-    public static void clearTownMemberInstanceIDQueue() {
-        SaveData.deleteKey(nextTownMemberID);
-    }
-    public static void clearQuestInstanceIDQueue() {
-        SaveData.deleteKey(nextQuestID);
     }
 }

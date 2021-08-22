@@ -6,6 +6,7 @@ using DG.Tweening;
 public class TownMemberMovement : MonoBehaviour {
     public GameObject unit;
     public GameObject rotationObj;
+    public GameObject shadow;
 
     public AudioClip walkSound;
 
@@ -25,21 +26,10 @@ public class TownMemberMovement : MonoBehaviour {
         setNewTargetX();
     }
 
-    private void Start() {
-        StartCoroutine(FindObjectOfType<TransitionCanvas>().runAfterLoading(setAnimSpeed));
-    }
-
-    void setAnimSpeed() {
-        unit.GetComponent<UnitSpriteHandler>().setAnimSpeed(0.75f);
-    }
 
     private void Update() {
         if(FindObjectOfType<TransitionCanvas>().loaded && canMove) {
             move();
-            unit.GetComponent<UnitSpriteHandler>().setAnimState(3);
-        }
-        else {
-            unit.GetComponent<UnitSpriteHandler>().setAnimState(0);
         }
     }
 
@@ -67,16 +57,20 @@ public class TownMemberMovement : MonoBehaviour {
         }
 
         transform.Translate(moveDir * moveSpeed * Time.deltaTime);
-        transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        transform.position = new Vector3(transform.position.x, transform.position.y, 0.0f);
 
     }
 
     public void flip() {
         if(movingDir) {
             rotationObj.transform.DORotate(new Vector3(0.0f, 180.0f, 0.0f), flipSpeed);
+            var x = Mathf.Abs(shadow.transform.localPosition.x);
+            shadow.transform.localPosition = new Vector3(x, shadow.transform.localPosition.y, 0.0f);
         }
         else if(!movingDir) {
             rotationObj.transform.DORotate(new Vector3(0.0f, 360.0f, 0.0f), flipSpeed, RotateMode.FastBeyond360);
+            var x = Mathf.Abs(shadow.transform.localPosition.x);
+            shadow.transform.localPosition = new Vector3(-x, shadow.transform.localPosition.y, 0.0f);
         }
         movingDir = !movingDir;
 

@@ -6,7 +6,6 @@ public class TownCameraMovement : MonoBehaviour {
     float maxXDiff = 3.5f;
     float speed = 5.0f;
 
-    bool zoomedIn = false;
     Coroutine zoom = null;
     GameObject target;
 
@@ -39,25 +38,19 @@ public class TownCameraMovement : MonoBehaviour {
     }
 
     public void zoomIn(float y = 0.0f) {
-        if(!zoomedIn) {
-            Camera.main.orthographicSize = 5.0f;
-            if(zoom != null)
-                StopCoroutine(zoom);
+        Camera.main.orthographicSize = 5.0f;
+        if(zoom != null)
+            StopCoroutine(zoom);
 
-            zoom = StartCoroutine(zoomAnim(4.0f, new Vector3(FindObjectOfType<LocationMovement>().transform.position.x, FindObjectOfType<LocationMovement>().transform.position.y + y, Camera.main.transform.position.z), false));
-            zoomedIn = true;
-        }
+        zoom = StartCoroutine(zoomAnim(4.0f, new Vector3(FindObjectOfType<LocationMovement>().transform.position.x, FindObjectOfType<LocationMovement>().transform.position.y + y, Camera.main.transform.position.z), false));
     }
 
     public void zoomOut() {
-        if(zoomedIn) {
-            Camera.main.orthographicSize = 4.0f;
-            if(zoom != null)
-                StopCoroutine(zoom);
+        Camera.main.orthographicSize = 4.0f;
+        if(zoom != null)
+            StopCoroutine(zoom);
 
-            zoom = StartCoroutine(zoomAnim(5.0f, new Vector3(FindObjectOfType<LocationMovement>().transform.position.x, 0.0f, Camera.main.transform.position.z), true));
-            zoomedIn = false;
-        }
+        zoom = StartCoroutine(zoomAnim(5.0f, new Vector3(FindObjectOfType<LocationMovement>().transform.position.x, 0.0f, Camera.main.transform.position.z), true));
     }
 
     IEnumerator zoomAnim(float endVal, Vector3 targetPos, bool stopWhenDone) {
