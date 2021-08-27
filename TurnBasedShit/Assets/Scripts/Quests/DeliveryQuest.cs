@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DeliveryQuest : Quest {
+[System.Serializable]
+public class DeliveryQuest {
     public enum deliveryType {
         weapon, armor, consumable, item, unit
     }
+    public int q_instanceID = -1;
+
 
     public Town deliveryLocation;
 
@@ -18,57 +21,64 @@ public class DeliveryQuest : Quest {
     public List<UnitStats> unitsToDeliver = new List<UnitStats>();
 
 
-    public DeliveryQuest(Town t, List<Weapon> w) {
+    public DeliveryQuest(Town t, List<Weapon> w, bool setID) {
+        if(setID)
+            q_instanceID = GameInfo.getNextQuestInstanceID();
+
         deliveryLocation = t;
 
         foreach(var i in w)
             weaponsToDeliver.Add(i);
 
         type = deliveryType.weapon;
-        q_type = questType.delivery;
     }
-    public DeliveryQuest(Town t, List<Armor> a) {
+    public DeliveryQuest(Town t, List<Armor> a, bool setID) {
+        if(setID)
+            q_instanceID = GameInfo.getNextQuestInstanceID();
+
         deliveryLocation = t;
 
         foreach(var i in a)
             armorToDeliver.Add(i);
 
         type = deliveryType.armor;
-        q_type = questType.delivery;
     }
-    public DeliveryQuest(Town t, List<Consumable> c) {
+    public DeliveryQuest(Town t, List<Consumable> c, bool setID) {
+        if(setID)
+            q_instanceID = GameInfo.getNextQuestInstanceID();
+
         deliveryLocation = t;
 
         foreach(var i in c)
             consumablesToDeliver.Add(i);
 
         type = deliveryType.consumable;
-        q_type = questType.delivery;
     }
-    public DeliveryQuest(Town t, List<Item> it) {
+    public DeliveryQuest(Town t, List<Item> it, bool setID) {
+        if(setID)
+            q_instanceID = GameInfo.getNextQuestInstanceID();
+
         deliveryLocation = t;
 
         foreach(var i in it)
             itemsToDeliver.Add(i);
 
         type = deliveryType.item;
-        q_type = questType.delivery;
     }
-    public DeliveryQuest(Town t, List<UnitStats> u) {
+    public DeliveryQuest(Town t, List<UnitStats> u, bool setID) {
+        if(setID)
+            q_instanceID = GameInfo.getNextQuestInstanceID();
+
         deliveryLocation = t;
 
         foreach(var i in u)
             unitsToDeliver.Add(i);
 
         type = deliveryType.weapon;
-        q_type = questType.delivery;
     }
 
 
-    public override void questInit(bool setInstanceID) {
-        if(setInstanceID)
-            q_instanceID = GameInfo.getNextQuestInstanceID();
-
+    public void questInit() {
         foreach(var i in weaponsToDeliver)
             Inventory.addWeapon(i);
         foreach(var i in armorToDeliver)
@@ -80,7 +90,7 @@ public class DeliveryQuest : Quest {
         foreach(var i in unitsToDeliver)
             Party.addNewUnit(i);
     }
-    public override void questDestory() {
+    public void questDestory() {
         //  something
     }
 
@@ -88,5 +98,33 @@ public class DeliveryQuest : Quest {
     public bool canDeliverGoods() {
         return true;
         //  check if the goods are still in the inventory
+    }
+
+
+    public void setEqualTo(DeliveryQuest other, bool takeID) {
+        if(other == null)
+            return;
+
+        if(takeID)
+            q_instanceID = other.q_instanceID;
+
+        deliveryLocation = other.deliveryLocation;
+        type = other.type;
+        weaponsToDeliver = other.weaponsToDeliver;
+        armorToDeliver = other.armorToDeliver;
+        consumablesToDeliver = other.consumablesToDeliver;
+        itemsToDeliver = other.itemsToDeliver;
+    }
+    public bool isEqualTo(DeliveryQuest other) {
+        return q_instanceID == other.q_instanceID;
+    }
+
+    public bool isInstanced() {
+        return q_instanceID > -1;
+    }
+
+
+    public GameInfo.questType getType() {
+        return GameInfo.questType.delivery;
     }
 }

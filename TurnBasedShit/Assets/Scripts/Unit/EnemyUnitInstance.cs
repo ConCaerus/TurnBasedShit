@@ -8,20 +8,35 @@ public class EnemyUnitInstance : UnitClass {
 
     public type enemyType;
 
-    public List<int> combatScars = new List<int>();
-    [SerializeField] List<GameObject> combatScarsObjects = new List<GameObject>();
+    Coroutine idler = null;
 
     public enum type {
-        bug, goblin, slime, snake, spider, slimeInBox
+        slime, groundBird
     }
 
 
     private void Awake() {
         isPlayerUnit = false;
-        giveRandomScars();
-        showCombatScars();
     }
 
+    public override void setAttackingAnim() {
+        if(GetComponent<Animator>() != null) {
+            GetComponent<Animator>().speed = 1.0f;
+            GetComponent<Animator>().SetInteger("state", 2);
+            if(idler != null)
+                StopCoroutine(idler);
+            idler = StartCoroutine(returnToIdle());
+        }
+    }
+    public override void setDefendingAnim() {
+        if(GetComponent<Animator>() != null) {
+            GetComponent<Animator>().speed = 1.0f;
+            GetComponent<Animator>().SetInteger("state", 1);
+            if(idler != null)
+                StopCoroutine(idler);
+            idler = StartCoroutine(returnToIdle());
+        }
+    }
 
     public IEnumerator combatTurn() {
         yield return new WaitForSeconds(0.5f);
@@ -37,30 +52,20 @@ public class EnemyUnitInstance : UnitClass {
     }
 
 
-    public void giveRandomScars() {
-        combatScars = new List<int>();
-        combatScars.Clear();
 
-        //  max scar count is 3
-        int count = Random.Range(0, 4);
+    IEnumerator returnToIdle() {
+        yield return new WaitForEndOfFrame();
 
-        for(int i = 0; i < count; i++) {
-            combatScars.Add(Random.Range(0, FindObjectOfType<PresetLibrary>().getCombatScarSpriteCount()));
+        if(isDone()) {
+            GetComponent<Animator>().SetInteger("state", 0);
         }
+        else
+            idler = StartCoroutine(returnToIdle());
     }
 
-
-    public void showCombatScars() {
-        if(combatScars == null || combatScars.Count == 0)
-            return;
-        List<GameObject> unusedObjects = new List<GameObject>();
-        foreach(var i in combatScarsObjects)
-            unusedObjects.Add(i);
-        for(int i = 0; i < combatScars.Count; i++) {
-            int randIndex = Random.Range(0, unusedObjects.Count);
-            var s = FindObjectOfType<PresetLibrary>().getCombatScarSprite(combatScars[i]);
-            unusedObjects[randIndex].GetComponent<SpriteRenderer>().sprite = s.sprite;
-            unusedObjects.RemoveAt(randIndex);
-        }
+    bool isDone() {
+        if(GetComponent<Animator>() == null || GetComponent<Animator>().GetInteger("state") == 0)
+            return false;
+        return GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && !GetComponent<Animator>().IsInTransition(0);
     }
 }

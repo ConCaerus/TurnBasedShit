@@ -8,23 +8,34 @@ using DG.Tweening;
 
 public class WeaponSelectionCanvas : SelectionCanvas {
 
-    public Weapon getWeaponInSlot(int wIndex) {
-        int slotIndex = -1;
-        for(int i = 0; i < slotHolder.transform.childCount; i++) {
-            if(Inventory.getWeapon(i) != null && !Inventory.getWeapon(i).isEmpty()) {
-                slotIndex++;
-                if(slotIndex == wIndex)
-                    return Inventory.getWeapon(i);
-            }
+    public Weapon getWeaponInSlot(int index) {
+        if(index == 0) {
+            if(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon == null || FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon.isEmpty())
+                return Inventory.getWeapon(0);
+            else
+                return FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon;
         }
-
-        return null;
+        else {
+            if(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon == null || FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon.isEmpty())
+                return Inventory.getWeapon(index);
+            else
+                return Inventory.getWeapon(index - 1);
+        }
     }
 
     public override void updateInfo() {
         //                          Weapon shit
-        if(selectedIndex < 0)
-            selectedIndex = 0;
+        if(getWeaponInSlot(selectedIndex) == null || getWeaponInSlot(selectedIndex).isEmpty()) {
+            shownImage.sprite = null;
+            shownImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
+
+            nameText.text = "";
+            firstText.text = "0.0";
+            secondText.text = "0.0";
+            firstAttributeText.text = "";
+            secondAttributeText.text = "";
+            return;
+        }
         var shownWeapon = getWeaponInSlot(selectedIndex);
         shownImage.sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(shownWeapon).sprite;
         shownImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<UnitCanvas>().getRarityColor(shownWeapon.w_rarity);
@@ -75,11 +86,11 @@ public class WeaponSelectionCanvas : SelectionCanvas {
     }
 
     public override void rotateEquipment() {
-        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedItem.isEmpty()) {
+        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon.isEmpty()) {
+            var slottedWeapon = getWeaponInSlot(selectedIndex);
             Inventory.addWeapon(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon);
-            FindObjectOfType<UnitCanvas>().setUnitWeapon(getWeaponInSlot(selectedIndex));
-
-            Inventory.removeWeapon(getWeaponInSlot(selectedIndex));
+            FindObjectOfType<UnitCanvas>().setUnitWeapon(slottedWeapon);
+            Inventory.removeWeapon(slottedWeapon);
         }
 
         //  unit just takes
@@ -89,10 +100,6 @@ public class WeaponSelectionCanvas : SelectionCanvas {
             Inventory.removeWeapon(getWeaponInSlot(selectedIndex));
         }
         selectedIndex = -1;
-    }
-
-    public override bool isSlotPopulated(int index) {
-        return getWeaponInSlot(selectedIndex) != null;
     }
 
     public override int getState() {

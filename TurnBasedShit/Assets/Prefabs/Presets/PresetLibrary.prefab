@@ -47,11 +47,12 @@ MonoBehaviour:
   playerUnit: {fileID: 2150725456124683392, guid: 0f7e8ba4920db974598a9f8b50a5495f,
     type: 3}
   enemies:
-  - {fileID: 6037864551336239585, guid: 08b421165bf5c6b45b8a47228b8e066a, type: 3}
-  - {fileID: 6037864551336239585, guid: fb3126fcca0afed4bbb4af94c35fe9b0, type: 3}
-  - {fileID: 6037864551336239585, guid: 7e2d0e1460eb0d041b27304ca7917a33, type: 3}
-  - {fileID: 6037864551336239585, guid: 9aad8b0a006824b4b88b7c2f62bb7d90, type: 3}
-  - {fileID: 6037864551336239585, guid: 42d4b8dbe02a9124c840219077b58950, type: 3}
+  - {fileID: 4044643730084277563, guid: 06a83c28e83849548833f1ce2dcab8ef, type: 3}
+  - {fileID: 5375930182506040063, guid: f9f648916ceeed045950282259f73b5d, type: 3}
+  - {fileID: 6547124609093489396, guid: a9a3a7098a518db44a85e8ba38dbad4e, type: 3}
+  - {fileID: 5988970855522526352, guid: a986f373b87534645b02b010aa7205ad, type: 3}
+  - {fileID: 7965800103628401659, guid: c3ac61417ba571f488f2e9ce4301e0a0, type: 3}
+  - {fileID: 1139315496115550824, guid: 05e7172bdc1aa0942bc7595b8f1c3ee7, type: 3}
   bosses:
   - {fileID: 6037864551336239585, guid: 021ed20cc3c35ee4e87aaea09b917065, type: 3}
   unitTraits:
@@ -63,6 +64,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: cc62de2a3a7f61e46b02425a6397991b, type: 2}
   - {fileID: 11400000, guid: 14f4232e1df3eea438bf76700851cd67, type: 2}
   - {fileID: 11400000, guid: 518cd7358d1b7bd48a37bccff16f060c, type: 2}
+  unitHeads:
+  - {fileID: 1528757186038822070, guid: 476a50e10801ef9419d0b9865c6eaaee, type: 3}
+  - {fileID: 924103006167886182, guid: b2be06fe4cef9d34398d25cbdddf8e26, type: 3}
+  - {fileID: 3941224534126825966, guid: 528baf806be60ea4285b23182b4514d8, type: 3}
+  unitFaces:
+  - {fileID: 6151593519759729981, guid: 589fd9954d6285a4e89483743597ba5e, type: 3}
+  - {fileID: -9074254211471384035, guid: 589fd9954d6285a4e89483743597ba5e, type: 3}
+  - {fileID: 9221632912473160712, guid: 589fd9954d6285a4e89483743597ba5e, type: 3}
+  unitBodies:
+  - {fileID: 2457729459066249754, guid: 0932a11f003901045aaca8f5b7e7123d, type: 3}
+  - {fileID: 5707132123852053040, guid: 006bbdd50449cb64c9dad6af2f41a863, type: 3}
+  - {fileID: 877259889355906837, guid: bf00906f4bab1b840bea377ca514bcce, type: 3}
   combatScars:
   - sprite: {fileID: 21300000, guid: 39ec644c379dfa5429bc12fc2c4c4390, type: 3}
     scale: 0
@@ -117,6 +130,8 @@ MonoBehaviour:
   armorUpgradeIcon: {fileID: 21300000, guid: 0841e42a349068b41b77bf46f939c41c, type: 3}
   nestIcon: {fileID: 21300000, guid: 03c4bffc5f21bd349b4df07953046f07, type: 3}
   townIcon: {fileID: 21300000, guid: d93611e6911589c41aa6aea04827566f, type: 3}
+  rescueIcon: {fileID: 21300000, guid: 03c4bffc5f21bd349b4df07953046f07, type: 3}
+  bossIcon: {fileID: 21300000, guid: 03c4bffc5f21bd349b4df07953046f07, type: 3}
 --- !u!114 &9152197614094743713
 MonoBehaviour:
   m_ObjectHideFlags: 0

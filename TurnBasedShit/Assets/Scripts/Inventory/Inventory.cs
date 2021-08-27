@@ -72,6 +72,8 @@ public static class Inventory {
     }
 
     public static void addWeapon(Weapon w) {
+        if(w == null || w.isEmpty())
+            return;
         int index = getTypeCount(typeof(Weapon));
 
         var data = JsonUtility.ToJson(w);
@@ -79,6 +81,8 @@ public static class Inventory {
         SaveData.setInt(objectCountTag(typeof(Weapon)), index + 1);
     }
     public static void addArmor(Armor a) {
+        if(a == null || a.isEmpty())
+            return;
         int index = getTypeCount(typeof(Armor));
 
         var data = JsonUtility.ToJson(a);
@@ -86,6 +90,8 @@ public static class Inventory {
         SaveData.setInt(objectCountTag(typeof(Armor)), index + 1);
     }
     public static void addConsumable(Consumable c) {
+        if(c == null || c.isEmpty())
+            return;
         int index = getTypeCount(typeof(Consumable));
 
         var data = JsonUtility.ToJson(c);
@@ -93,6 +99,8 @@ public static class Inventory {
         SaveData.setInt(objectCountTag(typeof(Consumable)), index + 1);
     }
     public static void addItem(Item it) {
+        if(it == null || it.isEmpty())
+            return;
         int index = getTypeCount(typeof(Item));
 
         var data = JsonUtility.ToJson(it);
@@ -105,6 +113,8 @@ public static class Inventory {
     }
 
     public static void removeWeapon(Weapon w) {
+        if(w == null || w.isEmpty())
+            return;
         List<Weapon> temp = new List<Weapon>();
         for(int i = 0; i < getTypeCount(typeof(Weapon)); i++) {
             Weapon invWeapon = getWeapon(i);
@@ -117,6 +127,8 @@ public static class Inventory {
             addWeapon(i);
     }
     public static void removeArmor(Armor a) {
+        if(a == null || a.isEmpty())
+            return;
         List<Armor> temp = new List<Armor>();
         for(int i = 0; i < getTypeCount(typeof(Armor)); i++) {
             Armor invArmor = getArmor(i);
@@ -129,6 +141,8 @@ public static class Inventory {
             addArmor(i);
     }
     public static void removeConsumable(Consumable c) {
+        if(c == null || c.isEmpty())
+            return;
         List<Consumable> temp = new List<Consumable>();
         for(int i = 0; i < getTypeCount(typeof(Consumable)); i++) {
             Consumable invCons = getConsumable(i);
@@ -141,6 +155,8 @@ public static class Inventory {
             addConsumable(i);
     }
     public static void removeItem(Item it) {
+        if(it == null || it.isEmpty())
+            return;
         List<Item> temp = new List<Item>();
         for(int i = 0; i < getTypeCount(typeof(Item)); i++) {
             Item invItem = getItem(i);

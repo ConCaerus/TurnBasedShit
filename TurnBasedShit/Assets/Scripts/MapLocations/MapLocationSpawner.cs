@@ -13,8 +13,6 @@ public class MapLocationSpawner : MonoBehaviour {
 
 
     private void Start() {
-        //MapLocationHolder.clearSaveData();
-        //Inventory.clearInventory();
         if(MapLocationHolder.getPickupCount() == 0)
             createNewRandomEquipmentPickup();
         if(MapLocationHolder.getUpgradeCount() == 0)
@@ -159,7 +157,7 @@ public class MapLocationSpawner : MonoBehaviour {
         var obj = Instantiate(iconPreset.gameObject);
         obj.transform.position = temp.pos;
         obj.transform.SetParent(transform);
-        obj.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getBossFightLocationSprite(temp);
+        obj.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getBossFightLocationSprite();
 
 
         //  saves the TownLocation

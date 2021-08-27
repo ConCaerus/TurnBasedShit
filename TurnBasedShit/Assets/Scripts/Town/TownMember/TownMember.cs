@@ -5,8 +5,14 @@ using UnityEngine;
 [System.Serializable]
 public class TownMember {
     public bool hasQuest = false;
-    public Color m_color;
-    public Quest quest;
+    public UnitSpriteInfo m_sprite = new UnitSpriteInfo();
+
+    //  quests
+    public GameInfo.questType m_questType;
+    public BossFightQuest m_bossQuest = null;
+    public DeliveryQuest m_deliveryQuest = null;
+    public KillQuest m_killQuest = null;
+    public PickupQuest m_pickupQuest = null;
 
     public Town home;
 
@@ -16,12 +22,40 @@ public class TownMember {
         if(setID)
             m_instanceID = GameInfo.getNextTownMemberInstanceID();
 
-        hasQuest = GameVariables.shouldMemberHaveQuest() || autoHasQuest;
+        m_bossQuest = null;
+        m_deliveryQuest = null;
+        m_killQuest = null;
+        m_pickupQuest = null;
+
+        hasQuest = GameVariables.shouldMemberHaveQuest() || autoHasQuest || true;
         if(hasQuest) {
-            quest = lib.createRandomQuest();
+            var q = GameInfo.getRandomQuestType();
+
+            m_questType = q;
+
+            switch(q) {
+                case GameInfo.questType.bossFight:
+                    m_bossQuest = lib.createRandomBossFightQuest(true);
+                    break;
+
+                case GameInfo.questType.delivery:
+                    m_deliveryQuest = lib.createRandomDeliveryQuest(true);
+                    break;
+
+                case GameInfo.questType.kill:
+                    m_killQuest = lib.createRandomKillQuest(true);
+                    break;
+
+                case GameInfo.questType.pickup:
+                    m_pickupQuest = lib.createRandomPickupQuest(true);
+                    break;
+            }
         }
 
-        m_color = getRandomColor();
+        m_sprite.color = getRandomColor();
+        m_sprite.headIndex = Random.Range(0, lib.getHeadCount());
+        m_sprite.faceIndex = Random.Range(0, lib.getFaceCount());
+        m_sprite.bodyIndex = Random.Range(0, lib.getBodyCount());
     }
 
 
@@ -33,12 +67,49 @@ public class TownMember {
         if(other == null)
             return;
         hasQuest = other.hasQuest;
-        m_color = other.m_color;
-        quest = other.quest;
+        m_sprite.setEqualTo(other.m_sprite);
+
+        m_bossQuest = null;
+        m_deliveryQuest = null;
+        m_killQuest = null;
+        m_pickupQuest = null;
+
+        if(other.hasQuest) {
+            m_questType = other.m_questType;
+            if(other.m_questType == GameInfo.questType.bossFight) {
+                m_bossQuest = other.m_bossQuest;
+                m_bossQuest.setEqualTo(other.m_bossQuest, true);
+            }
+            else if(other.m_questType == GameInfo.questType.delivery) {
+                m_deliveryQuest = other.m_deliveryQuest;
+                m_deliveryQuest.setEqualTo(other.m_deliveryQuest, true);
+            }
+            else if(other.m_questType == GameInfo.questType.kill) {
+                m_killQuest = other.m_killQuest;
+                m_killQuest.setEqualTo(other.m_killQuest, true);
+            }
+            else if(other.m_questType == GameInfo.questType.pickup) {
+                m_pickupQuest = other.m_pickupQuest;
+                m_pickupQuest.setEqualTo(other.m_pickupQuest, true);
+            }
+        }
 
         home = other.home;
 
         if(takeID)
             m_instanceID = other.m_instanceID;
+    }
+
+
+    public bool isQuestActive() {
+        if(m_questType == GameInfo.questType.bossFight)
+            return ActiveQuests.hasQuest(m_bossQuest);
+        if(m_questType == GameInfo.questType.kill)
+            return ActiveQuests.hasQuest(m_killQuest);
+        if(m_questType == GameInfo.questType.delivery)
+            return ActiveQuests.hasQuest(m_deliveryQuest);
+        if(m_questType == GameInfo.questType.pickup)
+            return ActiveQuests.hasQuest(m_pickupQuest);
+        return false;
     }
 }

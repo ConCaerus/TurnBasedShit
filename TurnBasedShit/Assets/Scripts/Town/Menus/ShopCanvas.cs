@@ -275,7 +275,7 @@ public class ShopCanvas : MonoBehaviour {
                     if(slaveCount <= 0)
                         break;
                     for(int i = 0; i < slaveCount; i++) {
-                        createNewSlot(i, FindObjectOfType<PresetLibrary>().getPlayerUnitSprite().sprite, ShopInventory.getSlave(currentTown.t_instanceID, i).u_color);
+                        //createNewSlot(i, FindObjectOfType<PresetLibrary>().getPlayerUnitSprite().sprite, ShopInventory.getSlave(currentTown.t_instanceID, i).u_color);
                     }
                     break;
             }
@@ -325,8 +325,8 @@ public class ShopCanvas : MonoBehaviour {
                     if(Party.getMemberCount() <= 0)
                         break;
 
-                    for(int i = 0; i < Party.getMemberCount(); i++)
-                        createNewSlot(i, FindObjectOfType<PresetLibrary>().getPlayerUnitSprite().sprite, Party.getMemberStats(i).u_color);
+                    //for(int i = 0; i < Party.getMemberCount(); i++)
+                        //createNewSlot(i, FindObjectOfType<PresetLibrary>().getPlayerUnitSprite().sprite, Party.getMemberStats(i).u_color);
                     break;
             }
         }

@@ -13,6 +13,11 @@ public class UnitBattleMech : MonoBehaviour {
     bool battleEnded = false;
 
     private void Awake() {
+        foreach(var i in FindObjectsOfType<Animator>()) {
+            if(i.runtimeAnimatorController.name == "Tree") {
+                i.ForceStateNormalizedTime(i.gameObject.transform.position.x / 20.0f);
+            }
+        }
         StartCoroutine(FindObjectOfType<TransitionCanvas>().runAfterLoading(setUp));
     }
 
@@ -22,6 +27,7 @@ public class UnitBattleMech : MonoBehaviour {
             Debug.Log("created");
         }
 
+        //  mechs
         FindObjectOfType<PartyObject>().instantiatePartyMembers();
         FindObjectOfType<EnemyUnitSpawner>().spawnEnemies(0);
         battleResultsCanvas.SetActive(false);
@@ -82,8 +88,8 @@ public class UnitBattleMech : MonoBehaviour {
                 else if(GameInfo.getCombatDetails() != null && waveIndex < GameInfo.getCombatDetails().waves.Count - 1) {
                     waveIndex++;
                     FindObjectOfType<RoundCounterCanvas>().incrementAndUpdateWaveCount();
-                    FindObjectOfType<TurnOrderSorter>().resetList();
                     FindObjectOfType<EnemyUnitSpawner>().spawnEnemies(waveIndex);
+                    FindObjectOfType<TurnOrderSorter>().resetList();
                 }
             }
 

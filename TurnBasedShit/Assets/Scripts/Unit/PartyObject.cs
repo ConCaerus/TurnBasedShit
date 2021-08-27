@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PartyObject : MonoBehaviour {
+    float unitSpotXOffset = -0.05f;
+    float unitSpotYOffset = -0.5f;
     public void instantiatePartyMembers() {
         //  Deletes all existing objects
         for(int i = 0; i < FindObjectsOfType<PlayerUnitInstance>().Length; i++)
@@ -16,6 +18,8 @@ public class PartyObject : MonoBehaviour {
 
         for(int i = 0; i < Party.getMemberCount(); i++) {
             var obj = Instantiate(FindObjectOfType<PresetLibrary>().getPlayerUnit());
+            obj.GetComponent<UnitClass>().stats = FindObjectOfType<PresetLibrary>().createRandomPlayerUnitStats();
+
             if(Party.getMemberStats(i) == null || Party.getMemberStats(i).isEmpty()) {
                 obj.gameObject.GetComponent<UnitClass>().setEquipment();
                 Party.addUnitAtIndex(i, obj.gameObject.GetComponent<UnitClass>().stats);
@@ -27,15 +31,15 @@ public class PartyObject : MonoBehaviour {
 
             //  adds a trait if traits are empty
             if(Party.getMemberStats(i).u_traits.Count == 0)
-                obj.GetComponent<UnitClass>().stats.u_traits.Add(FindObjectOfType<PresetLibrary>().getRandomUnitTrait());
+                obj.GetComponent<UnitClass>().stats.u_traits.Add(FindObjectOfType<PresetLibrary>().getRandomUnusedUnitTrait(obj.GetComponent<UnitClass>().stats));
 
 
             //  sets sprite
-            obj.GetComponent<SpriteRenderer>().color = Party.getMemberStats(i).u_color;
+            obj.GetComponentInChildren<UnitSpriteHandler>().setEverything(obj.GetComponent<UnitClass>().stats.u_sprite, obj.GetComponent<UnitClass>().stats.equippedWeapon, obj.GetComponent<UnitClass>().stats.equippedArmor);
 
             //  sets pos
             int randIndex = Random.Range(0, unusedSpawnPoses.Count);
-            obj.transform.position = unusedSpawnPoses[randIndex].transform.position + new Vector3(0.0f, obj.GetComponent<UnitClass>().spotOffset, 0.0f);
+            obj.transform.position = unusedSpawnPoses[randIndex].transform.position + new Vector3(unitSpotXOffset, obj.GetComponentInChildren<UnitSpriteHandler>().getHeight() + unitSpotYOffset, 0.0f);
             unusedSpawnPoses.RemoveAt(randIndex);
 
             Party.overrideUnit(obj.GetComponent<UnitClass>().stats);
@@ -66,6 +70,21 @@ public class PartyObject : MonoBehaviour {
                 return i.gameObject;
         }
         return null;
+    }
+
+
+    public void repositionUnit(GameObject unit) {
+        float closestDist = 100.0f;
+        GameObject spot = null;
+        foreach(var i in FindObjectsOfType<CombatSpot>()) {
+            if(Vector2.Distance(unit.transform.position, i.transform.position) < closestDist) {
+                closestDist = Vector2.Distance(unit.transform.position, i.transform.position);
+                spot = i.gameObject;
+            }
+        }
+
+
+        unit.transform.position = spot.transform.position + new Vector3(unitSpotXOffset, unit.GetComponentInChildren<UnitSpriteHandler>().getHeight() + unitSpotYOffset, 0.0f);
     }
 }
 

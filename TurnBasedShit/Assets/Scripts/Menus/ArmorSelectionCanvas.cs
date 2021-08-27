@@ -8,23 +8,34 @@ using TMPro;
 
 public class ArmorSelectionCanvas : SelectionCanvas {
 
-    public Armor getArmorInSlot(int wIndex) {
-        int slotIndex = -1;
-        for(int i = 0; i < slotHolder.transform.childCount; i++) {
-            if(Inventory.getArmor(i) != null && !Inventory.getArmor(i).isEmpty()) {
-                slotIndex++;
-                if(slotIndex == wIndex)
-                    return Inventory.getArmor(i);
-            }
+    public Armor getArmorInSlot(int index) {
+        if(index == 0) {
+            if(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor == null || FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor.isEmpty())
+                return Inventory.getArmor(0);
+            else
+                return FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor;
         }
-
-        return null;
+        else {
+            if(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor == null || FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor.isEmpty())
+                return Inventory.getArmor(index);
+            else
+                return Inventory.getArmor(index - 1);
+        }
     }
 
     public override void updateInfo() {
         //                          Armor shit
-        if(selectedIndex < 0)
-            selectedIndex = 0;
+        if(getArmorInSlot(selectedIndex) == null || getArmorInSlot(selectedIndex).isEmpty()) {
+            shownImage.sprite = null;
+            shownImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
+
+            nameText.text = "";
+            firstText.text = "0.0";
+            secondText.text = "0.0";
+            firstAttributeText.text = "";
+            secondAttributeText.text = "";
+            return;
+        }
         var shownArmor = getArmorInSlot(selectedIndex);
         shownImage.sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(shownArmor).sprite;
         shownImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<UnitCanvas>().getRarityColor(shownArmor.a_rarity);
@@ -75,11 +86,11 @@ public class ArmorSelectionCanvas : SelectionCanvas {
     }
 
     public override void rotateEquipment() {
-        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedItem.isEmpty()) {
+        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor.isEmpty()) {
+            var slottedArmor = getArmorInSlot(selectedIndex);
             Inventory.addArmor(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor);
-            FindObjectOfType<UnitCanvas>().setUnitArmor(getArmorInSlot(selectedIndex));
-
-            Inventory.removeArmor(getArmorInSlot(selectedIndex));
+            FindObjectOfType<UnitCanvas>().setUnitArmor(slottedArmor);
+            Inventory.removeArmor(slottedArmor);
         }
 
         //  unit just takes
@@ -89,10 +100,6 @@ public class ArmorSelectionCanvas : SelectionCanvas {
             Inventory.removeArmor(getArmorInSlot(selectedIndex));
         }
         selectedIndex = -1;
-    }
-
-    public override bool isSlotPopulated(int index) {
-        return getArmorInSlot(selectedIndex) != null;
     }
 
     public override int getState() {

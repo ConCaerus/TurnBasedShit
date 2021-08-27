@@ -9,23 +9,30 @@ using TMPro;
 
 public class ItemSelectionCanvas : SelectionCanvas {
 
-    public Item getItemInSlot(int wIndex) {
-        int slotIndex = -1;
-        for(int i = 0; i < slotHolder.transform.childCount; i++) {
-            if(Inventory.getItem(i) != null && !Inventory.getItem(i).isEmpty()) {
-                slotIndex++;
-                if(slotIndex == wIndex)
-                    return Inventory.getItem(i);
-            }
+    public Item getItemInSlot(int index) {
+        if(index == 0) {
+            if(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem == null || FindObjectOfType<UnitCanvas>().shownUnit.equippedItem.isEmpty())
+                return Inventory.getItem(0);
+            else
+                return FindObjectOfType<UnitCanvas>().shownUnit.equippedItem;
         }
-
-        return null;
+        else {
+            if(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem == null || FindObjectOfType<UnitCanvas>().shownUnit.equippedItem.isEmpty())
+                return Inventory.getItem(index);
+            else
+                return Inventory.getItem(index - 1);
+        }
     }
 
     public override void updateInfo() {
         //                          Item shit
-        if(selectedIndex < 0)
-            selectedIndex = 0;
+        if(getItemInSlot(selectedIndex) == null || getItemInSlot(selectedIndex).isEmpty()) {
+            shownImage.sprite = null;
+            shownImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
+
+            nameText.text = "";
+            return;
+        }
         var shownItem = getItemInSlot(selectedIndex);
         shownImage.sprite = FindObjectOfType<PresetLibrary>().getItemSprite(shownItem).sprite;
         shownImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<UnitCanvas>().getRarityColor(shownItem.i_rarity);
@@ -37,10 +44,10 @@ public class ItemSelectionCanvas : SelectionCanvas {
 
     public override void rotateEquipment() {
         if(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedItem.isEmpty()) {
+            var slottedItem = getItemInSlot(selectedIndex);
             Inventory.addItem(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem);
-            FindObjectOfType<UnitCanvas>().setUnitItem(getItemInSlot(selectedIndex));
-
-            Inventory.removeItem(getItemInSlot(selectedIndex));
+            FindObjectOfType<UnitCanvas>().setUnitItem(slottedItem);
+            Inventory.removeItem(slottedItem);
         }
 
         //  unit just takes
@@ -50,10 +57,6 @@ public class ItemSelectionCanvas : SelectionCanvas {
             Inventory.removeItem(getItemInSlot(selectedIndex));
         }
         selectedIndex = -1;
-    }
-
-    public override bool isSlotPopulated(int index) {
-        return getItemInSlot(selectedIndex) != null;
     }
 
     public override int getState() {

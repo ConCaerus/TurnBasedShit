@@ -14,11 +14,12 @@ public class BuildingSpawner : MonoBehaviour {
     public List<GameObject> buildingObjects = new List<GameObject>();
 
     private void Awake() {
-        if(GameInfo.getCurrentLocationAsTown() != null)
+        if(GameInfo.getCurrentLocationAsTown() != null && false)
             reference = GameInfo.getCurrentLocationAsTown().town;
         else {
-            var temp = new TownLocation(MapAnchorPositionSaver.getAnchorPos(MapAnchorPositionSaver.getPartyPointLocationIndex()).start, GameInfo.getCurrentDiff(), FindObjectOfType<PresetLibrary>());
-            MapLocationHolder.addLocation(temp);
+            var temp = Map.getRandomTownLocationInRegion((int)GameInfo.getCurrentDiff());
+            temp.town.visited = true;
+            MapLocationHolder.overrideTownLocation(temp);
             GameInfo.setCurrentLocationAsTown(temp);
             reference = temp.town;
         }

@@ -34,12 +34,8 @@ public class RoadRenderer : MonoBehaviour {
     }
 
     private void Start() {
-        partyObject = Instantiate(partyObjectPreset, Vector2.zero, Quaternion.identity, transform);
+        resetPartyObject();
         partyObject.transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
-        if(Party.getLeaderID() != -1 && Party.getLeaderStats() != null)
-            partyObject.GetComponent<SpriteRenderer>().color = Party.getLeaderStats().u_color;
-        else
-            partyObject.GetComponent<SpriteRenderer>().color = Party.getMemberStats(0).u_color;
         StartCoroutine(FindObjectOfType<TransitionCanvas>().runAfterLoading(growPartyObj));
         loadAndRenderSavedPoints();
         foreach(var i in getAllRoadPoints()) {
@@ -137,7 +133,7 @@ public class RoadRenderer : MonoBehaviour {
     void createNewRoad() {
         MapAnchorPositionSaver.clearPositions();
 
-        Vector2 startingPoint = new Vector2(Map.leftBound, Map.getRandPos().y);
+        Vector2 startingPoint = new Vector2(Map.leftBound, (Map.topBound + Map.botBound) / 2.0f);
         Vector2 endingPoint = new Vector2(Map.rightBound, Map.getRandPos().y);
 
         roadSegments.Clear();
@@ -468,8 +464,9 @@ public class RoadRenderer : MonoBehaviour {
 
 
             //  decide what happens at this location
-            GameInfo.setCurrentRegionDiff(FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(partyPoint.x));
-            FindObjectOfType<MapEventsHandler>().triggerAnchorEvents(partyPoint);
+            MapAnchorPositionSaver.setPartyPointIndex(getPointIndex(getPointAtPos(target)));
+            GameInfo.setCurrentRegionDiff(FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(roadPointObjects[MapAnchorPositionSaver.getPartyPointLocationIndex()].transform.position.x));
+            FindObjectOfType<MapEventsHandler>().triggerAnchorEvents(roadPointObjects[MapAnchorPositionSaver.getPartyPointLocationIndex()].transform.position);
             FindObjectOfType<MapEventsHandler>().chanceEncounter(GameInfo.getCurrentDiff());
 
             while(hitEnd && Input.GetKey(KeyCode.Space))
@@ -486,7 +483,7 @@ public class RoadRenderer : MonoBehaviour {
     }
     public void growPartyObj() {
         partyObject.transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
-        partyObject.transform.DOScale(0.5f, partyGrowSpeed);
+        partyObject.transform.DOScale(1f, partyGrowSpeed);
         partyObject.transform.DOLocalRotate(new Vector3(0.0f, 0.0f, 360.0f), partyGrowSpeed, RotateMode.FastBeyond360);
     }
 
@@ -567,6 +564,25 @@ public class RoadRenderer : MonoBehaviour {
 
     public Vector2 getPartyObjectPos() {
         return partyObject.transform.position;
+    }
+    public GameObject getPartyObject() {
+        return partyObject;
+    }
+    public void resetPartyObject() {
+        Vector2 pos = Vector2.zero;
+        if(partyObject != null) {
+            pos = partyObject.transform.position;
+            Destroy(partyObject.gameObject);
+        }
+
+        int headIndex = Party.getLeaderStats().u_sprite.headIndex;
+        int faceIndex = Party.getLeaderStats().u_sprite.faceIndex;
+        partyObject = Instantiate(FindObjectOfType<PresetLibrary>().getUnitHead(headIndex), pos, Quaternion.identity, transform);
+        partyObject.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getUnitFace(faceIndex);
+        partyObject.transform.GetChild(0).transform.localPosition = Vector3.zero;
+        partyObject.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        partyObject.transform.GetChild(0).GetComponent<Animator>().enabled = false;
+        partyObject.transform.GetChild(0).GetComponent<SpriteRenderer>().color = Party.getLeaderStats().u_sprite.color;
     }
 }
 

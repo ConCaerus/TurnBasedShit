@@ -25,9 +25,9 @@ public class Armor {
 
     //  NOTE: this function is applied by the defending unit while the 
     //          weapon class has its function called by the attacker
-    public int applyAttributesAfterAttack(GameObject weilder, GameObject attacker) {
+    public int applyAttributesAfterAttack(GameObject weilder, GameObject attacker, GameObject turnTaker) {
         foreach(var i in a_attributes) {
-            if(i == attribute.Reflex) {
+            if(i == attribute.Reflex && turnTaker != weilder) {
                 weilder.GetComponent<UnitClass>().attack(attacker);
                 return 1;
             }
@@ -128,4 +128,31 @@ public class Armor {
 [System.Serializable]
 public class ArmorSpriteHolder {
     public Sprite sprite, equippedSprite;
+
+    public float xPos0, yPos0, xSize0, ySize0;
+    public float xPos1, yPos1, xSize1, ySize1;
+    public float xPos2, yPos2, xSize2, ySize2;
+
+    public Vector2 getRelevantPos(int bodyIndex) {
+        if(bodyIndex == 0)
+            return new Vector2(xPos0, yPos0);
+        else if(bodyIndex == 1)
+            return new Vector2(xPos1, yPos1);
+        else if(bodyIndex == 2)
+            return new Vector2(xPos1, yPos1);
+
+        return Vector2.zero;
+    }
+
+    public Vector2 getRelevantSize(int bodyIndex) {
+        if(bodyIndex == 0)
+            return new Vector2(xSize0, ySize0);
+        else if(bodyIndex == 1)
+            return new Vector2(xSize1, ySize1);
+        else if(bodyIndex == 2)
+            return new Vector2(xSize2, ySize2);
+
+        Debug.Log(bodyIndex);
+        return Vector2.zero;
+    }
 }

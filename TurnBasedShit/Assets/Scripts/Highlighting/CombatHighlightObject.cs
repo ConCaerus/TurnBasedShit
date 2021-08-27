@@ -5,11 +5,11 @@ using DG.Tweening;
 
 public class CombatHighlightObject : MonoBehaviour {
     float startAnimTime = 0.15f;
-    float startScale = 1.25f;
+    float startScale = 0.5f;
     public bool finishedAnim = false;
 
     float endAnimTime = 0.15f;
-    float endScale = 1.25f;
+    float endScale = 0.75f;
 
     Coroutine starter = null, ender = null;
 
@@ -39,7 +39,7 @@ public class CombatHighlightObject : MonoBehaviour {
 
         yield return new WaitForSeconds(startAnimTime * 0.75f);
 
-        transform.DOScale(1.0f, startAnimTime * 0.25f);
+        transform.DOScale(0.5f, startAnimTime * 0.25f);
 
         yield return new WaitForSeconds(startAnimTime * 0.25f);
 

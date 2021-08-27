@@ -7,8 +7,6 @@ public abstract class UnitClass : MonoBehaviour {
     [SerializeField] AudioClip hitSound, dieSound;
     public GameObject attackingTarget = null;
     public ParticleSystem bloodParticles;
-
-    [SerializeField] UnitSpriteHolder u_sprite;
     public Color hitColor;
 
     public bool isPlayerUnit = true;
@@ -25,8 +23,8 @@ public abstract class UnitClass : MonoBehaviour {
     [SerializeField] WeaponPreset weapon = null;
     [SerializeField] ArmorPreset armor = null;
 
-    Vector2 normalSize;
-    Coroutine attackAnim, defendAnim;
+    Vector2 normalSize, normalPos;
+    public Coroutine attackAnim, defendAnim;
 
 
     public UnitStats stats;
@@ -34,7 +32,7 @@ public abstract class UnitClass : MonoBehaviour {
 
 
     private void OnMouseEnter() {
-        if(FindObjectOfType<InventoryCanvas>().isOpen() || FindObjectOfType<BattleResultsCanvas>() != null) {
+        if(FindObjectOfType<MenuCanvas>().isOpen() || FindObjectOfType<BattleResultsCanvas>() != null) {
             isMouseOverUnit = false;
             FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
             return;
@@ -49,13 +47,12 @@ public abstract class UnitClass : MonoBehaviour {
     }
 
     public void setup() {
-        if(isPlayerUnit)
-            u_sprite = FindObjectOfType<PresetLibrary>().getPlayerUnitSprite();
-        else
-            u_sprite = FindObjectOfType<PresetLibrary>().getEnemyUnitSprite(gameObject.GetComponent<EnemyUnitInstance>());
+        if(isPlayerUnit) {
+            GetComponentInChildren<UnitSpriteHandler>().setEverything(stats.u_sprite, stats.equippedWeapon, stats.equippedArmor);
+        }
 
         if(string.IsNullOrEmpty(stats.u_name)) {
-            setNewRandomName();
+            name = NameLibrary.getRandomUsablePlayerName();
         }
         else
             name = stats.u_name;
@@ -64,7 +61,7 @@ public abstract class UnitClass : MonoBehaviour {
         normalSize = transform.localScale;
 
         if(isPlayerUnit)
-            Party.overrideUnit(stats);
+            FindObjectOfType<PartyObject>().resaveInstantiatedUnit(stats);
     }
 
 
@@ -109,18 +106,16 @@ public abstract class UnitClass : MonoBehaviour {
 
 
     public void attack(GameObject defender) {
+        transform.DOComplete();
+        normalPos = transform.position;
         //  triggers
         FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeAttacking, this, true);
-
-        //  Attack unit
-        defender.GetComponent<UnitClass>().defend(gameObject, stats.getDamageGiven(tempPower));
 
         //  triggers
         stats.equippedWeapon.applyAttributesAfterAttack(gameObject, defender);
 
         //  Flair
-        attackAnim = StartCoroutine(attackingAnim(defender.transform.position));
-        FindObjectOfType<AudioManager>().playSound(hitSound);
+        attackAnim = StartCoroutine(attackingAnim(defender));
     }
     public void defend(GameObject attacker, float dmg) {
         //  triggers
@@ -152,7 +147,7 @@ public abstract class UnitClass : MonoBehaviour {
         defendAnim = StartCoroutine(defendingAnim());
 
         //  triggers
-        int armorReaction = stats.equippedArmor.applyAttributesAfterAttack(gameObject, attacker);
+        int armorReaction = stats.equippedArmor.applyAttributesAfterAttack(gameObject, attacker, FindObjectOfType<TurnOrderSorter>().playingUnit);
         //  reflex
         if(armorReaction == 1) {
             return;
@@ -175,7 +170,7 @@ public abstract class UnitClass : MonoBehaviour {
             FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterKill, this, false);
 
             //  increases acc quest counter
-            for(int i = 0; i < ActiveQuests.getQuestTypeCount(Quest.questType.kill); i++) {
+            for(int i = 0; i < ActiveQuests.getQuestTypeCount(GameInfo.questType.kill); i++) {
                 if(ActiveQuests.getKillQuest(i).enemyType == GetComponent<EnemyUnitInstance>().enemyType)
                     ActiveQuests.getKillQuest(i).howManyToKill++;
             }
@@ -186,8 +181,7 @@ public abstract class UnitClass : MonoBehaviour {
 
         //  removes unit from game world
         FindObjectOfType<TurnOrderSorter>().removeUnitFromList(gameObject);
-        FindObjectOfType<DamageTextCanvas>().removeTextsWithUnit(gameObject);
-        FindObjectOfType<UnitCombatInformationCanvas>().removeInfoForUnit(gameObject);
+        //FindObjectOfType<DamageTextCanvas>().removeTextsWithUnit(gameObject);
         Destroy(gameObject);
     }
 
@@ -222,7 +216,7 @@ public abstract class UnitClass : MonoBehaviour {
         if(w == null) return;
         stats.equippedWeapon = w;
 
-        Party.overrideUnit(stats);
+        FindObjectOfType<PartyObject>().resaveInstantiatedUnit(stats);
     }
     public void removeEquippedWeapon() {
         stats.equippedWeapon = null;
@@ -236,7 +230,7 @@ public abstract class UnitClass : MonoBehaviour {
         if(a == null) return;
         stats.equippedArmor = a;
 
-        Party.overrideUnit(stats);
+        FindObjectOfType<PartyObject>().resaveInstantiatedUnit(stats);
     }
     public void removeEquippedArmor() {
         stats.equippedArmor = null;
@@ -246,45 +240,9 @@ public abstract class UnitClass : MonoBehaviour {
         setEquippedWeapon(w);
         setEquippedArmor(a);
     }
-    public void removeEquipment() {
-        stats.equippedWeapon = null;
-        stats.equippedArmor = null;
-    }
 
-    public void resetSavedEquippment() {
-        if(weapon == null)
-            stats.equippedWeapon.resetWeaponStats();
-        else
-            stats.equippedWeapon.setToPreset(weapon);
-
-        if(armor == null)
-            stats.equippedArmor.resetArmorStats();
-        else
-            stats.equippedArmor.setToPreset(armor);
-
-        Party.overrideUnit(stats);
-    }
-
-    public void populateEmptyEquippment() {
-        if(stats.equippedWeapon.isEmpty() && weapon != null)
-            stats.equippedWeapon.setToPreset(weapon);
-        else if(!stats.equippedWeapon.isEmpty())
-            weapon = stats.equippedWeapon.weaponToPreset();
-
-
-        if(stats.equippedArmor.isEmpty() && armor != null)
-            stats.equippedArmor.setToPreset(armor);
-        else if(!stats.equippedArmor.isEmpty())
-            armor = stats.equippedArmor.armorToPreset();
-
-        Party.overrideUnit(stats);
-    }
-
-    public void setNewRandomName() {
-        if(isPlayerUnit)
-            stats.u_name = NameLibrary.getRandomUsablePlayerName();
-        name = stats.u_name;
-    }
+    public abstract void setDefendingAnim();
+    public abstract void setAttackingAnim();
 
     IEnumerator defendingAnim() {
         if(attackAnim != null)
@@ -293,56 +251,38 @@ public abstract class UnitClass : MonoBehaviour {
         GetComponent<SpriteRenderer>().DOColor(hitColor, 0.05f);
         transform.DOScale(normalSize * 1.5f, 0.15f);
 
-        if(u_sprite.defendingSprite != null) {
-            gameObject.GetComponent<SpriteRenderer>().sprite = u_sprite.defendingSprite;
-            GetComponentInChildren<ShadowObject>().updateSprite();
-        }
+        setDefendingAnim();
 
         yield return new WaitForSeconds(0.1f);
 
-        GetComponent<SpriteRenderer>().DOColor(stats.u_color, 0.25f);
+        GetComponent<SpriteRenderer>().DOColor(stats.u_sprite.color, 0.25f);
 
         yield return new WaitForSeconds(0.25f);
 
         transform.DOScale(normalSize, 0.15f);
-        gameObject.GetComponent<SpriteRenderer>().sprite = u_sprite.sprite;
-        GetComponentInChildren<ShadowObject>().updateSprite();
     }
-    IEnumerator attackingAnim(Vector3 targetPos) {
-        if(defendAnim != null) {
-            StopCoroutine(defendAnim);
-            GetComponent<SpriteRenderer>().DOColor(stats.u_color, 0.25f);
-        }
-
-        gameObject.transform.DOPunchPosition(targetPos - transform.position, 0.25f);
-        transform.DOScale(normalSize * 1.5f, 0.15f);
-
-        if(GetComponent<Animator>() != null)
-            GetComponent<Animator>().SetInteger("state", 1);
-        if(u_sprite.attackingSprite != null) {
-            gameObject.GetComponent<SpriteRenderer>().sprite = u_sprite.attackingSprite;
-            GetComponentInChildren<ShadowObject>().updateSprite();
-        }
-
-        if(u_sprite.attackAnim != null && !u_sprite.attackAnim.empty)
-            yield return new WaitForSeconds(u_sprite.attackAnim.length);
+    IEnumerator attackingAnim(GameObject defender) {
+        //  move to target
+        if(isPlayerUnit)
+            transform.DOMove(defender.transform.position - new Vector3(1.25f, 0.0f, 0.0f), 0.25f);
         else
-            yield return new WaitForSeconds(0.3f);
-    
+            transform.DOMove(defender.transform.position + new Vector3(1.25f, 0.0f, 0.0f), 0.25f);
+        transform.DOScale(normalSize * 1.15f, 0.15f);
 
-        if(GetComponent<Animator>() != null)
-            GetComponent<Animator>().SetInteger("state", 0);
+        //  wait for attacker to reach defender
+        yield return new WaitForSeconds(0.35f);
+
+        //  play animation and hold position
+        setAttackingAnim();
+        FindObjectOfType<AudioManager>().playSound(hitSound);
+
+        //  actually deal damage to defender
+        defender.GetComponent<UnitClass>().defend(gameObject, stats.getDamageGiven(tempPower));
+        yield return new WaitForSeconds(0.4f);
+
+        //  move back to original position
         transform.DOScale(normalSize, 0.15f);
-        if(u_sprite.sprite != null)
-            gameObject.GetComponent<SpriteRenderer>().sprite = u_sprite.sprite;
-
-        foreach(var i in GetComponentsInChildren<ShadowObject>()) {
-            i.updateSprite();
-        }
-    }
-
-
-    public UnitSpriteHolder getSpriteHolder() {
-        return u_sprite;
+        transform.DOMove(normalPos, 0.15f);
+        attackAnim = null;
     }
 }

@@ -35,15 +35,12 @@ public abstract class SelectionCanvas : MonoBehaviour {
         //  update info
         if(Input.GetMouseButtonDown(0) && getMousedOverSlot() != null) {
             selectedIndex = getIndexForSlot(getMousedOverSlot());
-        }
-        if(Input.GetMouseButtonDown(0) && getMousedOverSlot() != null && isSlotPopulated(selectedIndex)) {
             updateInfo();
         }
         //  close window
         else if(Input.GetMouseButtonDown(0) && getMousedOverSlot() == null && shown) {
-            if(isSlotPopulated(selectedIndex)) {
+            if(selectedIndex != -1)
                 rotateEquipment();
-            }
             StartCoroutine(hide());
         }
     }
@@ -55,11 +52,20 @@ public abstract class SelectionCanvas : MonoBehaviour {
             i.transform.GetChild(0).GetComponent<Image>().enabled = false;
             i.GetComponent<Image>().color = Color.gray;
         }
-        for(int i = 0; i < slotHolder.transform.childCount; i++) {
+        for(int i = -1; i < slotHolder.transform.childCount; i++) {
 
             switch(getState()) {
                 case 0:
-                    if(Inventory.getWeapon(i) != null && !Inventory.getWeapon(i).isEmpty()) {
+                    //  adds the unit's own equipment into the slots
+                    if(i == -1) {
+                        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon == null || FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon.isEmpty())
+                            continue;
+                        slotHolder.transform.GetChild(slotIndex).GetChild(0).GetComponent<Image>().enabled = true;
+                        slotHolder.transform.GetChild(slotIndex).GetComponent<Image>().color = FindObjectOfType<UnitCanvas>().getRarityColor(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon.w_rarity) / 1.25f;
+                        slotHolder.transform.GetChild(slotIndex).GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon).sprite;
+                        slotIndex++;
+                    }
+                    else if(Inventory.getWeapon(i) != null && !Inventory.getWeapon(i).isEmpty()) {
                         slotHolder.transform.GetChild(slotIndex).GetChild(0).GetComponent<Image>().enabled = true;
                         slotHolder.transform.GetChild(slotIndex).GetComponent<Image>().color = FindObjectOfType<UnitCanvas>().getRarityColor(Inventory.getWeapon(i).w_rarity) / 1.25f;
                         slotHolder.transform.GetChild(slotIndex).GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getWeapon(i)).sprite;
@@ -68,7 +74,15 @@ public abstract class SelectionCanvas : MonoBehaviour {
                     break;
 
                 case 1:
-                    if(Inventory.getArmor(i) != null && !Inventory.getArmor(i).isEmpty()) {
+                    if(i == -1) {
+                        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor == null || FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor.isEmpty())
+                            continue;
+                        slotHolder.transform.GetChild(slotIndex).GetChild(0).GetComponent<Image>().enabled = true;
+                        slotHolder.transform.GetChild(slotIndex).GetComponent<Image>().color = FindObjectOfType<UnitCanvas>().getRarityColor(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor.a_rarity) / 1.25f;
+                        slotHolder.transform.GetChild(slotIndex).GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor).sprite;
+                        slotIndex++;
+                    }
+                    else if(Inventory.getArmor(i) != null && !Inventory.getArmor(i).isEmpty()) {
                         slotHolder.transform.GetChild(slotIndex).GetChild(0).GetComponent<Image>().enabled = true;
                         slotHolder.transform.GetChild(slotIndex).GetComponent<Image>().color = FindObjectOfType<UnitCanvas>().getRarityColor(Inventory.getArmor(i).a_rarity) / 1.25f;
                         slotHolder.transform.GetChild(slotIndex).GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getArmor(i)).sprite;
@@ -77,7 +91,15 @@ public abstract class SelectionCanvas : MonoBehaviour {
                     break;
 
                 case 2:
-                    if(Inventory.getItem(i) != null && !Inventory.getItem(i).isEmpty()) {
+                    if(i == -1) {
+                        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem == null || FindObjectOfType<UnitCanvas>().shownUnit.equippedItem.isEmpty())
+                            continue;
+                        slotHolder.transform.GetChild(slotIndex).GetChild(0).GetComponent<Image>().enabled = true;
+                        slotHolder.transform.GetChild(slotIndex).GetComponent<Image>().color = FindObjectOfType<UnitCanvas>().getRarityColor(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem.i_rarity) / 1.25f;
+                        slotHolder.transform.GetChild(slotIndex).GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem).sprite;
+                        slotIndex++;
+                    }
+                    else if(Inventory.getItem(i) != null && !Inventory.getItem(i).isEmpty()) {
                         slotHolder.transform.GetChild(slotIndex).GetChild(0).GetComponent<Image>().enabled = true;
                         slotHolder.transform.GetChild(slotIndex).GetComponent<Image>().color = FindObjectOfType<UnitCanvas>().getRarityColor(Inventory.getItem(i).i_rarity) / 1.25f;
                         slotHolder.transform.GetChild(slotIndex).GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(Inventory.getItem(i)).sprite;
@@ -90,7 +112,6 @@ public abstract class SelectionCanvas : MonoBehaviour {
 
     public abstract void rotateEquipment();
     public abstract void updateInfo();
-    public abstract bool isSlotPopulated(int index);
 
     //   0 - weapon, 1 - armor, 2 - item
     public abstract int getState();
@@ -106,6 +127,8 @@ public abstract class SelectionCanvas : MonoBehaviour {
 
 
     public void startShowing() {
+        selectedIndex = -1;
+        updateInfo();
         StartCoroutine(show());
     }
 

@@ -72,8 +72,4 @@ public class BattleOptionsCanvas : MonoBehaviour {
         FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
         FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
     }
-
-    public void item() {
-        FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
-    }
 }
