@@ -20,6 +20,7 @@ public class UnitCanvas : MonoBehaviour {
     public Color leaderColor, nonLeaderColor;
 
     public Slider rSlider, gSlider, bSlider;
+    bool lockColor = true;
 
 
     List<GameObject> traits = new List<GameObject>();
@@ -34,6 +35,7 @@ public class UnitCanvas : MonoBehaviour {
 
 
     public void setup() {
+        lockColor = true;
         shownUnit = Party.getMemberStats(0);
         updateUnitWindow();
     }
@@ -151,10 +153,14 @@ public class UnitCanvas : MonoBehaviour {
         else if(FindObjectOfType<RoadRenderer>() != null && FindObjectOfType<RoadRenderer>().getPartyObject() != null) {
             FindObjectOfType<RoadRenderer>().resetPartyObject();
         }
+
+        lockColor = false;
     }
 
 
     public void updateUnitColor() {
+        if(lockColor)
+            return;
         shownUnit.u_sprite.color = new Color(rSlider.value, gSlider.value, bSlider.value);
         saveShownUnit();
         updateUnitWindow();
@@ -229,6 +235,7 @@ public class UnitCanvas : MonoBehaviour {
 
     //  buttons
     public void cycleUnit(bool right) {
+        lockColor = true;
         int index = shownUnit.u_order;
 
         //  right

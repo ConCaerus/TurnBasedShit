@@ -70,6 +70,9 @@ public class UnitSpriteHandler : MonoBehaviour {
         }
         col = c;
     }
+    public Color getColor() {
+        return col;
+    }
 
     public void setWeapon(Weapon w) {
         var weapon = body.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(0).gameObject;

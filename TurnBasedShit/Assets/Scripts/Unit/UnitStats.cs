@@ -20,7 +20,6 @@ public class UnitStats {
     public float u_defence = 0.0f;
 
     public float u_critChance = 0.0f;
-    public int u_bleedCount = 0;
 
     public int u_order = 0;
 
@@ -47,7 +46,6 @@ public class UnitStats {
         u_baseMaxHealth = other.u_baseMaxHealth;
         u_speed = other.u_speed;
         u_power = other.u_power;
-        u_bleedCount = other.u_bleedCount;
 
         u_order = other.u_order;
         u_sprite.setEqualTo(other.u_sprite);

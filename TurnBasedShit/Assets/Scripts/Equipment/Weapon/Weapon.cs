@@ -5,9 +5,9 @@ using UnityEditor;
 
 [System.Serializable]
 public class Weapon {
-    public const int attributeCount = 3;
+    public const int attributeCount = 4;
     public enum attribute {
-        Power, Bleed, Healing
+        Power, Bleed, Healing, Stun
     }
 
     public int w_instanceID = -1;
@@ -30,11 +30,19 @@ public class Weapon {
     public void applyAttributesAfterAttack(GameObject weilder, GameObject attackedUnit) {
         foreach(var i in w_attributes) {
             if(i == attribute.Bleed) {
-                attackedUnit.GetComponent<UnitClass>().stats.u_bleedCount++;
+                if(attackedUnit.GetComponent<UnitClass>().bleeding)
+                    continue;
+                attackedUnit.GetComponent<UnitClass>().bleeding = GameVariables.chanceBleed();
             }
 
             else if(i == attribute.Healing) {
                 weilder.GetComponent<UnitClass>().addHealth(weilder.GetComponent<UnitClass>().stats.getModifiedMaxHealth() * 0.05f);
+            }
+
+            else if(i == attribute.Stun) {
+                if(attackedUnit.GetComponent<UnitClass>().stunned)
+                    continue;
+                attackedUnit.GetComponent<UnitClass>().stunned = GameVariables.chanceStun();
             }
         }
     }

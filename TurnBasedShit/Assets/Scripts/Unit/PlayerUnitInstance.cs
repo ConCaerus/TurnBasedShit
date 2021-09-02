@@ -54,5 +54,9 @@ public class PlayerUnitInstance : UnitClass {
 
     public void updateSprites() {
         GetComponentInChildren<UnitSpriteHandler>().setEverything(stats.u_sprite, stats.equippedWeapon, stats.equippedArmor);
+        foreach(var i in FindObjectsOfType<CombatSpot>()) {
+            if(i.unit == gameObject)
+                i.setColor();
+        }
     }
 }

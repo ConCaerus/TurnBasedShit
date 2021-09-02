@@ -53,7 +53,6 @@ public abstract class SelectionCanvas : MonoBehaviour {
             i.GetComponent<Image>().color = Color.gray;
         }
         for(int i = -1; i < slotHolder.transform.childCount; i++) {
-
             switch(getState()) {
                 case 0:
                     //  adds the unit's own equipment into the slots
@@ -134,19 +133,25 @@ public abstract class SelectionCanvas : MonoBehaviour {
 
     public IEnumerator show() {
         populateSlots();
+
+        //  close the image that shows the units current equippment
         if(getState() == 0)
             FindObjectOfType<UnitCanvas>().weaponImage.transform.DOScale(new Vector3(0.0f, 0.0f, 0.0f), FindObjectOfType<UnitCanvas>().equippmentTransitionTime);
         if(getState() == 1)
             FindObjectOfType<UnitCanvas>().armorImage.transform.DOScale(new Vector3(0.0f, 0.0f, 0.0f), FindObjectOfType<UnitCanvas>().equippmentTransitionTime);
         if(getState() == 2)
             FindObjectOfType<UnitCanvas>().itemImage.transform.DOScale(new Vector3(0.0f, 0.0f, 0.0f), FindObjectOfType<UnitCanvas>().equippmentTransitionTime);
+
+
         yield return new WaitForSeconds(FindObjectOfType<UnitCanvas>().equippmentTransitionTime);
 
         yield return new WaitForSeconds(FindObjectOfType<UnitCanvas>().timeBtwTransition);
 
-        transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f), FindObjectOfType<UnitCanvas>().equippmentTransitionTime);
+        transform.parent.transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f), FindObjectOfType<UnitCanvas>().equippmentTransitionTime / 2.0f);
 
-        yield return new WaitForSeconds(FindObjectOfType<UnitCanvas>().equippmentTransitionTime);
+        yield return new WaitForSeconds(FindObjectOfType<UnitCanvas>().equippmentTransitionTime / 2.0f);
+
+        transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f), FindObjectOfType<UnitCanvas>().equippmentTransitionTime / 2.0f);
         shown = true;
     }
 
@@ -155,8 +160,13 @@ public abstract class SelectionCanvas : MonoBehaviour {
             yield return 0;
 
         shown = false;
-        transform.DOScale(new Vector3(0.0f, 0.0f, 0.0f), FindObjectOfType<UnitCanvas>().equippmentTransitionTime);
-        yield return new WaitForSeconds(FindObjectOfType<UnitCanvas>().equippmentTransitionTime);
+        transform.parent.transform.DOScale(new Vector3(0.5f, 0.5f, 1.0f), FindObjectOfType<UnitCanvas>().equippmentTransitionTime / 2.0f);
+
+        yield return new WaitForSeconds(FindObjectOfType<UnitCanvas>().equippmentTransitionTime / 2.0f);
+
+        transform.DOScale(new Vector3(0.0f, 0.0f, 0.0f), FindObjectOfType<UnitCanvas>().equippmentTransitionTime / 2.0f);
+
+        yield return new WaitForSeconds(FindObjectOfType<UnitCanvas>().equippmentTransitionTime / 2.0f);
 
         yield return new WaitForSeconds(FindObjectOfType<UnitCanvas>().timeBtwTransition);
 

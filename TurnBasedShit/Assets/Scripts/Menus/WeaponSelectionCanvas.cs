@@ -7,7 +7,6 @@ using UnityEngine.EventSystems;
 using DG.Tweening;
 
 public class WeaponSelectionCanvas : SelectionCanvas {
-
     public Weapon getWeaponInSlot(int index) {
         if(index == 0) {
             if(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon == null || FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon.isEmpty())

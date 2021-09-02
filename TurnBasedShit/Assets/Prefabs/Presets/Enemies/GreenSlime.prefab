@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6987866643090394852}
   - component: {fileID: 2766763210537679178}
-  - component: {fileID: 910510909865111544}
   - component: {fileID: 6545667192313461426}
   - component: {fileID: 7238708706039085809}
+  - component: {fileID: 910510909865111544}
   - component: {fileID: 7897118099356044164}
   m_Layer: 0
   m_Name: GreenSlime
@@ -57,6 +57,53 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!61 &6545667192313461426
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6547124609093489396}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.028580666, y: 0.14012074}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 2.5736713, y: 2.3716445}
+  m_EdgeRadius: 0
+--- !u!50 &7238708706039085809
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6547124609093489396}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!114 &910510909865111544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78,6 +125,7 @@ MonoBehaviour:
   isPlayerUnit: 0
   defending: 0
   stunned: 0
+  bleeding: 0
   isMouseOverUnit: 0
   tempPower: 0
   tempDefence: 0
@@ -101,7 +149,6 @@ MonoBehaviour:
     u_power: 1
     u_defence: 1
     u_critChance: 0.02
-    u_bleedCount: 0
     u_order: 0
     equippedWeapon:
       w_instanceID: -1
@@ -109,7 +156,7 @@ MonoBehaviour:
       w_rarity: 0
       w_element: 0
       w_wornAmount: 0
-      w_attributes: 
+      w_attributes: 03000000
       w_power: 5
       w_speedMod: 0
       w_coinCost: 0
@@ -158,53 +205,6 @@ MonoBehaviour:
   weakTo: 1
   strongTo: 3
   enemyType: 0
---- !u!61 &6545667192313461426
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6547124609093489396}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.028580666, y: 0.14012074}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 2.5736713, y: 2.3716445}
-  m_EdgeRadius: 0
---- !u!50 &7238708706039085809
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6547124609093489396}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!114 &7897118099356044164
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,8 +219,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvasPreset: {fileID: 1441784456717073101, guid: 0900c0f9f52d1314d8e1129e47950eda,
     type: 3}
-  yOffset: 1
+  stunPreset: {fileID: 1542557238675259890, guid: ffcb58352ed8e75409261e843546fc78,
+    type: 3}
+  bleedPreset: {fileID: 4363930972011218595, guid: 624a67cfc305b324f85d0e188ddb6c04,
+    type: 3}
+  yOffset: 0.68
   highlightOffset: {x: 0, y: 0.07}
+  stunOffset: {x: 0, y: 2.11}
+  bleedOffset: {x: 0.58, y: 0.16}
 --- !u!1001 &2474733199226459549
 PrefabInstance:
   m_ObjectHideFlags: 0

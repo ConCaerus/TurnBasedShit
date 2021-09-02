@@ -11,6 +11,7 @@ public class MenuCanvas : MonoBehaviour {
 
 
     private void Start() {
+        GetComponent<Canvas>().worldCamera = Camera.main;
         hardHide();
     }
 

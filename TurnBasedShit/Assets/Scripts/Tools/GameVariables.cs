@@ -3,6 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class GameVariables {
+    //  combat
+    public static bool chanceBleed() {
+        return chanceOutOfHundred(20);
+    }
+    public static bool chanceCureBleed() {
+        return chanceOutOfHundred(25);
+    }
+    public static bool chanceStun() {
+        return chanceOutOfHundred(15);
+    }
+
+
     public static bool shouldMemberHaveQuest() {
         return chanceOutOfHundred(35);
     }

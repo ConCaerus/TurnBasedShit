@@ -12,6 +12,7 @@ public abstract class UnitClass : MonoBehaviour {
     public bool isPlayerUnit = true;
     public bool defending = false;
     public bool stunned = false;
+    public bool bleeding = false;
     public bool isMouseOverUnit = false;
 
     public float tempPower = 0.0f;
@@ -67,17 +68,16 @@ public abstract class UnitClass : MonoBehaviour {
 
 
     public void takeBleedDamage() {
-        if(stats.u_bleedCount > 0) {
-            float temp = (stats.getModifiedMaxHealth() / 100.0f) * stats.u_bleedCount;
+        if(bleeding) {
+            float temp = (stats.getModifiedMaxHealth() / 100.0f);
             stats.u_health -= temp;
 
             checkIfDead();
 
             FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, temp, DamageTextCanvas.damageType.poison);
+
+            bleeding = !GameVariables.chanceCureBleed();
         }
-    }
-    public void cureBleed() {
-        stats.u_bleedCount = 0;
     }
 
     public bool checkIfDead() {
@@ -178,6 +178,12 @@ public abstract class UnitClass : MonoBehaviour {
 
         //  flair
         FindObjectOfType<AudioManager>().playSound(dieSound);
+        foreach(var i in FindObjectsOfType<CombatSpot>()) {
+            if(i.unit == gameObject) {
+                i.unit = null;
+                i.setColor();
+            }
+        }
 
         //  removes unit from game world
         FindObjectOfType<TurnOrderSorter>().removeUnitFromList(gameObject);

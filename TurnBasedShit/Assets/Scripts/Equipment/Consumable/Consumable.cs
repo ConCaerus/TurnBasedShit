@@ -30,7 +30,7 @@ public class Consumable {
                 break;
 
             case effects.cureBleed:
-                uc.cureBleed();
+                uc.bleeding = false;
                 break;
 
             case effects.powerBuff:
@@ -51,6 +51,7 @@ public class Consumable {
     }
 
     public void setEqualTo(Consumable other, bool takeID) {
+        c_name = other.c_name;
         c_rarity = other.c_rarity;
         c_coinCost = other.c_coinCost;
         c_maxStackCount = other.c_maxStackCount;
@@ -62,6 +63,10 @@ public class Consumable {
     }
     public bool isEqualTo(Consumable obj) {
         return c_instanceID == obj.c_instanceID;
+    }
+
+    public bool isTheSameTypeAs(Consumable other) {
+        return c_name == other.c_name && c_rarity == other.c_rarity && c_effect == other.c_effect && c_effectAmount == other.c_effectAmount;
     }
 
     public bool isEmpty() {

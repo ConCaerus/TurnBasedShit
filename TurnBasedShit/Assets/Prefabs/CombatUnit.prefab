@@ -103,6 +103,7 @@ MonoBehaviour:
   isPlayerUnit: 1
   defending: 0
   stunned: 0
+  bleeding: 0
   isMouseOverUnit: 0
   tempPower: 0
   tempDefence: 0
@@ -126,7 +127,6 @@ MonoBehaviour:
     u_power: 1
     u_defence: 1
     u_critChance: 0
-    u_bleedCount: 0
     u_order: 0
     equippedWeapon:
       w_instanceID: -1
@@ -198,8 +198,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvasPreset: {fileID: 1441784456717073101, guid: 0900c0f9f52d1314d8e1129e47950eda,
     type: 3}
+  stunPreset: {fileID: 1542557238675259890, guid: ffcb58352ed8e75409261e843546fc78,
+    type: 3}
+  bleedPreset: {fileID: 4363930972011218595, guid: 624a67cfc305b324f85d0e188ddb6c04,
+    type: 3}
   yOffset: 1
   highlightOffset: {x: 0.01, y: 0.14}
+  stunOffset: {x: 0, y: 2.75}
+  bleedOffset: {x: -0.29, y: 0.24}
 --- !u!1001 &954274707321897296
 PrefabInstance:
   m_ObjectHideFlags: 0

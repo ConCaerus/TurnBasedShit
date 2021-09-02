@@ -517,7 +517,7 @@ public class PresetLibrary : MonoBehaviour {
     }
     public ConsumableSpriteHolder getConsumableSprite(Consumable con) {
         foreach(var i in consumables) {
-            if(i.preset.c_name == con.c_name)
+            if(i.preset.isTheSameTypeAs(con))
                 return i.preset.getSpriteHolder();
         }
         return null;

@@ -85,6 +85,8 @@ public class TurnOrderSorter : MonoBehaviour {
         FindObjectOfType<BattleOptionsCanvas>().runCombatOptions();
 
         //  flair
+        foreach(var i in FindObjectsOfType<CombatSpot>())
+            i.updateRenderer();
         FindObjectOfType<CombatCameraController>().moveToPlayingUnit();
         FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
 

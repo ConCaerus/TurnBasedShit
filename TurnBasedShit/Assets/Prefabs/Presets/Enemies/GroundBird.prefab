@@ -366,9 +366,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5375930182506040057}
   - component: {fileID: 5375930182506040056}
-  - component: {fileID: 8629479021139467638}
   - component: {fileID: 338056148406756439}
   - component: {fileID: 35577988556252152}
+  - component: {fileID: 8629479021139467638}
   - component: {fileID: 2268679967223299726}
   m_Layer: 0
   m_Name: GroundBird
@@ -413,6 +413,53 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!61 &338056148406756439
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5375930182506040063}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.08433533, y: -0.17991662}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 2.5180397, y: 1.7646432}
+  m_EdgeRadius: 0
+--- !u!50 &35577988556252152
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5375930182506040063}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!114 &8629479021139467638
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -434,6 +481,7 @@ MonoBehaviour:
   isPlayerUnit: 0
   defending: 0
   stunned: 0
+  bleeding: 0
   isMouseOverUnit: 0
   tempPower: 0
   tempDefence: 0
@@ -457,7 +505,6 @@ MonoBehaviour:
     u_power: 1
     u_defence: 1
     u_critChance: 0.01
-    u_bleedCount: 0
     u_order: 0
     equippedWeapon:
       w_instanceID: -1
@@ -465,7 +512,7 @@ MonoBehaviour:
       w_rarity: 0
       w_element: 0
       w_wornAmount: 0
-      w_attributes: 
+      w_attributes: 03000000
       w_power: 7
       w_speedMod: 0
       w_coinCost: 0
@@ -514,53 +561,6 @@ MonoBehaviour:
   weakTo: 0
   strongTo: 1
   enemyType: 1
---- !u!61 &338056148406756439
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5375930182506040063}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.08433533, y: -0.17991662}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 2.5180397, y: 1.7646432}
-  m_EdgeRadius: 0
---- !u!50 &35577988556252152
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5375930182506040063}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!114 &2268679967223299726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -575,8 +575,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvasPreset: {fileID: 1441784456717073101, guid: 0900c0f9f52d1314d8e1129e47950eda,
     type: 3}
-  yOffset: 0.75
+  stunPreset: {fileID: 1542557238675259890, guid: ffcb58352ed8e75409261e843546fc78,
+    type: 3}
+  bleedPreset: {fileID: 4363930972011218595, guid: 624a67cfc305b324f85d0e188ddb6c04,
+    type: 3}
+  yOffset: 0.54
   highlightOffset: {x: 0, y: -0.07}
+  stunOffset: {x: 0, y: 1.78}
+  bleedOffset: {x: 0.46, y: -0.21}
 --- !u!1 &5375930183025385620
 GameObject:
   m_ObjectHideFlags: 0
