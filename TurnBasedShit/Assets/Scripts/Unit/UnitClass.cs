@@ -12,7 +12,6 @@ public abstract class UnitClass : MonoBehaviour {
     public bool isPlayerUnit = true;
     public bool defending = false;
     public bool stunned = false;
-    public bool bleeding = false;
     public bool isMouseOverUnit = false;
 
     public float tempPower = 0.0f;
@@ -68,7 +67,7 @@ public abstract class UnitClass : MonoBehaviour {
 
 
     public void takeBleedDamage() {
-        if(bleeding) {
+        if(stats.u_bleeding) {
             float temp = (stats.getModifiedMaxHealth() / 100.0f);
             stats.u_health -= temp;
 
@@ -76,7 +75,7 @@ public abstract class UnitClass : MonoBehaviour {
 
             FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, temp, DamageTextCanvas.damageType.poison);
 
-            bleeding = !GameVariables.chanceCureBleed();
+            stats.u_bleeding = !GameVariables.chanceCureBleed();
         }
     }
 
@@ -133,12 +132,17 @@ public abstract class UnitClass : MonoBehaviour {
 
         dmg = stats.getModifiedDamageTaken(dmg, defending, tempDefence);
 
+        float crit = attacker.GetComponent<UnitClass>().stats.getCritMult(dmg);
+        dmg *= crit;
+
         //  take damage
         stats.u_health = Mathf.Clamp(stats.u_health - dmg, -1.0f, stats.getModifiedMaxHealth());
 
         //  Flair
         if(defending)
             FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, dmg, DamageTextCanvas.damageType.defended);
+        else if(crit > 1.1f)
+            FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, dmg, DamageTextCanvas.damageType.crit);
         else
             FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, dmg, DamageTextCanvas.damageType.weapon);
         var blood = Instantiate(bloodParticles);

@@ -16,6 +16,9 @@ public class PresetLibrary : MonoBehaviour {
 
     [SerializeField] CombatScarSpriteHolder[] combatScars;
 
+    //  Materials
+    [SerializeField] Material[] rarityMaterials;
+
     //  Equipment
     [SerializeField] WeaponPreset[] weapons;
     [SerializeField] ArmorPreset[] armor;
@@ -192,6 +195,11 @@ public class PresetLibrary : MonoBehaviour {
     }
     public int getBodyCount() {
         return unitBodies.Length;
+    }
+
+    //  Materials
+    public Material getRarityMaterial(GameInfo.rarityLvl rarity) {
+        return rarityMaterials[(int)rarity];
     }
 
     //  Equipment

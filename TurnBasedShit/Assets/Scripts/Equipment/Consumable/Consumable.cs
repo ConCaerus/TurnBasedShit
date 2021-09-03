@@ -30,7 +30,7 @@ public class Consumable {
                 break;
 
             case effects.cureBleed:
-                uc.bleeding = false;
+                uc.stats.u_bleeding = false;
                 break;
 
             case effects.powerBuff:

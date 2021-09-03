@@ -30,9 +30,9 @@ public class Weapon {
     public void applyAttributesAfterAttack(GameObject weilder, GameObject attackedUnit) {
         foreach(var i in w_attributes) {
             if(i == attribute.Bleed) {
-                if(attackedUnit.GetComponent<UnitClass>().bleeding)
+                if(attackedUnit.GetComponent<UnitClass>().stats.u_bleeding)
                     continue;
-                attackedUnit.GetComponent<UnitClass>().bleeding = GameVariables.chanceBleed();
+                attackedUnit.GetComponent<UnitClass>().stats.u_bleeding = GameVariables.chanceBleed();
             }
 
             else if(i == attribute.Healing) {

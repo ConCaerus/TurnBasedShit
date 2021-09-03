@@ -1637,9 +1637,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: {fileID: 742556718200881690, guid: 2cfd99f12a121c54cb5c795d215d4edf, type: 3}
   weaponColor: {r: 0.8962264, g: 0.47911468, b: 0.47911468, a: 1}
-  poisonColor: {r: 0.71944195, g: 0.6168565, b: 0.8207547, a: 1}
-  defendedColor: {r: 0.8396226, g: 0.68648386, b: 0.68648386, a: 1}
-  healingColor: {r: 0.5161979, g: 0.8207547, b: 0.5623065, a: 1}
+  bleedColor: {r: 0.8962264, g: 0.09018624, b: 0.09018624, a: 1}
+  defendedColor: {r: 0.50195795, g: 0.783392, b: 0.8490566, a: 1}
+  healingColor: {r: 0.7664169, g: 0.54803014, b: 0.8584906, a: 1}
+  critColor: {r: 0.7919215, g: 0.8018868, b: 0.42868158, a: 1}
 --- !u!1 &219992116
 GameObject:
   m_ObjectHideFlags: 0
@@ -2852,6 +2853,7 @@ GameObject:
   - component: {fileID: 397881403}
   - component: {fileID: 397881402}
   - component: {fileID: 397881401}
+  - component: {fileID: 397881404}
   m_Layer: 5
   m_Name: ChargeButton
   m_TagString: Untagged
@@ -2953,7 +2955,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a7abed76ca04a1a49b911b0b0fcc4fae, type: 3}
+  m_Sprite: {fileID: -6620443678240376230, guid: de6a8a5da857f2f4589d968a46116c85,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2971,6 +2974,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 397881399}
   m_CullTransparentMesh: 0
+--- !u!114 &397881404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 397881399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1671485205}
+          m_TargetAssemblyTypeName: BattleOptionsCanvas, Assembly-CSharp
+          m_MethodName: hoverOverButton
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 397881399}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1671485205}
+          m_TargetAssemblyTypeName: BattleOptionsCanvas, Assembly-CSharp
+          m_MethodName: dehoverOverButton
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 397881399}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &400323679
 GameObject:
   m_ObjectHideFlags: 0
@@ -7759,6 +7807,7 @@ GameObject:
   - component: {fileID: 907468101}
   - component: {fileID: 907468100}
   - component: {fileID: 907468099}
+  - component: {fileID: 907468102}
   m_Layer: 5
   m_Name: AttackButton
   m_TagString: Untagged
@@ -7860,7 +7909,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a7abed76ca04a1a49b911b0b0fcc4fae, type: 3}
+  m_Sprite: {fileID: -6620443678240376230, guid: de6a8a5da857f2f4589d968a46116c85,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7878,6 +7928,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 907468097}
   m_CullTransparentMesh: 0
+--- !u!114 &907468102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 907468097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1671485205}
+          m_TargetAssemblyTypeName: BattleOptionsCanvas, Assembly-CSharp
+          m_MethodName: hoverOverButton
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 907468097}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1671485205}
+          m_TargetAssemblyTypeName: BattleOptionsCanvas, Assembly-CSharp
+          m_MethodName: dehoverOverButton
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 907468097}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &912040790
 GameObject:
   m_ObjectHideFlags: 0
@@ -9116,7 +9211,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.2924528, g: 0.2924528, b: 0.2924528, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -11787,6 +11882,7 @@ GameObject:
   - component: {fileID: 1337847341}
   - component: {fileID: 1337847340}
   - component: {fileID: 1337847339}
+  - component: {fileID: 1337847342}
   m_Layer: 5
   m_Name: SpecialButton
   m_TagString: Untagged
@@ -11888,7 +11984,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a7abed76ca04a1a49b911b0b0fcc4fae, type: 3}
+  m_Sprite: {fileID: -6620443678240376230, guid: de6a8a5da857f2f4589d968a46116c85,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -11906,6 +12003,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1337847337}
   m_CullTransparentMesh: 0
+--- !u!114 &1337847342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1337847337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1671485205}
+          m_TargetAssemblyTypeName: BattleOptionsCanvas, Assembly-CSharp
+          m_MethodName: hoverOverButton
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 1337847337}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1671485205}
+          m_TargetAssemblyTypeName: BattleOptionsCanvas, Assembly-CSharp
+          m_MethodName: dehoverOverButton
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 1337847337}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1001 &1344608597
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12195,7 +12337,7 @@ PrefabInstance:
     - target: {fileID: 3519795682197568498, guid: c07f610e3bb9f314683273b1cabc818b,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -200
+      value: -199.99994
       objectReference: {fileID: 0}
     - target: {fileID: 4177263778031101206, guid: c07f610e3bb9f314683273b1cabc818b,
         type: 3}
@@ -15060,6 +15202,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackState: 0
+  selectedMat: {fileID: 2100000, guid: 053d1da45476eb846a890d16804f1ddb, type: 2}
 --- !u!1 &1676565185
 GameObject:
   m_ObjectHideFlags: 0
@@ -16304,6 +16447,7 @@ GameObject:
   - component: {fileID: 1778971702}
   - component: {fileID: 1778971701}
   - component: {fileID: 1778971700}
+  - component: {fileID: 1778971703}
   m_Layer: 5
   m_Name: DefendButton
   m_TagString: Untagged
@@ -16405,7 +16549,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a7abed76ca04a1a49b911b0b0fcc4fae, type: 3}
+  m_Sprite: {fileID: -6620443678240376230, guid: de6a8a5da857f2f4589d968a46116c85,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -16423,6 +16568,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1778971698}
   m_CullTransparentMesh: 0
+--- !u!114 &1778971703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1778971698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1671485205}
+          m_TargetAssemblyTypeName: BattleOptionsCanvas, Assembly-CSharp
+          m_MethodName: hoverOverButton
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 1778971698}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1671485205}
+          m_TargetAssemblyTypeName: BattleOptionsCanvas, Assembly-CSharp
+          m_MethodName: dehoverOverButton
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 1778971698}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1793099648
 GameObject:
   m_ObjectHideFlags: 0

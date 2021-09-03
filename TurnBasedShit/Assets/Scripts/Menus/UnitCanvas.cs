@@ -124,6 +124,7 @@ public class UnitCanvas : MonoBehaviour {
         itemImage.enabled = true;
         if(shownUnit.equippedWeapon != null && !shownUnit.equippedWeapon.isEmpty()) {
             weaponImage.sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(shownUnit.equippedWeapon).sprite;
+            weaponImage.material = FindObjectOfType<PresetLibrary>().getRarityMaterial(shownUnit.equippedWeapon.w_rarity);
             weaponImage.transform.parent.GetChild(0).GetComponent<Image>().color = getRarityColor(shownUnit.equippedWeapon.w_rarity);
         }
         else {
@@ -132,6 +133,7 @@ public class UnitCanvas : MonoBehaviour {
         }
         if(shownUnit.equippedArmor != null && !shownUnit.equippedArmor.isEmpty()) {
             armorImage.sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(shownUnit.equippedArmor).sprite;
+            armorImage.material = FindObjectOfType<PresetLibrary>().getRarityMaterial(shownUnit.equippedArmor.a_rarity);
             armorImage.transform.parent.GetChild(0).GetComponent<Image>().color = getRarityColor(shownUnit.equippedArmor.a_rarity);
         }
         else {
@@ -140,6 +142,7 @@ public class UnitCanvas : MonoBehaviour {
         }
         if(shownUnit.equippedItem != null && !shownUnit.equippedItem.isEmpty()) {
             itemImage.sprite = FindObjectOfType<PresetLibrary>().getItemSprite(shownUnit.equippedItem).sprite;
+            itemImage.material = FindObjectOfType<PresetLibrary>().getRarityMaterial(shownUnit.equippedItem.i_rarity);
             itemImage.transform.parent.GetChild(0).GetComponent<Image>().color = getRarityColor(shownUnit.equippedItem.i_rarity);
         }
         else {
@@ -324,8 +327,23 @@ public class UnitCanvas : MonoBehaviour {
         updateUnitWindow();
     }
 
+    public void renameUnit() {
+        nameText.alignment = TextAlignmentOptions.TopLeft;
+        FindObjectOfType<TextInputReader>().startReading(GameVariables.getMaxPlayerUnitNameLength(), updateNameText, setUnitName);
+    }
 
-    void saveShownUnit() {
+    public void updateNameText(string newName) {
+        shownUnit.u_name = newName;
+        nameText.text = newName;
+    }
+    public void setUnitName(string newName) {
+        nameText.alignment = TextAlignmentOptions.TopGeoAligned;
+        shownUnit.u_name = newName;
+        saveShownUnit();
+    }
+
+
+    public void saveShownUnit() {
         if(FindObjectOfType<PartyObject>() != null)
             FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
         else

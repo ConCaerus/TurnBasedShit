@@ -13,15 +13,9 @@ public class LevelUpCanvas : MonoBehaviour {
         canvas.SetActive(false);
     }
 
-    private void Update() {
-        if(Input.GetKeyDown(KeyCode.Space))
-            levelUpUnit(FindObjectOfType<PlayerUnitInstance>().gameObject);
-    }
-
 
     public void levelUpUnit(GameObject unit) {
         var stats = unit.GetComponent<UnitClass>().stats;
-        Debug.Log(stats.u_name);
 
         canvas.SetActive(true);
         canvas.transform.position = unit.transform.position;

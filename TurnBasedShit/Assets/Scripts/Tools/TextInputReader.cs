@@ -8,6 +8,169 @@ public class TextInputReader : MonoBehaviour {
 
     public delegate void func(string s);
 
+    string readData = "";
+    int maxCharCount = 0;
+    bool read = false;
+    bool keepInputting = false;
+    bool showCursor = false;
+
+    KeyCode prevInput = 0;
+
+    Coroutine keepWaiter = null, keepBuffer = null, cursorShower = null;
+
+    func updateRunner, endRunner;
+
+    private void Update() {
+        if(read) {
+            //  does not add to the string
+            if(Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) {
+                read = false;
+                if(updateRunner != null)
+                    updateRunner(readData);
+                if(endRunner != null)
+                    endRunner(readData);
+                return;
+            }
+            if(Input.GetKeyDown(KeyCode.Backspace) || (Input.GetKey(KeyCode.Backspace) && keepInputting && keepBuffer == null && prevInput == KeyCode.Backspace)) {
+                var n = readData.ToCharArray();
+                readData = "";
+                for(int i = 0; i < n.Length - 1; i++)
+                    readData += n[i];
+                prevInput = KeyCode.Backspace;
+            }
+
+            //  adds to the string
+            if(Input.GetKeyDown(KeyCode.Space) || (Input.GetKey(KeyCode.Space) && keepInputting && keepBuffer == null && prevInput == KeyCode.Space)) {
+                readData += ' ';
+
+                prevInput = KeyCode.Space;
+            }
+
+            //  letters
+            for(int i = 97; i < 123; i++) {
+                if(Input.GetKeyDown((KeyCode)i) || (Input.GetKey((KeyCode)i) && keepInputting && keepBuffer == null && prevInput == (KeyCode)i)) {
+                    if(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+                        readData += (KeyCode)i;
+                    else
+                        readData += ((KeyCode)i).ToString().ToLower()[0];
+
+
+                    prevInput = (KeyCode)i;
+                    break;
+                }
+            }
+            //  numbers
+            for(int i = 48; i < 58; i++) {
+                if(Input.GetKeyDown((KeyCode)i) || (Input.GetKey((KeyCode)i) && keepInputting && keepBuffer == null && prevInput == (KeyCode)i)) {
+                    readData += (char)i;
+                    prevInput = (KeyCode)i;
+                    break;
+                }
+            }
+
+
+            //  check if string is over limit
+            if(maxCharCount > 0 && readData.Length >= maxCharCount) {
+                var arr = readData.ToCharArray();
+                readData = "";
+                for(int i = 0; i < maxCharCount; i++)
+                    readData += arr[i];
+            }
+
+            //  adds cursor
+            bool hasCursor = showCursor;
+            if(cursorShower == null)
+                cursorShower = StartCoroutine(cursorAnimation());
+            if(showCursor) {
+                readData += 'I';
+            }
+
+            //  cleanup
+            bool hasInput = Input.GetKey(KeyCode.Backspace) || Input.GetKey(KeyCode.Space);
+            bool hasContinuedInput = !Input.GetKeyDown(KeyCode.Backspace) && !Input.GetKeyDown(KeyCode.Space);
+
+            for(int i = 97; i < 123; i++) {
+                if(Input.GetKey((KeyCode)i))
+                    hasInput = true;
+                if(Input.GetKeyDown((KeyCode)i))
+                    hasContinuedInput = false;
+            }
+            for(int i = 48; i < 58; i++) {
+                if(Input.GetKey((KeyCode)i))
+                    hasInput = true;
+                if(Input.GetKeyDown((KeyCode)i))
+                    hasContinuedInput = false;
+            }
+
+
+
+            if(updateRunner != null)
+                updateRunner(readData);
+
+            //  reset keep when no coninued input
+            if(!hasContinuedInput) {
+                if(keepWaiter != null)
+                    StopCoroutine(keepWaiter);
+                if(keepBuffer != null)
+                    StopCoroutine(keepBuffer);
+                keepBuffer = null;
+                keepWaiter = null;
+                keepInputting = false;
+            }
+            //  start keepers when continued input
+            else {
+                if(keepWaiter == null)
+                    keepWaiter = StartCoroutine(waitToKeepInputting());
+                if(keepBuffer == null)
+                    keepBuffer = StartCoroutine(bufferKeepInput());
+            }
+
+            //  no input
+            if(!hasInput) {
+                if(keepWaiter != null)
+                    StopCoroutine(keepWaiter);
+                if(keepBuffer != null)
+                    StopCoroutine(keepBuffer);
+                keepBuffer = null;
+                keepWaiter = null;
+                keepInputting = false;
+            }
+
+            //  removes cursor for next loop
+            if(hasCursor) {
+                var n = readData.ToCharArray();
+                readData = "";
+                for(int i = 0; i < n.Length - 1; i++)
+                    readData += n[i];
+            }
+        }
+    }
+
+
+    public void startReading(int maxNumOfChars = 0, func runAfterUpdate = null, func runAtEnd = null) {
+        read = true;
+        maxCharCount = maxNumOfChars;
+        updateRunner = runAfterUpdate;
+        endRunner = runAtEnd;
+    }
+
+    IEnumerator waitToKeepInputting() {
+        yield return new WaitForSeconds(0.25f);
+
+        keepInputting = true;
+    }
+    IEnumerator bufferKeepInput() {
+        yield return new WaitForSeconds(0.01f);
+        keepBuffer = null;
+    }
+    IEnumerator cursorAnimation() {
+        yield return new WaitForSeconds(0.25f);
+
+        showCursor = !showCursor;
+        cursorShower = null;
+    }
+
+    /*
     public IEnumerator reader(func funcRunsAfterEveryUpdate, func funcRunsAtEnd, string prev = "", List<int> prevPressed = null, int cycleTillAuto = 0) {
         if(prevPressed == null)
             prevPressed = new List<int>();
@@ -124,5 +287,5 @@ public class TextInputReader : MonoBehaviour {
             funcRunsAtEnd(prev);
             yield return prev;
         }
-    }
+    } */
 }

@@ -21,6 +21,8 @@ public class UnitStats {
 
     public float u_critChance = 0.0f;
 
+    public bool u_bleeding = false;
+
     public int u_order = 0;
 
     public Weapon equippedWeapon;
@@ -47,6 +49,8 @@ public class UnitStats {
         u_speed = other.u_speed;
         u_power = other.u_power;
 
+        u_bleeding = other.u_bleeding;
+
         u_order = other.u_order;
         u_sprite.setEqualTo(other.u_sprite);
 
@@ -72,8 +76,9 @@ public class UnitStats {
         bool armor = equippedArmor.isEqualTo(other.equippedArmor);
         bool item = equippedItem.isEqualTo(other.equippedItem);
         bool color = u_sprite.isEqualTo(other.u_sprite);
+        bool bleeding = u_bleeding == other.u_bleeding;
 
-        return names && health && maxHealth && speed && power && order && weapon && armor && item && color;
+        return names && health && maxHealth && speed && power && order && weapon && armor && item && color && bleeding;
     }
 
     public bool levelUpIfPossible() {
@@ -140,18 +145,14 @@ public class UnitStats {
         return dmg;
     }
     public float getDamageGiven(float tempPower = 0.0f) {
-        return randomizeDamage(getAverageDamageGiven(tempPower));
+        return getAverageDamageGiven(tempPower);
     }
-    float randomizeDamage(float dmg = 0.0f) {
-        //  normal mod
-        dmg /= 2.0f;
-        dmg *= Random.Range(1.75f, 2.25f);
-
+    public float getCritMult(float dmg) {
         //  crit mod
         if(Random.Range(0, 101) <= (u_critChance * 100.0f))
-            dmg *= Random.Range(2.0f, 3.0f);
+            return Random.Range(1.75f, 2.25f);
 
-        return dmg;
+        return 1.0f;
     }
 
     //  Defence amount

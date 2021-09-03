@@ -64,7 +64,7 @@ public class BattleResultsCanvas : MonoBehaviour {
 
 
         List<Consumable> usedCons = new List<Consumable>();
-        Debug.Log(consumables.Count);
+        int conSlotIndex = 0;
         for(int i = 0; i < consumableImages.Count + consumables.Count; i++) {
             yield return new WaitForSeconds(waitTime);
             bool alreadyUsed = false;
@@ -85,10 +85,11 @@ public class BattleResultsCanvas : MonoBehaviour {
                             conCount++;
                     }
                     if(conCount > 1)
-                        consumableImages[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = conCount.ToString();
+                        consumableImages[conSlotIndex].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = conCount.ToString();
                     else
-                        consumableImages[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
+                        consumableImages[conSlotIndex].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
                     usedCons.Add(consumables[i]);
+                    conSlotIndex++;
                 }
             }
             else break;

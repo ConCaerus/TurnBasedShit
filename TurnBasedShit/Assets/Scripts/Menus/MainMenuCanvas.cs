@@ -63,7 +63,7 @@ public class MainMenuCanvas : MonoBehaviour {
 
         if(createNewSave) {
             nameInputCanvas.SetActive(true);
-            StartCoroutine(FindObjectOfType<TextInputReader>().reader(updateNameText, setNameText));
+            FindObjectOfType<TextInputReader>().startReading(GameVariables.getMaxPlayerUnitNameLength(), updateNameText, setNameText);
         }
         else {
             loadCurrentState();

@@ -6,7 +6,7 @@ using TMPro;
 public class DamageTextCanvas : MonoBehaviour {
     [SerializeField] TextMeshProUGUI text;
 
-    [SerializeField] Color weaponColor, poisonColor, defendedColor, healingColor;
+    [SerializeField] Color weaponColor, bleedColor, defendedColor, healingColor, critColor;
 
     Vector2 offset = new Vector2(0.0f, 0.5f);
 
@@ -15,7 +15,7 @@ public class DamageTextCanvas : MonoBehaviour {
 
 
     public enum damageType {
-        weapon, poison, defended, healed
+        weapon, poison, defended, healed, crit
     }
 
 
@@ -47,11 +47,13 @@ public class DamageTextCanvas : MonoBehaviour {
         if(type == damageType.weapon)
             ob.color = weaponColor;
         else if(type == damageType.poison)
-            ob.color = poisonColor;
+            ob.color = bleedColor;
         else if(type == damageType.defended)
             ob.color = defendedColor;
         else if(type == damageType.healed)
             ob.color = healingColor;
+        else if(type == damageType.crit)
+            ob.color = critColor;
 
 
         var temp = new damageText();

@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class GameVariables {
+    //  variables
+    public static int getMaxPlayerUnitNameLength() {
+        return 18;
+    }
+
+    //  chances
     //  combat
     public static bool chanceBleed() {
         return chanceOutOfHundred(20);

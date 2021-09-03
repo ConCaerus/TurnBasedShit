@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class BattleOptionsCanvas : MonoBehaviour {
     public bool attackState = false;
     bool showing = false;
     float showTime = 0.15f;
+
+    [SerializeField] Material selectedMat;
 
 
     private void Start() {
@@ -82,5 +85,13 @@ public class BattleOptionsCanvas : MonoBehaviour {
 
     public void special() {
         FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
+    }
+
+
+    public void hoverOverButton(GameObject thing) {
+        thing.GetComponent<Image>().material = selectedMat;
+    }
+    public void dehoverOverButton(GameObject thing) {
+        thing.GetComponent<Image>().material = null;
     }
 }

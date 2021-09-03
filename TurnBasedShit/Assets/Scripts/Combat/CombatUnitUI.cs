@@ -81,7 +81,7 @@ public class CombatUnitUI : MonoBehaviour {
         }
 
         //  bleed shit
-        if(GetComponent<UnitClass>().bleeding && bleedObj == null) {
+        if(GetComponent<UnitClass>().stats.u_bleeding && bleedObj == null) {
             bleedObj = Instantiate(bleedPreset.gameObject, transform);
             bleedObj.transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
             bleedObj.transform.DOScale(1.0f, 0.15f);
@@ -89,7 +89,7 @@ public class CombatUnitUI : MonoBehaviour {
 
             bleedMover = StartCoroutine(bleedAnim());
         }
-        else if(!GetComponent<UnitClass>().bleeding && bleedObj != null) {
+        else if(!GetComponent<UnitClass>().stats.u_bleeding && bleedObj != null) {
             if(bleedMover != null)
                 StopCoroutine(bleedMover);
             bleedMover = null;
