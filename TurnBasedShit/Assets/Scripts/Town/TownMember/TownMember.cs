@@ -78,19 +78,15 @@ public class TownMember {
             m_questType = other.m_questType;
             if(other.m_questType == GameInfo.questType.bossFight) {
                 m_bossQuest = other.m_bossQuest;
-                m_bossQuest.setEqualTo(other.m_bossQuest, true);
             }
             else if(other.m_questType == GameInfo.questType.delivery) {
                 m_deliveryQuest = other.m_deliveryQuest;
-                m_deliveryQuest.setEqualTo(other.m_deliveryQuest, true);
             }
             else if(other.m_questType == GameInfo.questType.kill) {
                 m_killQuest = other.m_killQuest;
-                m_killQuest.setEqualTo(other.m_killQuest, true);
             }
             else if(other.m_questType == GameInfo.questType.pickup) {
                 m_pickupQuest = other.m_pickupQuest;
-                m_pickupQuest.setEqualTo(other.m_pickupQuest, true);
             }
         }
 

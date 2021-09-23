@@ -13,7 +13,7 @@ public class TownLocation : MapLocation {
         type = locationType.town;
         pos = p;
 
-        region = (int)Map.getDiffForX(p.x);
+        region = (int)diff;
 
         //  create a random town
         if(t == null) {
@@ -26,7 +26,6 @@ public class TownLocation : MapLocation {
     public override void enterLocation() {
         GameInfo.resetCombatDetails();
         GameInfo.setCurrentLocationAsTown(this);
-        town.visited = true;
         SceneManager.LoadScene("Town");
     }
 

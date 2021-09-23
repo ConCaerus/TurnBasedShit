@@ -26,9 +26,10 @@ public class PresetLibrary : MonoBehaviour {
     [SerializeField] ItemPreset[] items;
 
     //  Map
-    [SerializeField] GameObject townMember;
     [SerializeField] GameObject[] buildings;
-    [SerializeField] Sprite weaponUpgradeIcon, armorUpgradeIcon, nestIcon, townIcon, rescueIcon, bossIcon;
+    [SerializeField] GameObject townMember;
+
+    [SerializeField] Color[] rarityColors;
 
 
     //  Units
@@ -172,8 +173,9 @@ public class PresetLibrary : MonoBehaviour {
         return unitBodies[index];
     }
     public GameObject getUnitArm(int index) {
-        return getUnitBody(index).transform.GetChild(0).transform.GetChild(0).gameObject;
+        return getUnitBody(index).transform.GetChild(0).GetChild(0).gameObject;
     }
+
     public GameObject getRandomUnitHead() {
         return getUnitHead(Random.Range(0, unitHeads.Length));
     }
@@ -185,6 +187,16 @@ public class PresetLibrary : MonoBehaviour {
     }
     public GameObject getRandomUnitArm() {
         return getUnitArm(Random.Range(0, unitBodies.Length));
+    }
+
+    public Sprite getUnitHeadSprite(int index) {
+        return getUnitHead(index).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite;
+    }
+    public Sprite getUnitBodySprite(int index) {
+        return getUnitBody(index).GetComponent<SpriteRenderer>().sprite;
+    }
+    public Sprite gettUnitArmSprite(int index) {
+        return getUnitArm(index).GetComponent<SpriteRenderer>().sprite;
     }
 
     public int getHeadCount() {
@@ -389,6 +401,9 @@ public class PresetLibrary : MonoBehaviour {
 
             if(t == Building.type.Shop && i.GetComponent<ShopInstance>() != null)
                 return i.gameObject;
+
+            if(t == Building.type.Casino && i.GetComponent<CasinoInstance>() != null)
+                return i.gameObject;
         }
         return null;
     }
@@ -406,15 +421,19 @@ public class PresetLibrary : MonoBehaviour {
         loc.coinReward += (int)Random.Range(loc.coinReward * -0.1f, loc.coinReward * 0.1f);   //  randomizes it
 
         //  chance for weapon
-        while(Random.Range(0, 101) < 20 && loc.weapons.Count < 3)
+        while(GameVariables.chanceWeaponDrop())
             loc.weapons.Add(Randomizer.randomizeWeapon(getRandomWeapon((GameInfo.rarityLvl)lvl), lvl));
 
         //  chance for armor
-        while(Random.Range(0, 101) < 20 && loc.armor.Count < 3)
+        while(GameVariables.chanceArmorDrop())
             loc.armor.Add(Randomizer.randomizeArmor(getRandomArmor((GameInfo.rarityLvl)lvl), lvl));
 
+        //  chance for item
+        while(GameVariables.chanceItemDrop())
+            loc.items.Add(getRandomItem((GameInfo.rarityLvl)lvl));
+
         //  chance for consumable
-        while(Random.Range(0, 101) < 40 && loc.consumables.Count < 5)
+        while(GameVariables.chanceConsumableDrop())
             loc.consumables.Add(getRandomConsumable((GameInfo.rarityLvl)lvl));
 
         return loc;
@@ -434,14 +453,19 @@ public class PresetLibrary : MonoBehaviour {
         else
             return new PickupLocation(Map.getRandPos(), getRandomItem(), this, GameInfo.getCurrentDiff());
     }
+    public RescueLocation createRandomRescueLocation() {
+        return new RescueLocation(Map.getRandPos(), this);
+    }
+    public UpgradeLocation createRandomUpgradeLocation() {
+        return new UpgradeLocation(Map.getRandPos(), Random.Range(0, 2));
+    }
 
 
     public BossFightQuest createRandomBossFightQuest(bool setID) {
         return new BossFightQuest(createRandomBossLocation(), setID);
     }
     public PickupQuest createRandomPickupQuest(bool setID) {
-        var pl = createRandomPickupLocation();
-        return new PickupQuest(pl, setID);
+        return new PickupQuest(createRandomPickupLocation(), setID);
     }
     public KillQuest createRandomKillQuest(bool setID) {
         return new KillQuest(Random.Range(5, 36), getRandomEnemy().GetComponent<EnemyUnitInstance>().enemyType, setID);   //  change this number too
@@ -538,58 +562,8 @@ public class PresetLibrary : MonoBehaviour {
         return null;
     }
 
-    public Sprite getMapLocationSprite(MapLocation loc) {
-        switch(loc.type) {
-            case MapLocation.locationType.town:
-                return getTownLocationSprite();
-
-            case MapLocation.locationType.upgrade:
-                return getUpgradeLocationSprite((UpgradeLocation)loc);
-
-            case MapLocation.locationType.nest:
-                return getNestLocationSprite();
-
-            case MapLocation.locationType.boss:
-                return getBossFightLocationSprite();
-
-            case MapLocation.locationType.pickup:
-                return getPickupLocationSprite((PickupLocation)loc);
-
-            case MapLocation.locationType.rescue:
-                return getRescueLocationSprite();
-        }
-
-        return null;
-    }
-    public Sprite getBossFightLocationSprite() {
-        return bossIcon;
-    }
-    public Sprite getPickupLocationSprite(PickupLocation loc) {
-        if(loc.pickupWeapon != null && !loc.pickupWeapon.isEmpty())
-            return getWeaponSprite(loc.pickupWeapon).sprite;
-        if(loc.pickupArmor != null && !loc.pickupArmor.isEmpty())
-            return getArmorSprite(loc.pickupArmor).sprite;
-        if(loc.pickupConsumable != null && !loc.pickupConsumable.isEmpty())
-            return getConsumableSprite(loc.pickupConsumable).sprite;
-        if(loc.pickupItem != null && !loc.pickupItem.isEmpty())
-            return getItemSprite(loc.pickupItem).sprite;
-        return null;
-    }
-    public Sprite getUpgradeLocationSprite(UpgradeLocation loc) {
-        if(loc.state == 0)
-            return weaponUpgradeIcon;
-        else if(loc.state == 1)
-            return armorUpgradeIcon;
-        return null;
-    }
-    public Sprite getNestLocationSprite() {
-        return nestIcon;
-    }
-    public Sprite getRescueLocationSprite() {
-        return rescueIcon;
-    }
-    public Sprite getTownLocationSprite() {
-        return townIcon;
+    public Color getRarityColor(GameInfo.rarityLvl lvl) {
+        return rarityColors[(int)lvl];
     }
 }
 

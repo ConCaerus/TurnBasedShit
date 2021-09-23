@@ -4,356 +4,267 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 public class UpgradeCanvas : MonoBehaviour {
     //  0 - weapon, 1 - armor
     public int state = 0;
 
-    float statInc = 0.0f;
-    Weapon.attribute weaponUpgrade;
-    Armor.attribute armorUpgrade;
+    int attUpgrade = -1;
+    float statUpgrade = 0.0f;
+
+    [SerializeField] GameObject slotPreset;
+    [SerializeReference] GameObject shrine;
     [SerializeField] TextMeshProUGUI attributeText, statText;
+    public SlotMenu slot;
 
-    [SerializeField] TextMeshProUGUI title;
+    public bool isShowing = false;
+    public bool hasBeenUsed = false;
 
-    [SerializeField] float slotTopY = 120, slotBotY = -120;
-    [SerializeField] float slotBuffer = 10.0f;
-    [SerializeField] float scrollSpeed = 35.0f;
-
-    [SerializeField] GameObject slotHolder;
-    [SerializeField] GameObject slotObject;
-    List<GameObject> slots = new List<GameObject>();
-    GameObject selectedSlot = null;
 
     private void Start() {
-        if(GameInfo.getCurrentLocationAsUpgrade() != null)
-            state = GameInfo.getCurrentLocationAsUpgrade().state;
-
-        setUpgradeStats();
-
-        switch(state) {
-            //  Weapon
-            case 0:
-                title.text = "Upgrade Weapon";
-                break;
-
-            //  Armor
-            case 1:
-                title.text = "Upgrade Armor";
-                break;
-        }
+        state = GameInfo.getCurrentLocationAsUpgrade().state;
+        attUpgrade = GameInfo.getCurrentLocationAsUpgrade().attUpgrade;
+        statUpgrade = GameInfo.getCurrentLocationAsUpgrade().statUpgrade;
 
         createSlots();
-        updateInfo();
+        attributeText.text = "";
+        statText.text = "";
     }
+
 
     private void Update() {
-        scrollThoughList();
-        if(Input.GetMouseButtonDown(0) && getMousedOverSlot() != null) {
-            selectedSlot = getMousedOverSlot();
+        if(slot.run())
             updateInfo();
-        }
     }
 
-    GameObject getMousedOverSlot() {
-        //  return if their are no active slots
-        if(slots.Count == 0)
-            return null;
 
-        Ray ray;
-        RaycastHit2D hit;
-
-        List<Collider2D> unwantedHits = new List<Collider2D>();
-
-        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
-
-        //  return if the ray did not hit anything
-        if(hit.collider == null)
-            return null;
-
-        while(true) {
-            //  if the hit is hitting an inventory slot
-            foreach(var i in slots) {
-                if(hit.collider == i.GetComponent<Collider2D>()) {
-                    foreach(var u in unwantedHits)
-                        u.enabled = true;
-                    return i.gameObject;
-                }
-            }
-
-            //  hit is not a wanted object
-            hit.collider.enabled = false;
-            unwantedHits.Add(hit.collider);
-
-            hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
-
-            //  hit has run out of hit objects
-            if(hit.collider == null) {
-                foreach(var i in unwantedHits)
-                    i.enabled = true;
-                return null;
-            }
-        }
+    public void show() {
+        float speed = 0.15f;
+        transform.GetChild(0).DOScale(new Vector2(1.0f, 1.0f), speed);
+        isShowing = true;
     }
 
-    int getSelectedSlotIndex() {
-        if(selectedSlot == null || slots.Count == 0)
-            return -1;
-        for(int i = 0; i < slots.Count; i++) {
-            if(slots[i] == selectedSlot)
-                return i;
-        }
-        return -1;
+    public void hide() {
+        float speed = 0.25f;
+        transform.GetChild(0).DOScale(new Vector2(0.0f, 0.0f), speed);
+        isShowing = false;
     }
-    Weapon getWeaponInSelectedSlot() {
-        int index = getSelectedSlotIndex();
 
-        //  party weapons
+
+    Weapon getSelectedWeapon() {
+        int index = slot.getSelectedSlotIndex();
+
+        //  Party Equipment
         for(int i = 0; i < Party.getMemberCount(); i++) {
-            if(index <= 0)
-                return Party.getMemberStats(i).equippedWeapon;
-            if(Party.getMemberStats(i).equippedWeapon != null && !Party.getMemberStats(i).equippedWeapon.isEmpty())
-                index--;
-        }
-
-
-        //  Inventory weapons
-        int inventoryWeaponCount = Inventory.getTypeCount(typeof(Weapon));
-
-        if(inventoryWeaponCount > 0) {
-            for(int i = 0; i < inventoryWeaponCount; i++) {
-                if(index <= 0)
-                    return Inventory.getWeapon(i);
+            if(Party.getMemberStats(i).equippedWeapon != null && !Party.getMemberStats(i).equippedWeapon.isEmpty()) {
+                if(index == 0)
+                    return Party.getMemberStats(i).equippedWeapon;
                 index--;
             }
         }
-        return null;
-    }
-    Armor getArmorInSelectedSlot() {
-        int index = getSelectedSlotIndex();
 
-        //  party weapons
-        for(int i = 0; i < Party.getMemberCount(); i++) {
-            if(index <= 0)
-                return Party.getMemberStats(i).equippedArmor;
-            if(Party.getMemberStats(i).equippedArmor != null && !Party.getMemberStats(i).equippedArmor.isEmpty())
-                index--;
+        //  Inventory Equipment
+        for(int i = 0; i < Inventory.getWeaponCount(); i++) {
+            if(index == 0)
+                return Inventory.getWeapon(i);
+            index--;
         }
 
-
-        //  Inventory weapons
-        int inventoryArmorCount = Inventory.getTypeCount(typeof(Armor));
-
-        if(inventoryArmorCount > 0) {
-            for(int i = 0; i < inventoryArmorCount; i++) {
-                if(index <= 0)
-                    return Inventory.getArmor(i);
-                index--;
-            }
-        }
         return null;
     }
 
-    void updateInfo() {
-        switch(state) {
-            //  Weapon
-            case 0:
-                statText.text = "+ " + statInc.ToString("0.0") + " power";
-                attributeText.text = "+ " + weaponUpgrade.ToString();
-                break;
+    Armor getSelectedArmor() {
+        int index = slot.getSelectedSlotIndex();
 
-            //  Armor 
-            case 1:
-                statText.text = "+ " + statInc.ToString("0.0") + " defence";
-                attributeText.text = "+ " + armorUpgrade.ToString();
-                break;
+        //  Party Equipment
+        for(int i = 0; i < Party.getMemberCount(); i++) {
+            if(Party.getMemberStats(i).equippedArmor != null && !Party.getMemberStats(i).equippedArmor.isEmpty()) {
+                if(index == 0)
+                    return Party.getMemberStats(i).equippedArmor;
+                index--;
+            }
         }
 
-        foreach(var i in slots)
-            i.GetComponent<Image>().color = Color.black;
+        //  Inventory Equipment
+        for(int i = 0; i < Inventory.getArmorCount(); i++) {
+            if(index == 0)
+                return Inventory.getArmor(i);
+            index--;
+        }
 
-        if(selectedSlot != null)
-            selectedSlot.GetComponent<Image>().color = Color.grey;
+        return null;
     }
+
 
     void createSlots() {
-        for(int i = 0; i < slots.Count; i++)
-            Destroy(slots[i].gameObject);
-        slots.Clear();
-
-        switch(state) {
-            //  Weapons
-            case 0:
-                //  party weapons
-                List<int> partyMembersWithWeapons = new List<int>();
-                for(int i = 0; i < Party.getMemberCount(); i++) {
-                    if(Party.getMemberStats(i).equippedWeapon != null && !Party.getMemberStats(i).equippedWeapon.isEmpty())
-                        partyMembersWithWeapons.Add(i);
+        if(state == 0) {
+            //  Party Equipment
+            int index = 0;
+            for(int i = 0; i < Party.getMemberCount(); i++) {
+                if(Party.getMemberStats(i).equippedWeapon != null && !Party.getMemberStats(i).equippedWeapon.isEmpty()) {
+                    var s = slot.createNewSlot(index, slotPreset, slot.gameObject.transform.GetChild(0), FindObjectOfType<PresetLibrary>().getRarityColor(Party.getMemberStats(i).equippedWeapon.w_rarity));
+                    s.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Party.getMemberStats(i).u_name + "'s Weapon";
+                    s.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Party.getMemberStats(i).equippedWeapon).sprite;
+                    index++;
                 }
-
-                if(partyMembersWithWeapons.Count > 0) {
-                    for(int i = 0; i < partyMembersWithWeapons.Count; i++) {
-                        createNewSlot(i, FindObjectOfType<PresetLibrary>().getWeaponSprite(Party.getMemberStats(partyMembersWithWeapons[i]).equippedWeapon).sprite, Party.getMemberStats(partyMembersWithWeapons[i]).u_name);
-                    }
-                }
-
-                //  Inventory weapons
-                int inventoryWeaponCount = Inventory.getTypeCount(typeof(Weapon));
-
-                if(inventoryWeaponCount > 0) {
-                    for(int i = 0; i < inventoryWeaponCount; i++)
-                        createNewSlot(i + partyMembersWithWeapons.Count, FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getWeapon(i)).sprite);
-                }
-                break;
-
-            //  Armor
-            case 1:
-                //  party armor
-                List<int> partyMembersWithArmor = new List<int>();
-                for(int i = 0; i < Party.getMemberCount(); i++) {
-                    if(Party.getMemberStats(i).equippedArmor != null && !Party.getMemberStats(i).equippedArmor.isEmpty())
-                        partyMembersWithArmor.Add(i);
-                }
-
-                if(partyMembersWithArmor.Count > 0) {
-                    for(int i = 0; i < partyMembersWithArmor.Count; i++) {
-                        createNewSlot(i, FindObjectOfType<PresetLibrary>().getArmorSprite(Party.getMemberStats(partyMembersWithArmor[i]).equippedArmor).sprite, Party.getMemberStats(partyMembersWithArmor[i]).u_name);
-                    }
-                }
-
-
-                //  Inventory Armor
-                int armorCount = Inventory.getTypeCount(typeof(Armor));
-
-                if(armorCount <= 0)
-                    break;
-                for(int i = 0; i < armorCount; i++)
-                    createNewSlot(i + partyMembersWithArmor.Count, FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getArmor(i)).sprite);
-                break;
-        }
-
-        if(slots.Count > 0)
-            scrollThoughList();
-        updateInfo();
-    }
-    GameObject createNewSlot(int index, Sprite sp, string unitName = null) {
-        var obj = Instantiate(slotObject, slotHolder.transform);
-
-        //  position and scale
-        float step = slotObject.GetComponent<RectTransform>().rect.height + slotBuffer;
-        obj.transform.localPosition = new Vector3(0.0f, slotTopY - (step * index), 0.0f);
-        obj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-
-        //  width and height
-        var x = obj.GetComponent<RectTransform>().rect.width;
-        var y = obj.GetComponent<RectTransform>().rect.height;
-        obj.GetComponent<BoxCollider2D>().size = new Vector2(x, y);
-
-        //  text and images
-        if(!string.IsNullOrEmpty(unitName))
-            obj.GetComponentInChildren<TextMeshProUGUI>().text = unitName + "'s equipment";
-        else
-            obj.GetComponentInChildren<TextMeshProUGUI>().text = index.ToString();
-        obj.transform.GetChild(1).GetComponent<Image>().sprite = sp;
-        obj.transform.GetChild(1).GetComponent<Image>().color = Color.white;
-
-        slots.Add(obj);
-        return obj;
-    }
-
-    void scrollThoughList() {
-        float scroll = Input.mouseScrollDelta.y;
-
-        if(scroll == 0)
-            return;
-
-        scrollSlots(-scroll * scrollSpeed);
-
-        //  Top bounds
-        if(slots[0].transform.localPosition.y < slotTopY)
-            scrollSlots(slotTopY - slots[0].transform.localPosition.y);
-
-        //  Bot bounds
-        else if(slots[slots.Count - 1].transform.localPosition.y > slotBotY)
-            scrollSlots(slotBotY - slots[slots.Count - 1].transform.localPosition.y);
-    }
-
-    void scrollSlots(float val) {
-        foreach(var i in slots) {
-            i.transform.localPosition = new Vector3(0.0f, i.transform.localPosition.y + val, 0.0f);
-        }
-    }
-
-
-    //  Buttons 
-    public void upgrade() {
-        if(selectedSlot != null) {
-            switch(state) {
-                //  Weapon
-                case 0:
-                    Weapon w = new Weapon();
-                    Weapon weaponInSlot = getWeaponInSelectedSlot();
-                    w.setEqualTo(weaponInSlot, true);
-                    w.w_power += statInc;
-                    w.w_attributes.Add(weaponUpgrade);
-
-                    //  upgraded weapon is in the party
-                    for(int i = 0; i < Party.getMemberCount(); i++) {
-                        if(Party.getMemberStats(i).equippedWeapon.isEqualTo(weaponInSlot)) {
-                            var unit = Party.getMemberStats(i);
-                            unit.equippedWeapon = w;
-                            Party.overrideUnit(unit);
-                            break;
-                        }
-                    }
-
-                    //  upgraded weapon is in the inventory
-                    for(int i = 0; i < Inventory.getTypeCount(typeof(Weapon)); i++) {
-                        if(Inventory.getWeapon(i).isEqualTo(weaponInSlot)) {
-                            Inventory.overrideWeapon(i, w);
-                            break;
-                        }
-                    }
-                    break;
-
-                //  Armor
-                case 1:
-                    Armor a = new Armor();
-                    Armor armorInSlot = getArmorInSelectedSlot();
-                    a.setEqualTo(armorInSlot, true);
-                    a.a_defence += statInc;
-                    a.a_attributes.Add(armorUpgrade);
-
-                    //  upgraded weapon is in the party
-                    for(int i = 0; i < Party.getMemberCount(); i++) {
-                        if(Party.getMemberStats(i).equippedArmor.isEqualTo(armorInSlot)) {
-                            var unit = Party.getMemberStats(i);
-                            unit.equippedArmor = a;
-                            Party.overrideUnit(unit);
-                            break;
-                        }
-                    }
-
-                    //  upgraded weapon is in the inventory
-                    for(int i = 0; i < Inventory.getTypeCount(typeof(Armor)); i++) {
-                        if(Inventory.getArmor(i).isEqualTo(armorInSlot)) {
-                            Inventory.overrideArmor(i, a);
-                            break;
-                        }
-                    }
-                    break;
             }
 
-            //  return to map
-            SceneManager.LoadScene("Map");
+            //  Inventory Equipment
+            for(int i = 0; i < Inventory.getWeaponCount(); i++) {
+                var s = slot.createNewSlot(index, slotPreset, slot.gameObject.transform.GetChild(0), FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getWeapon(i).w_rarity));
+                s.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Inv";
+                s.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getWeapon(i)).sprite;
+                index++;
+            }
+        }
+
+        else if(state == 1) {
+            //  Party Equipment
+            int index = 0;
+            for(int i = 0; i < Party.getMemberCount(); i++) {
+                if(Party.getMemberStats(i).equippedArmor != null && !Party.getMemberStats(i).equippedArmor.isEmpty()) {
+                    var s = slot.createNewSlot(index, slotPreset, slot.gameObject.transform.GetChild(0), FindObjectOfType<PresetLibrary>().getRarityColor(Party.getMemberStats(i).equippedArmor.a_rarity));
+                    s.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Party.getMemberStats(i).u_name + "'s Armor";
+                    s.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Party.getMemberStats(i).equippedArmor).sprite;
+                    index++;
+                }
+            }
+
+            //  Inventory Equipment
+            for(int i = 0; i < Inventory.getArmorCount(); i++) {
+                var s = slot.createNewSlot(index, slotPreset, slot.gameObject.transform.GetChild(0), FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getArmor(i).a_rarity));
+                s.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Inv";
+                s.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getArmor(i)).sprite;
+                index++;
+            }
         }
     }
 
-    public void setUpgradeStats() {
-        statInc = Random.Range(0.0f, 5.0f);
-        weaponUpgrade = (Weapon.attribute)(Random.Range(0, Weapon.attributeCount));
-        armorUpgrade = (Armor.attribute)(Random.Range(0, Armor.attributeCount));
-        updateInfo();
+    public void updateInfo() {
+        if(state == 0) {
+            if(getSelectedWeapon() == null)
+                return;
+
+            var we = getSelectedWeapon();
+
+            attributeText.text = "";
+            if(attUpgrade != -1) {
+                foreach(var i in we.w_attributes)
+                    attributeText.text += i.ToString() + ", ";
+                attributeText.text += "  +  " + ((Weapon.attribute)attUpgrade).ToString();
+            }
+
+            statText.text = "";
+            if(statUpgrade > 1.0f) {
+                statText.text = we.w_power.ToString("0.0") + " >>> " + (statUpgrade * we.w_power).ToString("0.0");
+            }
+        }
+
+        else if(state == 1) {
+            if(getSelectedArmor() == null)
+                return;
+
+            var ar = getSelectedArmor();
+
+            attributeText.text = "";
+            if(attUpgrade != -1) {
+                foreach(var i in ar.a_attributes)
+                    attributeText.text += i.ToString() + ", ";
+                attributeText.text += "  +  " + ((Armor.attribute)attUpgrade).ToString();
+            }
+
+            statText.text = "";
+            if(statUpgrade > 1.0f) {
+                statText.text = ar.a_defence.ToString("0.0") + " >>> " + (statUpgrade * ar.a_defence).ToString("0.0");
+            }
+        }
+    }
+
+
+    public void upgrade() {
+        if(state == 0) {
+            if(getSelectedWeapon() == null)
+                return;
+
+            var we = getSelectedWeapon();
+            if(attUpgrade != -1)
+                we.w_attributes.Add((Weapon.attribute)attUpgrade);
+
+            if(statUpgrade > 1.0f)
+                we.w_power *= statUpgrade;
+
+            shrine.GetComponent<SpriteRenderer>().color = Color.grey;
+
+            //  Party Equipment
+            for(int i = 0; i < Party.getMemberCount(); i++) {
+                if(Party.getMemberStats(i).equippedWeapon != null && !Party.getMemberStats(i).equippedWeapon.isEmpty()) {
+                    if(we.isEqualTo(Party.getMemberStats(i).equippedWeapon)) {
+                        var stats = Party.getMemberStats(i);
+                        stats.equippedWeapon.setEqualTo(we, false);
+                        Party.overrideUnit(stats);
+
+                        hasBeenUsed = true;
+                        FindObjectOfType<RoomMovement>().deinteract();
+                        hide();
+                        return;
+                    }
+                }
+            }
+
+            //  Inventory Equipment
+            for(int i = 0; i < Inventory.getWeaponCount(); i++) {
+                if(we.isEqualTo(Inventory.getWeapon(i))) {
+                    Inventory.overrideWeapon(i, we);
+
+                    hasBeenUsed = true;
+                    FindObjectOfType<RoomMovement>().deinteract();
+                    hide();
+                    return;
+                }
+            }
+        }
+
+        else if(state == 1) {
+            if(getSelectedArmor() == null)
+                return;
+
+            var ar = getSelectedArmor();
+            if(attUpgrade != -1)
+                ar.a_attributes.Add((Armor.attribute)attUpgrade);
+
+            if(statUpgrade > 1.0f)
+                ar.a_defence *= statUpgrade;
+
+            shrine.GetComponent<SpriteRenderer>().color = Color.grey;
+
+            //  Party Equipment
+            for(int i = 0; i < Party.getMemberCount(); i++) {
+                if(Party.getMemberStats(i).equippedArmor != null && !Party.getMemberStats(i).equippedArmor.isEmpty()) {
+                    if(ar.isEqualTo(Party.getMemberStats(i).equippedArmor)) {
+                        var stats = Party.getMemberStats(i);
+                        stats.equippedArmor.setEqualTo(ar, false);
+                        Party.overrideUnit(stats);
+
+                        hasBeenUsed = true;
+                        FindObjectOfType<RoomMovement>().deinteract();
+                        hide();
+                        return;
+                    }
+                }
+            }
+
+            //  Inventory Equipment
+            for(int i = 0; i < Inventory.getArmorCount(); i++) {
+                if(ar.isEqualTo(Inventory.getArmor(i))) {
+                    Inventory.overrideArmor(i, ar);
+
+                    hasBeenUsed = true;
+                    FindObjectOfType<RoomMovement>().deinteract();
+                    hide();
+                    return;
+                }
+            }
+        }
     }
 }

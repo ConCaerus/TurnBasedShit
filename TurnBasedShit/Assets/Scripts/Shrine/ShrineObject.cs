@@ -13,7 +13,7 @@ public class ShrineObject : MonoBehaviour {
     public void showCanvas() {
         shrineCanvas.SetActive(true);
         shrineCanvas.transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f), showTime);
-        FindObjectOfType<LocationMovement>().flip();
+        FindObjectOfType<LocationMovement>().flip(false);
         FindObjectOfType<LocationMovement>().canMove = false;
     }
 
@@ -27,7 +27,7 @@ public class ShrineObject : MonoBehaviour {
         yield return new WaitForSeconds(showTime);
 
         shrineCanvas.SetActive(false);
-        FindObjectOfType<LocationMovement>().flip();
+        FindObjectOfType<LocationMovement>().flip(true);
         FindObjectOfType<LocationMovement>().canMove = true;
     }
 

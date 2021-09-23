@@ -14,9 +14,9 @@ public abstract class UnitClass : MonoBehaviour {
     public bool stunned = false;
     public bool isMouseOverUnit = false;
 
-    public float tempPower = 0.0f;
-    public float tempDefence = 0.0f;
-    public float tempSpeed = 0.0f;
+    public float tempPowerMod = 1.0f;
+    public float tempDefenceMod = 0.0f;
+    public float tempSpeedMod = 0.0f;
 
     public float spotOffset = 0.0f;
 
@@ -124,13 +124,11 @@ public abstract class UnitClass : MonoBehaviour {
         //  if defender is an enemy, check if it's weak or strong to the attack
         if(!isPlayerUnit) {
             //  check if it's weak to the attack
-            if(GetComponent<EnemyUnitInstance>().weakTo == attacker.GetComponent<UnitClass>().stats.equippedWeapon.w_element)
+            if(GetComponent<EnemyUnitInstance>().weakTo == attacker.GetComponent<UnitClass>().stats.equippedWeapon.w_attackType)
                 dmg *= 1.25f;
-            else if(GetComponent<EnemyUnitInstance>().strongTo == attacker.GetComponent<UnitClass>().stats.equippedWeapon.w_element)
-                dmg *= 0.75f;
         }
 
-        dmg = stats.getModifiedDamageTaken(dmg, defending, tempDefence);
+        dmg = stats.getModifiedDamageTaken(dmg, defending, tempDefenceMod);
 
         float crit = attacker.GetComponent<UnitClass>().stats.getCritMult(dmg);
         dmg *= crit;
@@ -174,7 +172,7 @@ public abstract class UnitClass : MonoBehaviour {
             FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterKill, this, false);
 
             //  increases acc quest counter
-            for(int i = 0; i < ActiveQuests.getQuestTypeCount(GameInfo.questType.kill); i++) {
+            for(int i = 0; i < ActiveQuests.getKillQuestCount(); i++) {
                 if(ActiveQuests.getKillQuest(i).enemyType == GetComponent<EnemyUnitInstance>().enemyType)
                     ActiveQuests.getKillQuest(i).howManyToKill++;
             }
@@ -287,7 +285,7 @@ public abstract class UnitClass : MonoBehaviour {
         FindObjectOfType<AudioManager>().playSound(hitSound);
 
         //  actually deal damage to defender
-        defender.GetComponent<UnitClass>().defend(gameObject, stats.getDamageGiven(tempPower));
+        defender.GetComponent<UnitClass>().defend(gameObject, stats.getDamageGiven(tempPowerMod));
         yield return new WaitForSeconds(0.4f);
 
         //  move back to original position

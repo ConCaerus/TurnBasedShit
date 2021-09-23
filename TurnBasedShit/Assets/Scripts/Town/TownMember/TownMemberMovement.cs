@@ -35,11 +35,13 @@ public class TownMemberMovement : MonoBehaviour {
 
     private void Update() {
         if(FindObjectOfType<TransitionCanvas>().loaded && canMove) {
-            move();
-            unit.GetComponent<UnitSpriteHandler>().setAnimState(3);
-        }
-        else {
-            unit.GetComponent<UnitSpriteHandler>().setAnimState(0);
+            if(canMove) {
+                move();
+                unit.GetComponent<UnitSpriteHandler>().setAnimState(3);
+            }
+            else {
+                unit.GetComponent<UnitSpriteHandler>().setAnimState(0);
+            }
         }
     }
 
@@ -120,7 +122,7 @@ public class TownMemberMovement : MonoBehaviour {
         }
         if(!interactingWithAnother) {
             float offset = FindObjectOfType<LocationMovement>().transform.position.x - transform.position.x;
-            while(Mathf.Abs(offset) < distToStop && (offset == 0.0f || (offset < 0.0f && FindObjectOfType<LocationMovement>().movingDir) || (offset > 0.0f && !FindObjectOfType<LocationMovement>().movingDir))) {
+            while(Mathf.Abs(offset) < distToStop && (offset == 0.0f || (offset < 0.0f && FindObjectOfType<LocationMovement>().movingRight) || (offset > 0.0f && !FindObjectOfType<LocationMovement>().movingRight))) {
                 canMove = false;
 
 
@@ -134,7 +136,7 @@ public class TownMemberMovement : MonoBehaviour {
                 if(interactingWithAnother)
                     break;
 
-                if(movingDir == FindObjectOfType<LocationMovement>().movingDir)
+                if(movingDir == FindObjectOfType<LocationMovement>().movingRight)
                     flip();
 
                 yield return new WaitForEndOfFrame();

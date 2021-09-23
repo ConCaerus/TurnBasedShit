@@ -71,32 +71,19 @@ public class ItemUser : MonoBehaviour {
                     FindObjectOfType<DamageTextCanvas>().showTextForUnit(itemInfo.holder.gameObject, healedAmount, DamageTextCanvas.damageType.healed);
                     break;
 
-                //  adds to the max health
-                case Item.useEffectTypes.modMaxHealth:
-                    float gainedHealth = itemInfo.holder.stats.getBaseMaxHealth() * itemInfo.item.getMaxHealthMod();
-                    gainedHealth += itemInfo.holder.stats.getBaseMaxHealth();
-                    if(gainedHealth <= 0.0f)
-                        break;
-
-                    itemInfo.holder.stats.setBaseMaxHealth(gainedHealth);
-                    break;
-
                 //  adds to power
                 case Item.useEffectTypes.modDamageGiven:
-                    float gainedPower = itemInfo.holder.stats.u_power * itemInfo.item.getDamageGivenMod();
-                    itemInfo.holder.stats.addPower(gainedPower);
+                    itemInfo.holder.tempPowerMod = itemInfo.item.getDamageGivenMod();
                     break;
 
                 //  adds to defence
                 case Item.useEffectTypes.modDamageTaken:
-                    float gainedDefence = itemInfo.holder.stats.u_defence * itemInfo.item.getDamageTakenMod();
-                    itemInfo.holder.stats.addDefence(gainedDefence);
+                    itemInfo.holder.tempDefenceMod = itemInfo.item.getDamageTakenMod();
                     break;
 
                 //  adds to the speed
                 case Item.useEffectTypes.modSpeed:
-                    float gainedSpeed = itemInfo.holder.stats.u_speed * itemInfo.item.getSpeedMod();
-                    itemInfo.holder.stats.addSpeed(gainedSpeed);
+                    itemInfo.holder.tempSpeedMod = itemInfo.item.getSpeedMod();
                     break;
             }
         }

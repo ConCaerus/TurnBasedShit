@@ -78,43 +78,12 @@ public class DeliveryQuest {
     }
 
 
-    public void questInit() {
-        foreach(var i in weaponsToDeliver)
-            Inventory.addWeapon(i);
-        foreach(var i in armorToDeliver)
-            Inventory.addArmor(i);
-        foreach(var i in consumablesToDeliver)
-            Inventory.addConsumable(i);
-        foreach(var i in itemsToDeliver)
-            Inventory.addItem(i);
-        foreach(var i in unitsToDeliver)
-            Party.addNewUnit(i);
-    }
-    public void questDestory() {
-        //  something
-    }
-
-
     public bool canDeliverGoods() {
         return true;
         //  check if the goods are still in the inventory
     }
 
 
-    public void setEqualTo(DeliveryQuest other, bool takeID) {
-        if(other == null)
-            return;
-
-        if(takeID)
-            q_instanceID = other.q_instanceID;
-
-        deliveryLocation = other.deliveryLocation;
-        type = other.type;
-        weaponsToDeliver = other.weaponsToDeliver;
-        armorToDeliver = other.armorToDeliver;
-        consumablesToDeliver = other.consumablesToDeliver;
-        itemsToDeliver = other.itemsToDeliver;
-    }
     public bool isEqualTo(DeliveryQuest other) {
         return q_instanceID == other.q_instanceID;
     }

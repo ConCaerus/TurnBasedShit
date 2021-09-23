@@ -20,11 +20,23 @@ public static class GameVariables {
         return chanceOutOfHundred(15);
     }
 
+    public static bool chanceWeaponDrop() {
+        return chanceOutOfHundred(15);
+    }
+    public static bool chanceArmorDrop() {
+        return chanceOutOfHundred(15);
+    }
+    public static bool chanceConsumableDrop() {
+        return chanceOutOfHundred(25);
+    }
+    public static bool chanceItemDrop() {
+        return chanceOutOfHundred(15);
+    }
+
 
     public static bool shouldMemberHaveQuest() {
         return chanceOutOfHundred(35);
     }
-
     public static bool shouldTownHaveBuilding(Building.type type) {
         switch(type) {
             case Building.type.Church:
@@ -33,10 +45,11 @@ public static class GameVariables {
                 return chanceOutOfHundred(50);
             case Building.type.Shop:
                 return chanceOutOfHundred(80);
+            case Building.type.Casino:
+                return chanceOutOfHundred(100);
         }
         return false;
     }
-
     public static int createTownMemberCount(int buildingCount) {
         int count = 1;
         for(int i = 0; i < buildingCount; i++) {
@@ -44,6 +57,12 @@ public static class GameVariables {
         }
 
         return count;
+    }
+
+
+    //  Building chances
+    public static int getRandomCasinoSpinCost() {
+        return Random.Range(3, 6);
     }
 
     static bool chanceOutOfHundred(int i) {

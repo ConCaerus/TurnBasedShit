@@ -41,7 +41,6 @@ public static class Inventory {
         clearConsumables();
         clearItems();
         clearCoins();
-        PlayerPrefs.DeleteAll();
     }
     public static void clearWeapons() {
         for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Weapon))) + 10; i++) {
@@ -74,7 +73,7 @@ public static class Inventory {
     public static void addWeapon(Weapon w) {
         if(w == null || w.isEmpty())
             return;
-        int index = getTypeCount(typeof(Weapon));
+        int index = getWeaponCount();
 
         var data = JsonUtility.ToJson(w);
         SaveData.setString(objectTag(index, typeof(Weapon)), data);
@@ -83,7 +82,7 @@ public static class Inventory {
     public static void addArmor(Armor a) {
         if(a == null || a.isEmpty())
             return;
-        int index = getTypeCount(typeof(Armor));
+        int index = getArmorCount();
 
         var data = JsonUtility.ToJson(a);
         SaveData.setString(objectTag(index, typeof(Armor)), data);
@@ -92,7 +91,7 @@ public static class Inventory {
     public static void addConsumable(Consumable c) {
         if(c == null || c.isEmpty())
             return;
-        int index = getTypeCount(typeof(Consumable));
+        int index = getConsumabeCount();
 
         var data = JsonUtility.ToJson(c);
         SaveData.setString(objectTag(index, typeof(Consumable)), data);
@@ -101,7 +100,7 @@ public static class Inventory {
     public static void addItem(Item it) {
         if(it == null || it.isEmpty())
             return;
-        int index = getTypeCount(typeof(Item));
+        int index = getItemCount();
 
         var data = JsonUtility.ToJson(it);
         SaveData.setString(objectTag(index, typeof(Item)), data);
@@ -116,7 +115,7 @@ public static class Inventory {
         if(w == null || w.isEmpty())
             return;
         List<Weapon> temp = new List<Weapon>();
-        for(int i = 0; i < getTypeCount(typeof(Weapon)); i++) {
+        for(int i = 0; i < getWeaponCount(); i++) {
             Weapon invWeapon = getWeapon(i);
             if(invWeapon != null && !invWeapon.isEmpty() && !invWeapon.isEqualTo(w))
                 temp.Add(invWeapon);
@@ -130,7 +129,7 @@ public static class Inventory {
         if(a == null || a.isEmpty())
             return;
         List<Armor> temp = new List<Armor>();
-        for(int i = 0; i < getTypeCount(typeof(Armor)); i++) {
+        for(int i = 0; i < getArmorCount(); i++) {
             Armor invArmor = getArmor(i);
             if(invArmor != null && !invArmor.isEmpty() && !invArmor.isEqualTo(a))
                 temp.Add(invArmor);
@@ -144,7 +143,7 @@ public static class Inventory {
         if(c == null || c.isEmpty())
             return;
         List<Consumable> temp = new List<Consumable>();
-        for(int i = 0; i < getTypeCount(typeof(Consumable)); i++) {
+        for(int i = 0; i < getConsumabeCount(); i++) {
             Consumable invCons = getConsumable(i);
             if(invCons != null && !invCons.isEmpty() && !invCons.isEqualTo(c))
                 temp.Add(invCons);
@@ -158,7 +157,7 @@ public static class Inventory {
         if(it == null || it.isEmpty())
             return;
         List<Item> temp = new List<Item>();
-        for(int i = 0; i < getTypeCount(typeof(Item)); i++) {
+        for(int i = 0; i < getItemCount(); i++) {
             Item invItem = getItem(i);
             if(invItem != null && !invItem.isEmpty() && !invItem.isEqualTo(it))
                 temp.Add(invItem);
@@ -202,17 +201,19 @@ public static class Inventory {
         SaveData.setString(objectTag(index, typeof(Item)), data);
     }
 
-    public static int getTypeCount(System.Type type) {
-        if(type == typeof(Weapon))
-            return SaveData.getInt(objectCountTag(type));
-        if(type == typeof(Armor))
-            return SaveData.getInt(objectCountTag(type));
-        if(type == typeof(Consumable))
-            return SaveData.getInt(objectCountTag(type));
-        if(type == typeof(Item))
-            return SaveData.getInt(objectCountTag(type));
-        return -1;
+    public static int getWeaponCount() {
+        return SaveData.getInt(objectCountTag(typeof(Weapon)));
     }
+    public static int getArmorCount() {
+        return SaveData.getInt(objectCountTag(typeof(Armor)));
+    }
+    public static int getConsumabeCount() {
+        return SaveData.getInt(objectCountTag(typeof(Consumable)));
+    }
+    public static int getItemCount() {
+        return SaveData.getInt(objectCountTag(typeof(Item)));
+    }
+
     public static int getCoinCount() {
         return SaveData.getInt(coinCount);
     }
@@ -234,6 +235,28 @@ public static class Inventory {
         if(string.IsNullOrEmpty(data))
             return null;
         return JsonUtility.FromJson<Consumable>(data);
+    }
+    public static Consumable getUniqueConsumable(int ind) {
+        int uniqueIndex = 0;
+        List<Consumable> seen = new List<Consumable>();
+        for(int i = 0; i < getConsumabeCount(); i++) {
+            bool isUnique = true;
+            foreach(var s in seen) {
+                if(s.isTheSameTypeAs(getConsumable(i))) {
+                    isUnique = false;
+                    break;
+                }
+            }
+            if(!isUnique)
+                continue;
+            seen.Add(getConsumable(i));
+
+            if(ind == uniqueIndex)
+                return getConsumable(i);
+
+            uniqueIndex++;
+        }
+        return null;
     }
     public static Item getItem(int i) {
         var data = SaveData.getString(objectTag(i, typeof(Item)));
@@ -277,5 +300,23 @@ public static class Inventory {
                 return i;
         }
         return -1;
+    }
+
+    public static int getUniqueConsumableCount() {
+        int count = 0;
+        for(int i = 0; i < getConsumabeCount(); i++) {
+            if(getUniqueConsumable(i) != null) {
+                count++;
+            }
+        }
+        return count;
+    }
+    public static int getConsumableTypeCount(Consumable con) {
+        int count = 0;
+        for(int i = 0; i < getConsumabeCount(); i++) {
+            if(getConsumable(i).isTheSameTypeAs(con))
+                count++;
+        }
+        return count;
     }
 }

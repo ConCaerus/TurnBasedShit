@@ -14,6 +14,8 @@ public class PickupLocation : MapLocation {
     public Consumable pickupConsumable = null;
     public Item pickupItem = null;
 
+    public PickupQuest attachedQuest = null;
+
 
     public pickupType pType = (pickupType)(-1);
 

@@ -23,8 +23,7 @@ public class Armor {
 
     [SerializeField] ArmorSpriteHolder a_sprite;
 
-    //  NOTE: this function is applied by the defending unit while the 
-    //          weapon class has its function called by the attacker
+    //  this function is applied by the defending unit while the weapon class has its function called by the attacker
     public int applyAttributesAfterAttack(GameObject weilder, GameObject attacker, GameObject turnTaker) {
         foreach(var i in a_attributes) {
             if(i == attribute.Reflex && turnTaker != weilder) {
@@ -127,11 +126,19 @@ public class Armor {
 
 [System.Serializable]
 public class ArmorSpriteHolder {
-    public Sprite sprite, equippedSprite;
+    public Sprite sprite, equippedSprite, equippedShoulder, equippedHat;
 
     public float xPos0, yPos0, xSize0, ySize0;
     public float xPos1, yPos1, xSize1, ySize1;
     public float xPos2, yPos2, xSize2, ySize2;
+
+    public float xShoulderPos0, yShoulderPos0, xShoulderSize0, yShoulderSize0, shoulderRot;
+    public float xShoulderPos1, yShoulderPos1, xShoulderSize1, yShoulderSize1;
+    public float xShoulderPos2, yShoulderPos2, xShoulderSize2, yShoulderSize2;
+
+    public float xHatPos0, yHatPos0, xHatSize0, yHatSize0, hatRot;
+    public float xHatPos1, yHatPos1, xHatSize1, yHatSize1;
+    public float xHatPos2, yHatPos2, xHatSize2, yHatSize2;
 
     public Vector2 getRelevantPos(int bodyIndex) {
         if(bodyIndex == 0)
@@ -139,7 +146,7 @@ public class ArmorSpriteHolder {
         else if(bodyIndex == 1)
             return new Vector2(xPos1, yPos1);
         else if(bodyIndex == 2)
-            return new Vector2(xPos1, yPos1);
+            return new Vector2(xPos2, yPos2);
 
         return Vector2.zero;
     }
@@ -152,7 +159,50 @@ public class ArmorSpriteHolder {
         else if(bodyIndex == 2)
             return new Vector2(xSize2, ySize2);
 
-        Debug.Log(bodyIndex);
+        return Vector2.zero;
+    }
+
+    public Vector2 getRelevantShoulderPos(int bodyIndex) {
+        if(bodyIndex == 0)
+            return new Vector2(xShoulderPos0, yShoulderPos0);
+        else if(bodyIndex == 1)
+            return new Vector2(xShoulderPos1, yShoulderPos1);
+        else if(bodyIndex == 2)
+            return new Vector2(xShoulderPos2, yShoulderPos2);
+
+        return Vector2.zero;
+    }
+
+    public Vector2 getRelevantShoulderSize(int bodyIndex) {
+        if(bodyIndex == 0)
+            return new Vector2(xShoulderSize0, yShoulderSize0);
+        else if(bodyIndex == 1)
+            return new Vector2(xShoulderSize1, yShoulderSize1);
+        else if(bodyIndex == 2)
+            return new Vector2(xShoulderSize2, yShoulderSize2);
+
+        return Vector2.zero;
+    }
+
+    public Vector2 getRelevantHatPos(int bodyIndex) {
+        if(bodyIndex == 0)
+            return new Vector2(xHatPos0, yHatPos0);
+        else if(bodyIndex == 1)
+            return new Vector2(xHatPos1, yHatPos1);
+        else if(bodyIndex == 2)
+            return new Vector2(xHatPos2, yHatPos2);
+
+        return Vector2.zero;
+    }
+
+    public Vector2 getRelevantHatSize(int bodyIndex) {
+        if(bodyIndex == 0)
+            return new Vector2(xHatSize0, yHatSize0);
+        else if(bodyIndex == 1)
+            return new Vector2(xHatSize1, yHatSize1);
+        else if(bodyIndex == 2)
+            return new Vector2(xHatSize2, yHatSize2);
+
         return Vector2.zero;
     }
 }

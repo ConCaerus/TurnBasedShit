@@ -19,12 +19,14 @@ MonoBehaviour:
     w_element: 2
     w_wornAmount: 0
     w_attributes: 01000000
+    w_attackType: 1
     w_power: 20
-    w_speedMod: 4
+    w_speedMod: -4
     w_coinCost: 17
     w_sprite:
       sprite: {fileID: 21300000, guid: 4885ee56be463d049a0e6a6081c802da, type: 3}
       equippedX: 0.563
       equippedY: 0.14
       equippedRot: -109.7
-      equippedSize: 0.35
+      equippedXSize: -0.35
+      equippedYSize: 0.35

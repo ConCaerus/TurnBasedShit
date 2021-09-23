@@ -5,7 +5,6 @@ using UnityEngine;
 public class TownPeopleSpawner : MonoBehaviour {
     Town reference;
 
-    float distToInteract = 1.0f;
     [SerializeField] float memberYPos;
 
     public List<GameObject> memberObjects = new List<GameObject>();
@@ -33,7 +32,7 @@ public class TownPeopleSpawner : MonoBehaviour {
     }
 
 
-    public GameObject getMemberWithinInteractRange(float x) {
+    public GameObject getMemberWithinInteractRange(float x, int distToInteract) {
         foreach(var i in memberObjects) {
             if(Mathf.Abs(x - i.transform.position.x) < distToInteract)
                 return i.gameObject;

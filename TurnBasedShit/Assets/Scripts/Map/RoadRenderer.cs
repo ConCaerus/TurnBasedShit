@@ -73,10 +73,10 @@ public class RoadRenderer : MonoBehaviour {
         }
 
         //  enter the location that the party object is over
-        if(Input.GetKeyDown(KeyCode.S) && FindObjectOfType<MapLocationSpawner>().getMapLocationForPosition(partyObject.transform.position) != null) {
+        if(Input.GetKeyDown(KeyCode.S) && MapLocationHolder.locationAtPosition(partyObject.transform.position)) {
             shrinkPartyObj();
             canMove = false;
-            FindObjectOfType<EnounterCanvas>().showEnemyEncounterAlert(FindObjectOfType<MapLocationSpawner>().getMapLocationForPosition(partyObject.transform.position));
+            FindObjectOfType<EnounterCanvas>().showEnemyEncounterAlert();
         }
 
 

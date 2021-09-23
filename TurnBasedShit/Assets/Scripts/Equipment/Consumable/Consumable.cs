@@ -34,15 +34,15 @@ public class Consumable {
                 break;
 
             case effects.powerBuff:
-                uc.tempPower += c_effectAmount;
+                uc.tempPowerMod += c_effectAmount;
                 break;
 
             case effects.defenceBuff:
-                uc.tempDefence += c_effectAmount;
+                uc.tempDefenceMod += c_effectAmount;
                 break;
 
             case effects.speedBuff:
-                uc.tempSpeed += c_effectAmount;
+                uc.tempSpeedMod += c_effectAmount;
                 break;
         }
 
@@ -66,7 +66,9 @@ public class Consumable {
     }
 
     public bool isTheSameTypeAs(Consumable other) {
-        return c_name == other.c_name && c_rarity == other.c_rarity && c_effect == other.c_effect && c_effectAmount == other.c_effectAmount;
+        if(other == null || other.isEmpty())
+            return false;
+        return c_name == other.c_name;
     }
 
     public bool isEmpty() {

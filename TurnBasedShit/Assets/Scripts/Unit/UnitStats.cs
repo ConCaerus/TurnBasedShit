@@ -122,30 +122,30 @@ public class UnitStats {
     }
 
     //  Attack amount
-    public float getPowerMod(float tempPower = 0.0f) {
-        return u_power + equippedWeapon.w_power + tempPower;
+    public float getPowerMod(float tempPowerMod) {
+        return u_power + equippedWeapon.w_power + tempPowerMod;
     }
-    public float getAverageDamageGiven(float tempPower = 0.0f) {
-        float dmg = getPowerMod(tempPower);
+    public float getAverageDamageGiven(float tempPowerMod) {
+        float dmg = getPowerMod(tempPowerMod);
 
         //  Weapon
         dmg += equippedWeapon.getBonusAttributeDamage();
 
         //  Traits modify damage
         foreach(var i in u_traits) {
-            dmg += i.getDamageGivenMod() * getPowerMod();
+            dmg += i.getDamageGivenMod() * getPowerMod(tempPowerMod);
         }
 
         //  Items modify damage
         if(equippedItem != null && !equippedItem.isEmpty()) {
-            dmg += equippedItem.getDamageGivenMod() * getPowerMod();
+            dmg += equippedItem.getDamageGivenMod() * getPowerMod(tempPowerMod);
         }
 
 
         return dmg;
     }
-    public float getDamageGiven(float tempPower = 0.0f) {
-        return getAverageDamageGiven(tempPower);
+    public float getDamageGiven(float tempPowerMod) {
+        return getAverageDamageGiven(tempPowerMod);
     }
     public float getCritMult(float dmg) {
         //  crit mod
@@ -156,13 +156,13 @@ public class UnitStats {
     }
 
     //  Defence amount
-    public float getDefenceMod(float tempDefence = 0.0f) {
-        return u_defence + equippedArmor.a_defence + tempDefence;
+    public float getDefenceMod(float tempDefenceMod) {
+        return u_defence + equippedArmor.a_defence * tempDefenceMod;
     }
-    public float getDefenceMult(bool defending = false, float tempDefence = 0.0f) {
+    public float getDefenceMult(bool defending, float tempDefenceMod) {
         //  starts with 100%
         float temp = 1.0f;
-        temp -= getDefenceMod(tempDefence) / 100.0f;
+        temp -= getDefenceMod(tempDefenceMod) / 100.0f;
 
         //  Trigger Traits
         foreach(var i in u_traits) {
@@ -185,22 +185,20 @@ public class UnitStats {
 
         return temp;
     }
-    public float getModifiedDamageTaken(float damage, bool defending = false, float tempDefence = 0.0f) {
-        return damage * getDefenceMult(defending, tempDefence);
+    public float getModifiedDamageTaken(float damage, bool defending, float tempDefenceMod) {
+        return damage * getDefenceMult(defending, tempDefenceMod);
     }
 
     public float getModifiedMaxHealth() {
         float temp = u_baseMaxHealth;
-        if(equippedItem != null && !equippedItem.isEmpty())
-            temp += equippedItem.getMaxHealthMod();
 
         foreach(var i in u_traits)
             temp += i.getMaxHealthMod();
 
         return temp;
     }
-    public float getModifiedSpeed() {
-        float temp = u_speed;
+    public float getModifiedSpeed(float tempSpeedMod) {
+        float temp = u_speed * tempSpeedMod;
         temp += equippedWeapon.w_speedMod;
         temp += equippedArmor.a_speedMod;
         temp += equippedItem.getSpeedMod();

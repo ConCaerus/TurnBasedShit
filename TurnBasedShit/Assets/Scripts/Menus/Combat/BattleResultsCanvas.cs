@@ -62,35 +62,29 @@ public class BattleResultsCanvas : MonoBehaviour {
             else break;
         }
 
-
-        List<Consumable> usedCons = new List<Consumable>();
-        int conSlotIndex = 0;
-        for(int i = 0; i < consumableImages.Count + consumables.Count; i++) {
+        for(int i = 0; i < consumableImages.Count; i++) {
             yield return new WaitForSeconds(waitTime);
-            bool alreadyUsed = false;
-            foreach(var c in usedCons) {
-                if(c.isTheSameTypeAs(consumables[i])) {
-                    alreadyUsed = true;
-                    break;
-                }
-            }
+            if(i < consumables.Count) {
+                consumableImages[i].transform.DOScale(1.0f, waitTime);
+                consumableImages[i].transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getConsumableSprite(consumables[i]).sprite;
 
-            if(i < consumableImages.Count && i < consumables.Count) {
-                if(i < consumables.Count && !alreadyUsed) {
-                    consumableImages[i].transform.DOScale(1.0f, waitTime);
-                    consumableImages[i].transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getConsumableSprite(consumables[i]).sprite;
-                    int conCount = 0;
-                    foreach(var c in consumables) {
-                        if(c.isTheSameTypeAs(consumables[i]))
-                            conCount++;
+                //  remove all consumables of this type from the list
+                int count = 0;
+                List<Consumable> removables = new List<Consumable>();
+                foreach(var c in consumables) {
+                    if(c.isTheSameTypeAs(consumables[i])) {
+                        count++;
+                        removables.Add(c);
                     }
-                    if(conCount > 1)
-                        consumableImages[conSlotIndex].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = conCount.ToString();
-                    else
-                        consumableImages[conSlotIndex].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
-                    usedCons.Add(consumables[i]);
-                    conSlotIndex++;
                 }
+
+                foreach(var c in removables)
+                    consumables.Remove(c);
+
+                if(count > 1)
+                    consumableImages[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = count.ToString();
+                else
+                    consumableImages[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
             }
             else break;
         }

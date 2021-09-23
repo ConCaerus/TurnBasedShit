@@ -20,24 +20,6 @@ public class KillQuest {
     }
 
 
-    public void questInit() {
-    }
-    public void questDestory() {
-        //  something
-    }
-
-
-    public void setEqualTo(KillQuest other, bool takeID) {
-        if(other == null)
-            return;
-
-        if(takeID)
-            q_instanceID = other.q_instanceID;
-
-        howManyToKill = other.howManyToKill;
-        killCount = other.killCount;
-        enemyType = other.enemyType;
-    }
     public bool isEqualTo(KillQuest other) {
         return q_instanceID == other.q_instanceID;
     }

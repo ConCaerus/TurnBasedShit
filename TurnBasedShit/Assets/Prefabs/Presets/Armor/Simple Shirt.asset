@@ -24,6 +24,8 @@ MonoBehaviour:
     a_sprite:
       sprite: {fileID: 21300000, guid: 659edf7ddf4c930488e38ecd5c72668f, type: 3}
       equippedSprite: {fileID: 21300000, guid: f3297d1a17f799a42b6a88cde4f12b1e, type: 3}
+      equippedShoulder: {fileID: 21300000, guid: a8f6b81c04aab7848913679040562d59,
+        type: 3}
       xPos0: 0.02
       yPos0: 0.46
       xSize0: 0.65
@@ -36,3 +38,16 @@ MonoBehaviour:
       yPos2: 0.52
       xSize2: 0.65
       ySize2: 0.65
+      xShoulderPos0: -0.089
+      yShoulderPos0: 0.192
+      xShoulderSize0: 0.75
+      yShoulderSize0: 0.75
+      shoulderRot: 0
+      xShoulderPos1: -0.089
+      yShoulderPos1: 0.134
+      xShoulderSize1: 0.65
+      yShoulderSize1: 0.65
+      xShoulderPos2: -0.038
+      yShoulderPos2: 0.179
+      xShoulderSize2: 0.9
+      yShoulderSize2: 0.9

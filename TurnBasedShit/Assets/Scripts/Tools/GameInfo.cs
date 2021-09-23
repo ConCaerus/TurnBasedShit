@@ -14,7 +14,7 @@ public static class GameInfo {
         Worthless, Common, Uncommon, Unusual, Rare, Legendary, Mythical
     }
     public enum element {
-        Bronze, Gold, Iron, Obsidian
+        Bronze, Gold, Iron, Obsidian, Unique
     }
     public enum wornState {
         Old, Used, Normal, New, Perfect
@@ -31,6 +31,8 @@ public static class GameInfo {
     public const string currentDiffRegion = "Difficulty Region";
 
     public const string currentMapLocation = "Current Map Location";
+    public const string currentMapPosX = "Current Map Position x";
+    public const string currentMapPosY = "Current Map Position y";
 
 
     public const string nextWeaponID = "Next Weapon ID";
@@ -113,6 +115,14 @@ public static class GameInfo {
     public static BossLocation getCurrentLocationAsBoss() {
         var data = SaveData.getString(currentMapLocation);
         return JsonUtility.FromJson<BossLocation>(data);
+    }
+
+    public static void setCurrentMapPos(Vector2 pos) {
+        SaveData.setFloat(currentMapPosX, pos.x);
+        SaveData.setFloat(currentMapPosY, pos.y);
+    }
+    public static Vector2 getCurrentMapPos() {
+        return new Vector2(SaveData.getFloat(currentMapPosX), SaveData.getFloat(currentMapPosY));
     }
 
     public static diffLvl getCurrentDiff() {

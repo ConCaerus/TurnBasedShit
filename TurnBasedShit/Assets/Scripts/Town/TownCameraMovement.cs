@@ -22,7 +22,7 @@ public class TownCameraMovement : MonoBehaviour {
 
 
     void moveToTarget() {
-        if(target.GetComponent<LocationMovement>().movingDir) {
+        if(target.GetComponent<LocationMovement>().movingRight) {
             var p = new Vector3(target.transform.position.x + maxXDiff, 0.0f, transform.position.z);
             transform.position = Vector3.Lerp(transform.position, p, speed * Time.deltaTime);
         }

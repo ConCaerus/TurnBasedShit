@@ -10,6 +10,10 @@ public class Weapon {
         Power, Bleed, Healing, Stun
     }
 
+    public enum attackType {
+        blunt, edged, magical, summoned
+    }
+
     public int w_instanceID = -1;
 
     public string w_name;
@@ -18,6 +22,7 @@ public class Weapon {
     public GameInfo.wornState w_wornAmount;
     public List<attribute> w_attributes = new List<attribute>();
 
+    public attackType w_attackType;
     public float w_power;
     public float w_speedMod;
     public int w_coinCost;
@@ -141,5 +146,6 @@ public class Weapon {
 public class WeaponSpriteHolder {
     public Sprite sprite;
 
-    public float equippedX, equippedY, equippedRot, equippedSize;
+    public float equippedX, equippedY, equippedRot;
+    public float equippedXSize, equippedYSize;
 }

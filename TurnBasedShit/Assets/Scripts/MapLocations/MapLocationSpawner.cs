@@ -1,168 +1,98 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class MapLocationSpawner : MonoBehaviour {
-    [SerializeField] int numberOfTowns = 8;
-    [SerializeField] int numberOfEquipmentPickups = 15;
+    public GameObject bossLocationPreset, rescueLocationPreset, townLocationPreset, upgradeLocationPreset, pickupLocationPreset;
 
-    [SerializeField] GameObject iconPreset;
-
-    public List<MapLocation> currentLocations = new List<MapLocation>();
+    public List<GameObject> currentIcons = new List<GameObject>();
 
 
 
     private void Start() {
-        if(MapLocationHolder.getPickupCount() == 0)
-            createNewRandomEquipmentPickup();
-        if(MapLocationHolder.getUpgradeCount() == 0)
-            createNewRandomEquipmentUpgrade();
-        if(MapLocationHolder.getTownCount() == 0)
-            createNewRandomTown();
-
         createIcons();
         GameInfo.resetCombatDetails();
     }
-
-
 
     public void createIcons() {
         foreach(var i in GetComponentsInChildren<SpriteRenderer>())
             Destroy(i.gameObject);
 
-        foreach(var i in MapLocationHolder.getLocations()) {
-            //  equipmentUpgrade shit
-            var obj = Instantiate(iconPreset.gameObject);
-            obj.transform.position = i.pos;
-            obj.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getMapLocationSprite(i);
-            obj.transform.SetParent(transform);
-            currentLocations.Add(i);
-        }
-    }
+        //  Boss Locations
+        for(int i = 0; i < MapLocationHolder.getBossCount(); i++) {
+            //  positioning and scaling
+            var obj = Instantiate(bossLocationPreset.gameObject);
+            obj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            obj.transform.position = MapLocationHolder.getBossLocation(i).pos;
+            obj.transform.SetParent(transform.GetChild(0));
+            obj.transform.localScale = Vector3.one / 2.0f;
 
+            //  info shit
+            obj.GetComponent<InfoBearer>().titleText = MapLocationHolder.getBossLocation(i).bossUnit.u_name;
 
-    public void createNewRandomTown() {
-        var pos = Map.getRandPos();
-        GameInfo.diffLvl diff = FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(pos.x);
-
-        TownLocation temp = new TownLocation(pos, diff, FindObjectOfType<PresetLibrary>());
-
-
-        //  creates an icon for the TownLocation
-        var obj = Instantiate(iconPreset.gameObject);
-        obj.transform.position = temp.pos;
-        obj.transform.SetParent(transform);
-        obj.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getMapLocationSprite(temp);
-
-
-        //  saves the TownLocation
-        MapLocationHolder.addLocation(temp);
-    }
-
-    public void createNewRandomEquipmentPickup() {
-        //  creates a new TownLocation
-        var randX = Random.Range(-18.0f, 18.0f);
-        var randY = Random.Range(-18.0f, 18.0f);
-
-        GameInfo.diffLvl diff = FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(randX);
-
-        PickupLocation temp = null;
-
-        var rand = Random.Range(0, 3);
-        rand = 0;
-        if(rand == 0) {
-            Weapon we = FindObjectOfType<PresetLibrary>().getRandomWeapon();
-            temp = new PickupLocation(new Vector2(randX, randY), Randomizer.randomizeWeapon(we, diff), FindObjectOfType<PresetLibrary>(), diff);
-        }
-        else if(rand == 1) {
-            Armor ar = FindObjectOfType<PresetLibrary>().getRandomArmor();
-            temp = new PickupLocation(new Vector2(randX, randY), Randomizer.randomizeArmor(ar, diff), FindObjectOfType<PresetLibrary>(), diff);
-        }
-        else if(rand == 2) {
-            Consumable con = FindObjectOfType<PresetLibrary>().getRandomConsumable((GameInfo.rarityLvl)diff);
-            int conCount = con.c_maxStackCount;
-            temp = new PickupLocation(new Vector2(randX, randY), con, Random.Range(1, conCount + 1), FindObjectOfType<PresetLibrary>(), diff);
+            currentIcons.Add(obj);
         }
 
-        //  creates an icon for the TownLocation
-        var obj = Instantiate(iconPreset.gameObject);
-        obj.transform.position = temp.pos;
-        obj.transform.SetParent(transform);
-        obj.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getPickupLocationSprite(temp);
+        
+        //  Town locations
+        for(int i = 0; i < MapLocationHolder.getTownCount(); i++) {
+            //  positioning and scaling
+            var obj = Instantiate(townLocationPreset.gameObject);
+            obj.transform.position = MapLocationHolder.getTownLocation(i).pos;
+            obj.transform.SetParent(transform.GetChild(0));
+            obj.transform.localScale = Vector3.one / 2.0f;
 
+            //  info shit
+            obj.GetComponent<InfoBearer>().titleText = MapLocationHolder.getTownLocation(i).town.t_name;
+            obj.GetComponent<InfoBearer>().firstText = "Buidling Count: " + MapLocationHolder.getTownLocation(i).town.getBuildingCount().ToString();
+            obj.GetComponent<InfoBearer>().secondText = "Population: " + MapLocationHolder.getTownLocation(i).town.townMemberCount.ToString();
 
-        //  saves the TownLocation
-        MapLocationHolder.addLocation(temp);
-        currentLocations.Add(temp);
-    }
-
-    public void createNewRandomEquipmentUpgrade() {
-        //  creates a new TownLocation
-        var randX = Random.Range(-18.0f, 18.0f);
-        var randY = Random.Range(-18.0f, 18.0f);
-
-        UpgradeLocation temp = null;
-
-        var rand = Random.Range(0, 2);
-        if(rand == 0) {
-            temp = new UpgradeLocation(new Vector2(randX, randY), 0);
-        }
-        else if(rand == 1) {
-            temp = new UpgradeLocation(new Vector2(randX, randY), 1);
+            currentIcons.Add(obj);
         }
 
-        //  creates an icon for the TownLocation
-        var obj = Instantiate(iconPreset.gameObject);
-        obj.transform.position = temp.pos;
-        obj.transform.SetParent(transform);
-        obj.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getUpgradeLocationSprite(temp);
+        //  Rescue Locations
+        for(int i = 0; i < MapLocationHolder.getRescueCount(); i++) {
+            //  positioning and scaling
+            var obj = Instantiate(rescueLocationPreset.gameObject);
+            obj.transform.position = MapLocationHolder.getRescueLocation(i).pos;
+            obj.transform.SetParent(transform.GetChild(0));
+            obj.transform.localScale = Vector3.one / 2.0f;
 
+            //  info shit
+            obj.GetComponent<InfoBearer>().titleText = MapLocationHolder.getRescueLocation(i).unit.u_name;
 
-        //  saves the TownLocation
-        MapLocationHolder.addLocation(temp);
-        currentLocations.Add(temp);
-    }
+            currentIcons.Add(obj);
+        }
 
-    public void createNewRandomNest() {
-        //  creates a new TownLocation
-        var randX = Random.Range(-18.0f, 18.0f);
-        var randY = Random.Range(-18.0f, 18.0f);
+        //  Upgrade Locations
+        for(int i = 0; i < MapLocationHolder.getUpgradeCount(); i++) {
+            //  positioning and scaling
+            var obj = Instantiate(upgradeLocationPreset.gameObject);
+            obj.transform.position = MapLocationHolder.getUpgradeLocation(i).pos;
+            obj.transform.SetParent(transform.GetChild(0));
+            obj.transform.localScale = Vector3.one / 2.0f;
 
-        GameInfo.diffLvl diff = FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(randX);
+            //  info shit
+            obj.GetComponent<InfoBearer>().titleText = MapLocationHolder.getUpgradeLocation(i).state.ToString();
 
-        NestLocation temp = new NestLocation(new Vector2(randX, randY), Random.Range(3, 6), FindObjectOfType<PresetLibrary>(), diff);
+            currentIcons.Add(obj);
+        }
 
-        //  creates an icon for the TownLocation
-        var obj = Instantiate(iconPreset.gameObject);
-        obj.transform.position = temp.pos;
-        obj.transform.SetParent(transform);
-        obj.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getNestLocationSprite();
+        //  Pickup Locations
+        for(int i = 0; i < MapLocationHolder.getPickupCount(); i++) {
+            //  positioning and scaling
+            var obj = Instantiate(pickupLocationPreset.gameObject);
+            obj.transform.position = MapLocationHolder.getPickupLocation(i).pos;
+            obj.transform.SetParent(transform.GetChild(0));
+            obj.transform.localScale = Vector3.one / 2.0f;
 
+            //  info shit
+            obj.GetComponent<InfoBearer>().titleText = MapLocationHolder.getPickupLocation(i).pType.ToString();
 
-        //  saves the TownLocation
-        MapLocationHolder.addLocation(temp);
-        currentLocations.Add(temp);
-    }
-
-    public void createNewBoss() {
-        //  creates a new TownLocation
-        var randX = Random.Range(-18.0f, 18.0f);
-        var randY = Random.Range(-18.0f, 18.0f);
-
-        GameInfo.diffLvl diff = FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(randX);
-
-        BossLocation temp = new BossLocation(new Vector2(randX, randY), FindObjectOfType<PresetLibrary>().getRandomBoss(), diff, FindObjectOfType<PresetLibrary>());
-
-        //  creates an icon for the TownLocation
-        var obj = Instantiate(iconPreset.gameObject);
-        obj.transform.position = temp.pos;
-        obj.transform.SetParent(transform);
-        obj.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getBossFightLocationSprite();
-
-
-        //  saves the TownLocation
-        MapLocationHolder.addLocation(temp);
-        currentLocations.Add(temp);
+            currentIcons.Add(obj);
+        }
     }
 
 
@@ -171,14 +101,5 @@ public class MapLocationSpawner : MonoBehaviour {
         foreach(var i in GetComponentsInChildren<SpriteRenderer>())
             temp.Add(i.gameObject);
         return temp;
-    }
-
-
-    public MapLocation getMapLocationForPosition(Vector2 pos) {
-        foreach(var i in currentLocations) {
-            if(i.pos == pos)
-                return i;
-        }
-        return null;
     }
 }

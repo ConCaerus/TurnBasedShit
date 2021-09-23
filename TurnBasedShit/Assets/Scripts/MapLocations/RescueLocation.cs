@@ -6,22 +6,22 @@ using UnityEngine.SceneManagement;
 public class RescueLocation : MapLocation {
     public UnitStats unit = null;
 
-    public RescueLocation(Vector2 p, UnitStats stats, PresetLibrary lib, GameInfo.diffLvl diff) {
+    public RescueLocation(Vector2 p, UnitStats stats, PresetLibrary lib) {
         pos = p;
         type = locationType.rescue;
 
-        combatLocation = lib.createCombatLocation(diff);
+        combatLocation = lib.createCombatLocation(Map.getDiffForX(pos.x));
         combatLocation.rescuedUnits.Add(stats);
 
         unit = stats;
     }
-    public RescueLocation(Vector2 p, PresetLibrary lib, GameInfo.diffLvl diff) {
+    public RescueLocation(Vector2 p, PresetLibrary lib) {
         pos = p;
         type = locationType.rescue;
 
         var stats = lib.createRandomPlayerUnitStats();
 
-        combatLocation = lib.createCombatLocation(diff);
+        combatLocation = lib.createCombatLocation(Map.getDiffForX(pos.x));
         combatLocation.rescuedUnits.Add(stats);
 
         unit = stats;

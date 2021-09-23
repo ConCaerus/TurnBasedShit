@@ -7,8 +7,6 @@ public class PickupQuest {
 
     public int q_instanceID = -1;
 
-    PickupLocation location;
-
     public PickupLocation.pickupType pType = (PickupLocation.pickupType)(-1);
 
     public Weapon pickupWeapon = null;
@@ -21,7 +19,6 @@ public class PickupQuest {
         if(setID)
             q_instanceID = GameInfo.getNextQuestInstanceID();
 
-        location = pickup;
         pType = pickup.pType;
 
         if(pickup == null) {
@@ -45,28 +42,11 @@ public class PickupQuest {
             pickupItem = new Item();
             pickupItem.setEqualTo(pickup.pickupItem, true);
         }
+
+        pickup.attachedQuest = this;
+        MapLocationHolder.addLocation(pickup);
     }
 
-    public void questInit() {
-        MapLocationHolder.addLocation(location);
-    }
-    public void questDestory() {
-    }
-
-
-    public void setEqualTo(PickupQuest other, bool takeID) {
-        if(other == null)
-            return;
-
-        if(takeID)
-            q_instanceID = other.q_instanceID;
-
-        location = other.location;
-        pickupWeapon = other.pickupWeapon;
-        pickupArmor = other.pickupArmor;
-        pickupConsumable = other.pickupConsumable;
-        pickupItem = other.pickupItem;
-    }
     public bool isEqualTo(PickupQuest other) {
         return q_instanceID == other.q_instanceID;
     }

@@ -18,7 +18,7 @@ public static class MapLocationHolder {
     static string bossCountTag = "BossLocationCount";
 
 
-    public static void clearSaveData() {
+    public static void clear() {
         clearTownLocations();
         clearPickupLocations();
         clearUpgradeLocations();
@@ -203,13 +203,13 @@ public static class MapLocationHolder {
 
     public static void overrideTownLocation(TownLocation loc) {
         for(int i = 0; i < getTownCount(); i++) {
-            if(getTownLocation(i).town.t_instanceID == loc.town.t_instanceID) {
+            if(getTownLocation(i).town.isEqualTo(loc.town)) {
                 var data = JsonUtility.ToJson(loc);
                 SaveData.setString(townTag(i), data);
                 return;
             }
         }
-    } 
+    }
 
 
     public static int getTownCount() {
@@ -237,6 +237,13 @@ public static class MapLocationHolder {
 
         if(temp != null)
             return temp;
+        return null;
+    }
+    public static TownLocation getTownLocationWithTown(Town t) {
+        for(int i = 0; i < getTownCount(); i++) {
+            if(getTownLocation(i).town.isEqualTo(t))
+                return getTownLocation(i);
+        }
         return null;
     }
     public static PickupLocation getPickupLocation(int index) {
@@ -277,6 +284,75 @@ public static class MapLocationHolder {
 
         if(temp != null)
             return temp;
+        return null;
+    }
+
+    public static bool locationAtPosition(Vector2 p) {
+        foreach(var i in getLocations()) {
+            if(i.pos == p)
+                return true;
+        }
+        return false;
+    }
+    public static bool locationCloseToPos(Vector2 p, float maxDist) {
+        foreach(var i in getLocations()) {
+            if(Vector2.Distance(i.pos, p) < maxDist)
+                return true;
+        }
+        return false;
+    }
+    public static MapLocation getClostestLocation(Vector2 p) {
+        float closestDist = 1000.0f;
+        MapLocation ml = null;
+        foreach(var i in getLocations()) {
+            if(Vector2.Distance(i.pos, p) < closestDist) {
+                closestDist = Vector2.Distance(i.pos, p);
+                ml = i;
+            }
+        }
+
+        return ml;
+    }
+    public static TownLocation getTownLocationAtPosition(Vector2 p) {
+        for(int i = 0; i < getTownCount(); i++) {
+            if(getTownLocation(i).pos == p)
+                return getTownLocation(i);
+        }
+        return null;
+    }
+    public static PickupLocation getPickupLocationAtPos(Vector2 p) {
+        for(int i = 0; i < getPickupCount(); i++) {
+            if(getPickupLocation(i).pos == p)
+                return getPickupLocation(i);
+        }
+        return null;
+    }
+    public static UpgradeLocation getUpgradeLocationAtPos(Vector2 p) {
+        for(int i = 0; i < getUpgradeCount(); i++) {
+            if(getUpgradeLocation(i).pos == p)
+                return getUpgradeLocation(i);
+        }
+        return null;
+    }
+    public static RescueLocation getRescueLocationAtPos(Vector2 p) {
+        for(int i = 0; i < getRescueCount(); i++) {
+            if(getRescueLocation(i).pos == p)
+                return getRescueLocation(i);
+        }
+        return null;
+    }
+    public static NestLocation getNestLocationAtPos(Vector2 p) {
+        for(int i = 0; i < getNestCount(); i++) {
+            if(getNestLocation(i).pos == p)
+                return getNestLocation(i);
+        }
+        return null;
+    }
+    public static BossLocation getBossLocationAtPos(Vector2 p) {
+        for(int i = 0; i < getBossCount(); i++) {
+            if(getBossLocation(i).pos == p)
+                return getBossLocation(i);
+        }
         return null;
     }
 
@@ -323,6 +399,30 @@ public static class MapLocationHolder {
         }
         return -1;
     }
+    public static int getIndex(MapLocation loc) {
+        switch(loc.type) {
+            case MapLocation.locationType.town:
+                return getIndex((TownLocation)loc);
+
+            case MapLocation.locationType.pickup:
+                return getIndex((PickupLocation)loc);
+
+            case MapLocation.locationType.upgrade:
+                return getIndex((UpgradeLocation)loc);
+
+            case MapLocation.locationType.rescue:
+                return getIndex((RescueLocation)loc);
+
+            case MapLocation.locationType.nest:
+                return getIndex((NestLocation)loc);
+
+            case MapLocation.locationType.boss:
+                return getIndex((BossLocation)loc);
+        }
+
+        return -1;
+    }
+
 
     public static List<MapLocation> getLocations(List<MapLocation.locationType> includes = null) {
         if(includes == null) {
@@ -375,5 +475,15 @@ public static class MapLocationHolder {
         }
 
         return temp;
+    }
+}
+
+public class locationFindInfo {
+    public MapLocation.locationType type = MapLocation.locationType.empty;
+    public int referenceIndex = -1;
+
+    public locationFindInfo(MapLocation.locationType t, int ind) {
+        type = t;
+        referenceIndex = ind;
     }
 }

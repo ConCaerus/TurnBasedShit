@@ -41,6 +41,15 @@ public class SlotMenu : MonoBehaviour {
             return null;
         return slots[selectedSlotIndex];
     }
+    public GameObject getEventSelectedSlot() {
+        for(int i = 0; i < slots.Count; i++) {
+            if(slots[i].gameObject == EventSystem.current.currentSelectedGameObject) {
+                return slots[i].gameObject;
+            }
+        }
+
+        return null;
+    }
 
     public GameObject createNewSlot(int index, GameObject slotPreset, Transform holder, Color slotColor) {
         GameObject obj;
@@ -52,12 +61,11 @@ public class SlotMenu : MonoBehaviour {
         //  position and scale
         float step = slotPreset.GetComponent<RectTransform>().rect.height + slotBuffer;
         obj.transform.localPosition = new Vector3(0.0f, slotTopY - (step * index) + scrollPos, 0.0f);
-        obj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        //obj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 
         //  width and height
         var x = obj.GetComponent<RectTransform>().rect.width;
         var y = obj.GetComponent<RectTransform>().rect.height;
-        obj.GetComponent<BoxCollider2D>().size = new Vector2(x, y);
 
         //  text and images
         obj.GetComponent<Image>().color = slotColor;
@@ -128,7 +136,7 @@ public class SlotMenu : MonoBehaviour {
         //  position and scale
         float step = slotPreset.GetComponent<RectTransform>().rect.height + slotBuffer;
         obj.transform.localPosition = new Vector3(0.0f, slotTopY - (step * index) + scrollPos, 0.0f);
-        obj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        //obj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 
         //  width and height
         var x = obj.GetComponent<RectTransform>().rect.width;

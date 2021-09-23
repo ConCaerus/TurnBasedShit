@@ -74,7 +74,7 @@ public class TurnOrderSorter : MonoBehaviour {
         var next = unitsInPlay[0];
         foreach(var i in unitsInPlay) {
             if(i != null) {
-                if(i.GetComponent<UnitClass>().stats.getModifiedSpeed() > next.GetComponent<UnitClass>().stats.getModifiedSpeed())
+                if(i.GetComponent<UnitClass>().stats.getModifiedSpeed(i.GetComponent<UnitClass>().tempSpeedMod) > next.GetComponent<UnitClass>().stats.getModifiedSpeed(next.GetComponent<UnitClass>().tempSpeedMod))
                     next = i.gameObject;
             }
         }

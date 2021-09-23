@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BuildingSpawner : MonoBehaviour {
+    [SerializeField] GameObject townEndPresset;
+    GameObject townEnd;
+
     public Town reference;
 
     public Vector2 startingPoint;
@@ -14,11 +17,10 @@ public class BuildingSpawner : MonoBehaviour {
     public List<GameObject> buildingObjects = new List<GameObject>();
 
     private void Awake() {
-        if(GameInfo.getCurrentLocationAsTown() != null && false)
+        if(GameInfo.getCurrentLocationAsTown() != null)
             reference = GameInfo.getCurrentLocationAsTown().town;
         else {
             var temp = Map.getRandomTownLocationInRegion((int)GameInfo.getCurrentDiff());
-            temp.town.visited = true;
             MapLocationHolder.overrideTownLocation(temp);
             GameInfo.setCurrentLocationAsTown(temp);
             reference = temp.town;
@@ -38,11 +40,9 @@ public class BuildingSpawner : MonoBehaviour {
 
 
     void spawnBuildings() {
-        var list = reference.getBuildings();
-
-        for(int i = 0; i < list.Count; i++) {
-            Vector2 pos = startingPoint + new Vector2(buildingBuffer * list[i].orderInTown, 0.0f);
-            var obj = Instantiate(FindObjectOfType<PresetLibrary>().getBuilding(list[i].b_type).gameObject, transform);
+        for(int i = 0; i < reference.getBuildingCount(); i++) {
+            Vector2 pos = startingPoint + new Vector2(buildingBuffer * i, 0.0f);
+            var obj = Instantiate(FindObjectOfType<PresetLibrary>().getBuilding(reference.getBuidingTypeWithOrder(i)).gameObject, transform);
             obj.transform.localPosition = pos;
 
             if(obj.GetComponent<HospitalInstance>() != null)
@@ -51,22 +51,15 @@ public class BuildingSpawner : MonoBehaviour {
                 obj.GetComponent<ChurchInstance>().reference.setEqualTo(reference.getChurch());
             else if(obj.GetComponent<ShopInstance>() != null)
                 obj.GetComponent<ShopInstance>().reference.setEqualTo(reference.getShop());
+            else if(obj.GetComponent<CasinoInstance>() != null)
+                obj.GetComponent<CasinoInstance>().reference.setEqualTo(reference.getCasino());
 
             buildingObjects.Add(obj.gameObject);
         }
 
-        endingX = startingPoint.x + buildingBuffer * (list[list.Count - 1].orderInTown + 1);
-    }
-
-
-    public int getBuildingOrderIndex(Building.type type) {
-        var list = reference.getBuildings();
-
-        for(int i = 0; i < list.Count; i++) {
-            if(list[i].b_type == type)
-                return list[i].orderInTown;
-        }
-        return -1;
+        endingX = startingPoint.x + (buildingBuffer * 2.0f) * (reference.getBuildingCount() + 1);
+        townEnd = Instantiate(townEndPresset.gameObject, transform);
+        townEnd.transform.position = new Vector3(endingX, startingPoint.y);
     }
 
     public GameObject getInstanceWithType(Building.type type) {
@@ -78,13 +71,7 @@ public class BuildingSpawner : MonoBehaviour {
     }
 
     public float getXPosForBuildingAtIndex(int index) {
-        var list = reference.getBuildings();
-        foreach(var i in list) {
-            if(i.orderInTown == index)
-                return getInstanceWithType(i.b_type).transform.position.x;
-        }
-
-        return -2.0f;
+        return getInstanceWithType(reference.getBuidingTypeWithOrder(index)).transform.position.x;
     }
 
 
@@ -98,7 +85,7 @@ public class BuildingSpawner : MonoBehaviour {
 
     public float getXThatIsntInfrontOfADoor() {
         float x = Random.Range(startingPoint.x, endingX);
-        if(reference.getBuildings().Count > 2) {
+        if(reference.getBuildingCount() > 2) {
             while(getBuildingWithinInteractRange(x) != null) {
                 x = Random.Range(startingPoint.x, endingX);
             }

@@ -180,4 +180,8 @@ public static class Randomizer {
 
         return temp;
     }
+    public static CasinoBuilding randomizeBuilding(CasinoBuilding cas) {
+        var temp = new CasinoBuilding();
+        return temp;
+    }
 }

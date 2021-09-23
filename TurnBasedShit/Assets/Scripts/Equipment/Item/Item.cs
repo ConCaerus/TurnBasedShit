@@ -17,7 +17,7 @@ public class Item {
     //  effects the item has
     [System.Serializable]
     public enum useEffectTypes {
-        modHealth, modMaxHealth, modSpeed, modDamageGiven, modDamageTaken
+        modHealth, modSpeed, modDamageGiven, modDamageTaken
     }
 
 
@@ -50,14 +50,6 @@ public class Item {
         float temp = 0.0f;
         foreach(var i in i_useEffects) {
             if(i.effect == useEffectTypes.modHealth)
-                temp += i.effectAmount;
-        }
-        return temp;
-    }
-    public float getMaxHealthMod() {
-        float temp = 0.0f;
-        foreach(var i in i_useEffects) {
-            if(i.effect == useEffectTypes.modMaxHealth)
                 temp += i.effectAmount;
         }
         return temp;

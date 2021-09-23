@@ -37,75 +37,59 @@ public static class ActiveQuests {
 
 
     public static void clear() {
-        for(int i = 0; i < getQuestTypeCount(GameInfo.questType.kill); i++) {
-            var data = SaveData.getString(tag(i, GameInfo.questType.kill));
-            var thing = JsonUtility.FromJson<KillQuest>(data);
-            thing.questDestory();
-
+        clearKillQuests();
+        clearBossFightQuests();
+        clearDeliveryQuests();
+        clearPickupQuests();
+    }
+    public static void clearKillQuests() {
+        for(int i = 0; i < getKillQuestCount(); i++) {
             SaveData.deleteKey(tag(i, GameInfo.questType.kill));
         }
-
-        for(int i = 0; i < getQuestTypeCount(GameInfo.questType.bossFight); i++) {
-            var data = SaveData.getString(tag(i, GameInfo.questType.bossFight));
-            var thing = JsonUtility.FromJson<BossFightQuest>(data);
-            thing.questDestory();
-
+        SaveData.deleteKey(countTag(GameInfo.questType.kill));
+    }
+    public static void clearBossFightQuests() {
+        for(int i = 0; i < getBossFightQuestCount(); i++) {
             SaveData.deleteKey(tag(i, GameInfo.questType.bossFight));
         }
-
-        for(int i = 0; i < getQuestTypeCount(GameInfo.questType.delivery); i++) {
-            var data = SaveData.getString(tag(i, GameInfo.questType.delivery));
-            var thing = JsonUtility.FromJson<DeliveryQuest>(data);
-            thing.questDestory();
-
+        SaveData.deleteKey(countTag(GameInfo.questType.bossFight));
+    }
+    public static void clearDeliveryQuests() {
+        for(int i = 0; i < getDeliveryQuestCount(); i++) {
             SaveData.deleteKey(tag(i, GameInfo.questType.delivery));
         }
-
-        for(int i = 0; i < getQuestTypeCount(GameInfo.questType.pickup); i++) {
-            var data = SaveData.getString(tag(i, GameInfo.questType.pickup));
-            var thing = JsonUtility.FromJson<PickupQuest>(data);
-            thing.questDestory();
-
+        SaveData.deleteKey(countTag(GameInfo.questType.delivery));
+    }
+    public static void clearPickupQuests() {
+        for(int i = 0; i < getPickupQuestCount(); i++) {
             SaveData.deleteKey(tag(i, GameInfo.questType.pickup));
         }
-
-        SaveData.deleteKey(countTag(GameInfo.questType.kill));
-        SaveData.deleteKey(countTag(GameInfo.questType.bossFight));
-        SaveData.deleteKey(countTag(GameInfo.questType.delivery));
         SaveData.deleteKey(countTag(GameInfo.questType.pickup));
     }
 
     public static void addQuest(KillQuest qu) {
-        int index = getQuestTypeCount(GameInfo.questType.kill);
-
-        qu.questInit();
+        int index = getKillQuestCount();
 
         var data = JsonUtility.ToJson(qu);
         SaveData.setString(tag(index, GameInfo.questType.kill), data);
         SaveData.setInt(countTag(GameInfo.questType.kill), index + 1);
     }
     public static void addQuest(BossFightQuest qu) {
-        int index = getQuestTypeCount(GameInfo.questType.bossFight);
-
-        qu.questInit();
+        int index = getBossFightQuestCount();
 
         var data = JsonUtility.ToJson(qu);
         SaveData.setString(tag(index, GameInfo.questType.bossFight), data);
         SaveData.setInt(countTag(GameInfo.questType.bossFight), index + 1);
     }
     public static void addQuest(DeliveryQuest qu) {
-        int index = getQuestTypeCount(GameInfo.questType.delivery);
-
-        qu.questInit();
+        int index = getDeliveryQuestCount();
 
         var data = JsonUtility.ToJson(qu);
         SaveData.setString(tag(index, GameInfo.questType.delivery), data);
         SaveData.setInt(countTag(GameInfo.questType.delivery), index + 1);
     }
     public static void addQuest(PickupQuest qu) {
-        int index = getQuestTypeCount(GameInfo.questType.pickup);
-
-        qu.questInit();
+        int index = getPickupQuestCount();
 
         var data = JsonUtility.ToJson(qu);
         SaveData.setString(tag(index, GameInfo.questType.pickup), data);
@@ -114,92 +98,60 @@ public static class ActiveQuests {
 
 
     public static void removeQuest(KillQuest quest) {
-        GameInfo.questType type = GameInfo.questType.kill;
-        var tData = JsonUtility.ToJson(quest);
-        bool past = false;
-        for(int i = 0; i < getQuestTypeCount(type); i++) {
-            var data = SaveData.getString(tag(i, type));
-
-            if(data == tData && !past) {
-                var thing = JsonUtility.FromJson<KillQuest>(data);
-                thing.questDestory();
-
-                SaveData.deleteKey(tag(i, type));
-                past = true;
-                continue;
-            }
-            else if(past) {
-                SaveData.deleteKey(tag(i, type));
-                overrideQuest(i - 1, JsonUtility.FromJson<KillQuest>(data));
-            }
+        if(quest == null)
+            return;
+        List<KillQuest> temp = new List<KillQuest>();
+        for(int i = 0; i < getKillQuestCount(); i++) {
+            var qu = getKillQuest(i);
+            if(qu != null && !qu.isEqualTo(quest))
+                temp.Add(qu);
         }
-        SaveData.setInt(countTag(type), SaveData.getInt(countTag(type)) - 1);
+
+        clearKillQuests();
+        foreach(var i in temp)
+            addQuest(i);
     }
     public static void removeQuest(BossFightQuest quest) {
-        GameInfo.questType type = GameInfo.questType.bossFight;
-        var tData = JsonUtility.ToJson(quest);
-        bool past = false;
-        for(int i = 0; i < getQuestTypeCount(type); i++) {
-            var data = SaveData.getString(tag(i, type));
-
-            if(data == tData && !past) {
-                var thing = JsonUtility.FromJson<BossFightQuest>(data);
-                thing.questDestory();
-
-                SaveData.deleteKey(tag(i, type));
-                past = true;
-                continue;
-            }
-            else if(past) {
-                SaveData.deleteKey(tag(i, type));
-                overrideQuest(i - 1, JsonUtility.FromJson<BossFightQuest>(data));
-            }
+        if(quest == null)
+            return;
+        List<BossFightQuest> temp = new List<BossFightQuest>();
+        for(int i = 0; i < getBossFightQuestCount(); i++) {
+            var qu = getBossFightQuest(i);
+            if(qu != null && !qu.isEqualTo(quest))
+                temp.Add(qu);
         }
-        SaveData.setInt(countTag(type), SaveData.getInt(countTag(type)) - 1);
+
+        clearBossFightQuests();
+        foreach(var i in temp)
+            addQuest(i);
     }
     public static void removeQuest(DeliveryQuest quest) {
-        GameInfo.questType type = GameInfo.questType.delivery;
-        var tData = JsonUtility.ToJson(quest);
-        bool past = false;
-        for(int i = 0; i < getQuestTypeCount(type); i++) {
-            var data = SaveData.getString(tag(i, type));
-
-            if(data == tData && !past) {
-                var thing = JsonUtility.FromJson<DeliveryQuest>(data);
-                thing.questDestory();
-
-                SaveData.deleteKey(tag(i, type));
-                past = true;
-                continue;
-            }
-            else if(past) {
-                SaveData.deleteKey(tag(i, type));
-                overrideQuest(i - 1, JsonUtility.FromJson<DeliveryQuest>(data));
-            }
+        if(quest == null)
+            return;
+        List<DeliveryQuest> temp = new List<DeliveryQuest>();
+        for(int i = 0; i < getDeliveryQuestCount(); i++) {
+            var qu = getDeliveryQuest(i);
+            if(qu != null && !qu.isEqualTo(quest))
+                temp.Add(qu);
         }
-        SaveData.setInt(countTag(type), SaveData.getInt(countTag(type)) - 1);
+
+        clearDeliveryQuests();
+        foreach(var i in temp)
+            addQuest(i);
     }
     public static void removeQuest(PickupQuest quest) {
-        GameInfo.questType type = GameInfo.questType.pickup;
-        var tData = JsonUtility.ToJson(quest);
-        bool past = false;
-        for(int i = 0; i < getQuestTypeCount(type); i++) {
-            var data = SaveData.getString(tag(i, type));
-
-            if(data == tData && !past) {
-                var thing = JsonUtility.FromJson<PickupQuest>(data);
-                thing.questDestory();
-
-                SaveData.deleteKey(tag(i, type));
-                past = true;
-                continue;
-            }
-            else if(past) {
-                SaveData.deleteKey(tag(i, type));
-                overrideQuest(i - 1, JsonUtility.FromJson<PickupQuest>(data));
-            }
+        if(quest == null)
+            return;
+        List<PickupQuest> temp = new List<PickupQuest>();
+        for(int i = 0; i < getPickupQuestCount(); i++) {
+            var qu = getPickupQuest(i);
+            if(qu != null && !qu.isEqualTo(quest))
+                temp.Add(qu);
         }
-        SaveData.setInt(countTag(type), SaveData.getInt(countTag(type)) - 1);
+
+        clearPickupQuests();
+        foreach(var i in temp)
+            addQuest(i);
     }
 
     public static void overrideQuest(int index, KillQuest qu) {
@@ -236,9 +188,6 @@ public static class ActiveQuests {
         return JsonUtility.FromJson<PickupQuest>(data);
     }
 
-    public static int getQuestTypeCount(GameInfo.questType type) {
-        return SaveData.getInt(countTag(type));
-    }
     public static int getQuestCount() {
         int count = 0;
         count += SaveData.getInt(countTag(GameInfo.questType.kill));
@@ -247,11 +196,23 @@ public static class ActiveQuests {
         count += SaveData.getInt(countTag(GameInfo.questType.pickup));
         return count;
     }
+    public static int getKillQuestCount() {
+        return SaveData.getInt(countTag(GameInfo.questType.kill));
+    }
+    public static int getBossFightQuestCount() {
+        return SaveData.getInt(countTag(GameInfo.questType.bossFight));
+    }
+    public static int getDeliveryQuestCount() {
+        return SaveData.getInt(countTag(GameInfo.questType.delivery));
+    }
+    public static int getPickupQuestCount() {
+        return SaveData.getInt(countTag(GameInfo.questType.pickup));
+    }
 
     public static bool hasQuest(KillQuest q) {
         if(q == null)
             return false;
-        for(int i = 0; i < getQuestTypeCount(GameInfo.questType.kill); i++) {
+        for(int i = 0; i < getKillQuestCount(); i++) {
             if(getKillQuest(i).isEqualTo(q))
                 return true;
         }
@@ -261,7 +222,7 @@ public static class ActiveQuests {
     public static bool hasQuest(BossFightQuest q) {
         if(q == null)
             return false;
-        for(int i = 0; i < getQuestTypeCount(GameInfo.questType.bossFight); i++) {
+        for(int i = 0; i < getBossFightQuestCount(); i++) {
             if(getBossFightQuest(i).isEqualTo(q))
                 return true;
         }
@@ -271,7 +232,7 @@ public static class ActiveQuests {
     public static bool hasQuest(DeliveryQuest q) {
         if(q == null)
             return false;
-        for(int i = 0; i < getQuestTypeCount(GameInfo.questType.delivery); i++) {
+        for(int i = 0; i < getDeliveryQuestCount(); i++) {
             if(getDeliveryQuest(i).isEqualTo(q))
                 return true;
         }
@@ -281,7 +242,7 @@ public static class ActiveQuests {
     public static bool hasQuest(PickupQuest q) {
         if(q == null)
             return false;
-        for(int i = 0; i < getQuestTypeCount(GameInfo.questType.pickup); i++) {
+        for(int i = 0; i < getPickupQuestCount(); i++) {
             if(getPickupQuest(i).isEqualTo(q))
                 return true;
         }
@@ -290,47 +251,47 @@ public static class ActiveQuests {
     }
 
     public static bool hasQuestWithInstanceID(int id) {
-        for(int i = 0; i < getQuestTypeCount(GameInfo.questType.kill); i++) {
+        for(int i = 0; i < getKillQuestCount(); i++) {
             if(getKillQuest(i).q_instanceID == id)
                 return true;
         }
-        for(int i = 0; i < getQuestTypeCount(GameInfo.questType.bossFight); i++) {
+        for(int i = 0; i < getBossFightQuestCount(); i++) {
             if(getBossFightQuest(i).q_instanceID == id)
                 return true;
         }
-        for(int i = 0; i < getQuestTypeCount(GameInfo.questType.delivery); i++) {
+        for(int i = 0; i < getDeliveryQuestCount(); i++) {
             if(getDeliveryQuest(i).q_instanceID == id)
                 return true;
         }
-        for(int i = 0; i < getQuestTypeCount(GameInfo.questType.pickup); i++) {
+        for(int i = 0; i < getPickupQuestCount(); i++) {
             if(getPickupQuest(i).q_instanceID == id)
                 return true;
         }
         return false;
     }
     public static KillQuest getKillQuestWithInstanceID(int id) {
-        for(int i = 0; i < getQuestTypeCount(GameInfo.questType.kill); i++) {
+        for(int i = 0; i < getKillQuestCount(); i++) {
             if(getKillQuest(i).q_instanceID == id)
                 return getKillQuest(i);
         }
         return null;
     }
     public static BossFightQuest getBossFightQuestWithInstanceID(int id) {
-        for(int i = 0; i < getQuestTypeCount(GameInfo.questType.bossFight); i++) {
+        for(int i = 0; i < getBossFightQuestCount(); i++) {
             if(getBossFightQuest(i).q_instanceID == id)
                 return getBossFightQuest(i);
         }
         return null;
     }
     public static DeliveryQuest getDeliveryQuestWithInstanceID(int id) {
-        for(int i = 0; i < getQuestTypeCount(GameInfo.questType.delivery); i++) {
+        for(int i = 0; i < getDeliveryQuestCount(); i++) {
             if(getDeliveryQuest(i).q_instanceID == id)
                 return getDeliveryQuest(i);
         }
         return null;
     }
     public static PickupQuest getPickupQuestWithInstanceID(int id) {
-        for(int i = 0; i < getQuestTypeCount(GameInfo.questType.pickup); i++) {
+        for(int i = 0; i < getPickupQuestCount(); i++) {
             if(getPickupQuest(i).q_instanceID == id)
                 return getPickupQuest(i);
         }
@@ -339,25 +300,25 @@ public static class ActiveQuests {
 
     public static List<KillQuest> getAllKillQuests() {
         var temp = new List<KillQuest>();
-        for(int i = 0; i < getQuestTypeCount(GameInfo.questType.kill); i++)
+        for(int i = 0; i < getKillQuestCount(); i++)
             temp.Add(getKillQuest(i));
         return temp;
     }
     public static List<BossFightQuest> getAllBossFightQuests() {
         var temp = new List<BossFightQuest>();
-        for(int i = 0; i < getQuestTypeCount(GameInfo.questType.bossFight); i++)
+        for(int i = 0; i < getBossFightQuestCount(); i++)
             temp.Add(getBossFightQuest(i));
         return temp;
     }
     public static List<DeliveryQuest> getAllDeliveryQuests() {
         var temp = new List<DeliveryQuest>();
-        for(int i = 0; i < getQuestTypeCount(GameInfo.questType.delivery); i++)
+        for(int i = 0; i < getDeliveryQuestCount(); i++)
             temp.Add(getDeliveryQuest(i));
         return temp;
     }
     public static List<PickupQuest> getAllPickupQuests() {
         var temp = new List<PickupQuest>();
-        for(int i = 0; i < getQuestTypeCount(GameInfo.questType.pickup); i++)
+        for(int i = 0; i < getPickupQuestCount(); i++)
             temp.Add(getPickupQuest(i));
         return temp;
     }
