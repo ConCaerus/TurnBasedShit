@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class MenuCanvas : MonoBehaviour {
     [SerializeField] GameObject menuObj;
-    [SerializeField] GameObject unitCanvas, questCanvas, townCanvas, inventoryCanvas;
+    [SerializeField] GameObject unitCanvas, questCanvas, townCanvas, inventoryCanvas, graveyardCanvas;
 
     bool showing = false;
 
@@ -57,6 +57,7 @@ public class MenuCanvas : MonoBehaviour {
         questCanvas.SetActive(false);
         townCanvas.SetActive(false);
         inventoryCanvas.SetActive(false);
+        graveyardCanvas.SetActive(false);
 
         FindObjectOfType<UnitCanvas>().setup();
     }
@@ -65,6 +66,7 @@ public class MenuCanvas : MonoBehaviour {
         townCanvas.SetActive(false);
         unitCanvas.SetActive(false);
         questCanvas.SetActive(false);
+        graveyardCanvas.SetActive(false);
 
         foreach(var i in FindObjectsOfType<InventorySelectionCanvas>())
             i.populateSlots();
@@ -74,6 +76,7 @@ public class MenuCanvas : MonoBehaviour {
         unitCanvas.SetActive(false);
         townCanvas.SetActive(false);
         inventoryCanvas.SetActive(false);
+        graveyardCanvas.SetActive(false);
 
         FindObjectOfType<QuestCanvas>().updateMenu();
     }
@@ -82,8 +85,18 @@ public class MenuCanvas : MonoBehaviour {
         unitCanvas.SetActive(false);
         questCanvas.SetActive(false);
         inventoryCanvas.SetActive(false);
+        graveyardCanvas.SetActive(false);
 
         FindObjectOfType<TownMenuCanvas>().updateSlots();
+    }
+    public void graveyardTab() {
+        graveyardCanvas.SetActive(true);
+        inventoryCanvas.SetActive(false);
+        questCanvas.SetActive(false);
+        townCanvas.SetActive(false);
+        unitCanvas.SetActive(false);
+
+        FindObjectOfType<GraveyardMenuCanvas>().createSlots();
     }
 
 

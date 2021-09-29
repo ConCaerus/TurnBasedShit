@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[System.Serializable]
 public class BossLocation : MapLocation {
     public UnitStats bossUnit;
-    public BossFightQuest attachedQuest = null;
 
     public BossLocation(Vector2 p, GameObject boss, GameInfo.diffLvl diff, PresetLibrary lib, bool areOtherEnemiesBesidesBoss = false) {
         pos = p;

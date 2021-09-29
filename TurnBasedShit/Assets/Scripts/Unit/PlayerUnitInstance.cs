@@ -32,11 +32,11 @@ public class PlayerUnitInstance : UnitClass {
     }
 
     void attackingLogic() {
-        if(FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject && attackingTarget == null) {
+        if(FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject && (attackingTarget == null || attackingTarget == gameObject)) {
             setAttackingTarget();
         }
 
-        else if(attackingTarget != null && attackAnim == null && FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject) {
+        else if(attackingTarget != null && attackingTarget != gameObject && attackAnim == null && FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject) {
             attack(attackingTarget);
         }
     }

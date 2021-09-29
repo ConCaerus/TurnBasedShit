@@ -64,12 +64,12 @@ public class CombatUnitUI : MonoBehaviour {
         uiObj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = GetComponent<UnitClass>().stats.u_level.ToString();  //  level text
 
         //  stun shit
-        if(GetComponent<UnitClass>().stunned && stunObj == null) {
+        if(GetComponent<UnitClass>().isStunned() && stunObj == null) {
             stunObj = Instantiate(stunPreset.gameObject, transform);
             stunObj.transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
             StartCoroutine(showStunObj());
         }
-        else if(!GetComponent<UnitClass>().stunned && stunObj != null) {
+        else if(!GetComponent<UnitClass>().isStunned() && stunObj != null) {
             if(stunMover != null)
                 StopCoroutine(stunMover);
             stunMover = null;
@@ -81,7 +81,7 @@ public class CombatUnitUI : MonoBehaviour {
         }
 
         //  bleed shit
-        if(GetComponent<UnitClass>().stats.u_bleeding && bleedObj == null) {
+        if(GetComponent<UnitClass>().stats.u_bleedCount > 0 && bleedObj == null) {
             bleedObj = Instantiate(bleedPreset.gameObject, transform);
             bleedObj.transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
             bleedObj.transform.DOScale(1.0f, 0.15f);
@@ -89,7 +89,7 @@ public class CombatUnitUI : MonoBehaviour {
 
             bleedMover = StartCoroutine(bleedAnim());
         }
-        else if(!GetComponent<UnitClass>().stats.u_bleeding && bleedObj != null) {
+        else if(GetComponent<UnitClass>().stats.u_bleedCount == 0 && bleedObj != null) {
             if(bleedMover != null)
                 StopCoroutine(bleedMover);
             bleedMover = null;

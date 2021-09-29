@@ -30,8 +30,7 @@ public class MapTrailRenderer : MonoBehaviour {
             createNewAnchor();
         drawLine();
 
-        if(Party.getLeaderID() != -1)
-            partyAnchor.GetComponent<SpriteRenderer>().color = Party.getLeaderStats().u_sprite.color;
+        partyAnchor.GetComponent<SpriteRenderer>().color = Party.getLeaderStats().u_sprite.color;
     }
 
     private void Update() {
@@ -266,8 +265,8 @@ public class MapTrailRenderer : MonoBehaviour {
             }
         }
 
-       // MapAnchorPositionSaver.overrideAnchor(getAnchorIndex(movingAnchor), movingAnchor);
-       // MapAnchorPositionSaver.setPartyAnchor(partyAnchor);
+        // MapAnchorPositionSaver.overrideAnchor(getAnchorIndex(movingAnchor), movingAnchor);
+        // MapAnchorPositionSaver.setPartyAnchor(partyAnchor);
         movingAnchor = null;
         drawLine();
     }
@@ -276,15 +275,15 @@ public class MapTrailRenderer : MonoBehaviour {
         anchors.Clear();
         //  party anchor pos
         //if(MapAnchorPositionSaver.getPartyPos() == Vector2.zero) {
-            partyAnchor.transform.position = startingPos;
-           // MapAnchorPositionSaver.setPartyAnchor(partyAnchor);
-      //  }
-      //  else
-          //  partyAnchor.transform.position = MapAnchorPositionSaver.getPartyPos();
+        partyAnchor.transform.position = startingPos;
+        // MapAnchorPositionSaver.setPartyAnchor(partyAnchor);
+        //  }
+        //  else
+        //  partyAnchor.transform.position = MapAnchorPositionSaver.getPartyPos();
 
         //  normal anchor poses
         if(MapAnchorPositionSaver.getAnchorCount() == 0) {
-          //  createNewAnchorAtPos(MapAnchorPositionSaver.getPartyPos());
+            //  createNewAnchorAtPos(MapAnchorPositionSaver.getPartyPos());
         }
         else {
             for(int i = 0; i < MapAnchorPositionSaver.getAnchorCount(); i++) {
@@ -305,7 +304,7 @@ public class MapTrailRenderer : MonoBehaviour {
                 Destroy(temp.gameObject);
 
                 MapAnchorPositionSaver.removeAnchor(0);
-               // MapAnchorPositionSaver.setPartyAnchor(partyAnchor);
+                // MapAnchorPositionSaver.setPartyAnchor(partyAnchor);
                 FindObjectOfType<MapEventsHandler>().triggerAnchorEvents(partyAnchor.transform.position);
 
 
@@ -343,8 +342,5 @@ public class MapTrailRenderer : MonoBehaviour {
 
     public Vector2 getPartyAnchorPos() {
         return partyAnchor.transform.position;
-    }
-    public GameInfo.diffLvl getDiffLevelForPartyAnchor() {
-        return FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(partyAnchor.transform.position.x);
     }
 }

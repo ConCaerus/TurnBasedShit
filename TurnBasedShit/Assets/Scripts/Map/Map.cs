@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class Map {
-    public static float leftBound = -18.0f, rightBound = 18.0f;
-    public static float botBound = -18.0f, topBound = 18.0f;
+    public static float leftBound = -25.0f, rightBound = 250.0f;
+    public static float botBound = -25.0f, topBound = 25.0f;
 
 
     public static Vector2 getRandPos() {
@@ -12,32 +12,39 @@ public static class Map {
     }
 
     public static GameInfo.diffLvl getDiffForX(float x) {
-        float startingPoint = Map.leftBound;
-
-        for(int i = 1; i < 8; i++) {
-            if(x < startingPoint)
-                return (GameInfo.diffLvl)(i - 1);
-            else
-                startingPoint += getRegionXLength(i - 1);
+        for(int i = 0; i < 6; i++) {
+            if(x < getRegionXStartPoint(i + 1))
+                return (GameInfo.diffLvl)(i);
         }
-
         return (GameInfo.diffLvl)(-1);
     }
     public static float getRegionXLength(int regionIndex) {
+        float totalLength = rightBound - leftBound;
         switch(regionIndex) {
-            case 0: return 10.0f;
-            case 1: return 12.0f;
-            case 2: return 17.0f;
-            case 3: return 20.0f;
-            case 4: return 35.0f;
-            case 5: return 40.0f;
-            case 6: return 50.0f;
+            case 0: return totalLength / 7f;
+            case 1: return totalLength / 7f;
+            case 2: return totalLength / 7f;
+            case 3: return totalLength / 7f;
+            case 4: return totalLength / 7f;
+            case 5: return totalLength / 7f;
+            case 6: return totalLength / 7f;
             default: return 0.0f;
         }
     }
+    public static float getRegionXStartPoint(int regionIndex) {
+        float dist = leftBound;
+        for(int i = 0; i < regionIndex; i++) {
+            dist += getRegionXLength(i);
+        }
+        return dist;
+    }
+    public static float getRegionMidXPoint(int regionIndex) {
+        return getRegionXStartPoint(regionIndex) + (getRegionXLength(regionIndex) / 2.0f);
+    }
     public static Vector2 getRandomPosInRegion(int regionIndex) {
-        var rand = getRandPos();
-        return new Vector2(leftBound + getRegionXLength(regionIndex), rand.y);
+        var randY = getRandPos().y;
+        var randX = getRegionMidXPoint(regionIndex) + Random.Range(-(getRegionXLength(regionIndex) / 2.0f), getRegionXLength(regionIndex) / 2.0f);
+        return new Vector2(randX, randY);
     }
 
     public static void populateTowns(PresetLibrary lib) {

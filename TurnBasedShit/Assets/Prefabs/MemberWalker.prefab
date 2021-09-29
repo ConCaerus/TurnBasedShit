@@ -152,7 +152,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2429004232619465886}
         m_TargetAssemblyTypeName: TownMemberInstance, Assembly-CSharp
         m_MethodName: acceptQuest
         m_Mode: 1
@@ -684,7 +684,8 @@ MonoBehaviour:
         u_power: 0
         u_defence: 0
         u_critChance: 0
-        u_order: 0
+        u_bleedCount: 0
+        u_instanceID: -1
         equippedWeapon:
           w_instanceID: -1
           w_name: 
@@ -692,6 +693,7 @@ MonoBehaviour:
           w_element: 0
           w_wornAmount: 0
           w_attributes: 
+          w_attackType: 0
           w_power: 0
           w_speedMod: 0
           w_coinCost: 0
@@ -700,7 +702,8 @@ MonoBehaviour:
             equippedX: 0
             equippedY: 0
             equippedRot: 0
-            equippedSize: 0
+            equippedXSize: 0
+            equippedYSize: 0
         equippedArmor:
           a_instanceID: -1
           a_name: 
@@ -713,6 +716,8 @@ MonoBehaviour:
           a_sprite:
             sprite: {fileID: 0}
             equippedSprite: {fileID: 0}
+            equippedShoulder: {fileID: 0}
+            equippedHat: {fileID: 0}
             xPos0: 0
             yPos0: 0
             xSize0: 0
@@ -725,6 +730,32 @@ MonoBehaviour:
             yPos2: 0
             xSize2: 0
             ySize2: 0
+            xShoulderPos0: 0
+            yShoulderPos0: 0
+            xShoulderSize0: 0
+            yShoulderSize0: 0
+            shoulderRot: 0
+            xShoulderPos1: 0
+            yShoulderPos1: 0
+            xShoulderSize1: 0
+            yShoulderSize1: 0
+            xShoulderPos2: 0
+            yShoulderPos2: 0
+            xShoulderSize2: 0
+            yShoulderSize2: 0
+            xHatPos0: 0
+            yHatPos0: 0
+            xHatSize0: 0
+            yHatSize0: 0
+            hatRot: 0
+            xHatPos1: 0
+            yHatPos1: 0
+            xHatSize1: 0
+            yHatSize1: 0
+            xHatPos2: 0
+            yHatPos2: 0
+            xHatSize2: 0
+            yHatSize2: 0
         equippedItem:
           i_instanceID: -1
           i_name: 
@@ -736,6 +767,10 @@ MonoBehaviour:
           i_sprite:
             sprite: {fileID: 0}
         u_traits: []
+        u_deathInfo:
+          nameOfKiller: 
+          causeOfDeath: 0
+          enemyType: 0
     m_deliveryQuest:
       q_instanceID: 0
       deliveryLocation:
@@ -765,6 +800,7 @@ MonoBehaviour:
         w_element: 0
         w_wornAmount: 0
         w_attributes: 
+        w_attackType: 0
         w_power: 0
         w_speedMod: 0
         w_coinCost: 0
@@ -773,7 +809,8 @@ MonoBehaviour:
           equippedX: 0
           equippedY: 0
           equippedRot: 0
-          equippedSize: 0
+          equippedXSize: 0
+          equippedYSize: 0
       pickupArmor:
         a_instanceID: -1
         a_name: 
@@ -786,6 +823,8 @@ MonoBehaviour:
         a_sprite:
           sprite: {fileID: 0}
           equippedSprite: {fileID: 0}
+          equippedShoulder: {fileID: 0}
+          equippedHat: {fileID: 0}
           xPos0: 0
           yPos0: 0
           xSize0: 0
@@ -798,6 +837,32 @@ MonoBehaviour:
           yPos2: 0
           xSize2: 0
           ySize2: 0
+          xShoulderPos0: 0
+          yShoulderPos0: 0
+          xShoulderSize0: 0
+          yShoulderSize0: 0
+          shoulderRot: 0
+          xShoulderPos1: 0
+          yShoulderPos1: 0
+          xShoulderSize1: 0
+          yShoulderSize1: 0
+          xShoulderPos2: 0
+          yShoulderPos2: 0
+          xShoulderSize2: 0
+          yShoulderSize2: 0
+          xHatPos0: 0
+          yHatPos0: 0
+          xHatSize0: 0
+          yHatSize0: 0
+          hatRot: 0
+          xHatPos1: 0
+          yHatPos1: 0
+          xHatSize1: 0
+          yHatSize1: 0
+          xHatPos2: 0
+          yHatPos2: 0
+          xHatSize2: 0
+          yHatSize2: 0
       pickupConsumable:
         c_instanceID: -1
         c_name: 
@@ -952,7 +1017,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2429004232619465886}
         m_TargetAssemblyTypeName: TownMemberInstance, Assembly-CSharp
         m_MethodName: declineQuest
         m_Mode: 1

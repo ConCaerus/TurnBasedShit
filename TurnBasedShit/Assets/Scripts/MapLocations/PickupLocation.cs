@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[System.Serializable]
 public class PickupLocation : MapLocation {
     public enum pickupType {
         weapon, armor, consumable, item
@@ -14,7 +15,7 @@ public class PickupLocation : MapLocation {
     public Consumable pickupConsumable = null;
     public Item pickupItem = null;
 
-    public PickupQuest attachedQuest = null;
+    //public PickupQuest attachedQuest = null;
 
 
     public pickupType pType = (pickupType)(-1);

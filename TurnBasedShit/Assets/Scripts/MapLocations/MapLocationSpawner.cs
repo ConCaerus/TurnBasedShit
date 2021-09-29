@@ -21,16 +21,16 @@ public class MapLocationSpawner : MonoBehaviour {
             Destroy(i.gameObject);
 
         //  Boss Locations
-        for(int i = 0; i < MapLocationHolder.getBossCount(); i++) {
+        for(int i = 0; i < ActiveQuests.getBossFightQuestCount(); i++) {
             //  positioning and scaling
             var obj = Instantiate(bossLocationPreset.gameObject);
             obj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-            obj.transform.position = MapLocationHolder.getBossLocation(i).pos;
+            obj.transform.position = ActiveQuests.getBossFightQuest(i).location.pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
 
             //  info shit
-            obj.GetComponent<InfoBearer>().titleText = MapLocationHolder.getBossLocation(i).bossUnit.u_name;
+            obj.GetComponent<InfoBearer>().titleText = ActiveQuests.getBossFightQuest(i).bossUnit.u_name;
 
             currentIcons.Add(obj);
         }
@@ -81,17 +81,21 @@ public class MapLocationSpawner : MonoBehaviour {
         }
 
         //  Pickup Locations
-        for(int i = 0; i < MapLocationHolder.getPickupCount(); i++) {
+        for(int i = 0; i < ActiveQuests.getPickupQuestCount(); i++) {
             //  positioning and scaling
             var obj = Instantiate(pickupLocationPreset.gameObject);
-            obj.transform.position = MapLocationHolder.getPickupLocation(i).pos;
+            obj.transform.position = ActiveQuests.getPickupQuest(i).location.pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
 
             //  info shit
-            obj.GetComponent<InfoBearer>().titleText = MapLocationHolder.getPickupLocation(i).pType.ToString();
+            obj.GetComponent<InfoBearer>().titleText = ActiveQuests.getPickupQuest(i).pType.ToString();
 
             currentIcons.Add(obj);
+        }
+
+        //  Pickup Locations
+        for(int i = 0; i < MapLocationHolder.getPickupCount(); i++) {
         }
     }
 

@@ -58,12 +58,12 @@ public static class SaveData {
     }
 
 
-    public static void createSaveDataForCurrentSave() {
-        createSaveDataForSave(saveIndex);
+    public static void createSaveDataForCurrentSave(PresetLibrary lib) {
+        createSaveDataForSave(saveIndex, lib);
     }
-    public static void createSaveDataForSave(int index) {
+    public static void createSaveDataForSave(int index, PresetLibrary lib) {
         //  Party
-        Party.createDefaultParty();
+        Party.createDefaultParty(lib);
 
         //  Inventory 
         Inventory.createDefaultInventory();
@@ -76,8 +76,8 @@ public static class SaveData {
     public static void deleteSave(int i) {
         var prevIndex = saveIndex;
         saveIndex = i;
-        Inventory.clearInventory();
-        Party.clearParty();
+        Inventory.clearInventory(true);
+        Party.clearParty(true);
         saveIndex = prevIndex;
         PlayerPrefs.Save();
     }

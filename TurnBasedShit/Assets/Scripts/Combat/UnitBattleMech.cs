@@ -22,18 +22,10 @@ public class UnitBattleMech : MonoBehaviour {
     }
 
     void setUp() {
-        if(GameInfo.getCombatDetails() == null || GameInfo.getCombatDetails().waves == null || GameInfo.getCombatDetails().waves.Count == 0 || GameInfo.getCombatDetails().waves[0].enemies.Count == 0 || GameInfo.getCombatDetails().waves[0].enemies[0] == null || true) {
+        GameInfo.currentGameState = GameInfo.state.Combat;
+        if(GameInfo.getCombatDetails() == null || GameInfo.getCombatDetails().waves == null || GameInfo.getCombatDetails().waves.Count == 0 || GameInfo.getCombatDetails().waves[0].enemies.Count == 0 || GameInfo.getCombatDetails().waves[0].enemies[0] == null) {
             GameInfo.setCombatDetails(FindObjectOfType<PresetLibrary>().createCombatLocation(0));
             var thing = GameInfo.getCombatDetails();
-            for(int i = 0; i < 3; i++) {
-                thing.weapons.Add(FindObjectOfType<PresetLibrary>().getRandomWeapon());
-                thing.armor.Add(FindObjectOfType<PresetLibrary>().getRandomArmor());
-                thing.armor.Add(FindObjectOfType<PresetLibrary>().getRandomArmor());
-                thing.items.Add(FindObjectOfType<PresetLibrary>().getRandomItem());
-                thing.consumables.Add(FindObjectOfType<PresetLibrary>().getRandomConsumable());
-                thing.consumables.Add(FindObjectOfType<PresetLibrary>().getRandomConsumable());
-                thing.consumables.Add(FindObjectOfType<PresetLibrary>().getRandomConsumable());
-            }
             GameInfo.setCombatDetails(thing);
             Debug.Log("created");
         }

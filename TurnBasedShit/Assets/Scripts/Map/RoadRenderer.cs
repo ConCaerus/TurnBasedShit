@@ -465,9 +465,7 @@ public class RoadRenderer : MonoBehaviour {
 
             //  decide what happens at this location
             MapAnchorPositionSaver.setPartyPointIndex(getPointIndex(getPointAtPos(target)));
-            GameInfo.setCurrentRegionDiff(FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(roadPointObjects[MapAnchorPositionSaver.getPartyPointLocationIndex()].transform.position.x));
             FindObjectOfType<MapEventsHandler>().triggerAnchorEvents(roadPointObjects[MapAnchorPositionSaver.getPartyPointLocationIndex()].transform.position);
-            FindObjectOfType<MapEventsHandler>().chanceEncounter(GameInfo.getCurrentDiff());
 
             while(hitEnd && Input.GetKey(KeyCode.Space))
                 yield return new WaitForEndOfFrame();

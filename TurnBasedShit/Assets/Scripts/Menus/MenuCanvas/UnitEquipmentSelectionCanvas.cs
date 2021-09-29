@@ -18,74 +18,69 @@ public abstract class UnitEquipmentSelectionCanvas : SelectionCanvas {
 
         int slotIndex = 0;
 
+        foreach(var i in slots)
+            Destroy(i.gameObject);
+        slots.Clear();
+
         switch(getState()) {
             case 0:
-                for(int i = -1; i < Inventory.getWeaponCount(); i++) {
-                    //  adds the unit's own equipment into the slots
-                    if(i == -1) {
-                        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon == null || FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon.isEmpty())
-                            continue;
+                //  adds the unit's own equipment into the slots
+                if(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon.isEmpty()) {
+                    var obj = createSlot(slotIndex);
+                    obj.transform.GetComponent<Image>().color = FindObjectOfType<UnitCanvas>().shownUnit.u_sprite.color;
+                    obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon).sprite;
+                    obj.transform.GetChild(1).gameObject.SetActive(false);
+                    slotIndex++;
+                }
 
-                        var obj = createSlot(slotIndex);
-                        obj.transform.GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon.w_rarity);
-                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon).sprite;
-                        obj.transform.GetChild(1).gameObject.SetActive(false);
-                        slotIndex++;
-                    }
-
-                    else if(Inventory.getWeapon(i) != null && !Inventory.getWeapon(i).isEmpty()) {
-                        var obj = createSlot(slotIndex);
-                        obj.transform.GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getWeapon(i).w_rarity);
-                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getWeapon(i)).sprite;
-                        obj.transform.GetChild(1).gameObject.SetActive(false);
-                        slotIndex++;
-                    }
+                for(int i = 0; i < Inventory.getWeaponCount(); i++) {
+                    if(Inventory.getWeapon(i) == null || Inventory.getWeapon(i).isEmpty())
+                        continue;
+                    var obj = createSlot(slotIndex);
+                    obj.transform.GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getWeapon(i).w_rarity);
+                    obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getWeapon(i)).sprite;
+                    obj.transform.GetChild(1).gameObject.SetActive(false);
+                    slotIndex++;
                 }
                 break;
 
             case 1:
+                if(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor.isEmpty()) {
+                    var obj = createSlot(slotIndex);
+                    obj.transform.GetComponent<Image>().color = FindObjectOfType<UnitCanvas>().shownUnit.u_sprite.color;
+                    obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor).sprite;
+                    obj.transform.GetChild(1).gameObject.SetActive(false);
+                    slotIndex++;
+                }
+
                 for(int i = -1; i < Inventory.getArmorCount(); i++) {
-                    if(i == -1) {
-                        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor == null || FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor.isEmpty())
-                            continue;
-
-                        var obj = createSlot(slotIndex);
-                        obj.transform.GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor.a_rarity);
-                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor).sprite;
-                        obj.transform.GetChild(1).gameObject.SetActive(false);
-                        slotIndex++;
-                    }
-
-                    else if(Inventory.getArmor(i) != null && !Inventory.getArmor(i).isEmpty()) {
-                        var obj = createSlot(slotIndex);
-                        obj.transform.GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getArmor(i).a_rarity);
-                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getArmor(i)).sprite;
-                        obj.transform.GetChild(1).gameObject.SetActive(false);
-                        slotIndex++;
-                    }
+                    if(Inventory.getArmor(i) == null || Inventory.getArmor(i).isEmpty())
+                        continue;
+                    var obj = createSlot(slotIndex);
+                    obj.transform.GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getArmor(i).a_rarity);
+                    obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getArmor(i)).sprite;
+                    obj.transform.GetChild(1).gameObject.SetActive(false);
+                    slotIndex++;
                 }
                 break;
 
             case 2:
+                if(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedItem.isEmpty()) {
+                    var obj = createSlot(slotIndex);
+                    obj.transform.GetComponent<Image>().color = FindObjectOfType<UnitCanvas>().shownUnit.u_sprite.color;
+                    obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem).sprite;
+                    obj.transform.GetChild(1).gameObject.SetActive(false);
+                    slotIndex++;
+                }
+
                 for(int i = 0; i < Inventory.getItemCount(); i++) {
-                    if(i == -1) {
-                        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem == null || FindObjectOfType<UnitCanvas>().shownUnit.equippedItem.isEmpty())
-                            continue;
-
-                        var obj = createSlot(slotIndex);
-                        obj.transform.GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem.i_rarity);
-                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem).sprite;
-                        obj.transform.GetChild(1).gameObject.SetActive(false);
-                        slotIndex++;
-                    }
-
-                    else if(Inventory.getItem(i) != null && !Inventory.getItem(i).isEmpty()) {
-                        var obj = createSlot(slotIndex);
-                        obj.transform.GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getItem(i).i_rarity);
-                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(Inventory.getItem(i)).sprite;
-                        obj.transform.GetChild(1).gameObject.SetActive(false);
-                        slotIndex++;
-                    }
+                    if(Inventory.getItem(i) == null || Inventory.getItem(i).isEmpty())
+                        continue;
+                    var obj = createSlot(slotIndex);
+                    obj.transform.GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getItem(i).i_rarity);
+                    obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(Inventory.getItem(i)).sprite;
+                    obj.transform.GetChild(1).gameObject.SetActive(false);
+                    slotIndex++;
                 }
                 break;
         }
@@ -105,16 +100,18 @@ public abstract class UnitEquipmentSelectionCanvas : SelectionCanvas {
         var startingPos = new Vector2(slotHolder.GetComponent<RectTransform>().rect.xMin + (slotScale / 2.0f), slotHolder.GetComponent<RectTransform>().rect.yMax - (slotScale / 2.0f));
 
         GameObject obj = null;
-        if(slotHolder.transform.childCount > index && slotHolder.transform.GetChild(index) != null)
-            obj = slotHolder.transform.GetChild(index).gameObject;
+        if(slots.Count > index && slots[index] != null)
+            obj = slots[index].gameObject;
         else
             obj = Instantiate(slotPreset.gameObject, slotHolder.transform);
 
-            int y = Mathf.FloorToInt(index / numOfSlotsPerLine);
+        int y = Mathf.FloorToInt(index / numOfSlotsPerLine);
         int x = index - (y * numOfSlotsPerLine);
 
         obj.transform.GetComponent<RectTransform>().localPosition = startingPos + new Vector2((slotScale + slotBuffer) * x, -((slotScale + slotBuffer) * y));
         obj.GetComponent<Button>().onClick.AddListener(delegate { setSelectedIndex(index); });
+
+        slots.Add(obj.gameObject);
         return obj;
     }
 
@@ -127,18 +124,19 @@ public abstract class UnitEquipmentSelectionCanvas : SelectionCanvas {
 
     public void startShowing() {
         selectedIndex = -1;
+        populateSlots();
         updateInfo();
         StartCoroutine(show());
     }
 
     public void startHiding() {
-            if(selectedIndex != -1)
-                rotateEquipment();
-            StartCoroutine(hide());
+        if(selectedIndex != -1)
+            rotateEquipment();
+        StartCoroutine(hide());
     }
 
-    public IEnumerator show() {
-        populateSlots();
+    IEnumerator show() {
+        shown = true;
 
         //  close the image that shows the units current equippment
         if(getState() == 0)
@@ -158,10 +156,9 @@ public abstract class UnitEquipmentSelectionCanvas : SelectionCanvas {
         yield return new WaitForSeconds(FindObjectOfType<UnitCanvas>().equippmentTransitionTime / 2.0f);
 
         transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f), FindObjectOfType<UnitCanvas>().equippmentTransitionTime / 2.0f);
-        shown = true;
     }
 
-    public IEnumerator hide() {
+    IEnumerator hide() {
         if(!shown)
             yield return 0;
 

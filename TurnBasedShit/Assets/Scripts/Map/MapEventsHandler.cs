@@ -9,39 +9,14 @@ public class MapEventsHandler : MonoBehaviour {
         DOTween.Init();
     }
 
-    public void chanceEncounter(GameInfo.diffLvl regionDiff) {
-        return;
-        switch(regionDiff) {
-            case GameInfo.diffLvl.Cake:
-            case GameInfo.diffLvl.Easy:
-            case GameInfo.diffLvl.Normal:
-            case GameInfo.diffLvl.Inter:
-                if(Random.Range(0, 11) == 0)    //  10%
-                    triggerEncounter(regionDiff);
-                break;
-
-            case GameInfo.diffLvl.Hard:
-            case GameInfo.diffLvl.Heroic:
-                if(Random.Range(0, 101) <= 15)    //  15%
-                    triggerEncounter(regionDiff);
-                break;
-
-            case GameInfo.diffLvl.Legendary:
-                if(Random.Range(0, 101) <= 26)    //  25%
-                    triggerEncounter(regionDiff);
-                break;
-        }
-    }
-
-    public void triggerEncounter(GameInfo.diffLvl regionDiff) {
+    public void triggerEncounter() {
         //  creates a combat location
-        var cl = FindObjectOfType<PresetLibrary>().createCombatLocation(regionDiff);
+        var cl = FindObjectOfType<PresetLibrary>().createCombatLocation(Map.getDiffForX(FindObjectOfType<MapMovement>().transform.position.x));
         cl = Randomizer.randomizeCombatLocation(cl);
         GameInfo.setCombatDetails(cl);
 
         //  flair
-        FindObjectOfType<RoadRenderer>().shrinkPartyObj();
-        FindObjectOfType<RoadRenderer>().canMove = false;
+        FindObjectOfType<MapMovement>().canMove = false;
         FindObjectOfType<EnounterCanvas>().showEnemyEncounterAlert();
     }
 
@@ -94,9 +69,5 @@ public class MapEventsHandler : MonoBehaviour {
                 return;
             }
         }
-
-
-        //  if the code gets here, the party is not over a map location and the code runs combat chance
-        chanceEncounter(FindObjectOfType<RegionDivider>().getRelevantDifficultyLevel(partyPos.x));
     }
 }

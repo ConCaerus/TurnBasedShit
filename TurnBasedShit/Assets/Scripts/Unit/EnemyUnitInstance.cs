@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class EnemyUnitInstance : UnitClass {
     public GameInfo.diffLvl enemyDiff = 0;
     public Weapon.attackType weakTo;
@@ -10,6 +11,7 @@ public class EnemyUnitInstance : UnitClass {
 
     Coroutine idler = null;
 
+    [System.Serializable]
     public enum type {
         slime, groundBird
     }
@@ -40,8 +42,13 @@ public class EnemyUnitInstance : UnitClass {
 
     public IEnumerator combatTurn() {
         yield return new WaitForSeconds(0.5f);
+
+        if(stunned) {
+            stunned = false;
+            yield return 0;
+        }
         if(this != null && FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject && attackingTarget == null) {
-            setRandomAttackingTarget();
+            calcNextAttackingTarget();
 
             yield return new WaitForSeconds(0.5f);
 
@@ -49,6 +56,30 @@ public class EnemyUnitInstance : UnitClass {
                 attack(attackingTarget);
             }
         }
+    }
+
+
+    void calcNextAttackingTarget() {
+        float defaultChancePerUnit = 100.0f / Party.getMemberCount();
+        float rand = Random.Range(0, 101);
+
+        for(int i = 0; i < Party.getMemberCount(); i++) {
+            float moddedChance = 0.0f;
+
+            if(Party.getMemberStats(i).isEqualTo(Party.getLeaderStats()))   //  +15% if leader
+                moddedChance += 0.15f;
+
+            foreach(var t in Party.getMemberStats(i).u_traits)  //  apply traits n' shit
+                moddedChance += t.getChanceToBeAttackedMod() * 100.0f;
+
+            if(rand < (defaultChancePerUnit * (i + 1)) + moddedChance) {
+                attackingTarget = FindObjectOfType<PartyObject>().getInstantiatedMember(Party.getMemberStats(i));
+                return;
+            }
+        }
+
+        //  gone through the loop and didn't get a target
+        attackingTarget = FindObjectOfType<PartyObject>().getInstantiatedMember(Party.getMemberStats(Random.Range(0, Party.getMemberCount())));
     }
 
 

@@ -7,11 +7,15 @@ public class MapMovement : InteractiveMovement {
     List<int> sideUnitIndexes = new List<int>();
     List<GameObject> sideUnits = new List<GameObject>();
 
+    GameInfo.diffLvl currentDiff;
+
     float distToInt = 1f;
 
 
     private void Start() {
         transform.position = GameInfo.getCurrentMapPos();
+        currentDiff = GameInfo.getCurrentDiff();
+        GameInfo.currentGameState = GameInfo.state.Map;
         createSideUnitObjects();
     }
 
@@ -26,6 +30,11 @@ public class MapMovement : InteractiveMovement {
             }
         }
 
+        if(Map.getDiffForX(transform.position.x) != currentDiff && FindObjectOfType<RegionNotificationCanvas>().canAnimate()) {
+            currentDiff = Map.getDiffForX(transform.position.x);
+            GameInfo.setCurrentMapPos(transform.position);
+            FindObjectOfType<RegionNotificationCanvas>().startShowing();
+        }
 
         moveSideUnits();
     }

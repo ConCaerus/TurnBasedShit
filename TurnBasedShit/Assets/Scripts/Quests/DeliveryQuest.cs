@@ -10,7 +10,7 @@ public class DeliveryQuest {
     public int q_instanceID = -1;
 
 
-    public Town deliveryLocation;
+    public TownLocation deliveryLocation;
 
     public deliveryType type;
 
@@ -21,7 +21,7 @@ public class DeliveryQuest {
     public List<UnitStats> unitsToDeliver = new List<UnitStats>();
 
 
-    public DeliveryQuest(Town t, List<Weapon> w, bool setID) {
+    public DeliveryQuest(TownLocation t, List<Weapon> w, bool setID) {
         if(setID)
             q_instanceID = GameInfo.getNextQuestInstanceID();
 
@@ -32,7 +32,7 @@ public class DeliveryQuest {
 
         type = deliveryType.weapon;
     }
-    public DeliveryQuest(Town t, List<Armor> a, bool setID) {
+    public DeliveryQuest(TownLocation t, List<Armor> a, bool setID) {
         if(setID)
             q_instanceID = GameInfo.getNextQuestInstanceID();
 
@@ -43,7 +43,7 @@ public class DeliveryQuest {
 
         type = deliveryType.armor;
     }
-    public DeliveryQuest(Town t, List<Consumable> c, bool setID) {
+    public DeliveryQuest(TownLocation t, List<Consumable> c, bool setID) {
         if(setID)
             q_instanceID = GameInfo.getNextQuestInstanceID();
 
@@ -54,7 +54,7 @@ public class DeliveryQuest {
 
         type = deliveryType.consumable;
     }
-    public DeliveryQuest(Town t, List<Item> it, bool setID) {
+    public DeliveryQuest(TownLocation t, List<Item> it, bool setID) {
         if(setID)
             q_instanceID = GameInfo.getNextQuestInstanceID();
 
@@ -65,7 +65,7 @@ public class DeliveryQuest {
 
         type = deliveryType.item;
     }
-    public DeliveryQuest(Town t, List<UnitStats> u, bool setID) {
+    public DeliveryQuest(TownLocation t, List<UnitStats> u, bool setID) {
         if(setID)
             q_instanceID = GameInfo.getNextQuestInstanceID();
 

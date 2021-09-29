@@ -4,9 +4,9 @@ using UnityEngine;
 
 [System.Serializable]
 public class Building {
-    public const int buildingTypeCount = 4;
+    public const int buildingTypeCount = 5;
     public enum type {
-        Hospital, Shop, Church, Casino
+        Hospital, Shop, Church, Casino, Blacksmith
     }
 
     public int orderInTown = -1;

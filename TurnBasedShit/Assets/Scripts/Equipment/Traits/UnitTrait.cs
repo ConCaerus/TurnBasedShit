@@ -7,7 +7,7 @@ public class UnitTrait {
 
     [System.Serializable]
     public enum modifierType {
-        damageGiven, damageTaken, speed, maxHealth, inventoryAfterAnchorSet
+        damageGiven, damageTaken, speed, maxHealth, stunsSelf, stunsTarget, chanceToBeAttacked
     }
 
     [System.Serializable]
@@ -28,6 +28,7 @@ public class UnitTrait {
 
 
     //  Do trait things here
+    //  value based mods
     public float getDamageTakenMod() {
         float temp = 0.0f;
         foreach(var i in t_infos) {
@@ -63,5 +64,31 @@ public class UnitTrait {
         }
 
         return temp;
+    }
+
+    public float getChanceToBeAttackedMod() {
+        float temp = 0.0f;
+        foreach(var i in t_infos) {
+            if(i.modType == modifierType.chanceToBeAttacked)
+                temp += i.modAmount;
+        }
+
+        return temp;
+    }
+
+    //  non-value based mods
+    public bool shouldStunSelf() {
+        foreach(var i in t_infos) {
+            if(i.modType == modifierType.stunsSelf && GameVariables.chanceOutOfHundred(Mathf.FloorToInt(i.modAmount)))
+                return true;
+        }
+        return false;
+    }
+    public bool shouldStunTarget() {
+        foreach(var i in t_infos) {
+            if(i.modType == modifierType.stunsTarget && GameVariables.chanceOutOfHundred(Mathf.FloorToInt(i.modAmount)))
+                return true;
+        }
+        return false;
     }
 }

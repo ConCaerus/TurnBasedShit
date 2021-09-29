@@ -10,13 +10,13 @@ public abstract class UnitClass : MonoBehaviour {
     public Color hitColor;
 
     public bool isPlayerUnit = true;
-    public bool defending = false;
-    public bool stunned = false;
+    bool defending = false;
+    protected bool stunned = false;
     public bool isMouseOverUnit = false;
 
     public float tempPowerMod = 1.0f;
     public float tempDefenceMod = 0.0f;
-    public float tempSpeedMod = 0.0f;
+    public float tempSpeedMod = 1.0f;
 
     public float spotOffset = 0.0f;
 
@@ -47,6 +47,9 @@ public abstract class UnitClass : MonoBehaviour {
     }
 
     public void setup() {
+        tempPowerMod = 1.0f;
+        tempDefenceMod = 0.0f;
+        tempSpeedMod = 1.0f;
         if(isPlayerUnit) {
             GetComponentInChildren<UnitSpriteHandler>().setEverything(stats.u_sprite, stats.equippedWeapon, stats.equippedArmor);
         }
@@ -67,33 +70,28 @@ public abstract class UnitClass : MonoBehaviour {
 
 
     public void takeBleedDamage() {
-        if(stats.u_bleeding) {
+        if(stats.u_bleedCount > 0) {
             float temp = (stats.getModifiedMaxHealth() / 100.0f);
             stats.u_health -= temp;
 
-            checkIfDead();
+            FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, temp, DamageTextCanvas.damageType.bleed);
+            if(GameVariables.chanceCureBleed())
+                stats.u_bleedCount--;
 
-            FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, temp, DamageTextCanvas.damageType.poison);
-
-            stats.u_bleeding = !GameVariables.chanceCureBleed();
+            checkIfDead(DeathInfo.killCause.bleed);
         }
     }
 
-    public bool checkIfDead() {
+    public bool checkIfDead(DeathInfo.killCause cause, GameObject killer = null) {
         if(stats.u_health <= 0.0f) {
-            die();
+            die(cause, killer);
             return true;
         }
         return false;
     }
 
     public void addHealth(float h) {
-        if(checkIfDead())
-            return;
-
         stats.u_health = Mathf.Clamp(stats.u_health + h, -1.0f, stats.getModifiedMaxHealth());
-
-        checkIfDead();
     }
 
     public void prepareUnitForNextRound() {
@@ -104,116 +102,18 @@ public abstract class UnitClass : MonoBehaviour {
     }
 
 
-    public void attack(GameObject defender) {
-        transform.DOComplete();
-        normalPos = transform.position;
-        //  triggers
-        FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeAttacking, this, true);
-
-        //  triggers
-        stats.equippedWeapon.applyAttributesAfterAttack(gameObject, defender);
-
-        //  Flair
-        attackAnim = StartCoroutine(attackingAnim(defender));
-    }
-    public void defend(GameObject attacker, float dmg) {
-        //  triggers
-        FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeDefending, this, true);
-
-
-        //  if defender is an enemy, check if it's weak or strong to the attack
-        if(!isPlayerUnit) {
-            //  check if it's weak to the attack
-            if(GetComponent<EnemyUnitInstance>().weakTo == attacker.GetComponent<UnitClass>().stats.equippedWeapon.w_attackType)
-                dmg *= 1.25f;
-        }
-
-        dmg = stats.getModifiedDamageTaken(dmg, defending, tempDefenceMod);
-
-        float crit = attacker.GetComponent<UnitClass>().stats.getCritMult(dmg);
-        dmg *= crit;
-
-        //  take damage
-        stats.u_health = Mathf.Clamp(stats.u_health - dmg, -1.0f, stats.getModifiedMaxHealth());
-
-        //  Flair
-        if(defending)
-            FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, dmg, DamageTextCanvas.damageType.defended);
-        else if(crit > 1.1f)
-            FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, dmg, DamageTextCanvas.damageType.crit);
-        else
-            FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, dmg, DamageTextCanvas.damageType.weapon);
-        var blood = Instantiate(bloodParticles);
-        Destroy(blood.gameObject, blood.main.startLifetimeMultiplier);
-        blood.gameObject.transform.position = transform.position;
-        defendAnim = StartCoroutine(defendingAnim());
-
-        //  triggers
-        int armorReaction = stats.equippedArmor.applyAttributesAfterAttack(gameObject, attacker, FindObjectOfType<TurnOrderSorter>().playingUnit);
-        //  reflex
-        if(armorReaction == 1) {
-            return;
-        }
-
-        //  check if any unit died in the attack
-        attacker.GetComponent<UnitClass>().checkIfDead();
-        checkIfDead();
-
-        //  end battle turn
-        FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
-    }
-
-    public void die() {
-        //  things to do with removing the unit from the party and what to do with equippment
-        if(isPlayerUnit)
-            stats.die();
-        else {
-            //  triggers items
-            FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterKill, this, false);
-
-            //  increases acc quest counter
-            for(int i = 0; i < ActiveQuests.getKillQuestCount(); i++) {
-                if(ActiveQuests.getKillQuest(i).enemyType == GetComponent<EnemyUnitInstance>().enemyType)
-                    ActiveQuests.getKillQuest(i).howManyToKill++;
-            }
-        }
-
-        //  flair
-        FindObjectOfType<AudioManager>().playSound(dieSound);
-        foreach(var i in FindObjectsOfType<CombatSpot>()) {
-            if(i.unit == gameObject) {
-                i.unit = null;
-                i.setColor();
-            }
-        }
-
-        //  removes unit from game world
-        FindObjectOfType<TurnOrderSorter>().removeUnitFromList(gameObject);
-        //FindObjectOfType<DamageTextCanvas>().removeTextsWithUnit(gameObject);
-        Destroy(gameObject);
-    }
 
 
 
     public void setRandomAttackingTarget() {
-        int unitCount = 0;
+        List<GameObject> units = new List<GameObject>();
         foreach(var i in FindObjectsOfType<UnitClass>()) {
             if(i.isPlayerUnit != isPlayerUnit) {
-                unitCount++;
+                units.Add(i.gameObject);
             }
         }
 
-        int rand = Random.Range(0, unitCount);
-        unitCount = 0;
-
-        foreach(var i in FindObjectsOfType<UnitClass>()) {
-            if(i.isPlayerUnit != isPlayerUnit) {
-                if(unitCount == rand)
-                    attackingTarget = i.gameObject;
-
-                unitCount++;
-            }
-        }
+        attackingTarget = units[Random.Range(0, units.Count)];
     }
 
     public void setEquippedWeapon(Weapon w = null) {
@@ -247,6 +147,122 @@ public abstract class UnitClass : MonoBehaviour {
     public void setEquipment(Weapon w = null, Armor a = null) {
         setEquippedWeapon(w);
         setEquippedArmor(a);
+    }
+
+    public void setDefending(bool b) {
+        if(stunned) {
+            stunned = false;
+            return;
+        }
+
+        //  non value based traits after turn
+        foreach(var i in stats.u_traits) {
+            if(!stunned && i.shouldStunSelf()) {
+                stunned = true;
+                Debug.Log("here");
+            }
+        }
+
+        defending = b;
+    }
+    public void setStunned(bool b) {
+        stunned = b;
+    }
+    public bool isStunned() {
+        return stunned;
+    }
+
+    public void attack(GameObject defender) {
+        if(stunned) {
+            stunned = false;
+            return;
+        }
+        transform.DOComplete();
+        normalPos = transform.position;
+        //  triggers
+        FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeAttacking, this, true);
+
+        //  triggers
+        stats.equippedWeapon.applyAttributes(gameObject, defender);
+
+        //  Flair
+        attackAnim = StartCoroutine(attackingAnim(defender));
+    }
+
+
+    public void defend(GameObject attacker, float dmg) {
+        //  triggers
+        FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeDefending, this, true);
+
+
+        //  if defender is an enemy, check if it's weak or strong to the attack
+        if(!isPlayerUnit) {
+            //  check if it's weak to the attack
+            if(GetComponent<EnemyUnitInstance>().weakTo == attacker.GetComponent<UnitClass>().stats.equippedWeapon.w_attackType)
+                dmg *= 1.25f;
+        }
+        dmg *= (stats.getDefenceMult(defending, FindObjectOfType<PresetLibrary>()) - tempDefenceMod);
+
+        float crit = attacker.GetComponent<UnitClass>().stats.getCritMult(dmg);
+        dmg *= crit;
+        //  triggers
+        stats.equippedArmor.applyAttributes(gameObject, attacker, FindObjectOfType<TurnOrderSorter>().playingUnit);
+
+        //  take damage
+        stats.u_health = Mathf.Clamp(stats.u_health - dmg, -1.0f, stats.getModifiedMaxHealth());
+
+        //  Flair
+        if(defending)
+            FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, dmg, DamageTextCanvas.damageType.defended);
+        else if(crit > 1.1f)
+            FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, dmg, DamageTextCanvas.damageType.crit);
+        else
+            FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, dmg, DamageTextCanvas.damageType.weapon);
+        var blood = Instantiate(bloodParticles);
+        Destroy(blood.gameObject, blood.main.startLifetimeMultiplier);
+        blood.gameObject.transform.position = transform.position;
+        defendAnim = StartCoroutine(defendingAnim());
+
+
+        //  check if any unit died in the attack
+        attacker.GetComponent<UnitClass>().checkIfDead(DeathInfo.killCause.murdered, gameObject);
+        checkIfDead(DeathInfo.killCause.murdered, attacker.gameObject);
+
+        //  end battle turn
+        foreach(var i in stats.equippedArmor.a_attributes) {
+            if(i == Armor.attribute.Reflex)
+                return;
+        }
+    }
+
+    public void die(DeathInfo.killCause cause, GameObject killer = null) {
+        //  things to do with removing the unit from the party and what to do with equippment
+        if(isPlayerUnit)
+            stats.die(cause, killer);
+        else {
+            //  triggers items
+            FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterKill, this, false);
+
+            //  increases acc quest counter
+            for(int i = 0; i < ActiveQuests.getKillQuestCount(); i++) {
+                if(ActiveQuests.getKillQuest(i).enemyType == GetComponent<EnemyUnitInstance>().enemyType)
+                    ActiveQuests.getKillQuest(i).howManyToKill++;
+            }
+        }
+
+        //  flair
+        FindObjectOfType<AudioManager>().playSound(dieSound);
+        foreach(var i in FindObjectsOfType<CombatSpot>()) {
+            if(i.unit == gameObject) {
+                i.unit = null;
+                i.setColor();
+            }
+        }
+
+        //  removes unit from game world
+        FindObjectOfType<TurnOrderSorter>().removeUnitFromList(gameObject);
+        //FindObjectOfType<DamageTextCanvas>().removeTextsWithUnit(gameObject);
+        Destroy(gameObject);
     }
 
     public abstract void setDefendingAnim();
@@ -285,12 +301,24 @@ public abstract class UnitClass : MonoBehaviour {
         FindObjectOfType<AudioManager>().playSound(hitSound);
 
         //  actually deal damage to defender
-        defender.GetComponent<UnitClass>().defend(gameObject, stats.getDamageGiven(tempPowerMod));
+        var dmg = stats.getDamageGiven(FindObjectOfType<PresetLibrary>()) * tempPowerMod;
+        defender.GetComponent<UnitClass>().defend(gameObject, dmg);
         yield return new WaitForSeconds(0.4f);
 
         //  move back to original position
         transform.DOScale(normalSize, 0.15f);
         transform.DOMove(normalPos, 0.15f);
+
+        //  non value based traits in attack
+        foreach(var i in stats.u_traits) {
+            if(!stunned && i.shouldStunSelf()) {
+                stunned = true;
+            }
+            if(defender != null && !defender.GetComponent<UnitClass>().isStunned() && i.shouldStunTarget())
+                defender.GetComponent<UnitClass>().setStunned(true);
+        }
+
+        FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
         attackAnim = null;
     }
 }

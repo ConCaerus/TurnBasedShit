@@ -82,7 +82,15 @@ public class Item {
 
 
     public bool isEqualTo(Item other) {
+        if(other == null || other.isEmpty())
+            return false;
         return i_instanceID == other.i_instanceID;
+    }
+
+    public bool isTheSameTypeAs(Item other) {
+        if(other == null || other.isEmpty())
+            return false;
+        return i_name == other.i_name && i_rarity == other.i_rarity;
     }
 
     public void setEqualTo(Item other, bool takeID) {

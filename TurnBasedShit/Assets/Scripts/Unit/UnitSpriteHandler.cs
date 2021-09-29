@@ -16,8 +16,8 @@ public class UnitSpriteHandler : MonoBehaviour {
         setEverything(stats.u_sprite, stats.equippedWeapon, stats.equippedArmor);;
     }
     public void setEverything(int h, int f, int b, Color c, Weapon w, Armor a) {
-        setHead(h);
-        setFace(f);
+        setHead(h, a);
+        setFace(f, a);
         setBody(b, w, a); 
         setColor(c);
         offsetLayer();
@@ -29,7 +29,7 @@ public class UnitSpriteHandler : MonoBehaviour {
         setEverything(info.headIndex, info.faceIndex, info.bodyIndex, info.color, w, a);
         setColor(info.color);
     }
-    public void setHead(int index) {
+    public void setHead(int index, Armor a) {
         if(index == -1)
             index = Random.Range(0, FindObjectOfType<PresetLibrary>().getHeadCount());
         Destroy(head.gameObject);
@@ -38,17 +38,18 @@ public class UnitSpriteHandler : MonoBehaviour {
         head = Instantiate(obj, body.transform).transform.GetChild(0).gameObject;
         face = head.transform.GetChild(0).gameObject;
 
-        setFace(faceIndex);
+        setFace(faceIndex, a);
         setColor(col);
         headIndex = index;
         offsetLayer();
     }
-    public void setFace(int index) {
+    public void setFace(int index, Armor a) {
         if(index == -1)
             index = Random.Range(0, FindObjectOfType<PresetLibrary>().getFaceCount());
         face.SetActive(showingFace);
         face.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getUnitFace(index);
         faceIndex = index;
+        setArmor(a);
         offsetLayer();
     }
     public void setBody(int index, Weapon w, Armor a) {
@@ -57,7 +58,7 @@ public class UnitSpriteHandler : MonoBehaviour {
         Destroy(body.gameObject);
         body = Instantiate(FindObjectOfType<PresetLibrary>().getUnitBody(index), transform);
         setColor(col);
-        setHead(headIndex);
+        setHead(headIndex, a);
 
         bodyIndex = index;
 
@@ -118,32 +119,42 @@ public class UnitSpriteHandler : MonoBehaviour {
         var armor = body.transform.GetChild(2).gameObject;
         var rightShoulder = body.transform.GetChild(0).GetChild(0).GetChild(1).gameObject;
         var leftShoulder = body.transform.GetChild(1).GetChild(0).GetChild(0).gameObject;
+        var hat = head.transform.GetChild(1).gameObject;
 
         if(a == null || a.isEmpty()) {
             armor.GetComponent<SpriteRenderer>().sprite = null;
             rightShoulder.GetComponent<SpriteRenderer>().sprite = null;
             leftShoulder.GetComponent<SpriteRenderer>().sprite = null;
+            hat.GetComponent<SpriteRenderer>().sprite = null;
             return;
         }
 
         var aSprite = FindObjectOfType<PresetLibrary>().getArmorSprite(a);
 
-        armor.GetComponent<SpriteRenderer>().sprite = aSprite.equippedSprite;
-        armor.transform.localPosition = aSprite.getRelevantPos(bodyIndex);
-        armor.transform.localScale = aSprite.getRelevantSize(bodyIndex);
+        if(aSprite.equippedSprite != null) {
+            armor.GetComponent<SpriteRenderer>().sprite = aSprite.equippedSprite;
+            armor.transform.localPosition = aSprite.getRelevantPos(bodyIndex);
+            armor.transform.localScale = aSprite.getRelevantSize(bodyIndex);
+        }
 
-        if(aSprite.equippedShoulder == null)
-            return;
+        if(aSprite.equippedShoulder != null) {
+            rightShoulder.GetComponent<SpriteRenderer>().sprite = aSprite.equippedShoulder;
+            rightShoulder.transform.localPosition = aSprite.getRelevantShoulderPos(bodyIndex);
+            rightShoulder.transform.localScale = aSprite.getRelevantShoulderSize(bodyIndex);
+            rightShoulder.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, aSprite.shoulderRot);
 
-        rightShoulder.GetComponent<SpriteRenderer>().sprite = aSprite.equippedShoulder;
-        rightShoulder.transform.localPosition = aSprite.getRelevantShoulderPos(bodyIndex);
-        rightShoulder.transform.localScale = aSprite.getRelevantShoulderSize(bodyIndex);
-        rightShoulder.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, aSprite.shoulderRot);
+            leftShoulder.GetComponent<SpriteRenderer>().sprite = aSprite.equippedShoulder;
+            leftShoulder.transform.localPosition = aSprite.getRelevantShoulderPos(bodyIndex);
+            leftShoulder.transform.localScale = aSprite.getRelevantShoulderSize(bodyIndex);
+            leftShoulder.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, aSprite.shoulderRot);
+        }
 
-        leftShoulder.GetComponent<SpriteRenderer>().sprite = aSprite.equippedShoulder;
-        leftShoulder.transform.localPosition = aSprite.getRelevantShoulderPos(bodyIndex);
-        leftShoulder.transform.localScale = aSprite.getRelevantShoulderSize(bodyIndex);
-        leftShoulder.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, aSprite.shoulderRot);
+        if(aSprite.equippedHat != null) {
+            hat.GetComponent<SpriteRenderer>().sprite = aSprite.equippedHat;
+            hat.transform.localPosition = aSprite.getRelevantHatPos(headIndex);
+            hat.transform.localScale = aSprite.getRelevantHatSize(headIndex);
+            hat.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, aSprite.hatRot);
+        }
     }
 
     public Sprite getWeapon() {
@@ -209,6 +220,7 @@ public class UnitSpriteHandler : MonoBehaviour {
         //  head / face
         head.GetComponent<SpriteRenderer>().sortingOrder = body.GetComponent<SpriteRenderer>().sortingOrder + 3;
         head.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = body.GetComponent<SpriteRenderer>().sortingOrder + 4;
+        head.transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = body.GetComponent<SpriteRenderer>().sortingOrder + 5;
     }
 
 

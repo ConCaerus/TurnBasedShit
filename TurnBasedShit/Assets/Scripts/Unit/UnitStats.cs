@@ -21,9 +21,9 @@ public class UnitStats {
 
     public float u_critChance = 0.0f;
 
-    public bool u_bleeding = false;
+    public int u_bleedCount = 0;
 
-    public int u_order = 0;
+    public int u_instanceID = -1;
 
     public Weapon equippedWeapon;
     public Armor equippedArmor;
@@ -31,12 +31,10 @@ public class UnitStats {
 
     public List<UnitTrait> u_traits = new List<UnitTrait>();
 
-    public void setNewOrder(int i) {
-        u_order = i;
-    }
+    public DeathInfo u_deathInfo = null;
 
     public bool isEmpty() {
-        return u_name == "" && u_order == 0;
+        return u_name == "" && u_instanceID == -1;
     }
 
     public UnitStats() { }
@@ -49,9 +47,8 @@ public class UnitStats {
         u_speed = other.u_speed;
         u_power = other.u_power;
 
-        u_bleeding = other.u_bleeding;
+        u_bleedCount = other.u_bleedCount;
 
-        u_order = other.u_order;
         u_sprite.setEqualTo(other.u_sprite);
 
         equippedWeapon.setEqualTo(other.equippedWeapon, true);
@@ -63,22 +60,10 @@ public class UnitStats {
     }
 
     public bool isEqualTo(UnitStats other) {
-        if(other == null)
+        if(other == null || other.isEmpty())
             return false;
 
-        bool names = u_name == other.u_name;
-        bool health = u_health == other.u_health;
-        bool maxHealth = u_baseMaxHealth == other.u_baseMaxHealth;
-        bool speed = u_speed == other.u_speed;
-        bool power = u_power == other.u_power;
-        bool order = u_order == other.u_order;
-        bool weapon = equippedWeapon.isEqualTo(other.equippedWeapon);
-        bool armor = equippedArmor.isEqualTo(other.equippedArmor);
-        bool item = equippedItem.isEqualTo(other.equippedItem);
-        bool color = u_sprite.isEqualTo(other.u_sprite);
-        bool bleeding = u_bleeding == other.u_bleeding;
-
-        return names && health && maxHealth && speed && power && order && weapon && armor && item && color && bleeding;
+        return u_instanceID == other.u_instanceID;
     }
 
     public bool levelUpIfPossible() {
@@ -122,30 +107,41 @@ public class UnitStats {
     }
 
     //  Attack amount
-    public float getPowerMod(float tempPowerMod) {
-        return u_power + equippedWeapon.w_power + tempPowerMod;
+    public float getBasePower() {
+        return u_power + equippedWeapon.w_power;
     }
-    public float getAverageDamageGiven(float tempPowerMod) {
-        float dmg = getPowerMod(tempPowerMod);
+    public float getDamageGiven(PresetLibrary lib) {
+        float dmg = getBasePower();
+        float baseDmg = getBasePower();
 
         //  Weapon
-        dmg += equippedWeapon.getBonusAttributeDamage();
+        if(equippedWeapon != null && !equippedWeapon.isEmpty()) {   //  adds 10% of dmg for every power tolken in the weapon
+            dmg += (0.1f * dmg) * equippedWeapon.getPowerAttCount();
+        }
+
+        //  Armor
+        if(equippedArmor != null && !equippedArmor.isEmpty()) { //  adds 10% of dmg for every power tolken in the armor
+            dmg += (0.1f * dmg) * equippedArmor.getPowerAttCount();
+        }
 
         //  Traits modify damage
-        foreach(var i in u_traits) {
-            dmg += i.getDamageGivenMod() * getPowerMod(tempPowerMod);
+        foreach(var i in u_traits) {    //  adds whatever the trait's power mod is times the base damage
+            dmg += i.getDamageGivenMod() * baseDmg;
         }
 
         //  Items modify damage
-        if(equippedItem != null && !equippedItem.isEmpty()) {
-            dmg += equippedItem.getDamageGivenMod() * getPowerMod(tempPowerMod);
+        if(equippedItem != null && !equippedItem.isEmpty()) {   //  adds whatever the item's power mod is times the base damage
+            dmg += equippedItem.getDamageGivenMod() * baseDmg;
+        }
+
+        //  equipment pair modify damage
+        var pair = lib.getRelevantPair(this);
+        if(pair != null) {   //  multiplies by the power mod for the equipment pair
+            dmg *= pair.powerMod;
         }
 
 
         return dmg;
-    }
-    public float getDamageGiven(float tempPowerMod) {
-        return getAverageDamageGiven(tempPowerMod);
     }
     public float getCritMult(float dmg) {
         //  crit mod
@@ -156,13 +152,13 @@ public class UnitStats {
     }
 
     //  Defence amount
-    public float getDefenceMod(float tempDefenceMod) {
-        return u_defence + equippedArmor.a_defence * tempDefenceMod;
+    public float getBaseDefence() {
+        return Mathf.Clamp(u_defence + equippedArmor.a_defence, 0.0f, 100.0f);
     }
-    public float getDefenceMult(bool defending, float tempDefenceMod) {
-        //  starts with 100%
+    public float getDefenceMult(bool defending, PresetLibrary lib) {    //  this value is multiplied by the damage taken
+        //  starts with 100% of damage taken
         float temp = 1.0f;
-        temp -= getDefenceMod(tempDefenceMod) / 100.0f;
+        temp -= getBaseDefence() / 100.0f;
 
         //  Trigger Traits
         foreach(var i in u_traits) {
@@ -170,23 +166,22 @@ public class UnitStats {
         }
 
         //  Have Armor reduce damage
-        if(equippedArmor != null && !equippedArmor.isEmpty()) {
-            temp -= equippedArmor.getDefenceMult();
-            temp -= equippedArmor.getBonusAttributeDefenceMult();
+        if(equippedArmor != null && !equippedArmor.isEmpty()) { //  takes off 10% of damage for every tolken of turtle
+            temp -= equippedArmor.getTurtleAttCount() * 0.1f;
         }
 
+        var pair = lib.getRelevantPair(this);
+        if(pair != null) {
+            temp -= (1 - pair.defenceMod);
+        }
 
         //  defending mult
-        if(defending)
+        if(defending)   //  takes off 20% of damage if defending
             temp -= 0.2f;
 
         //  Clamps temp to useful values
         temp = Mathf.Clamp01(temp);
-
         return temp;
-    }
-    public float getModifiedDamageTaken(float damage, bool defending, float tempDefenceMod) {
-        return damage * getDefenceMult(defending, tempDefenceMod);
     }
 
     public float getModifiedMaxHealth() {
@@ -199,9 +194,12 @@ public class UnitStats {
     }
     public float getModifiedSpeed(float tempSpeedMod) {
         float temp = u_speed * tempSpeedMod;
-        temp += equippedWeapon.w_speedMod;
-        temp += equippedArmor.a_speedMod;
-        temp += equippedItem.getSpeedMod();
+        if(equippedWeapon != null && !equippedWeapon.isEmpty())
+            temp += equippedWeapon.w_speedMod;
+        if(equippedArmor != null && !equippedArmor.isEmpty())
+            temp += equippedArmor.a_speedMod;
+        if(equippedItem != null && !equippedItem.isEmpty())
+            temp += equippedItem.getSpeedMod();
         foreach(var i in u_traits)
             temp += i.getSpeedMod();
 
@@ -213,6 +211,14 @@ public class UnitStats {
     }
     public float getBaseMaxHealth() {
         return u_baseMaxHealth;
+    }
+
+    public bool hasTrait(UnitTrait t) {
+        foreach(var i in u_traits) {
+            if(i == t)
+                return true;
+        }
+        return false;
     }
 
     public int determineCost() {
@@ -233,7 +239,7 @@ public class UnitStats {
         return u_exp >= u_expCap;
     }
 
-    public void die() {
+    public void die(DeathInfo.killCause cause, GameObject killer = null) {
         //  add equipped things back into the inventory
         if(equippedWeapon != null && !equippedWeapon.isEmpty())
             Inventory.addWeapon(equippedWeapon);
@@ -247,6 +253,10 @@ public class UnitStats {
         equippedItem = null;
 
         //  remove from party
-        Party.removeUnit(u_order);
+        Party.removeUnit(this);
+
+        u_deathInfo = new DeathInfo(cause, killer);
+        //  adds to graveyard
+        Graveyard.addUnit(this);
     }
 }

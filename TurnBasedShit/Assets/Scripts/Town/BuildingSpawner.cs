@@ -13,11 +13,13 @@ public class BuildingSpawner : MonoBehaviour {
     public float endingX;
 
     float distToInteract = 1.0f;
+    public bool createNewTown = false;
 
     public List<GameObject> buildingObjects = new List<GameObject>();
 
     private void Awake() {
-        if(GameInfo.getCurrentLocationAsTown() != null)
+        GameInfo.currentGameState = GameInfo.state.Town;
+        if(GameInfo.getCurrentLocationAsTown() != null && !createNewTown)
             reference = GameInfo.getCurrentLocationAsTown().town;
         else {
             var temp = Map.getRandomTownLocationInRegion((int)GameInfo.getCurrentDiff());
@@ -53,6 +55,8 @@ public class BuildingSpawner : MonoBehaviour {
                 obj.GetComponent<ShopInstance>().reference.setEqualTo(reference.getShop());
             else if(obj.GetComponent<CasinoInstance>() != null)
                 obj.GetComponent<CasinoInstance>().reference.setEqualTo(reference.getCasino());
+            else if(obj.GetComponent<BlacksmithInstance>() != null)
+                obj.GetComponent<BlacksmithInstance>().reference.setEqualTo(reference.getBlacksmith());
 
             buildingObjects.Add(obj.gameObject);
         }

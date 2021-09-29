@@ -44,14 +44,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c7cb971bc867f34a9db181ee3eccece, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  armorPos: {fileID: 8470199776396359709}
   unit: {fileID: 5981160437572919410}
   walkSound: {fileID: 8300000, guid: a61a4ee2a90aba8489ce0d6304824007, type: 3}
-  rightMost: 0
-  leftMost: 0
-  movingDir: 1
+  moveSpeed: 10
+  movingRight: 1
+  movingDown: 1
   canMove: 1
   isMoving: 0
+  interactDist: 0
+  rightMost: 0
+  leftMost: 0
 --- !u!1001 &6686520441150231127
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -130,12 +132,6 @@ GameObject:
 --- !u!4 &5981160437572919411 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1137743091860681252, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-    type: 3}
-  m_PrefabInstance: {fileID: 6686520441150231127}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &8470199776396359709 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2974481575700818506, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
     type: 3}
   m_PrefabInstance: {fileID: 6686520441150231127}
   m_PrefabAsset: {fileID: 0}

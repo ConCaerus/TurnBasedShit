@@ -1,11 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class TextInputReader : MonoBehaviour {
-    const int autoFillThresh = 75;
-
-
     public delegate void func(string s);
 
     string readData = "";
@@ -13,6 +11,9 @@ public class TextInputReader : MonoBehaviour {
     bool read = false;
     bool keepInputting = false;
     bool showCursor = false;
+
+    //  for caps lock shit
+    [System.Runtime.InteropServices.DllImport("USER32.dll")] public static extern short GetKeyState(int nVirtKey);
 
     KeyCode prevInput = 0;
 
@@ -49,7 +50,7 @@ public class TextInputReader : MonoBehaviour {
             //  letters
             for(int i = 97; i < 123; i++) {
                 if(Input.GetKeyDown((KeyCode)i) || (Input.GetKey((KeyCode)i) && keepInputting && keepBuffer == null && prevInput == (KeyCode)i)) {
-                    if(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+                    if(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) || (GetKeyState(0x14) & 1) > 0)  //  weird shit is caps lock
                         readData += (KeyCode)i;
                     else
                         readData += ((KeyCode)i).ToString().ToLower()[0];
@@ -144,6 +145,8 @@ public class TextInputReader : MonoBehaviour {
                     readData += n[i];
             }
         }
+        else if(!read && !string.IsNullOrEmpty(readData))
+            readData = "";
     }
 
 

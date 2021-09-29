@@ -41,7 +41,7 @@ public class MainMenuCanvas : MonoBehaviour {
 
     void loadCurrentState() {
         if(!SaveData.hasSaveDataForCurrentSave())
-            SaveData.createSaveDataForCurrentSave();
+            SaveData.createSaveDataForCurrentSave(FindObjectOfType<PresetLibrary>());
 
         switch(GameInfo.currentGameState) {
             case GameInfo.state.Combat:

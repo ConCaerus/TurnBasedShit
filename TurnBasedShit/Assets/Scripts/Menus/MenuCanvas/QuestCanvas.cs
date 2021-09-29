@@ -165,7 +165,7 @@ public class QuestCanvas : MonoBehaviour {
             case GameInfo.questType.delivery:
                 nameText.text = "Delivery: " + currentInfo.questInstanceID.ToString();
                 DeliveryQuest d = ActiveQuests.getDeliveryQuestWithInstanceID(currentInfo.questInstanceID);
-                infoText.text = "   Deliver " + d.type.ToString() + " to " + d.deliveryLocation.t_name;
+                infoText.text = "   Deliver " + d.type.ToString() + " to " + d.deliveryLocation.town.t_name;
                 break;
 
             case GameInfo.questType.pickup:

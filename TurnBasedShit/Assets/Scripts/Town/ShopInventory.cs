@@ -106,7 +106,7 @@ public static class ShopInventory {
 
         int slaveCount = Random.Range(0, 3);
         for(int i = 0; i < slaveCount; i++) {
-            UnitStats temp = library.createRandomPlayerUnitStats();
+            UnitStats temp = library.createRandomPlayerUnitStats(true);
 
             addSlave(townIndex, temp);
         }

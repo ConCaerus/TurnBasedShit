@@ -122,7 +122,6 @@ public class UnitCombatHighlighter : MonoBehaviour {
         }
     }
 
-
     public bool isUnitInList(GameObject unit) {
         foreach(var i in highlightedUnits) {
             if(i.gameObject == unit.gameObject)

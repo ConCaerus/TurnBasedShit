@@ -15,7 +15,7 @@ public class DamageTextCanvas : MonoBehaviour {
 
 
     public enum damageType {
-        weapon, poison, defended, healed, crit
+        weapon, bleed, defended, healed, crit
     }
 
 
@@ -46,7 +46,7 @@ public class DamageTextCanvas : MonoBehaviour {
 
         if(type == damageType.weapon)
             ob.color = weaponColor;
-        else if(type == damageType.poison)
+        else if(type == damageType.bleed)
             ob.color = bleedColor;
         else if(type == damageType.defended)
             ob.color = defendedColor;

@@ -4,8 +4,16 @@ using UnityEngine;
 
 public class MapSideUnitMovement : UnitMovement {
 
+
+    private void Update() {
+        if(isMoving)
+            GetComponentInChildren<UnitSpriteHandler>().setAnimState(3);
+        else
+            GetComponentInChildren<UnitSpriteHandler>().setAnimState(0);
+    }
+
     public void moveToPoint(Vector2 point) {
-        var sp = moveSpeed;
+        var sp = moveSpeed + Vector2.Distance(transform.position, point) / 5.0f;
         Vector2 target = Vector2.zero;
 
         

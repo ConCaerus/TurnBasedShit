@@ -12,12 +12,7 @@ public class TownCanvas : MonoBehaviour {
     private void Start() {
         DOTween.Init();
         startPos = nameText.transform.position;
-        StartCoroutine(FindObjectOfType<TransitionCanvas>().runAfterLoading(startNameAnim));
-    }
-
-
-    public void startNameAnim() {
-        StartCoroutine(animateNameText());
+        StartCoroutine(FindObjectOfType<TransitionCanvas>().runAfterLoading(delegate { StartCoroutine(animateNameText()); }));
     }
 
     public IEnumerator animateNameText() {

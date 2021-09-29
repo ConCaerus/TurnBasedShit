@@ -32,12 +32,12 @@ public class Weapon {
 
 
 
-    public void applyAttributesAfterAttack(GameObject weilder, GameObject attackedUnit) {
+    public void applyAttributes(GameObject weilder, GameObject attackedUnit) {
         foreach(var i in w_attributes) {
             if(i == attribute.Bleed) {
-                if(attackedUnit.GetComponent<UnitClass>().stats.u_bleeding)
+                if(!GameVariables.chanceBleed())
                     continue;
-                attackedUnit.GetComponent<UnitClass>().stats.u_bleeding = GameVariables.chanceBleed();
+                attackedUnit.GetComponent<UnitClass>().stats.u_bleedCount++;
             }
 
             else if(i == attribute.Healing) {
@@ -45,22 +45,21 @@ public class Weapon {
             }
 
             else if(i == attribute.Stun) {
-                if(attackedUnit.GetComponent<UnitClass>().stunned)
+                if(attackedUnit.GetComponent<UnitClass>().isStunned())
                     continue;
-                attackedUnit.GetComponent<UnitClass>().stunned = GameVariables.chanceStun();
+                attackedUnit.GetComponent<UnitClass>().setStunned(GameVariables.chanceStun());
             }
         }
     }
 
-
-    public float getBonusAttributeDamage() {
-        float temp = 0.0f;
+    public int getPowerAttCount() {
+        int count = 0;
         foreach(var i in w_attributes) {
             if(i == attribute.Power)
-                temp += w_power * 0.15f;
+                count++;
         }
 
-        return temp;
+        return count;
     }
 
 
@@ -76,7 +75,15 @@ public class Weapon {
     }
 
     public bool isEqualTo(Weapon other) {
+        if(other == null || other.isEmpty())
+            return false;
         return w_instanceID == other.w_instanceID;
+    }
+
+    public bool isTheSameTypeAs(Weapon other) {
+        if(other == null || other.isEmpty())
+            return false;
+        return w_name == other.w_name && w_element == other.w_element && w_rarity == other.w_rarity;
     }
 
 

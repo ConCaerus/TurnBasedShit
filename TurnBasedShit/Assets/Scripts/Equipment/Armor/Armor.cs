@@ -6,7 +6,7 @@ using UnityEngine;
 public class Armor {
     public const int attributeCount = 2;
     public enum attribute {
-        Turtle, Reflex
+        Turtle, Reflex, Power
     }
 
     public int a_instanceID = -1;
@@ -24,7 +24,7 @@ public class Armor {
     [SerializeField] ArmorSpriteHolder a_sprite;
 
     //  this function is applied by the defending unit while the weapon class has its function called by the attacker
-    public int applyAttributesAfterAttack(GameObject weilder, GameObject attacker, GameObject turnTaker) {
+    public int applyAttributes(GameObject weilder, GameObject attacker, GameObject turnTaker) {
         foreach(var i in a_attributes) {
             if(i == attribute.Reflex && turnTaker != weilder) {
                 weilder.GetComponent<UnitClass>().attack(attacker);
@@ -32,11 +32,6 @@ public class Armor {
             }
         }
         return 0;
-    }
-
-
-    public float getDefenceMult() {
-        return a_defence / 100.0f;
     }
 
 
@@ -48,6 +43,26 @@ public class Armor {
             }
         }
         return temp;
+    }
+
+    public int getTurtleAttCount() {
+        int count = 0;
+        foreach(var i in a_attributes) {
+            if(i == attribute.Turtle) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int getPowerAttCount() {
+        int count = 0;
+        foreach(var i in a_attributes) {
+            if(i == attribute.Power) {
+                count++;
+            }
+        }
+        return count;
     }
 
 
@@ -62,7 +77,15 @@ public class Armor {
     }
 
     public bool isEqualTo(Armor other) {
+        if(other == null || other.isEmpty())
+            return false;
         return a_instanceID == other.a_instanceID;
+    }
+
+    public bool isTheSameTypeAs(Armor other) {
+        if(other == null || other.isEmpty())
+            return false;
+        return a_name == other.a_name && a_rarity == other.a_rarity;
     }
 
 

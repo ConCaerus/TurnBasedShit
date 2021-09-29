@@ -9,6 +9,8 @@ public class PickupQuest {
 
     public PickupLocation.pickupType pType = (PickupLocation.pickupType)(-1);
 
+    public PickupLocation location;
+
     public Weapon pickupWeapon = null;
     public Armor pickupArmor = null;
     public Consumable pickupConsumable = null;
@@ -43,8 +45,8 @@ public class PickupQuest {
             pickupItem.setEqualTo(pickup.pickupItem, true);
         }
 
-        pickup.attachedQuest = this;
-        MapLocationHolder.addLocation(pickup);
+        location = pickup;
+        //pickup.attachedQuest = this;
     }
 
     public bool isEqualTo(PickupQuest other) {

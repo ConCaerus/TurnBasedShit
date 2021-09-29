@@ -54,7 +54,7 @@ public class CombatLocation {
         foreach(var i in items)
             Inventory.addItem(i);
         foreach(var i in rescuedUnits)
-            Party.addNewUnit(i);
+            Party.addUnit(i);
     }
 }
 

@@ -36,11 +36,14 @@ public static class ActiveQuests {
     }
 
 
-    public static void clear() {
+    public static void clear(bool clearInstanceQueue) {
         clearKillQuests();
         clearBossFightQuests();
         clearDeliveryQuests();
         clearPickupQuests();
+
+        if(clearInstanceQueue)
+            GameInfo.clearQuestInstanceIDQueue();
     }
     public static void clearKillQuests() {
         for(int i = 0; i < getKillQuestCount(); i++) {

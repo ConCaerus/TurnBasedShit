@@ -32,6 +32,7 @@ public static class MapLocationHolder {
         }
 
         SaveData.deleteKey(townCountTag);
+        GameInfo.clearTownInstanceIDQueue();
     }
     public static void clearPickupLocations() {
         for(int i = 0; i < getPickupCount() + 10; i++) {

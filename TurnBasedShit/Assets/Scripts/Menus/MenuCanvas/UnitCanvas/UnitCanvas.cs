@@ -11,7 +11,7 @@ public class UnitCanvas : MonoBehaviour {
     public Image faceImage, headImage, bodyImage, rArmImage, lArmImage, weaponImage, armorImage, itemImage;
     public Button leaderButton;
 
-    public float equippmentTransitionTime = 0.15f;
+    public float equippmentTransitionTime = 0.01f;
     public float timeBtwTransition = 0.05f;
 
     public UnitStats shownUnit;
@@ -51,7 +51,7 @@ public class UnitCanvas : MonoBehaviour {
         gSlider.value = shownUnit.u_sprite.color.g;
         bSlider.value = shownUnit.u_sprite.color.b;
 
-        if(shownUnit.u_order == Party.getLeaderID())
+        if(shownUnit.isEqualTo(Party.getLeaderStats()))
             leaderButton.GetComponent<Image>().color = leaderColor;
         else
             leaderButton.GetComponent<Image>().color = nonLeaderColor;
@@ -214,7 +214,7 @@ public class UnitCanvas : MonoBehaviour {
     //  buttons
     public void cycleUnit(bool right) {
         lockColor = true;
-        int index = shownUnit.u_order;
+        int index = Party.getUnitIndex(shownUnit);
 
         //  right
         if(right) {

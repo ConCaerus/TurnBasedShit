@@ -35,12 +35,15 @@ public static class Inventory {
 
     }
 
-    public static void clearInventory() {
+    public static void clearInventory(bool clearInstanceQueue) {
         clearWeapons();
         clearArmor();
         clearConsumables();
         clearItems();
         clearCoins();
+
+        if(clearInstanceQueue)
+            GameInfo.clearInventoryInstanceIDQueue();
     }
     public static void clearWeapons() {
         for(int i = 0; i < SaveData.getInt(objectCountTag(typeof(Weapon))) + 10; i++) {

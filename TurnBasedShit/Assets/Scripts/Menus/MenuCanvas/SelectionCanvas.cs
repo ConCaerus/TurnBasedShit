@@ -12,6 +12,8 @@ public abstract class SelectionCanvas : MonoBehaviour {
     public GameObject slotPreset;
     protected int selectedIndex = -1;
 
+    protected List<GameObject> slots = new List<GameObject>();
+
     public int numOfSlotsPerLine;
     public float slotBuffer;
 

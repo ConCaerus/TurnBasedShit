@@ -8,15 +8,15 @@ public class BossFightQuest {
 
     public UnitStats bossUnit;
 
+    public BossLocation location;
+
 
     public BossFightQuest(BossLocation boss, bool setID) {
         if(setID)
             q_instanceID = GameInfo.getNextQuestInstanceID();
 
         bossUnit = boss.bossUnit;
-        boss.attachedQuest = this;
-
-        MapLocationHolder.addLocation(boss);
+        location = boss;
     }
 
 

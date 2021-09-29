@@ -56,10 +56,8 @@ public class DebuggerWindow : EditorWindow {
         GUILayout.BeginHorizontal();
 
         if(GUILayout.Button("Clear Inventory")) {
-            Inventory.clearInventory();
+            Inventory.clearInventory(true);
         }
-        if(GUILayout.Button("Reset Inventory Instance Queue"))
-            GameInfo.clearInventoryInstanceIDQueue();
 
         GUILayout.EndHorizontal();
 
@@ -67,26 +65,27 @@ public class DebuggerWindow : EditorWindow {
         GUILayout.Label("Party", EditorStyles.boldLabel);
         GUILayout.BeginHorizontal();
         if(GUILayout.Button("Clear Party")) {
-            Party.clearParty();
+            Party.clearParty(true);
         }
         if(GUILayout.Button("Clear Party Equipment")) {
             Party.clearPartyEquipment();
         }
         if(GUILayout.Button("Add Unit")) {
-            var thing = FindObjectOfType<PresetLibrary>().createRandomPlayerUnitStats();
+            var thing = FindObjectOfType<PresetLibrary>().createRandomPlayerUnitStats(true);
             Debug.Log("Added " + thing.u_name);
-            Party.addNewUnit(thing);
+            Party.addUnit(thing);
         }
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+        if(GUILayout.Button("Clear Graveyard"))
+            Graveyard.clearGraveyard();
         GUILayout.EndHorizontal();
 
         //  Quests
         GUILayout.Label("Quests", EditorStyles.boldLabel);
         GUILayout.BeginHorizontal();
         if(GUILayout.Button("Clear Active Quests")) {
-            ActiveQuests.clear();
-        }
-        if(GUILayout.Button("Reset Quest Instance Queue")) {
-            GameInfo.clearQuestInstanceIDQueue();
+            ActiveQuests.clear(true);
         }
         GUILayout.EndHorizontal();
         GUILayout.BeginHorizontal();
@@ -107,8 +106,6 @@ public class DebuggerWindow : EditorWindow {
             Map.populateTowns(FindObjectOfType<PresetLibrary>());
         if(GUILayout.Button("Clear Towns"))
             MapLocationHolder.clearTownLocations();
-        if(GUILayout.Button("Reset Town Instance Queue"))
-            GameInfo.clearTownInstanceIDQueue();
 
         GUILayout.EndHorizontal();
         GUILayout.BeginHorizontal();

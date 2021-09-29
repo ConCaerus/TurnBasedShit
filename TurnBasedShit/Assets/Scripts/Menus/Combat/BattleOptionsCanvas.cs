@@ -24,15 +24,15 @@ public class BattleOptionsCanvas : MonoBehaviour {
             //  player's turn
             if(playingUnit.isPlayerUnit) {
                 //  skip turn if stunned
-                if(playingUnit.stunned)
-                    StartCoroutine(skipUnitTurn());
+                if(playingUnit.isStunned())
+                    StartCoroutine(skipUnitTurn(playingUnit));
             }
 
             //  enemy's turn
             else if(!playingUnit.isPlayerUnit) {
                 //  skip turn if stunned
-                if(playingUnit.stunned)
-                    StartCoroutine(skipUnitTurn());
+                if(playingUnit.isStunned())
+                    StartCoroutine(skipUnitTurn(playingUnit));
 
                 //  else decide what the enemy is going to do
                 else {
@@ -43,9 +43,9 @@ public class BattleOptionsCanvas : MonoBehaviour {
     }
 
     private void Update() {
-        if(FindObjectOfType<TurnOrderSorter>().playingUnit != null && FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().isPlayerUnit && !showing)
+        if(FindObjectOfType<TurnOrderSorter>().playingUnit != null && FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().isPlayerUnit && !FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().isStunned() && !showing)
             showUI();
-        else if((FindObjectOfType<TurnOrderSorter>().playingUnit == null || !FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().isPlayerUnit) && showing)
+        else if((FindObjectOfType<TurnOrderSorter>().playingUnit == null || !FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().isPlayerUnit || FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().isStunned()) && showing)
             hideUI();
     }
 
@@ -60,9 +60,10 @@ public class BattleOptionsCanvas : MonoBehaviour {
     }
 
 
-    IEnumerator skipUnitTurn() {
+    IEnumerator skipUnitTurn(UnitClass unit) {
         yield return new WaitForSeconds(1.0f);
 
+        unit.setStunned(false);
         FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
     }
 
@@ -75,7 +76,7 @@ public class BattleOptionsCanvas : MonoBehaviour {
     }
 
     public void defend() {
-        FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().defending = true;
+        FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().setDefending(true);
         FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
     }
 

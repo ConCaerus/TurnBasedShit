@@ -454,7 +454,7 @@ public class ShopCanvas : MonoBehaviour {
 
                         if(Inventory.getCoinCount() >= uPrice) {
                             Inventory.removeCoins(uPrice);
-                            Party.addNewUnit(statsInSlot);
+                            Party.addUnit(statsInSlot);
                             ShopInventory.removeSlave(townIndex, getSelectedSlotIndex());
                         }
                         break;

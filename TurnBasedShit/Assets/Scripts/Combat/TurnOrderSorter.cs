@@ -32,6 +32,11 @@ public class TurnOrderSorter : MonoBehaviour {
 
     public void removeUnitFromList(GameObject unit) {
         unitsInPlay.Remove(unit);
+        foreach(var i in unitsInPlay) {
+            if(i == playingUnit)
+                return;
+        }
+        setNextInTurnOrder();
     }
 
     public GameObject setNextInTurnOrder() {
@@ -42,7 +47,6 @@ public class TurnOrderSorter : MonoBehaviour {
             FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterEachTurn, playingUnit.GetComponent<UnitClass>(), false);
 
             //  resets unit after turn, and removes it from the list of playing units
-            playingUnit.GetComponent<UnitClass>().stunned = false;
             unitsInPlay.Remove(playingUnit);
             FindObjectOfType<PartyObject>().saveParty();
         }
@@ -51,10 +55,8 @@ public class TurnOrderSorter : MonoBehaviour {
         //  removes units that dont exist
         foreach(GameObject i in unitsInPlay.ToArray()) {
             if(i != null) {
-                if(!i.GetComponent<UnitClass>().checkIfDead()) {
-                    if(i.GetComponent<UnitClass>().stats.canLevelUp()) {
-                        FindObjectOfType<LevelUpCanvas>().levelUpUnit(i);
-                    }
+                if(i.GetComponent<UnitClass>().stats.canLevelUp()) {
+                    FindObjectOfType<LevelUpCanvas>().levelUpUnit(i);
                 }
             }
             if(i == null)

@@ -59,29 +59,19 @@ public class MapQuestMenu : MonoBehaviour {
         int slotIndex = 0;
         foreach(var i in ActiveQuests.getAllBossFightQuests()) {
             if(slotIndex == slot.getSelectedSlotIndex()) {
-                for(int b = 0; b < MapLocationHolder.getBossCount(); b++) {
-                    if(MapLocationHolder.getBossLocation(b).attachedQuest.isEqualTo(i)) { 
-                        return MapLocationHolder.getBossLocation(b).pos;
-                    }
-                }
+                return i.location.pos;
             }
             slotIndex++;
         }
         foreach(var i in ActiveQuests.getAllDeliveryQuests()) {
             if(slotIndex == slot.getSelectedSlotIndex()) {
-                for(int t = 0; t < MapLocationHolder.getTownCount(); t++) {
-                    if(MapLocationHolder.getTownLocation(t).town.isEqualTo(i.deliveryLocation))
-                        return MapLocationHolder.getTownLocation(t).pos;
-                }
+                return i.deliveryLocation.pos;
             }
             slotIndex++;
         }
         foreach(var i in ActiveQuests.getAllPickupQuests()) {
             if(slotIndex == slot.getSelectedSlotIndex()) {
-                for(int p = 0; p < MapLocationHolder.getPickupCount(); p++) {
-                    if(MapLocationHolder.getPickupLocation(p).attachedQuest.isEqualTo(i))
-                        return MapLocationHolder.getPickupLocation(p).pos;
-                }
+                return i.location.pos;
             }
             slotIndex++;
         }

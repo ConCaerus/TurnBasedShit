@@ -47,6 +47,8 @@ public static class GameVariables {
                 return chanceOutOfHundred(80);
             case Building.type.Casino:
                 return chanceOutOfHundred(100);
+            case Building.type.Blacksmith:
+                return chanceOutOfHundred(100);
         }
         return false;
     }
@@ -65,7 +67,7 @@ public static class GameVariables {
         return Random.Range(3, 6);
     }
 
-    static bool chanceOutOfHundred(int i) {
-        return Random.Range(0, 101) < i;
+    public static bool chanceOutOfHundred(int i) {
+        return Random.Range(0, 101) <= i;
     }
 }

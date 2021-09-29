@@ -5,6 +5,7 @@ using UnityEngine;
 public class PartyObject : MonoBehaviour {
     float unitSpotXOffset = -0.05f;
     float unitSpotYOffset = -0.5f;
+
     public void instantiatePartyMembers() {
         //  Deletes all existing objects
         for(int i = 0; i < FindObjectsOfType<PlayerUnitInstance>().Length; i++)
@@ -17,8 +18,8 @@ public class PartyObject : MonoBehaviour {
         }
 
         for(int i = 0; i < Party.getMemberCount(); i++) {
-            var obj = Instantiate(FindObjectOfType<PresetLibrary>().getPlayerUnit());
-            obj.GetComponent<UnitClass>().stats = FindObjectOfType<PresetLibrary>().createRandomPlayerUnitStats();
+            var obj = Instantiate(FindObjectOfType<PresetLibrary>().getPlayerUnitObject());
+            obj.GetComponent<UnitClass>().stats = FindObjectOfType<PresetLibrary>().createRandomPlayerUnitStats(false);
 
             if(Party.getMemberStats(i) == null || Party.getMemberStats(i).isEmpty()) {
                 obj.gameObject.GetComponent<UnitClass>().setEquipment();
@@ -51,7 +52,7 @@ public class PartyObject : MonoBehaviour {
         Party.overrideUnit(stats);
 
         foreach(var i in FindObjectsOfType<PlayerUnitInstance>()) {
-            if(i.stats.u_order == stats.u_order) {
+            if(i.stats.isEqualTo(stats)) {
                 i.stats = stats;
                 i.name = stats.u_name;
                 break;
@@ -67,7 +68,7 @@ public class PartyObject : MonoBehaviour {
 
     public GameObject getInstantiatedMember(UnitStats stats) {
         foreach(var i in FindObjectsOfType<PlayerUnitInstance>()) {
-            if(stats.u_order == i.stats.u_order)
+            if(stats.isEqualTo(i.stats))
                 return i.gameObject;
         }
         return null;
@@ -93,23 +94,26 @@ public class PartyObject : MonoBehaviour {
 //  Actual Party Script
 public static class Party {
     public const string partySizeTag = "PartySize";
-    public const string partyLeaderTag = "PartyLeaderID";
+    public const string partyLeaderTag = "PartyLeader";
     public static string memberTag(int index) { return "Party" + index.ToString(); }
 
 
 
-    public static void createDefaultParty() {
-        addNewUnit(new UnitStats());
-        addNewUnit(new UnitStats());
+    public static void createDefaultParty(PresetLibrary lib) {
+        addUnit(new UnitStats());
+        addUnit(new UnitStats());
 
         SaveData.setInt(partySizeTag, 2);
     }
 
-    public static void clearParty() {
+    public static void clearParty(bool resetInstanceQueue) {
         for(int i = 0; i < SaveData.getInt(partySizeTag); i++) {
             SaveData.deleteKey(memberTag(i));
         }
         SaveData.deleteKey(partySizeTag);
+
+        if(resetInstanceQueue)
+            GameInfo.clearUnitInstanceIDQueue();
     }
     public static void clearPartyEquipment() {
         for(int i = 0; i < SaveData.getInt(partySizeTag); i++) {
@@ -122,9 +126,7 @@ public static class Party {
         }
     }
 
-    public static void addNewUnit(UnitStats stats) {
-        stats.u_order = SaveData.getInt(partySizeTag);
-
+    public static void addUnit(UnitStats stats) {
         int index = SaveData.getInt(partySizeTag);
         var data = JsonUtility.ToJson(stats);
 
@@ -132,43 +134,39 @@ public static class Party {
         SaveData.setInt(partySizeTag, index + 1);
     }
     public static void addUnitAtIndex(int index, UnitStats stats) {
-        stats.u_order = index;
-
         var data = JsonUtility.ToJson(stats);
-
         SaveData.setString(memberTag(index), data);
     }
     public static void setLeader(UnitStats stats) {
-        SaveData.setInt(partyLeaderTag, stats.u_order);
+        int index = getUnitIndex(stats);
+        if(index == -1)
+            return;
+        SaveData.setInt(partyLeaderTag, index);
     }
     public static void removeUnit(UnitStats stats) {
-        var tData = JsonUtility.ToJson(stats);
-        bool past = false;
-        for(int i = 0; i < SaveData.getInt(partySizeTag); i++) {
-            var data = SaveData.getString(memberTag(i));
-
-            if(data == tData && !past) {
-                SaveData.deleteKey(memberTag(i));
-                past = true;
-                continue;
-            }
-            else if(past) {
-                SaveData.deleteKey(memberTag(i));
-                overrideUnit(i - 1, JsonUtility.FromJson<UnitStats>(data));
-            }
+        if(stats == null || stats.isEmpty())
+            return;
+        List<UnitStats> temp = new List<UnitStats>();
+        for(int i = 0; i < getMemberCount(); i++) {
+            UnitStats mem = getMemberStats(i);
+            if(mem != null && !mem.isEmpty() && !mem.isEqualTo(stats))
+                temp.Add(mem);
         }
-        SaveData.setInt(partySizeTag, SaveData.getInt(partySizeTag) - 1);
+
+        clearParty(false);
+        foreach(var i in temp)
+            addUnit(i);
     }
     public static void removeUnit(int order) {
         removeUnit(getMemberStats(order));
     }
-    public static void removeLeader() {
-        SaveData.deleteKey(partyLeaderTag);
-    }
 
     public static void overrideUnit(UnitStats stats) {
+        int index = getUnitIndex(stats);
+        if(index == -1)
+            return;
         var data = JsonUtility.ToJson(stats);
-        SaveData.setString(memberTag(stats.u_order), data);
+        SaveData.setString(memberTag(index), data);
     }
     public static void overrideUnit(int i, UnitStats stats) {
         var data = JsonUtility.ToJson(stats);
@@ -179,12 +177,9 @@ public static class Party {
     public static int getMemberCount() {
         return SaveData.getInt(partySizeTag);
     }
-    public static int getLeaderID() {
-        return SaveData.getInt(partyLeaderTag);
-    }
     public static int getUnitIndex(UnitStats stats) {
         for(int i = 0; i < getMemberCount(); i++) {
-            if(getMemberStats(i) == stats)
+            if(getMemberStats(i).isEqualTo(stats))
                 return i;
         }
         return -1;
@@ -195,6 +190,13 @@ public static class Party {
     }
     public static UnitStats getLeaderStats() {
         int leaderID = SaveData.getInt(partyLeaderTag);
+        var temp = getMemberStats(leaderID);
+
+        //  if no leader, set leader to first member and return
+        if(temp == null || temp.isEmpty()) {
+            setLeader(getMemberStats(0));
+            return getMemberStats(0);
+        }
         return getMemberStats(leaderID);
     }
 }

@@ -88,6 +88,10 @@ public class TownMovement : LocationMovement {
             case Building.type.Casino:
                 FindObjectOfType<TransitionCanvas>().loadSceneWithTransition("CasinoBuilding");
                 break;
+
+            case Building.type.Blacksmith:
+                FindObjectOfType<TransitionCanvas>().loadSceneWithTransition("BlacksmithBuilding");
+                break;
         }
     }
 

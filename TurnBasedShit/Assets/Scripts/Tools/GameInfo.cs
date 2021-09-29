@@ -28,12 +28,12 @@ public static class GameInfo {
 
     //  current combat location that the player is in
     public const string combatDetails = "CombatLocation";
-    public const string currentDiffRegion = "Difficulty Region";
 
     public const string currentMapLocation = "Current Map Location";
     public const string currentMapPosX = "Current Map Position x";
     public const string currentMapPosY = "Current Map Position y";
 
+    public const string nextUnitID = "Next Unit ID";
 
     public const string nextWeaponID = "Next Weapon ID";
     public const string nextArmorID = "Next Armor ID";
@@ -56,10 +56,6 @@ public static class GameInfo {
     public static void setCombatDetails(CombatLocation cl) {
         var data = JsonUtility.ToJson(cl);
         SaveData.setString(combatDetails, data);
-    }
-    public static void setCurrentRegionDiff(diffLvl lvl) {
-        int temp = (int)lvl;
-        SaveData.setInt(currentDiffRegion, temp);
     }
 
     public static CombatLocation getCombatDetails() {
@@ -126,8 +122,7 @@ public static class GameInfo {
     }
 
     public static diffLvl getCurrentDiff() {
-        var data = SaveData.getInt(currentDiffRegion);
-        return (diffLvl)data;
+        return Map.getDiffForX(getCurrentMapPos().x);
     }
 
 
@@ -152,6 +147,12 @@ public static class GameInfo {
     }
     public static diffLvl getRandomDiff() {
         return (diffLvl)Random.Range(0, 7);
+    }
+
+    public static int getNextUnitInstanceID() {
+        int index = SaveData.getInt(nextUnitID);
+        SaveData.setInt(nextUnitID, index + 1);
+        return index;
     }
 
     public static int getNextWeaponInstanceID() {
@@ -197,6 +198,9 @@ public static class GameInfo {
         clearConsumableInstanceIDQueue();
         clearItemInstanceIDQueue();
     }
+    public static void clearUnitInstanceIDQueue() {
+        SaveData.deleteKey(nextUnitID);
+    }
     public static void clearWeaponInstanceIDQueue() {
         SaveData.deleteKey(nextWeaponID);
     }
@@ -218,5 +222,30 @@ public static class GameInfo {
     }
     public static void clearQuestInstanceIDQueue() {
         SaveData.deleteKey(nextQuestID);
+    }
+}
+
+[System.Serializable]
+public class DeathInfo {
+    public string nameOfKiller;
+    public killCause causeOfDeath;
+    public EnemyUnitInstance.type enemyType;
+
+    [System.Serializable]
+    public enum killCause {
+        bleed, murdered
+    }
+
+    public DeathInfo(killCause cause, GameObject killer = null) {
+        causeOfDeath = cause;
+
+        if(cause == killCause.murdered && killer != null) {
+            if(killer.GetComponent<EnemyUnitInstance>() != null)
+                enemyType = killer.GetComponent<EnemyUnitInstance>().enemyType;
+            else
+                enemyType = (EnemyUnitInstance.type)(-1);
+
+            nameOfKiller = killer.GetComponent<UnitClass>().stats.u_name;
+        }
     }
 }

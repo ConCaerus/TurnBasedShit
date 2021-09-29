@@ -47,6 +47,13 @@ public class Town {
         var data = JsonUtility.ToJson(cas);
         SaveData.setString(buildingTag(Building.type.Casino), data);
     }
+    public void addBuilding(BlacksmithBuilding blac) {
+        if(getBlacksmith() == null)
+            blac.orderInTown = getBuildingCount();
+        var data = JsonUtility.ToJson(blac);
+        SaveData.setString(buildingTag(Building.type.Blacksmith), data);
+    }
+
     public void removeBuilding(Building.type t) {
         SaveData.deleteKey(buildingTag(t));
     }
@@ -74,6 +81,12 @@ public class Town {
             return null;
         return JsonUtility.FromJson<CasinoBuilding>(data);
     }
+    public BlacksmithBuilding getBlacksmith() {
+        var data = SaveData.getString(buildingTag(Building.type.Blacksmith));
+        if(string.IsNullOrEmpty(data))
+            return null;
+        return JsonUtility.FromJson<BlacksmithBuilding>(data);
+    }
     public int getBuildingCount() {
         int count = 0;
         if(getHospital() != null)
@@ -83,6 +96,8 @@ public class Town {
         if(getShop() != null)
             count++;
         if(getCasino() != null)
+            count++;
+        if(getBlacksmith() != null)
             count++;
         return count;
     }
@@ -119,6 +134,13 @@ public class Town {
             useables.RemoveAt(rand);
             addBuilding(temp);
         }
+        if(getBlacksmith() != null) {
+            var temp = getBlacksmith();
+            int rand = Random.Range(0, useables.Count);
+            temp.orderInTown = useables[rand];
+            useables.RemoveAt(rand);
+            addBuilding(temp);
+        }
     }
     public Building.type getBuidingTypeWithOrder(int or) {
         if(getHospital() != null && getHospital().orderInTown == or)
@@ -129,6 +151,8 @@ public class Town {
             return Building.type.Shop;
         if(getCasino() != null && getCasino().orderInTown == or)
             return Building.type.Casino;
+        if(getBlacksmith() != null && getBlacksmith().orderInTown == or)
+            return Building.type.Blacksmith;
         return (Building.type)(-1);
     }
     public int getOrderForBuilding(Building.type t) {
@@ -151,6 +175,11 @@ public class Town {
             case Building.type.Casino:
                 if(getCasino() != null)
                     return getCasino().orderInTown;
+                return -1;
+
+            case Building.type.Blacksmith:
+                if(getBlacksmith() != null)
+                    return getBlacksmith().orderInTown;
                 return -1;
         }
         return -1;
@@ -180,6 +209,12 @@ public class Town {
                 var cas = getCasino();
                 cas.orderInTown = order;
                 addBuilding(cas);
+                break;
+
+            case Building.type.Blacksmith:
+                var blac = getBlacksmith();
+                blac.orderInTown = order;
+                addBuilding(blac);
                 break;
         }
     }
@@ -246,6 +281,12 @@ public class Town {
 
             case Building.type.Shop:
                 return getShop() != null;
+
+            case Building.type.Casino:
+                return getCasino() != null;
+
+            case Building.type.Blacksmith:
+                return getBlacksmith() != null;
         }
 
         return false;
@@ -284,6 +325,11 @@ public class Town {
                     b.GetComponent<CasinoInstance>().reference.setEqualTo(Randomizer.randomizeBuilding(b.GetComponent<CasinoInstance>().reference));
                     addBuilding(b.GetComponent<CasinoInstance>().reference);
                 }
+                else if(b.GetComponent<BlacksmithInstance>() != null) {
+                    b.GetComponent<BlacksmithInstance>().reference.orderInTown = index;
+                    b.GetComponent<BlacksmithInstance>().reference.setEqualTo(Randomizer.randomizeBuilding(b.GetComponent<BlacksmithInstance>().reference));
+                    addBuilding(b.GetComponent<BlacksmithInstance>().reference);
+                }
 
                 index++;
             }
@@ -312,6 +358,11 @@ public class Town {
                 b.GetComponent<CasinoInstance>().reference.orderInTown = index;
                 b.GetComponent<CasinoInstance>().reference.setEqualTo(Randomizer.randomizeBuilding(b.GetComponent<CasinoInstance>().reference));
                 addBuilding(b.GetComponent<CasinoInstance>().reference);
+            }
+            else if(b.GetComponent<BlacksmithInstance>() != null) {
+                b.GetComponent<BlacksmithInstance>().reference.orderInTown = index;
+                b.GetComponent<BlacksmithInstance>().reference.setEqualTo(Randomizer.randomizeBuilding(b.GetComponent<BlacksmithInstance>().reference));
+                addBuilding(b.GetComponent<BlacksmithInstance>().reference);
             }
             index++;
         }

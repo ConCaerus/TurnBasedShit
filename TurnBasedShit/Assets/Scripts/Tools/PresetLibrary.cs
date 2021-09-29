@@ -24,6 +24,7 @@ public class PresetLibrary : MonoBehaviour {
     [SerializeField] ArmorPreset[] armor;
     [SerializeField] ConsumablePreset[] consumables;
     [SerializeField] ItemPreset[] items;
+    [SerializeField] EquipmentPair[] pairs;
 
     //  Map
     [SerializeField] GameObject[] buildings;
@@ -33,15 +34,18 @@ public class PresetLibrary : MonoBehaviour {
 
 
     //  Units
-    public UnitStats createRandomPlayerUnitStats() {
+    public UnitStats createRandomPlayerUnitStats(bool setID) {
         var stats = new UnitStats(playerUnit.GetComponent<UnitClass>().stats);
         stats = Randomizer.randomizePlayerUnitStats(stats, this);
+
+        if(setID)
+            stats.u_instanceID = GameInfo.getNextUnitInstanceID();
 
         stats.setBaseMaxHealth(100.0f);
         stats.u_health = stats.getModifiedMaxHealth();
         return stats;
     }
-    public GameObject getPlayerUnit() {
+    public GameObject getPlayerUnitObject() {
         return playerUnit.gameObject;
     }
     public GameObject getEnemy(string name) {
@@ -159,6 +163,13 @@ public class PresetLibrary : MonoBehaviour {
         }
 
         return temp[Random.Range(0, temp.Count)];
+    }
+    public UnitTrait getUnitTrait(string name) {
+        foreach(var i in unitTraits) {
+            if(i.preset.t_name == name)
+                return i.preset;
+        }
+        return null;
     }
 
 
@@ -380,6 +391,14 @@ public class PresetLibrary : MonoBehaviour {
         return getItem(items[Random.Range(0, items.Length)].preset);
     }
 
+    public EquipmentPair getRelevantPair(UnitStats stats) {
+        foreach(var i in pairs) {
+            if(i.checkIfApplys(stats))
+                return i;
+        }
+        return null;
+    } 
+
     //  Map
     public TownMember createRandomTownMember(bool autoHasQuest = false) {
         return new TownMember(this, true, autoHasQuest);
@@ -403,6 +422,9 @@ public class PresetLibrary : MonoBehaviour {
                 return i.gameObject;
 
             if(t == Building.type.Casino && i.GetComponent<CasinoInstance>() != null)
+                return i.gameObject;
+
+            if(t == Building.type.Blacksmith && i.GetComponent<BlacksmithInstance>() != null)
                 return i.gameObject;
         }
         return null;
@@ -492,14 +514,14 @@ public class PresetLibrary : MonoBehaviour {
             for(int i = 0; i < Random.Range(1, 4); i++)
                 things.Add(getRandomWeapon());
 
-            return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd).town, things, setID);
+            return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd), things, setID);
         }
         if(rand == 1) {
             var things = new List<Armor>();
             for(int i = 0; i < Random.Range(1, 4); i++)
                 things.Add(getRandomArmor());
 
-            return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd).town, things, setID);
+            return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd), things, setID);
         }
         if(rand == 2) {
             var things = new List<Consumable>();
@@ -507,21 +529,21 @@ public class PresetLibrary : MonoBehaviour {
             for(int i = 0; i < Random.Range(1, 26); i++)
                 things.Add(con);
 
-            return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd).town, things, setID);
+            return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd), things, setID);
         }
         if(rand == 3) {
             var things = new List<Item>();
             for(int i = 0; i < Random.Range(0, 4); i++)
                 things.Add(getRandomItem());
 
-            return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd).town, things, setID);
+            return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd), things, setID);
         }
         if(rand == 4) {
             var things = new List<UnitStats>();
             for(int i = 0; i < Random.Range(1, 3); i++)
-                things.Add(createRandomPlayerUnitStats());
+                things.Add(createRandomPlayerUnitStats(true));
 
-            return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd).town, things, setID);
+            return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd), things, setID);
         }
         return null;
     }

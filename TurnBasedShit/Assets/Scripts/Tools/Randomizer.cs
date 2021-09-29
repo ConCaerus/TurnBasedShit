@@ -184,4 +184,8 @@ public static class Randomizer {
         var temp = new CasinoBuilding();
         return temp;
     }
+    public static BlacksmithBuilding randomizeBuilding(BlacksmithBuilding blac) {
+        var temp = new BlacksmithBuilding();
+        return temp;
+    }
 }
