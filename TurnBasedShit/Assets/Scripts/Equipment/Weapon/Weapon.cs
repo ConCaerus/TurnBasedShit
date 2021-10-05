@@ -11,7 +11,10 @@ public class Weapon {
     }
 
     public enum attackType {
-        blunt, edged, magical, summoned
+        blunt, edged, summoned
+    }
+    public enum specialUsage {
+        none, healing, summoning
     }
 
     public int w_instanceID = -1;
@@ -21,6 +24,9 @@ public class Weapon {
     public GameInfo.element w_element;
     public GameInfo.wornState w_wornAmount;
     public List<attribute> w_attributes = new List<attribute>();
+    public specialUsage w_specialUsage = specialUsage.none;
+    public float w_specialUsageAmount = 0.0f;
+    public GameObject w_summonedUnit;
 
     public attackType w_attackType;
     public float w_power;
@@ -49,6 +55,14 @@ public class Weapon {
                     continue;
                 attackedUnit.GetComponent<UnitClass>().setStunned(GameVariables.chanceStun());
             }
+        }
+    }
+
+    public void applySpecailUsage(GameObject affectedObject) {
+        if(w_specialUsage == specialUsage.none)
+            return;
+        if(w_specialUsage == specialUsage.healing) {
+            affectedObject.GetComponent<UnitClass>().addHealth(w_specialUsageAmount);
         }
     }
 
@@ -95,6 +109,9 @@ public class Weapon {
         w_element = temp.w_element;
         w_sprite = temp.w_sprite;
         w_rarity = temp.w_rarity;
+        w_specialUsage = temp.w_specialUsage;
+        w_specialUsageAmount = temp.w_specialUsageAmount;
+        w_summonedUnit = temp.w_summonedUnit;
     }
 
     public WeaponPreset weaponToPreset() {
@@ -113,6 +130,9 @@ public class Weapon {
         w_element = other.w_element;
         w_sprite = other.w_sprite;
         w_rarity = other.w_rarity;
+        w_specialUsage = other.w_specialUsage;
+        w_specialUsageAmount = other.w_specialUsageAmount;
+        w_summonedUnit = other.w_summonedUnit;
 
         if(takeID)
             w_instanceID = other.w_instanceID;

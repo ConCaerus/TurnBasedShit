@@ -13,6 +13,9 @@ public class CombatUnitUI : MonoBehaviour {
     public Vector2 highlightOffset, stunOffset, bleedOffset;
     float sliderSpeed = 0.5f, moveSpeed = 18.0f, highlightedHeight = 0.25f;
 
+    //  false for auto, true for modifying
+    public bool showingWouldBeHealedValue = false;
+
     Coroutine lateMover = null, stunMover = null, bleedMover = null;
 
 
@@ -48,16 +51,28 @@ public class CombatUnitUI : MonoBehaviour {
     }
 
 
-    void updateUIInfo() {
+    public void updateUIInfo() {
         //  sliders n' shit
-        //  real health
         uiObj.transform.GetChild(0).GetComponent<Slider>().maxValue = GetComponent<UnitClass>().stats.getModifiedMaxHealth();
-        uiObj.transform.GetChild(0).GetComponent<Slider>().value = GetComponent<UnitClass>().stats.u_health;
-
-        //  late health
         uiObj.transform.GetChild(2).GetComponent<Slider>().maxValue = GetComponent<UnitClass>().stats.getModifiedMaxHealth();
-        if(uiObj.transform.GetChild(2).GetComponent<Slider>().value != uiObj.transform.GetChild(0).GetComponent<Slider>().value && lateMover == null)
-            lateMover = StartCoroutine(moveLateSlider());
+
+        if(uiObj.transform.GetChild(0).GetComponent<Slider>().value > GetComponent<UnitClass>().stats.u_health) {
+            //  thick health
+            uiObj.transform.GetChild(0).GetComponent<Slider>().value = GetComponent<UnitClass>().stats.u_health;
+            //  light health
+            if(uiObj.transform.GetChild(2).GetComponent<Slider>().value != uiObj.transform.GetChild(0).GetComponent<Slider>().value && lateMover == null && !showingWouldBeHealedValue)
+                lateMover = StartCoroutine(moveLateSlider(uiObj.transform.GetChild(2).GetComponent<Slider>()));
+        }
+        else if(uiObj.transform.GetChild(0).GetComponent<Slider>().value < GetComponent<UnitClass>().stats.u_health) {
+            //  light health
+            if(!showingWouldBeHealedValue)
+                uiObj.transform.GetChild(2).GetComponent<Slider>().value = GetComponent<UnitClass>().stats.u_health;
+            //  thick health
+            if(uiObj.transform.GetChild(0).GetComponent<Slider>().value != uiObj.transform.GetChild(2).GetComponent<Slider>().value && lateMover == null)
+                lateMover = StartCoroutine(moveLateSlider(uiObj.transform.GetChild(0).GetComponent<Slider>()));
+        }
+        else if(uiObj.transform.GetChild(0).GetComponent<Slider>().value != uiObj.transform.GetChild(2).GetComponent<Slider>().value && lateMover == null && !showingWouldBeHealedValue)
+            lateMover = StartCoroutine(moveLateSlider(uiObj.transform.GetChild(2).GetComponent<Slider>()));
 
 
         //  text n' shit
@@ -100,15 +115,20 @@ public class CombatUnitUI : MonoBehaviour {
         }
     }
 
+    public void moveLightHealthSliderToValue(float value) {
+        uiObj.transform.GetChild(2).GetComponent<Slider>().DOValue(value, sliderSpeed);
+        showingWouldBeHealedValue = true;
+    }
+
     public void removeUI() {
         uiObj.SetActive(false);
     }
 
 
-    IEnumerator moveLateSlider() {
+    IEnumerator moveLateSlider(Slider late) {
         yield return new WaitForSeconds(0.15f);
 
-        uiObj.transform.GetChild(2).GetComponent<Slider>().DOValue(GetComponent<UnitClass>().stats.u_health, sliderSpeed);
+        late.DOValue(GetComponent<UnitClass>().stats.u_health, sliderSpeed);
         lateMover = null;
     }
 

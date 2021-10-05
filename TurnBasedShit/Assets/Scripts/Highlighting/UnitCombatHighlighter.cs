@@ -5,7 +5,7 @@ using DG.Tweening;
 
 public class UnitCombatHighlighter : MonoBehaviour {
     [SerializeField] GameObject highlight;
-    [SerializeField] Color playerColor, playerAttacking, enemyColor;
+    [SerializeField] Color playerColor, playerAttacking, playerSpecial, enemyColor;
 
     List<GameObject> highlightedUnits = new List<GameObject>();
     List<GameObject> highlights = new List<GameObject>();
@@ -89,10 +89,14 @@ public class UnitCombatHighlighter : MonoBehaviour {
 
             //  active but not correct highlight
             else if(highlightedUnits[i].gameObject == FindObjectOfType<TurnOrderSorter>().playingUnit.gameObject && highlightedUnits[i].GetComponent<UnitClass>().isPlayerUnit) {
-                if(FindObjectOfType<BattleOptionsCanvas>().attackState && highlights[i].GetComponent<CombatHighlightObject>().getColor() != playerAttacking) {
+                int state = FindObjectOfType<BattleOptionsCanvas>().battleState;
+                if(state == 1 && highlights[i].GetComponent<CombatHighlightObject>().getColor() != playerAttacking) {
                     createHighlightObject(highlightedUnits[i], playerAttacking, i);
                 }
-                else if(!FindObjectOfType<BattleOptionsCanvas>().attackState && highlights[i].GetComponent<CombatHighlightObject>().getColor() != playerColor) {
+                else if(state == 3 && highlights[i].GetComponent<CombatHighlightObject>().getColor() != playerSpecial) {
+                    createHighlightObject(highlightedUnits[i], playerSpecial, i);
+                }
+                else if(state != 1 && state != 3 && highlights[i].GetComponent<CombatHighlightObject>().getColor() != playerColor) {
                     createHighlightObject(highlightedUnits[i], playerColor, i);
                 }
             }
@@ -111,8 +115,10 @@ public class UnitCombatHighlighter : MonoBehaviour {
                 highlightedUnits.Add(i.gameObject);
 
                 if(i.GetComponent<UnitClass>().isPlayerUnit) {
-                    if(FindObjectOfType<BattleOptionsCanvas>().attackState)
+                    if(FindObjectOfType<BattleOptionsCanvas>().battleState == 1)
                         createHighlightObject(i.gameObject, playerAttacking);
+                    else if(FindObjectOfType<BattleOptionsCanvas>().battleState == 3)
+                        createHighlightObject(i.gameObject, playerSpecial);
                     else
                         createHighlightObject(i.gameObject, playerColor);
                 }

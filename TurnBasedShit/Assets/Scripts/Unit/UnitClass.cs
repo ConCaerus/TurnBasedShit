@@ -11,7 +11,7 @@ public abstract class UnitClass : MonoBehaviour {
 
     public bool isPlayerUnit = true;
     bool defending = false;
-    protected bool stunned = false;
+    public bool stunned = false;
     public bool isMouseOverUnit = false;
 
     public float tempPowerMod = 1.0f;
@@ -37,11 +37,29 @@ public abstract class UnitClass : MonoBehaviour {
             FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
             return;
         }
+
+        if(FindObjectOfType<BattleOptionsCanvas>().battleState == 3) {
+            GetComponent<CombatUnitUI>().showingWouldBeHealedValue = true;
+            GetComponent<CombatUnitUI>().moveLightHealthSliderToValue(stats.u_health + FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().stats.equippedWeapon.w_specialUsageAmount);
+        }
+
         isMouseOverUnit = true;
         FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
     }
 
+    private void OnMouseOver() {
+        if(FindObjectOfType<BattleOptionsCanvas>().battleState == 3) {
+            GetComponent<CombatUnitUI>().showingWouldBeHealedValue = true;
+            GetComponent<CombatUnitUI>().moveLightHealthSliderToValue(stats.u_health + FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().stats.equippedWeapon.w_specialUsageAmount);
+        }
+    }
+
     private void OnMouseExit() {
+        if(GetComponent<CombatUnitUI>().showingWouldBeHealedValue) {
+            GetComponent<CombatUnitUI>().showingWouldBeHealedValue = false;
+            GetComponent<CombatUnitUI>().updateUIInfo();
+        }
+
         isMouseOverUnit = false;
         FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
     }
@@ -71,7 +89,7 @@ public abstract class UnitClass : MonoBehaviour {
 
     public void takeBleedDamage() {
         if(stats.u_bleedCount > 0) {
-            float temp = (stats.getModifiedMaxHealth() / 100.0f);
+            float temp = (stats.getModifiedMaxHealth() / 100.0f) * stats.u_bleedCount;
             stats.u_health -= temp;
 
             FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, temp, DamageTextCanvas.damageType.bleed);
@@ -92,6 +110,7 @@ public abstract class UnitClass : MonoBehaviour {
 
     public void addHealth(float h) {
         stats.u_health = Mathf.Clamp(stats.u_health + h, -1.0f, stats.getModifiedMaxHealth());
+        FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, h, DamageTextCanvas.damageType.healed);
     }
 
     public void prepareUnitForNextRound() {
@@ -179,6 +198,7 @@ public abstract class UnitClass : MonoBehaviour {
         }
         transform.DOComplete();
         normalPos = transform.position;
+        normalSize = transform.localScale;
         //  triggers
         FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeAttacking, this, true);
 
@@ -226,12 +246,16 @@ public abstract class UnitClass : MonoBehaviour {
 
         //  check if any unit died in the attack
         attacker.GetComponent<UnitClass>().checkIfDead(DeathInfo.killCause.murdered, gameObject);
-        checkIfDead(DeathInfo.killCause.murdered, attacker.gameObject);
+        if(checkIfDead(DeathInfo.killCause.murdered, attacker.gameObject))
+            return;
 
         //  end battle turn
+        if(FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject)
+            return;
         foreach(var i in stats.equippedArmor.a_attributes) {
             if(i == Armor.attribute.Reflex)
-                return;
+                attack(attacker.gameObject);
+            return;
         }
     }
 
@@ -242,6 +266,21 @@ public abstract class UnitClass : MonoBehaviour {
         else {
             //  triggers items
             FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterKill, this, false);
+
+            //  add exp to weapon
+            if(killer != null && killer.GetComponent<PlayerUnitInstance>() != null)
+                killer.GetComponent<PlayerUnitInstance>().addWeaponTypeExpOnKill(GetComponent<EnemyUnitInstance>().enemyDiff);
+
+            //  get enemy drops
+            int chanceMod = 0;
+            if(killer != null) {
+                foreach(var i in killer.GetComponent<UnitClass>().stats.u_traits)
+                    chanceMod += i.getEnemyDropChanceMod();
+            }
+            GetComponent<EnemyUnitInstance>().chanceWeaponDrop(chanceMod);
+            GetComponent<EnemyUnitInstance>().chanceArmorDrop(chanceMod);
+            GetComponent<EnemyUnitInstance>().chanceItemDrop(chanceMod);
+            GetComponent<EnemyUnitInstance>().chanceConsumableDrop(chanceMod);
 
             //  increases acc quest counter
             for(int i = 0; i < ActiveQuests.getKillQuestCount(); i++) {
@@ -271,6 +310,8 @@ public abstract class UnitClass : MonoBehaviour {
     IEnumerator defendingAnim() {
         if(attackAnim != null)
             StopCoroutine(attackAnim);
+        else
+            normalSize = transform.localScale;
 
         GetComponent<SpriteRenderer>().DOColor(hitColor, 0.05f);
         transform.DOScale(normalSize * 1.5f, 0.15f);
@@ -318,7 +359,7 @@ public abstract class UnitClass : MonoBehaviour {
                 defender.GetComponent<UnitClass>().setStunned(true);
         }
 
-        FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
         attackAnim = null;
+        FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
     }
 }

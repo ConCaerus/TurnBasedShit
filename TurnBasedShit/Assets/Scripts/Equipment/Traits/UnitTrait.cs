@@ -7,7 +7,7 @@ public class UnitTrait {
 
     [System.Serializable]
     public enum modifierType {
-        damageGiven, damageTaken, speed, maxHealth, stunsSelf, stunsTarget, chanceToBeAttacked
+        damageGiven, damageTaken, speed, maxHealth, stunsSelf, stunsTarget, chanceToBeAttacked, enemyDropChance
     }
 
     [System.Serializable]
@@ -65,12 +65,20 @@ public class UnitTrait {
 
         return temp;
     }
-
     public float getChanceToBeAttackedMod() {
         float temp = 0.0f;
         foreach(var i in t_infos) {
             if(i.modType == modifierType.chanceToBeAttacked)
                 temp += i.modAmount;
+        }
+
+        return temp;
+    }
+    public int getEnemyDropChanceMod() {
+        int temp = 0;
+        foreach(var i in t_infos) {
+            if(i.modType == modifierType.enemyDropChance)
+                temp += (int)i.modAmount;
         }
 
         return temp;

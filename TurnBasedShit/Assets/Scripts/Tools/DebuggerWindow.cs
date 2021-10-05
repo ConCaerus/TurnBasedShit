@@ -117,11 +117,13 @@ public class DebuggerWindow : EditorWindow {
 
         GUILayout.EndHorizontal();
 
-        //  Map Road
-        GUILayout.Label("Road", EditorStyles.boldLabel);
+        //  Save Data
+        GUILayout.Label("Save Data", EditorStyles.boldLabel);
         GUILayout.BeginHorizontal();
-        if(GUILayout.Button("Clear Roads"))
-            MapAnchorPositionSaver.clearPositions();
+        if(GUILayout.Button("Clear Save"))
+            SaveData.deleteCurrentSave();
+        if(GUILayout.Button("Clear Everything"))
+            PlayerPrefs.DeleteAll();
 
         GUILayout.EndHorizontal();
     }

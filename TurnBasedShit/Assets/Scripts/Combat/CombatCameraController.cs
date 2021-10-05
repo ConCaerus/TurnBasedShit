@@ -4,19 +4,36 @@ using UnityEngine;
 using DG.Tweening;
 
 public class CombatCameraController : MonoBehaviour {
-    [SerializeField] float maxRandAmount = 0.15f;
-    [SerializeField] float moveSpeed = 0.1f;
-    [SerializeField] float buffer = 4.0f;
+    float maxRandAmount = 0.15f;
+    float moveSpeed = 0.75f;
+    float buffer = 4.0f;
 
-    //  player = -1, middle = 0, enemy = 1
-    int currentSide = 0;
+    GameObject lookingAtObj = null;
 
     private void Start() {
         moveToMiddle();
     }
 
+    private void Update() {
+        if(FindObjectOfType<TurnOrderSorter>().playingUnit == null && lookingAtObj != null) {
+            lookingAtObj = null;
+            moveToMiddle();
+            return;
+        }
+        else if(FindObjectOfType<TurnOrderSorter>().playingUnit != null && lookingAtObj != FindObjectOfType<TurnOrderSorter>().playingUnit && FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().attackingTarget == null) {
+            lookingAtObj = FindObjectOfType<TurnOrderSorter>().playingUnit;
+            moveToPlayingUnit();
+            return;
+        }
+        else if(FindObjectOfType<TurnOrderSorter>().playingUnit != null && FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().attackingTarget != null && lookingAtObj != FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().attackingTarget) {
+            lookingAtObj = FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().attackingTarget;
+            moveToAttackTarget();
+            return;
+        }
+    }
 
-    public void moveToPlayingUnit() {
+
+    void moveToPlayingUnit() {
         var unitPos = FindObjectOfType<TurnOrderSorter>().playingUnit.transform.position;
         var randX = Random.Range(-maxRandAmount, maxRandAmount);
         var randY = Random.Range(-maxRandAmount, maxRandAmount);
@@ -24,11 +41,23 @@ public class CombatCameraController : MonoBehaviour {
 
         Camera.main.transform.DOMove(new Vector3(target.x, target.y, Camera.main.transform.position.z), moveSpeed);
     }
-    public void moveToMiddle() {
+    void moveToAttackTarget() {
+        var unitPos = (FindObjectOfType<TurnOrderSorter>().playingUnit.transform.position + (FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().attackingTarget.transform.position * 2.0f)) / 3.0f;
+        var randX = Random.Range(-maxRandAmount, maxRandAmount);
+        var randY = Random.Range(-maxRandAmount, maxRandAmount);
+        var target = ((Vector2)unitPos / buffer) + new Vector2(randX, randY);
+
+        Camera.main.transform.DOMove(new Vector3(target.x, target.y, Camera.main.transform.position.z), moveSpeed);
+    }
+    void moveToMiddle() {
         var randX = Random.Range(-maxRandAmount, maxRandAmount);
         var randY = Random.Range(-maxRandAmount, maxRandAmount);
         var target = new Vector2(randX, randY);
 
         Camera.main.transform.DOMove(new Vector3(target.x, target.y, Camera.main.transform.position.z), moveSpeed);
+    }
+
+    public void resetLookingAtObj() {
+        lookingAtObj = null;
     }
 }

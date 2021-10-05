@@ -32,17 +32,23 @@ public class PlayerUnitInstance : UnitClass {
     }
 
     void attackingLogic() {
-        if(FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject && (attackingTarget == null || attackingTarget == gameObject)) {
+        if(FindObjectOfType<TurnOrderSorter>().playingUnit != gameObject)
+            attackAnim = null;
+        if(FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject && attackingTarget == null) {
             setAttackingTarget();
         }
 
-        else if(attackingTarget != null && attackingTarget != gameObject && attackAnim == null && FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject) {
+        else if(attackingTarget != null && attackingTarget != gameObject && attackAnim == null && FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject && FindObjectOfType<BattleOptionsCanvas>().battleState == 1) {
             attack(attackingTarget);
+        }
+
+        if(attackAnim == null && FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject && FindObjectOfType<BattleOptionsCanvas>().battleState == 3) {
+            useWeaponSpecialUse();
         }
     }
 
     void setAttackingTarget() {
-        if(Input.GetMouseButtonDown(0) && FindObjectOfType<BattleOptionsCanvas>().attackState) {
+        if(Input.GetMouseButtonDown(0) && (FindObjectOfType<BattleOptionsCanvas>().battleState == 1 || FindObjectOfType<BattleOptionsCanvas>().battleState == 3)) {
             foreach(var i in FindObjectsOfType<UnitClass>()) {
                 if(i.isMouseOverUnit) {
                     attackingTarget = i.gameObject;
@@ -50,6 +56,34 @@ public class PlayerUnitInstance : UnitClass {
                 }
             }
         }
+    }
+
+
+    void useWeaponSpecialUse() {
+        //  wants to heal but no target
+        if(stats.equippedWeapon.w_specialUsage == Weapon.specialUsage.healing && attackingTarget == null)
+            return;
+        if(stats.equippedWeapon.w_specialUsage == Weapon.specialUsage.healing && attackingTarget != null) {
+            stats.equippedWeapon.applySpecailUsage(attackingTarget);
+            FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
+        }
+
+        //  summon
+        if(stats.equippedWeapon.w_specialUsage == Weapon.specialUsage.summoning) {
+            var obj = Instantiate(stats.equippedWeapon.w_summonedUnit.gameObject);
+            FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
+        }
+    }
+
+
+    public void addWeaponTypeExpOnKill(GameInfo.diffLvl diff) {
+        float exp = 2.5f * (1 + (int)diff);
+        if(stats.equippedWeapon.w_attackType == Weapon.attackType.blunt)
+            stats.u_bluntExp += exp;
+        else if(stats.equippedWeapon.w_attackType == Weapon.attackType.edged)
+            stats.u_edgedExp += exp;
+        else if(stats.equippedWeapon.w_attackType == Weapon.attackType.summoned)
+            stats.u_summonedExp += exp;
     }
 
     public void updateSprites() {

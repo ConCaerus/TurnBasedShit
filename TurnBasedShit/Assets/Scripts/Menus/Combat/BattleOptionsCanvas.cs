@@ -5,7 +5,7 @@ using DG.Tweening;
 using UnityEngine.UI;
 
 public class BattleOptionsCanvas : MonoBehaviour {
-    public bool attackState = false;
+    public int battleState = 0;
     bool showing = false;
     float showTime = 0.15f;
 
@@ -18,6 +18,7 @@ public class BattleOptionsCanvas : MonoBehaviour {
 
 
     public void runCombatOptions() {
+        battleState = 0;
         if(FindObjectOfType<TurnOrderSorter>().playingUnit != null) {
             var playingUnit = FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>();
     
@@ -26,6 +27,10 @@ public class BattleOptionsCanvas : MonoBehaviour {
                 //  skip turn if stunned
                 if(playingUnit.isStunned())
                     StartCoroutine(skipUnitTurn(playingUnit));
+
+                //  battle logic for summon
+                else if(playingUnit.GetComponent<SummonedUnitInstance>() != null)
+                    StartCoroutine(playingUnit.GetComponent<SummonedUnitInstance>().combatTurn());
             }
 
             //  enemy's turn
@@ -43,9 +48,10 @@ public class BattleOptionsCanvas : MonoBehaviour {
     }
 
     private void Update() {
-        if(FindObjectOfType<TurnOrderSorter>().playingUnit != null && FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().isPlayerUnit && !FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().isStunned() && !showing)
+        var playingUnit = FindObjectOfType<TurnOrderSorter>().playingUnit;
+        if(playingUnit != null && playingUnit.GetComponent<UnitClass>().isPlayerUnit && playingUnit.GetComponent<SummonedUnitInstance>() == null && !playingUnit.GetComponent<UnitClass>().isStunned() && !showing)
             showUI();
-        else if((FindObjectOfType<TurnOrderSorter>().playingUnit == null || !FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().isPlayerUnit || FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().isStunned()) && showing)
+        else if((playingUnit == null || !playingUnit.GetComponent<UnitClass>().isPlayerUnit || playingUnit.GetComponent<UnitClass>().isStunned() || playingUnit.GetComponent<SummonedUnitInstance>() != null) && showing)
             hideUI();
     }
 
@@ -71,21 +77,32 @@ public class BattleOptionsCanvas : MonoBehaviour {
     //  Buttons 
 
     public void attack() {
-        attackState = !attackState;
+        if(battleState != 1)
+            battleState = 1;
+        else
+            battleState = 0;
         FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
     }
 
     public void defend() {
+        battleState = 0;
         FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().setDefending(true);
         FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
     }
 
     public void charge() {
+        battleState = 2;
         FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
     }
 
     public void special() {
-        FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
+        if(FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().stats.equippedWeapon == null || FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().stats.equippedWeapon.isEmpty())
+            return;
+        if(battleState != 3)
+            battleState = 3;
+        else
+            battleState = 0;
+        FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
     }
 
 

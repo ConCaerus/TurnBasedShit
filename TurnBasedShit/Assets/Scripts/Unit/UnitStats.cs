@@ -9,6 +9,9 @@ public class UnitStats {
     public float u_expCap = 25.0f;
     public float u_exp = 0.0f;
     public int u_level = 0;
+    public float u_bluntExp;
+    public float u_edgedExp;
+    public float u_summonedExp;
 
     public UnitSpriteInfo u_sprite = new UnitSpriteInfo();
 
@@ -110,6 +113,18 @@ public class UnitStats {
     public float getBasePower() {
         return u_power + equippedWeapon.w_power;
     }
+    float getLevelDamageMult() {
+        float baseMult = 1.25f;
+        if(equippedWeapon == null || equippedWeapon.isEmpty())
+            return 1.0f;
+        if(equippedWeapon.w_attackType == Weapon.attackType.blunt && getBluntLevel() > 0)
+            return baseMult * getBluntLevel();
+        if(equippedWeapon.w_attackType == Weapon.attackType.edged && getEdgedLevel() > 0)
+            return baseMult * getEdgedLevel();
+        if(equippedWeapon.w_attackType == Weapon.attackType.summoned && getSummonedLevel() > 0)
+            return baseMult * getSummonedLevel();
+        return 1.0f;
+    }
     public float getDamageGiven(PresetLibrary lib) {
         float dmg = getBasePower();
         float baseDmg = getBasePower();
@@ -128,6 +143,9 @@ public class UnitStats {
         foreach(var i in u_traits) {    //  adds whatever the trait's power mod is times the base damage
             dmg += i.getDamageGivenMod() * baseDmg;
         }
+
+        //  levels modify damage
+        dmg *= getLevelDamageMult();
 
         //  Items modify damage
         if(equippedItem != null && !equippedItem.isEmpty()) {   //  adds whatever the item's power mod is times the base damage
@@ -237,6 +255,15 @@ public class UnitStats {
 
     public bool canLevelUp() {
         return u_exp >= u_expCap;
+    }
+    public int getEdgedLevel() {
+        return Mathf.FloorToInt(u_edgedExp / 100.0f);
+    }
+    public int getBluntLevel() {
+        return Mathf.FloorToInt(u_bluntExp / 100.0f);
+    }
+    public int getSummonedLevel() {
+        return Mathf.FloorToInt(u_summonedExp / 100.0f);
     }
 
     public void die(DeathInfo.killCause cause, GameObject killer = null) {

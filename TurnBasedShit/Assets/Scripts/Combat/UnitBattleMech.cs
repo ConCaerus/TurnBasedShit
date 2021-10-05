@@ -26,6 +26,10 @@ public class UnitBattleMech : MonoBehaviour {
         if(GameInfo.getCombatDetails() == null || GameInfo.getCombatDetails().waves == null || GameInfo.getCombatDetails().waves.Count == 0 || GameInfo.getCombatDetails().waves[0].enemies.Count == 0 || GameInfo.getCombatDetails().waves[0].enemies[0] == null) {
             GameInfo.setCombatDetails(FindObjectOfType<PresetLibrary>().createCombatLocation(0));
             var thing = GameInfo.getCombatDetails();
+            thing.weapons.Clear();
+            thing.armor.Clear();
+            thing.items.Clear();
+            thing.consumables.Clear();
             GameInfo.setCombatDetails(thing);
             Debug.Log("created");
         }
@@ -51,9 +55,6 @@ public class UnitBattleMech : MonoBehaviour {
         foreach(var i in FindObjectsOfType<CombatUnitUI>()) {
             i.removeUI();
         }
-
-        //  flair
-        FindObjectOfType<CombatCameraController>().moveToMiddle();
 
         //  enemies killed all of the players units
         if(FindObjectsOfType<PlayerUnitInstance>().Length == 0) {
@@ -95,7 +96,9 @@ public class UnitBattleMech : MonoBehaviour {
                     waveIndex++;
                     FindObjectOfType<RoundCounterCanvas>().incrementAndUpdateWaveCount();
                     FindObjectOfType<EnemyUnitSpawner>().spawnEnemies(waveIndex);
-                    FindObjectOfType<TurnOrderSorter>().resetList();
+                    foreach(var i in FindObjectsOfType<EnemyUnitInstance>()) {
+                        FindObjectOfType<TurnOrderSorter>().addUnitToList(i.gameObject);
+                    }
                 }
             }
 

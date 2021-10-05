@@ -76,6 +76,8 @@ public class PartyObject : MonoBehaviour {
 
 
     public void repositionUnit(GameObject unit) {
+        if(unit == null)
+            return;
         float closestDist = 100.0f;
         GameObject spot = null;
         foreach(var i in FindObjectsOfType<CombatSpot>()) {
