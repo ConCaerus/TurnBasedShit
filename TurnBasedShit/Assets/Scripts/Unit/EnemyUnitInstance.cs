@@ -68,34 +68,54 @@ public class EnemyUnitInstance : UnitClass {
     void calcNextAttackingTarget() {
         int attackableCount = Party.getMemberCount() + FindObjectsOfType<SummonedUnitInstance>().Length;
         float defaultChancePerUnit = 100.0f / attackableCount;
-        float rand = Random.Range(0, 101);
+        float total = 0.0f;
 
         
 
         for(int i = 0; i < attackableCount; i++) {
-            float moddedChance = 0.0f;
-
             if(i < Party.getMemberCount()) {
-                if(Party.getMemberStats(i).isEqualTo(Party.getLeaderStats()))   //  +15% if leader
-                    moddedChance += 0.15f;
-
-                foreach(var t in Party.getMemberStats(i).u_traits)  //  apply traits n' shit
-                    moddedChance += t.getChanceToBeAttackedMod() * 100.0f;
+                total += calcChanceToAttack(attackableCount, Party.getMemberStats(i));
             }
-
-            if(rand < (defaultChancePerUnit * (i + 1)) + moddedChance) {
-                if(i < Party.getMemberCount())
-                    attackingTarget = FindObjectOfType<PartyObject>().getInstantiatedMember(Party.getMemberStats(i));
-                else {
-                    int index = attackableCount - i - 1;
-                    attackingTarget = FindObjectsOfType<SummonedUnitInstance>()[index].gameObject;
-                }
-                return;
-            }
+            else
+                total += defaultChancePerUnit;
         }
 
-        //  gone through the loop and didn't get a target
-        attackingTarget = FindObjectOfType<PartyObject>().getInstantiatedMember(Party.getMemberStats(Random.Range(0, Party.getMemberCount())));
+        float rand = Random.Range(0.0f, total);
+        for(int i = 0; i < attackableCount; i++) {
+            if(i < Party.getMemberCount()) {
+                var chance = calcChanceToAttack(attackableCount, Party.getMemberStats(i));
+                if(rand < chance) {
+                    attackingTarget = FindObjectOfType<PartyObject>().getInstantiatedMember(Party.getMemberStats(i)).gameObject;
+                    return;
+                }
+                rand -= chance;
+            }
+
+            else {
+                if(rand < defaultChancePerUnit) {
+                    attackingTarget = FindObjectsOfType<SummonedUnitInstance>()[i - Party.getMemberCount()].gameObject;
+                    return;
+                }
+                rand -= defaultChancePerUnit;
+            }
+        }
+    }
+
+    float calcChanceToAttack(int attackableCount, UnitStats stats) {
+        float defaultChancePerUnit = 100.0f / attackableCount;
+        float moddedChance = defaultChancePerUnit;
+
+        if(stats.isEqualTo(Party.getLeaderStats()))   //  +15% if leader
+            moddedChance += 0.15f;
+
+        foreach(var t in stats.u_traits)  //  apply traits n' shit
+            moddedChance += t.getChanceToBeAttackedMod() * 100.0f;
+
+
+        if(stats.equippedItem != null && !stats.equippedItem.isEmpty()) //  item shit
+            moddedChance += stats.equippedItem.getPassiveMod(Item.passiveEffectTypes.modChanceToBeAttacked) * defaultChancePerUnit;
+
+        return moddedChance;
     }
 
 

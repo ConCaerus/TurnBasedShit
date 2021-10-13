@@ -9,6 +9,7 @@ public class UnitStats {
     public float u_expCap = 25.0f;
     public float u_exp = 0.0f;
     public int u_level = 0;
+    const int maxLevel = 5;
     public float u_bluntExp;
     public float u_edgedExp;
     public float u_summonedExp;
@@ -69,13 +70,6 @@ public class UnitStats {
         return u_instanceID == other.u_instanceID;
     }
 
-    public bool levelUpIfPossible() {
-        if(u_exp >= u_expCap) {
-            levelUp();
-            return true;
-        }
-        return false;
-    }
     public void levelUp() {
         u_expCap += u_expCap / 10.0f;
         u_exp = 0.0f;
@@ -111,18 +105,17 @@ public class UnitStats {
 
     //  Attack amount
     public float getBasePower() {
-        return u_power + equippedWeapon.w_power;
+        float weaponPower = equippedWeapon.w_power * (((float)equippedWeapon.w_wornAmount + 7.0f) / 10.0f);
+        return u_power + weaponPower;
     }
     float getLevelDamageMult() {
         float baseMult = 1.25f;
         if(equippedWeapon == null || equippedWeapon.isEmpty())
             return 1.0f;
         if(equippedWeapon.w_attackType == Weapon.attackType.blunt && getBluntLevel() > 0)
-            return baseMult * getBluntLevel();
+            return baseMult * (getBluntLevel() / 2.0f);
         if(equippedWeapon.w_attackType == Weapon.attackType.edged && getEdgedLevel() > 0)
-            return baseMult * getEdgedLevel();
-        if(equippedWeapon.w_attackType == Weapon.attackType.summoned && getSummonedLevel() > 0)
-            return baseMult * getSummonedLevel();
+            return baseMult * (getEdgedLevel() / 2.0f);
         return 1.0f;
     }
     public float getDamageGiven(PresetLibrary lib) {
@@ -149,7 +142,12 @@ public class UnitStats {
 
         //  Items modify damage
         if(equippedItem != null && !equippedItem.isEmpty()) {   //  adds whatever the item's power mod is times the base damage
-            dmg += equippedItem.getDamageGivenMod() * baseDmg;
+            dmg += equippedItem.getPassiveMod(Item.passiveEffectTypes.modPower) * baseDmg;
+
+            if(equippedWeapon.w_attackType == Weapon.attackType.edged)
+                dmg += equippedItem.getPassiveMod(Item.passiveEffectTypes.modEdgedDamageGiven) * baseDmg;
+            else if(equippedWeapon.w_attackType == Weapon.attackType.blunt)
+                dmg += equippedItem.getPassiveMod(Item.passiveEffectTypes.modBluntDamageGiven) * baseDmg;
         }
 
         //  equipment pair modify damage
@@ -161,7 +159,7 @@ public class UnitStats {
 
         return dmg;
     }
-    public float getCritMult(float dmg) {
+    public float getCritMult() {
         //  crit mod
         if(Random.Range(0, 101) <= (u_critChance * 100.0f))
             return Random.Range(1.75f, 2.25f);
@@ -171,7 +169,8 @@ public class UnitStats {
 
     //  Defence amount
     public float getBaseDefence() {
-        return Mathf.Clamp(u_defence + equippedArmor.a_defence, 0.0f, 100.0f);
+        float armorDefence = equippedArmor.a_defence * (((float)equippedArmor.a_wornAmount + 7.0f) / 10.0f);
+        return Mathf.Clamp(u_defence + armorDefence, 0.0f, 100.0f);
     }
     public float getDefenceMult(bool defending, PresetLibrary lib) {    //  this value is multiplied by the damage taken
         //  starts with 100% of damage taken
@@ -180,14 +179,19 @@ public class UnitStats {
 
         //  Trigger Traits
         foreach(var i in u_traits) {
-            temp -= i.getDamageGivenMod();
+            temp -= i.getDamageTakenMod();
         }
+
+        //  have item reduce damage
+        if(equippedItem != null && !equippedItem.isEmpty())
+            temp -= equippedItem.getPassiveMod(Item.passiveEffectTypes.modDefence);
 
         //  Have Armor reduce damage
         if(equippedArmor != null && !equippedArmor.isEmpty()) { //  takes off 10% of damage for every tolken of turtle
             temp -= equippedArmor.getTurtleAttCount() * 0.1f;
         }
 
+        //  have pair reduce damage
         var pair = lib.getRelevantPair(this);
         if(pair != null) {
             temp -= (1 - pair.defenceMod);
@@ -217,7 +221,7 @@ public class UnitStats {
         if(equippedArmor != null && !equippedArmor.isEmpty())
             temp += equippedArmor.a_speedMod;
         if(equippedItem != null && !equippedItem.isEmpty())
-            temp += equippedItem.getSpeedMod();
+            temp += equippedItem.getPassiveMod(Item.passiveEffectTypes.modSpeed);
         foreach(var i in u_traits)
             temp += i.getSpeedMod();
 
@@ -257,13 +261,19 @@ public class UnitStats {
         return u_exp >= u_expCap;
     }
     public int getEdgedLevel() {
-        return Mathf.FloorToInt(u_edgedExp / 100.0f);
+        if(Mathf.FloorToInt(u_edgedExp / 100.0f) + 1 > maxLevel)
+            return maxLevel;
+        return Mathf.FloorToInt(u_edgedExp / 100.0f) + 1;
     }
     public int getBluntLevel() {
-        return Mathf.FloorToInt(u_bluntExp / 100.0f);
+        if(Mathf.FloorToInt(u_bluntExp / 100.0f) + 1 > maxLevel)
+            return maxLevel;
+        return Mathf.FloorToInt(u_bluntExp / 100.0f) + 1;
     }
     public int getSummonedLevel() {
-        return Mathf.FloorToInt(u_summonedExp / 100.0f);
+        if(Mathf.FloorToInt(u_summonedExp / 100.0f) + 1 > maxLevel)
+            return maxLevel;
+        return Mathf.FloorToInt(u_summonedExp / 100.0f) + 1;
     }
 
     public void die(DeathInfo.killCause cause, GameObject killer = null) {

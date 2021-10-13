@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5967991836329400845}
   - component: {fileID: 5967991836329400844}
-  - component: {fileID: 9152197614094743713}
   m_Layer: 0
   m_Name: PresetLibrary
   m_TagString: Untagged
@@ -84,13 +83,13 @@ MonoBehaviour:
     scale: 0
     rot: 0
   rarityMaterials:
-  - {fileID: 2100000, guid: a0075d5eafbfcc749aaa6d5d8aeabcfa, type: 2}
-  - {fileID: 2100000, guid: c6ef99d510a714445934d0e0aaaa1003, type: 2}
-  - {fileID: 2100000, guid: 939af78be398dde4ba2b025b43773f55, type: 2}
-  - {fileID: 2100000, guid: 0cc155ecce9cae94499af961dbeddea2, type: 2}
-  - {fileID: 2100000, guid: fbdb36eb6b5fa77419bd56c164c8c095, type: 2}
-  - {fileID: 2100000, guid: 539c6d6b70cb04f4a923524495146edf, type: 2}
-  - {fileID: 2100000, guid: 6f16eae43d828fb4eb95b1966f5ec613, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   weapons:
   - {fileID: 11400000, guid: ea5fe6f9629f7b04eba4614bd981b91c, type: 2}
   - {fileID: 11400000, guid: 220aca2325dfbbc43ba1ff7dd240297f, type: 2}
@@ -133,6 +132,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e83b8e3612930c145ae0cd437c975fa6, type: 2}
   - {fileID: 11400000, guid: ddc40d19f1b80454db44bfa1e785edef, type: 2}
   - {fileID: 11400000, guid: 279f0ea0e8b30404f963a84dbd4d5dee, type: 2}
+  - {fileID: 11400000, guid: f1ad452374fcbcc4e86f0f6aa62524c0, type: 2}
   consumables:
   - {fileID: 11400000, guid: b8620bd6f554fa140a2994562098ac50, type: 2}
   - {fileID: 11400000, guid: eaaa276422f32644e8a7c22ea54d6abd, type: 2}
@@ -146,15 +146,23 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fb4a168cf11d6864d8d6cb7cd9fbb542, type: 2}
   - {fileID: 11400000, guid: e5aa9abeeb517ce4da4e660d9ff89088, type: 2}
   items:
-  - {fileID: 11400000, guid: a1360cb066af6ea42ae443178cfa1c45, type: 2}
-  - {fileID: 11400000, guid: fb25e940b8f74494f945b8ee69b3e5cc, type: 2}
-  - {fileID: 11400000, guid: 29457c53658dd9d4d8e805d9af52d7dc, type: 2}
-  - {fileID: 11400000, guid: 16ee4cf2b0422774bb019ae493d6fbde, type: 2}
-  - {fileID: 11400000, guid: d1daeb2d3ebdb1b45b38c1687c56d223, type: 2}
-  - {fileID: 11400000, guid: c9d71a657cbeccb46afeeae9583b83e5, type: 2}
+  - {fileID: 11400000, guid: ff9c21fd13ec0ec4e8a99b9a9205e55d, type: 2}
+  - {fileID: 11400000, guid: 5a2f7061ac2a3e841bdda873c5a59799, type: 2}
   - {fileID: 11400000, guid: 6cbadc3f7e16cdb489079289a8aedd77, type: 2}
-  pairs:
-  - {fileID: 11400000, guid: df58762663a5ef3408716832b5b21003, type: 2}
+  - {fileID: 11400000, guid: b1951371435d29a46b584e4185e3e73c, type: 2}
+  - {fileID: 11400000, guid: 45df51c0964f1fc428aad2e803277b1c, type: 2}
+  - {fileID: 11400000, guid: c9d71a657cbeccb46afeeae9583b83e5, type: 2}
+  - {fileID: 11400000, guid: efcf953db24a5be47b37b1c948436454, type: 2}
+  - {fileID: 11400000, guid: 640eb6499e34735439458011cd3a43d9, type: 2}
+  - {fileID: 11400000, guid: 559c64e214f93cd408bd57d883966358, type: 2}
+  - {fileID: 11400000, guid: a1360cb066af6ea42ae443178cfa1c45, type: 2}
+  - {fileID: 11400000, guid: b17ffbd5704e08f4dba3c62356eae09c, type: 2}
+  - {fileID: 11400000, guid: 90122ca90653f3e46b4324a12d78923a, type: 2}
+  equipmentPairs: []
+  summonParis:
+  - weapon: {fileID: 11400000, guid: 17142b7f9d9b4a8439280c28ade623ee, type: 2}
+    summon: {fileID: 2737049258412808082, guid: c081a5f9e5d5dec46b024f21b3be42d7,
+      type: 3}
   buildings:
   - {fileID: 8276380999552465835, guid: 2041b81f4fbd6324ea21719bdfaa1a06, type: 3}
   - {fileID: 3953769566449601916, guid: 199c26ebb27a8ad408fd00611e57eb7a, type: 3}
@@ -171,15 +179,3 @@ MonoBehaviour:
   - {r: 0.65882355, g: 0.5686275, b: 0.76470596, a: 1}
   - {r: 0.91372555, g: 0.4784314, b: 0.3254902, a: 1}
   - {r: 0.9450981, g: 0.94117653, b: 0.5647059, a: 1}
---- !u!114 &9152197614094743713
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5967991836329400846}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6d085a323d7e1543bea118c4317036c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

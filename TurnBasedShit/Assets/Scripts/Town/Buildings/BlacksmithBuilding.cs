@@ -4,6 +4,7 @@ using UnityEngine;
 
 [System.Serializable]
 public class BlacksmithBuilding : Building {
+    public int chargeRate = 1;
 
 
     public BlacksmithBuilding() {
@@ -12,6 +13,6 @@ public class BlacksmithBuilding : Building {
 
 
     public void setEqualTo(BlacksmithBuilding other) {
-
+        chargeRate = other.chargeRate;
     }
 }

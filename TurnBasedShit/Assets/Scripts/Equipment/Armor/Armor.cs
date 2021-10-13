@@ -65,13 +65,6 @@ public class Armor {
         return count;
     }
 
-
-    public void resetArmorStats() {
-        a_defence = 0;
-        a_speedMod = 0;
-        a_attributes.Clear();
-    }
-
     public bool isEmpty() {
         return a_attributes.Count == 0 && a_defence == 0 && a_speedMod == 0;
     }
@@ -96,6 +89,7 @@ public class Armor {
         a_attributes = temp.a_attributes;
         a_sprite = temp.a_sprite;
         a_rarity = temp.a_rarity;
+        a_wornAmount = temp.a_wornAmount;
     }
 
     public ArmorPreset armorToPreset() {
@@ -105,12 +99,15 @@ public class Armor {
     }
 
     public void setEqualTo(Armor other, bool takeID) {
+        if(other == null)
+            return;
         a_name = other.a_name;
         a_defence = other.a_defence;
         a_speedMod = other.a_speedMod;
         a_attributes = other.a_attributes;
         a_sprite = other.a_sprite;
         a_rarity = other.a_rarity;
+        a_wornAmount = other.a_wornAmount;
 
         if(takeID)
             a_instanceID = other.a_instanceID;

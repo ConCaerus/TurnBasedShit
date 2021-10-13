@@ -7,11 +7,8 @@ public class CombatSpot : MonoBehaviour {
     public GameObject unit = null;
     float speed = 0.25f;
 
-
-    [SerializeField] Material shadedMat, normalMat;
-
-    void Start() {
-        GetComponent<SpriteRenderer>().material = normalMat;
+    private void Start() {
+        setColor();
     }
 
     public bool isPlayerSpot() {
@@ -19,24 +16,12 @@ public class CombatSpot : MonoBehaviour {
     }
 
 
-    public void updateRenderer() {
-        if(unit != null) {
-            GetComponent<SpriteRenderer>().DOColor(Color.white, speed);
-            GetComponent<SpriteRenderer>().material = shadedMat;
-            transform.GetChild(0).gameObject.SetActive(true);
-            setColor();
-        }
-        else {
-            GetComponent<SpriteRenderer>().DOColor(Color.gray, speed);
-            GetComponent<SpriteRenderer>().material = normalMat;
-            transform.GetChild(0).gameObject.SetActive(false);
-        }
-    }
-
-
     public void setColor() {
-        if(unit != null && unit.GetComponentInChildren<UnitSpriteHandler>() != null) {
+        if(unit == null)
+            GetComponent<SpriteRenderer>().DOColor(Color.gray, speed);
+        else if(unit != null && unit.GetComponentInChildren<UnitSpriteHandler>() != null)
             GetComponent<SpriteRenderer>().DOColor(unit.GetComponentInChildren<UnitSpriteHandler>().getColor() + Color.white / 2.0f, speed);
-        }
+        else if(unit != null)
+            GetComponent<SpriteRenderer>().DOColor(Color.white, speed);
     }
 }

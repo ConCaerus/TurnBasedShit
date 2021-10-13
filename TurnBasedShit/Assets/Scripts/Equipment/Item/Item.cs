@@ -9,27 +9,29 @@ public class Item {
     public enum useTimes {
         beforeEachTurn, afterEachTurn, beforeTurn, afterTurn, afterRound, beforeDefending, beforeAttacking, afterKill
     }
-    //  conditions that have to be met before the item can be used
-    [System.Serializable]
-    public enum useConditions {
-        healthAboveHalf
-    }
     //  effects the item has
     [System.Serializable]
-    public enum useEffectTypes {
-        modHealth, modSpeed, modDamageGiven, modDamageTaken
+    public enum passiveEffectTypes {
+        modPower, modSpeed, modDefence, modHealGiven, modSummonDamageGiven, modEdgedDamageGiven, modBluntDamageGiven, modChanceToBeAttacked
+    }
+
+    [System.Serializable]
+    public enum timedEffectTypes { 
+        healSelf, addTempSpeed, addTempPower, addTempDefence
     }
 
 
     [System.Serializable]
-    public struct useEffects {
-        public useEffectTypes effect;
+    public struct timedEffects {
+        public timedEffectTypes effect;
+        public useTimes time;
         public float effectAmount;
+    }
 
-
-        public bool isEqualTo(useEffects other) {
-            return effect == other.effect && effectAmount == other.effectAmount;
-        }
+    [System.Serializable]
+    public struct passiveEffects {
+        public passiveEffectTypes effect;
+        public float effectAmount;
     }
 
 
@@ -38,45 +40,47 @@ public class Item {
     public string i_name;
     public GameInfo.rarityLvl i_rarity;
 
-    public List<useTimes> i_useTimes = new List<useTimes>();
-    public List<useConditions> i_useConditions = new List<useConditions>();
-    public List<useEffects> i_useEffects = new List<useEffects>();
+    public List<timedEffects> i_timedEffects = new List<timedEffects>();
+    public List<passiveEffects> i_passiveEffects = new List<passiveEffects>();
 
     public int i_coinCost;
 
     [SerializeField] ItemSpriteHolder i_sprite;
 
-    public float getHealthMod() {
+    //  passive shit
+    public float getPassiveMod(passiveEffectTypes type) {
         float temp = 0.0f;
-        foreach(var i in i_useEffects) {
-            if(i.effect == useEffectTypes.modHealth)
+        foreach(var i in i_passiveEffects) {
+            if(i.effect == type)
                 temp += i.effectAmount;
         }
         return temp;
     }
-    public float getDamageGivenMod() {
-        float temp = 0.0f;
-        foreach(var i in i_useEffects) {
-            if(i.effect == useEffectTypes.modDamageGiven)
-                temp += i.effectAmount;
+
+
+    public void triggerUseTime(UnitClass unit, useTimes time) {
+        foreach(var i in i_timedEffects) {
+            if(i.time == time) {
+                switch(i.effect) {
+                    case timedEffectTypes.healSelf:
+                        var healAmount = unit.stats.getModifiedMaxHealth() * i.effectAmount;
+                        unit.addHealth(healAmount);
+                        break;
+
+                    case timedEffectTypes.addTempSpeed:
+                        unit.tempSpeedMod += i.effectAmount;
+                        break;
+
+                    case timedEffectTypes.addTempPower:
+                        unit.tempPowerMod += i.effectAmount;
+                        break;
+
+                    case timedEffectTypes.addTempDefence:
+                        unit.tempDefenceMod += i.effectAmount;
+                        break;
+                }
+            }
         }
-        return temp;
-    }
-    public float getDamageTakenMod() {
-        float temp = 0.0f;
-        foreach(var i in i_useEffects) {
-            if(i.effect == useEffectTypes.modDamageTaken)
-                temp += i.effectAmount;
-        }
-        return temp;
-    }
-    public float getSpeedMod() {
-        float temp = 0.0f;
-        foreach(var i in i_useEffects) {
-            if(i.effect == useEffectTypes.modSpeed)
-                temp += i.effectAmount;
-        }
-        return temp;
     }
 
 
@@ -94,20 +98,16 @@ public class Item {
     }
 
     public void setEqualTo(Item other, bool takeID) {
-        i_useTimes.Clear();
-        for(int i = 0; i < i_useTimes.Count; i++) {
-            i_useTimes[i] = other.i_useTimes[i];
-        }
+        if(other == null || other.isEmpty())
+            return;
 
-        i_useConditions.Clear();
-        for(int i = 0; i < i_useConditions.Count; i++) {
-            i_useConditions[i] = other.i_useConditions[i];
-        }
+        i_passiveEffects.Clear();
+        for(int i = 0; i < other.i_passiveEffects.Count; i++)
+            i_passiveEffects.Add(other.i_passiveEffects[i]);
 
-        i_useEffects.Clear();
-        for(int i = 0; i < i_useEffects.Count; i++) {
-            i_useEffects[i] = other.i_useEffects[i];
-        }
+        i_timedEffects.Clear();
+        for(int i = 0; i < other.i_timedEffects.Count; i++)
+            i_timedEffects.Add(other.i_timedEffects[i]);
 
         i_name = other.i_name;
         i_rarity = other.i_rarity;
@@ -118,7 +118,7 @@ public class Item {
     }
 
     public bool isEmpty() {
-        return string.IsNullOrEmpty(i_name) && i_useTimes.Count == 0 && i_useConditions.Count == 0 && i_useEffects.Count == 0;
+        return string.IsNullOrEmpty(i_name) && i_timedEffects.Count == 0 && i_passiveEffects.Count == 0;
     }
 
     public ItemSpriteHolder getSpriteHolder() {

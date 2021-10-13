@@ -18,6 +18,9 @@ public class EnemyUnitSpawner : MonoBehaviour {
         }
 
         foreach(var i in info.waves[waveIndex].enemies) { 
+            if(i == null || i.GetComponent<PlayerUnitInstance>() != null) {
+                continue;
+            }
             var obj = Instantiate(i.gameObject);
             obj.name = "Enemy: " + i.GetComponent<UnitClass>().stats.u_name;
 

@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 508ea45ff48af2444b1d7573c3a39463, type: 3}
+  m_Name: Farming Clothes
+  m_EditorClassIdentifier: 
+  preset:
+    a_instanceID: -1
+    a_name: Farming Clothes
+    a_rarity: 0
+    a_wornAmount: 0
+    a_attributes: 
+    a_defence: 5
+    a_speedMod: 0
+    a_coinCost: 3
+    a_sprite:
+      sprite: {fileID: 21300000, guid: d7ec65e2962345c44b710138b54eca3d, type: 3}
+      equippedSprite: {fileID: 1375888029273101143, guid: ef2f769bd8718eb44aa73973a7020cde,
+        type: 3}
+      equippedShoulder: {fileID: -1048646648250194670, guid: ef2f769bd8718eb44aa73973a7020cde,
+        type: 3}
+      equippedHat: {fileID: -8533060038214281519, guid: ef2f769bd8718eb44aa73973a7020cde,
+        type: 3}
+      xPos0: 0.013
+      yPos0: -0.004
+      xSize0: 1
+      ySize0: 0.95
+      xPos1: 0.024
+      yPos1: 0.054
+      xSize1: 1
+      ySize1: 0.7
+      xPos2: 0.05
+      yPos2: 0.03
+      xSize2: 1
+      ySize2: 1
+      xShoulderPos0: -0.046
+      yShoulderPos0: 0.156
+      xShoulderSize0: -1
+      yShoulderSize0: 1
+      shoulderRot: 0
+      xShoulderPos1: -0.086
+      yShoulderPos1: 0.13
+      xShoulderSize1: -0.75
+      yShoulderSize1: 0.75
+      xShoulderPos2: -0.022
+      yShoulderPos2: 0.144
+      xShoulderSize2: -1
+      yShoulderSize2: 1
+      xHatPos0: -0.052
+      yHatPos0: 0.309
+      xHatSize0: 1
+      yHatSize0: 1
+      hatRot: 0
+      xHatPos1: -0.056
+      yHatPos1: 0.251
+      xHatSize1: 1
+      yHatSize1: 1
+      xHatPos2: -0.05
+      yHatPos2: 0.28
+      xHatSize2: 0.75
+      yHatSize2: 0.75

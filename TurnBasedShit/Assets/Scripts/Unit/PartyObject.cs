@@ -122,8 +122,9 @@ public static class Party {
             var data = SaveData.getString(memberTag(i));
             var stats = JsonUtility.FromJson<UnitStats>(data);
 
-            stats.equippedWeapon.resetWeaponStats();
-            stats.equippedArmor.resetArmorStats();
+            stats.equippedWeapon = null;
+            stats.equippedArmor = null;
+            stats.equippedItem = null;
             overrideUnit(stats);
         }
     }

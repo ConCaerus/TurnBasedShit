@@ -11,7 +11,7 @@ public class Weapon {
     }
 
     public enum attackType {
-        blunt, edged, summoned
+        blunt, edged
     }
     public enum specialUsage {
         none, healing, summoning
@@ -26,7 +26,6 @@ public class Weapon {
     public List<attribute> w_attributes = new List<attribute>();
     public specialUsage w_specialUsage = specialUsage.none;
     public float w_specialUsageAmount = 0.0f;
-    public GameObject w_summonedUnit;
 
     public attackType w_attackType;
     public float w_power;
@@ -58,11 +57,17 @@ public class Weapon {
         }
     }
 
-    public void applySpecailUsage(GameObject affectedObject) {
+    public void applySpecailUsage(UnitStats weilder, UnitClass affectedObject) {
         if(w_specialUsage == specialUsage.none)
             return;
         if(w_specialUsage == specialUsage.healing) {
-            affectedObject.GetComponent<UnitClass>().addHealth(w_specialUsageAmount);
+            var healAmount = w_specialUsageAmount * weilder.getCritMult();
+
+            //  apply item effects
+            if(weilder.equippedItem != null && !weilder.equippedItem.isEmpty()) {
+                healAmount += healAmount * weilder.equippedItem.getPassiveMod(Item.passiveEffectTypes.modHealGiven);
+            }
+            affectedObject.addHealth(healAmount);
         }
     }
 
@@ -74,14 +79,6 @@ public class Weapon {
         }
 
         return count;
-    }
-
-
-    public void resetWeaponStats() {
-        w_power = 0;
-        w_speedMod = 0;
-        w_attributes.Clear();
-        w_element = 0;
     }
 
     public bool isEmpty() {
@@ -98,20 +95,6 @@ public class Weapon {
         if(other == null || other.isEmpty())
             return false;
         return w_name == other.w_name && w_element == other.w_element && w_rarity == other.w_rarity;
-    }
-
-
-    public void setToPreset(WeaponPreset preset) {
-        var temp = preset.preset;
-        w_power = temp.w_power;
-        w_speedMod = temp.w_speedMod;
-        w_attributes = temp.w_attributes;
-        w_element = temp.w_element;
-        w_sprite = temp.w_sprite;
-        w_rarity = temp.w_rarity;
-        w_specialUsage = temp.w_specialUsage;
-        w_specialUsageAmount = temp.w_specialUsageAmount;
-        w_summonedUnit = temp.w_summonedUnit;
     }
 
     public WeaponPreset weaponToPreset() {
@@ -132,7 +115,8 @@ public class Weapon {
         w_rarity = other.w_rarity;
         w_specialUsage = other.w_specialUsage;
         w_specialUsageAmount = other.w_specialUsageAmount;
-        w_summonedUnit = other.w_summonedUnit;
+        w_wornAmount = other.w_wornAmount;
+        w_attackType = other.w_attackType;
 
         if(takeID)
             w_instanceID = other.w_instanceID;

@@ -17,7 +17,7 @@ MonoBehaviour:
     a_name: Simple Shirt
     a_rarity: 0
     a_wornAmount: 0
-    a_attributes: 
+    a_attributes: 00000000
     a_defence: 5
     a_speedMod: 2
     a_coinCost: 2
@@ -26,6 +26,7 @@ MonoBehaviour:
       equippedSprite: {fileID: 21300000, guid: f3297d1a17f799a42b6a88cde4f12b1e, type: 3}
       equippedShoulder: {fileID: 21300000, guid: a8f6b81c04aab7848913679040562d59,
         type: 3}
+      equippedHat: {fileID: 0}
       xPos0: 0.02
       yPos0: 0.46
       xSize0: 0.65
@@ -51,3 +52,16 @@ MonoBehaviour:
       yShoulderPos2: 0.179
       xShoulderSize2: 0.9
       yShoulderSize2: 0.9
+      xHatPos0: 0
+      yHatPos0: 0
+      xHatSize0: 0
+      yHatSize0: 0
+      hatRot: 0
+      xHatPos1: 0
+      yHatPos1: 0
+      xHatSize1: 0
+      yHatSize1: 0
+      xHatPos2: 0
+      yHatPos2: 0
+      xHatSize2: 0
+      yHatSize2: 0

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2150725456124683404}
   - component: {fileID: 2150725456124683407}
   - component: {fileID: 6768158759298979237}
+  - component: {fileID: -64006567979406007}
   m_Layer: 20
   m_Name: CombatUnit
   m_TagString: Untagged
@@ -28,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 2150725456124683392}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.35, y: 0.35, z: 1}
   m_Children:
   - {fileID: 212883705554629492}
   m_Father: {fileID: 0}
@@ -79,7 +80,9 @@ MonoBehaviour:
     type: 3}
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   isPlayerUnit: 1
+  defending: 0
   stunned: 0
+  charging: 0
   isMouseOverUnit: 0
   tempPowerMod: 1
   tempDefenceMod: 0
@@ -117,7 +120,6 @@ MonoBehaviour:
       w_attributes: 
       w_specialUsage: 0
       w_specialUsageAmount: 0
-      w_summonedUnit: {fileID: 0}
       w_attackType: 0
       w_power: 0
       w_speedMod: 0
@@ -185,9 +187,8 @@ MonoBehaviour:
       i_instanceID: -1
       i_name: 
       i_rarity: 0
-      i_useTimes: 
-      i_useConditions: 
-      i_useEffects: []
+      i_timedEffects: []
+      i_passiveEffects: []
       i_coinCost: 0
       i_sprite:
         sprite: {fileID: 0}
@@ -223,6 +224,22 @@ MonoBehaviour:
   highlightOffset: {x: 0.01, y: 0.14}
   stunOffset: {x: 0, y: 2.75}
   bleedOffset: {x: -0.29, y: 0.24}
+  showingWouldBeHealedValue: 0
+--- !u!114 &-64006567979406007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2150725456124683392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b50cf52fd2f3020489dae1d0b81e3fc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  infos:
+  - PlayingUnit
+  hideWhenMenuOpen: 1
 --- !u!1001 &954274707321897296
 PrefabInstance:
   m_ObjectHideFlags: 0

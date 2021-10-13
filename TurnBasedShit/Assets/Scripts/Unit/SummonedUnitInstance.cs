@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 
 public class SummonedUnitInstance : UnitClass {
-
+    public UnitStats summoner;
 
     Coroutine idler = null;
 
@@ -17,11 +17,6 @@ public class SummonedUnitInstance : UnitClass {
         float time = 0.15f;
         transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
         transform.DOScale(scale, time);
-    }
-
-
-    private void Update() {
-        //attackingLogic();
     }
 
 
@@ -47,6 +42,9 @@ public class SummonedUnitInstance : UnitClass {
     public IEnumerator combatTurn() {
         if(FindObjectOfType<TurnOrderSorter>().playingUnit != gameObject)
             yield return 0;
+
+        if(FindObjectsOfType<EnemyUnitInstance>().Length == 0)
+            FindObjectOfType<UnitBattleMech>().endBattle();
 
         if(attackingTarget == null)
             attackingTarget = FindObjectsOfType<EnemyUnitInstance>()[Random.Range(0, FindObjectsOfType<EnemyUnitInstance>().Length)].gameObject;

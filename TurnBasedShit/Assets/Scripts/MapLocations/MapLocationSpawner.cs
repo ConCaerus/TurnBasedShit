@@ -30,7 +30,7 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.transform.localScale = Vector3.one / 2.0f;
 
             //  info shit
-            obj.GetComponent<InfoBearer>().titleText = ActiveQuests.getBossFightQuest(i).bossUnit.u_name;
+            //obj.GetComponent<InfoBearer>().titleText = ActiveQuests.getBossFightQuest(i).bossUnit.u_name;
 
             currentIcons.Add(obj);
         }
@@ -45,9 +45,9 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.transform.localScale = Vector3.one / 2.0f;
 
             //  info shit
-            obj.GetComponent<InfoBearer>().titleText = MapLocationHolder.getTownLocation(i).town.t_name;
-            obj.GetComponent<InfoBearer>().firstText = "Buidling Count: " + MapLocationHolder.getTownLocation(i).town.getBuildingCount().ToString();
-            obj.GetComponent<InfoBearer>().secondText = "Population: " + MapLocationHolder.getTownLocation(i).town.townMemberCount.ToString();
+            //obj.GetComponent<InfoBearer>().titleText = MapLocationHolder.getTownLocation(i).town.t_name;
+            //obj.GetComponent<InfoBearer>().firstText = "Buidling Count: " + MapLocationHolder.getTownLocation(i).town.getBuildingCount().ToString();
+            //obj.GetComponent<InfoBearer>().secondText = "Population: " + MapLocationHolder.getTownLocation(i).town.townMemberCount.ToString();
 
             currentIcons.Add(obj);
         }
@@ -61,7 +61,7 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.transform.localScale = Vector3.one / 2.0f;
 
             //  info shit
-            obj.GetComponent<InfoBearer>().titleText = MapLocationHolder.getRescueLocation(i).unit.u_name;
+            //obj.GetComponent<InfoBearer>().titleText = MapLocationHolder.getRescueLocation(i).unit.u_name;
 
             currentIcons.Add(obj);
         }
@@ -75,7 +75,7 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.transform.localScale = Vector3.one / 2.0f;
 
             //  info shit
-            obj.GetComponent<InfoBearer>().titleText = MapLocationHolder.getUpgradeLocation(i).state.ToString();
+            //obj.GetComponent<InfoBearer>().titleText = MapLocationHolder.getUpgradeLocation(i).state.ToString();
 
             currentIcons.Add(obj);
         }
@@ -89,7 +89,7 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.transform.localScale = Vector3.one / 2.0f;
 
             //  info shit
-            obj.GetComponent<InfoBearer>().titleText = ActiveQuests.getPickupQuest(i).pType.ToString();
+            //obj.GetComponent<InfoBearer>().titleText = ActiveQuests.getPickupQuest(i).pType.ToString();
 
             currentIcons.Add(obj);
         }

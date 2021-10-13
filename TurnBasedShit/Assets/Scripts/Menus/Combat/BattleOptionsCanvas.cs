@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
+using TMPro;
 
 public class BattleOptionsCanvas : MonoBehaviour {
     public int battleState = 0;
@@ -21,9 +22,10 @@ public class BattleOptionsCanvas : MonoBehaviour {
         battleState = 0;
         if(FindObjectOfType<TurnOrderSorter>().playingUnit != null) {
             var playingUnit = FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>();
-    
+
             //  player's turn
             if(playingUnit.isPlayerUnit) {
+                transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = playingUnit.stats.u_name;
                 //  skip turn if stunned
                 if(playingUnit.isStunned())
                     StartCoroutine(skipUnitTurn(playingUnit));
@@ -58,6 +60,7 @@ public class BattleOptionsCanvas : MonoBehaviour {
 
     void showUI() {
         transform.GetChild(0).gameObject.GetComponent<RectTransform>().DOAnchorPos(new Vector2(0.0f, 0.0f), showTime);
+        transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().stats.u_name;
         showing = true;
     }
     void hideUI() {
@@ -69,6 +72,7 @@ public class BattleOptionsCanvas : MonoBehaviour {
     IEnumerator skipUnitTurn(UnitClass unit) {
         yield return new WaitForSeconds(1.0f);
 
+        unit.charging = false;
         unit.setStunned(false);
         FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
     }
@@ -91,7 +95,10 @@ public class BattleOptionsCanvas : MonoBehaviour {
     }
 
     public void charge() {
+        if(FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().charging)
+            return;
         battleState = 2;
+        FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().charging = true;
         FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
     }
 

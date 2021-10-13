@@ -36,6 +36,9 @@ public class SlotMenu : MonoBehaviour {
     public int getSelectedSlotIndex() {
         return selectedSlotIndex;
     }
+    public void setSelectedSlotIndex(int i) {
+        selectedSlotIndex = i;
+    }
     public GameObject getSelectedSlot() {
         if(getSelectedSlotIndex() < 0 || getSelectedSlotIndex() > slots.Count - 1)
             return null;

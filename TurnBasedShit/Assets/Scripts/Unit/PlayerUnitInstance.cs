@@ -64,33 +64,74 @@ public class PlayerUnitInstance : UnitClass {
         if(stats.equippedWeapon.w_specialUsage == Weapon.specialUsage.healing && attackingTarget == null)
             return;
         if(stats.equippedWeapon.w_specialUsage == Weapon.specialUsage.healing && attackingTarget != null) {
-            stats.equippedWeapon.applySpecailUsage(attackingTarget);
+            stats.equippedWeapon.applySpecailUsage(stats, attackingTarget.GetComponent<UnitClass>());
             FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
         }
 
         //  summon
-        if(stats.equippedWeapon.w_specialUsage == Weapon.specialUsage.summoning) {
-            var obj = Instantiate(stats.equippedWeapon.w_summonedUnit.gameObject);
+        if(stats.equippedWeapon.w_specialUsage == Weapon.specialUsage.summoning && roomToSummon()) {
+            var obj = Instantiate(FindObjectOfType<PresetLibrary>().getSummonForWeapon(stats.equippedWeapon).gameObject);
+            obj.GetComponent<SummonedUnitInstance>().summoner = stats;
+            FindObjectOfType<SummonSpotSpawner>().getCombatSpotAtIndexForUnit(gameObject, getSummonCount() - 1).GetComponentInChildren<CombatSpot>().unit = obj.gameObject;
+            obj.transform.position = FindObjectOfType<SummonSpotSpawner>().getCombatSpotAtIndexForUnit(gameObject, getSummonCount() - 1).transform.GetChild(0).transform.position + new Vector3(0.0f, obj.GetComponent<UnitClass>().spotOffset);
+
+            //  apply item modifiers to summon
+            if(stats.equippedItem != null && !stats.equippedItem.isEmpty()) {
+                obj.GetComponent<UnitClass>().tempPowerMod += stats.equippedItem.getPassiveMod(Item.passiveEffectTypes.modSummonDamageGiven);
+            }
+
             FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
         }
     }
 
 
+    bool roomToSummon() {
+        int max = stats.getSummonedLevel();
+        int count = 0;
+        foreach(var i in FindObjectsOfType<SummonedUnitInstance>()) {
+            if(i.summoner.isEqualTo(stats))
+                count++;
+        }
+        return count < max;
+    }
+
+    int getSummonCount() {
+        int count = 0;
+        foreach(var i in FindObjectsOfType<SummonedUnitInstance>()) {
+            if(i.summoner.isEqualTo(stats))
+                count++;
+        }
+        return count;
+    }
+
+
     public void addWeaponTypeExpOnKill(GameInfo.diffLvl diff) {
-        float exp = 2.5f * (1 + (int)diff);
-        if(stats.equippedWeapon.w_attackType == Weapon.attackType.blunt)
-            stats.u_bluntExp += exp;
-        else if(stats.equippedWeapon.w_attackType == Weapon.attackType.edged)
-            stats.u_edgedExp += exp;
-        else if(stats.equippedWeapon.w_attackType == Weapon.attackType.summoned)
-            stats.u_summonedExp += exp;
+        if(stats.equippedWeapon.w_attackType == Weapon.attackType.blunt) {
+            stats.u_bluntExp += GameVariables.getExpForDefeatedEnemy(diff);
+        }
+        else if(stats.equippedWeapon.w_attackType == Weapon.attackType.edged) {
+            stats.u_edgedExp += GameVariables.getExpForDefeatedEnemy(diff);
+        }
     }
 
     public void updateSprites() {
         GetComponentInChildren<UnitSpriteHandler>().setEverything(stats.u_sprite, stats.equippedWeapon, stats.equippedArmor);
         foreach(var i in FindObjectsOfType<CombatSpot>()) {
-            if(i.unit == gameObject)
+            if(i.unit == gameObject) {
                 i.setColor();
+                foreach(var j in i.GetComponentsInChildren<CombatSpot>())
+                    j.setColor();
+            }
         }
+
+        //  if not summoning, kill all summoned shit
+        if(stats.equippedWeapon == null || stats.equippedWeapon.isEmpty() || stats.equippedWeapon.w_specialUsage != Weapon.specialUsage.summoning) {
+            foreach(var i in FindObjectsOfType<SummonedUnitInstance>()) {
+                if(i.summoner.isEqualTo(stats))
+                    i.die(DeathInfo.killCause.murdered);
+            }
+        }
+
+        FindObjectOfType<SummonSpotSpawner>().updateSpots();
     }
 }

@@ -24,7 +24,8 @@ public class PresetLibrary : MonoBehaviour {
     [SerializeField] ArmorPreset[] armor;
     [SerializeField] ConsumablePreset[] consumables;
     [SerializeField] ItemPreset[] items;
-    [SerializeField] EquipmentPair[] pairs;
+    [SerializeField] EquipmentPair[] equipmentPairs;
+    [SerializeField] SummonPair[] summonParis;
 
     //  Map
     [SerializeField] GameObject[] buildings;
@@ -82,12 +83,7 @@ public class PresetLibrary : MonoBehaviour {
             if(useables.Count > 0)
                 enemy = useables[Random.Range(0, useables.Count)].gameObject;
         }
-        if(diff == (GameInfo.diffLvl)(-1) || enemy == null) {
-            //  not useable enemies, return random enemy from all enemies
-            enemy = enemies[Random.Range(0, enemies.Length)].gameObject;
-        }
-
-        //  makes it so this enemy's stats don't change the preset's stats
+        enemy = enemies[Random.Range(0, enemies.Length)].gameObject;
         return enemy;
     }
     public GameObject getRandomBoss(GameInfo.diffLvl diff = (GameInfo.diffLvl)(-1)) {
@@ -124,6 +120,17 @@ public class PresetLibrary : MonoBehaviour {
 
         boss.GetComponent<UnitClass>().stats.u_name = NameLibrary.getRandomEnemyName();
         return boss;
+    }
+    public GameObject getSummonForWeapon(Weapon we) {
+        GameObject temp = null;
+        foreach(var i in summonParis) {
+            if(i.weapon.preset.isTheSameTypeAs(we)) {
+                temp = i.summon.gameObject;
+                break;
+            }
+        }
+
+        return temp.gameObject;
     }
 
     public UnitTrait getRandomGoodUnitTrait() {
@@ -242,6 +249,7 @@ public class PresetLibrary : MonoBehaviour {
         return getWeapon(we.w_name, we.w_element);
     }
     public Weapon getRandomWeapon(GameInfo.rarityLvl lvl = (GameInfo.rarityLvl)(-1)) {
+
         if(lvl == (GameInfo.rarityLvl)(-1)) {
             return getWeapon(weapons[Random.Range(0, weapons.Length)].preset);
         }
@@ -392,7 +400,7 @@ public class PresetLibrary : MonoBehaviour {
     }
 
     public EquipmentPair getRelevantPair(UnitStats stats) {
-        foreach(var i in pairs) {
+        foreach(var i in equipmentPairs) {
             if(i.checkIfApplys(stats))
                 return i;
         }
@@ -596,4 +604,10 @@ public class CombatScarSpriteHolder {
 
     public float scale;
     public float rot;
+}
+
+[System.Serializable]
+public class SummonPair {
+    public WeaponPreset weapon;
+    public GameObject summon;
 }

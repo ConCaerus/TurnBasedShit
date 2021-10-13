@@ -17,7 +17,7 @@ public static class GameInfo {
         Bronze, Gold, Iron, Obsidian, Unique
     }
     public enum wornState {
-        Old, Used, Normal, New, Perfect
+        Old, Used, Normal, New
     }
     public enum questType {
         bossFight, pickup, delivery, kill

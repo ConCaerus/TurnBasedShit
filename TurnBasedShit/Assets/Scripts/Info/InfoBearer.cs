@@ -3,9 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InfoBearer : MonoBehaviour {
-    public InfoCanvas.infoType type;
-    public float distToShowInfo = 1.0f;
-    public float waitTime = 0.5f;
+    public List<string> infos = new List<string>();
 
-    public string titleText, firstText, secondText;
+    public bool hideWhenMenuOpen = true;
+
+    private void OnMouseEnter() {
+        if(hideWhenMenuOpen && FindObjectOfType<MenuCanvas>().isOpen())
+            return;
+        FindObjectOfType<InfoCanvas>().startShowing(infos[0]);
+    }
+
+    private void OnMouseExit() {
+        FindObjectOfType<InfoCanvas>().startHiding();
+    }
+
+
+    public void show() {
+        if(hideWhenMenuOpen && FindObjectOfType<MenuCanvas>().isOpen())
+            return;
+        FindObjectOfType<InfoCanvas>().startShowing(infos[0]);
+    }
+    public void hide() {
+        FindObjectOfType<InfoCanvas>().startHiding();
+    }
 }

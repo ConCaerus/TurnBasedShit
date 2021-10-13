@@ -8,7 +8,7 @@ public static class Randomizer {
     public static UnitStats randomizePlayerUnitStats(UnitStats stats, PresetLibrary lib) {
         var u = new UnitStats(stats);
 
-        u.u_name = NameLibrary.getRandomPlayerName();
+        u.u_name = NameLibrary.getRandomUsablePlayerName();
         u.u_power = Random.Range(1.0f, 3.5f);
         u.u_speed = Random.Range(1.0f, 3.5f);
         u.u_defence = Random.Range(1.0f, 3.5f);

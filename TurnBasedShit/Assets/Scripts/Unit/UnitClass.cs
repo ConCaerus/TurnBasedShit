@@ -10,8 +10,9 @@ public abstract class UnitClass : MonoBehaviour {
     public Color hitColor;
 
     public bool isPlayerUnit = true;
-    bool defending = false;
+    public bool defending = false;
     public bool stunned = false;
+    public bool charging = false;
     public bool isMouseOverUnit = false;
 
     public float tempPowerMod = 1.0f;
@@ -71,6 +72,8 @@ public abstract class UnitClass : MonoBehaviour {
         if(isPlayerUnit) {
             GetComponentInChildren<UnitSpriteHandler>().setEverything(stats.u_sprite, stats.equippedWeapon, stats.equippedArmor);
         }
+        GetComponent<InfoBearer>().infos.Clear();
+        GetComponent<InfoBearer>().infos.Add(InfoTextCreator.createForUnitClass(this));
 
         if(string.IsNullOrEmpty(stats.u_name)) {
             name = NameLibrary.getRandomUsablePlayerName();
@@ -92,7 +95,7 @@ public abstract class UnitClass : MonoBehaviour {
             float temp = (stats.getModifiedMaxHealth() / 100.0f) * stats.u_bleedCount;
             stats.u_health -= temp;
 
-            FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, temp, DamageTextCanvas.damageType.bleed);
+            FindObjectOfType<DamageTextCanvas>().showDamageTextForUnit(gameObject, temp, DamageTextCanvas.damageType.bleed);
             if(GameVariables.chanceCureBleed())
                 stats.u_bleedCount--;
 
@@ -110,7 +113,7 @@ public abstract class UnitClass : MonoBehaviour {
 
     public void addHealth(float h) {
         stats.u_health = Mathf.Clamp(stats.u_health + h, -1.0f, stats.getModifiedMaxHealth());
-        FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, h, DamageTextCanvas.damageType.healed);
+        FindObjectOfType<DamageTextCanvas>().showDamageTextForUnit(gameObject, h, DamageTextCanvas.damageType.healed);
     }
 
     public void prepareUnitForNextRound() {
@@ -118,6 +121,15 @@ public abstract class UnitClass : MonoBehaviour {
         defending = false;
 
         takeBleedDamage();
+    }
+
+    public bool levelUpIfPossible() {
+        if(stats.canLevelUp()) {
+            FindObjectOfType<DamageTextCanvas>().showLevelUpTextForUnit(gameObject);
+            stats.levelUp();
+            return true;
+        }
+        return false;
     }
 
 
@@ -200,7 +212,8 @@ public abstract class UnitClass : MonoBehaviour {
         normalPos = transform.position;
         normalSize = transform.localScale;
         //  triggers
-        FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeAttacking, this, true);
+        if(stats.equippedItem != null && !stats.equippedItem.isEmpty())
+            stats.equippedItem.triggerUseTime(this, Item.useTimes.beforeAttacking);
 
         //  triggers
         stats.equippedWeapon.applyAttributes(gameObject, defender);
@@ -212,7 +225,8 @@ public abstract class UnitClass : MonoBehaviour {
 
     public void defend(GameObject attacker, float dmg) {
         //  triggers
-        FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeDefending, this, true);
+        if(stats.equippedItem != null && !stats.equippedItem.isEmpty())
+            stats.equippedItem.triggerUseTime(this, Item.useTimes.beforeDefending);
 
 
         //  if defender is an enemy, check if it's weak or strong to the attack
@@ -223,7 +237,7 @@ public abstract class UnitClass : MonoBehaviour {
         }
         dmg *= (stats.getDefenceMult(defending, FindObjectOfType<PresetLibrary>()) - tempDefenceMod);
 
-        float crit = attacker.GetComponent<UnitClass>().stats.getCritMult(dmg);
+        float crit = attacker.GetComponent<UnitClass>().stats.getCritMult();
         dmg *= crit;
         //  triggers
         stats.equippedArmor.applyAttributes(gameObject, attacker, FindObjectOfType<TurnOrderSorter>().playingUnit);
@@ -232,16 +246,24 @@ public abstract class UnitClass : MonoBehaviour {
         stats.u_health = Mathf.Clamp(stats.u_health - dmg, -1.0f, stats.getModifiedMaxHealth());
 
         //  Flair
-        if(defending)
-            FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, dmg, DamageTextCanvas.damageType.defended);
+        if(attacker.GetComponent<UnitClass>().charging)
+            FindObjectOfType<DamageTextCanvas>().showDamageTextForUnit(gameObject, dmg, DamageTextCanvas.damageType.charged);
+        else if(defending)
+            FindObjectOfType<DamageTextCanvas>().showDamageTextForUnit(gameObject, dmg, DamageTextCanvas.damageType.defended);
         else if(crit > 1.1f)
-            FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, dmg, DamageTextCanvas.damageType.crit);
+            FindObjectOfType<DamageTextCanvas>().showDamageTextForUnit(gameObject, dmg, DamageTextCanvas.damageType.crit);
         else
-            FindObjectOfType<DamageTextCanvas>().showTextForUnit(gameObject, dmg, DamageTextCanvas.damageType.weapon);
+            FindObjectOfType<DamageTextCanvas>().showDamageTextForUnit(gameObject, dmg, DamageTextCanvas.damageType.weapon);
         var blood = Instantiate(bloodParticles);
         Destroy(blood.gameObject, blood.main.startLifetimeMultiplier);
         blood.gameObject.transform.position = transform.position;
         defendAnim = StartCoroutine(defendingAnim());
+
+        //  chance worn state decrease
+        if(stats.equippedArmor != null && !stats.equippedArmor.isEmpty() && stats.equippedArmor.a_wornAmount > GameInfo.wornState.Old && GameVariables.chanceEquipmentWornDecrease() && isPlayerUnit) {
+            stats.equippedArmor.a_wornAmount--;
+            FindObjectOfType<DamageTextCanvas>().showBreakTextForUnit(gameObject);
+        }
 
 
         //  check if any unit died in the attack
@@ -261,15 +283,23 @@ public abstract class UnitClass : MonoBehaviour {
 
     public void die(DeathInfo.killCause cause, GameObject killer = null) {
         //  things to do with removing the unit from the party and what to do with equippment
-        if(isPlayerUnit)
+        if(isPlayerUnit) {
             stats.die(cause, killer);
+        }
         else {
             //  triggers items
-            FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterKill, this, false);
+            if(stats.equippedItem != null && !stats.equippedItem.isEmpty())
+                stats.equippedItem.triggerUseTime(killer.GetComponent<UnitClass>(), Item.useTimes.afterKill);
 
             //  add exp to weapon
             if(killer != null && killer.GetComponent<PlayerUnitInstance>() != null)
                 killer.GetComponent<PlayerUnitInstance>().addWeaponTypeExpOnKill(GetComponent<EnemyUnitInstance>().enemyDiff);
+            else if(killer != null && killer.GetComponent<SummonedUnitInstance>() != null) {
+                int lvlBefore = killer.GetComponent<SummonedUnitInstance>().summoner.getSummonedLevel();
+                killer.GetComponent<SummonedUnitInstance>().summoner.u_summonedExp += GameVariables.getExpForDefeatedEnemy(GetComponent<EnemyUnitInstance>().enemyDiff);
+                if(lvlBefore != killer.GetComponent<SummonedUnitInstance>().summoner.getSummonedLevel())
+                    FindObjectOfType<DamageTextCanvas>().showSummonLevelUpTextForUnit(FindObjectOfType<PartyObject>().getInstantiatedMember(killer.GetComponent<SummonedUnitInstance>().summoner).gameObject);
+            }
 
             //  get enemy drops
             int chanceMod = 0;
@@ -300,7 +330,6 @@ public abstract class UnitClass : MonoBehaviour {
 
         //  removes unit from game world
         FindObjectOfType<TurnOrderSorter>().removeUnitFromList(gameObject);
-        //FindObjectOfType<DamageTextCanvas>().removeTextsWithUnit(gameObject);
         Destroy(gameObject);
     }
 
@@ -336,6 +365,8 @@ public abstract class UnitClass : MonoBehaviour {
 
         //  wait for attacker to reach defender
         yield return new WaitForSeconds(0.35f);
+        int bluntLvlBefore = stats.getBluntLevel();
+        int edgedLvlBefore = stats.getEdgedLevel();
 
         //  play animation and hold position
         setAttackingAnim();
@@ -343,12 +374,23 @@ public abstract class UnitClass : MonoBehaviour {
 
         //  actually deal damage to defender
         var dmg = stats.getDamageGiven(FindObjectOfType<PresetLibrary>()) * tempPowerMod;
+        if(charging) {
+            dmg *= 2.0f;
+        }
         defender.GetComponent<UnitClass>().defend(gameObject, dmg);
+        charging = false;
         yield return new WaitForSeconds(0.4f);
 
         //  move back to original position
         transform.DOScale(normalSize, 0.15f);
         transform.DOMove(normalPos, 0.15f);
+
+        yield return new WaitForSeconds(0.15f);
+
+        if(bluntLvlBefore != stats.getBluntLevel())
+            FindObjectOfType<DamageTextCanvas>().showBluntLevelUpTextForUnit(gameObject);
+        if(edgedLvlBefore != stats.getEdgedLevel())
+            FindObjectOfType<DamageTextCanvas>().showEdgedLevelUpTextForUnit(gameObject);
 
         //  non value based traits in attack
         foreach(var i in stats.u_traits) {
@@ -357,6 +399,12 @@ public abstract class UnitClass : MonoBehaviour {
             }
             if(defender != null && !defender.GetComponent<UnitClass>().isStunned() && i.shouldStunTarget())
                 defender.GetComponent<UnitClass>().setStunned(true);
+        }
+
+        //  chance worn state decrease
+        if(stats.equippedWeapon != null && !stats.equippedWeapon.isEmpty() && stats.equippedWeapon.w_wornAmount > GameInfo.wornState.Old && GameVariables.chanceEquipmentWornDecrease() && isPlayerUnit) {
+            FindObjectOfType<DamageTextCanvas>().showBreakTextForUnit(gameObject);
+            stats.equippedWeapon.w_wornAmount--;
         }
 
         attackAnim = null;

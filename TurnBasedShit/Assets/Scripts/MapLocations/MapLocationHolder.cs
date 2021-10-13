@@ -247,6 +247,16 @@ public static class MapLocationHolder {
         }
         return null;
     }
+    public static TownLocation getRandomTownLocationWithBuilding(Building.type type) {
+        List<TownLocation> locs = new List<TownLocation>();
+        for(int i = 0; i < getTownCount(); i++) {
+            if(getTownLocation(i).town.hasBuilding(type))
+                locs.Add(getTownLocation(i));
+        }
+        if(locs.Count == 0)
+            return null;
+        return locs[Random.Range(0, locs.Count)];
+    }
     public static PickupLocation getPickupLocation(int index) {
         var data = SaveData.getString(pickupTag(index));
         var temp = JsonUtility.FromJson<PickupLocation>(data);

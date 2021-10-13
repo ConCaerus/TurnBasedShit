@@ -8,6 +8,10 @@ public static class GameVariables {
         return 18;
     }
 
+    public static float getExpForDefeatedEnemy(GameInfo.diffLvl lvl) {
+        return 10.0f * (1 + (int)lvl);
+    }
+
     //  chances
     //  combat
     public static bool chanceBleed() {
@@ -31,6 +35,10 @@ public static class GameVariables {
     }
     public static bool chanceItemDrop() {
         return chanceOutOfHundred(15);
+    }
+
+    public static bool chanceEquipmentWornDecrease() {
+        return chanceOutOfHundred(10);
     }
 
 

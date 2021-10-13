@@ -16,15 +16,11 @@ MonoBehaviour:
     i_instanceID: -1
     i_name: Second Stomach
     i_rarity: 4
-    i_useTimes: 07000000
-    i_useConditions: 
-    i_useEffects:
-    - effect: 0
-      effectAmount: 0.15
-    - effect: 3
-      effectAmount: 0.1
+    i_timedEffects:
     - effect: 2
-      effectAmount: -0.05
+      time: 7
+      effectAmount: 0.1
+    i_passiveEffects: []
     i_coinCost: 50
     i_sprite:
       sprite: {fileID: 21300000, guid: e44ac80f3f1e1ae4c9c63bdbe4ff7dca, type: 3}

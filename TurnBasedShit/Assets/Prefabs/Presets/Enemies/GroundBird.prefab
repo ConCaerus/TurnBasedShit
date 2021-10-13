@@ -369,6 +369,7 @@ GameObject:
   - component: {fileID: 338056148406756439}
   - component: {fileID: 8629479021139467638}
   - component: {fileID: 2268679967223299726}
+  - component: {fileID: 2126208834429481785}
   m_Layer: 0
   m_Name: GroundBird
   m_TagString: Untagged
@@ -385,7 +386,7 @@ Transform:
   m_GameObject: {fileID: 5375930182506040063}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.05, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.35, y: 0.35, z: 1}
   m_Children:
   - {fileID: 5375930182369277727}
   - {fileID: 3495081191533809804}
@@ -457,7 +458,9 @@ MonoBehaviour:
     type: 3}
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   isPlayerUnit: 0
+  defending: 0
   stunned: 0
+  charging: 0
   isMouseOverUnit: 0
   tempPowerMod: 1
   tempDefenceMod: 0
@@ -491,11 +494,10 @@ MonoBehaviour:
       w_name: Bird Weapon
       w_rarity: 0
       w_element: 0
-      w_wornAmount: 0
+      w_wornAmount: 3
       w_attributes: 03000000
       w_specialUsage: 0
       w_specialUsageAmount: 0
-      w_summonedUnit: {fileID: 0}
       w_attackType: 0
       w_power: 7
       w_speedMod: 0
@@ -563,9 +565,8 @@ MonoBehaviour:
       i_instanceID: -1
       i_name: 
       i_rarity: 0
-      i_useTimes: 
-      i_useConditions: 
-      i_useEffects: []
+      i_timedEffects: []
+      i_passiveEffects: []
       i_coinCost: 0
       i_sprite:
         sprite: {fileID: 0}
@@ -580,8 +581,8 @@ MonoBehaviour:
   chanceToDropWeapon: 0
   armorDrop: {fileID: 0}
   chanceToDropArmor: 0
-  itemDrop: {fileID: 0}
-  chanceToDropItem: 0
+  itemDrop: {fileID: 11400000, guid: ff9c21fd13ec0ec4e8a99b9a9205e55d, type: 2}
+  chanceToDropItem: 5
   consumableDrop: {fileID: 0}
   chanceToDropConsumable: 0
   enemyType: 1
@@ -607,6 +608,21 @@ MonoBehaviour:
   highlightOffset: {x: 0, y: -0.07}
   stunOffset: {x: 0, y: 1.78}
   bleedOffset: {x: 0.46, y: -0.21}
+  showingWouldBeHealedValue: 0
+--- !u!114 &2126208834429481785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5375930182506040063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b50cf52fd2f3020489dae1d0b81e3fc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  infos:
+  - Enemy Unit
 --- !u!1 &5375930183025385620
 GameObject:
   m_ObjectHideFlags: 0

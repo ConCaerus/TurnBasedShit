@@ -7,49 +7,106 @@ using DG.Tweening;
 public class DamageTextCanvas : MonoBehaviour {
     [SerializeField] TextMeshProUGUI text;
 
-    [SerializeField] Color weaponColor, bleedColor, defendedColor, healingColor, critColor;
+    [SerializeField] Color weaponColor, bleedColor, defendedColor, healingColor, critColor, chargedColor;
 
+    public float time = 1.75f;
     Vector2 offset = new Vector2(-1.5f, 0.5f);
-    float moveY = 1.0f;
+    public float moveY = 1.5f;
 
 
     public enum damageType {
-        weapon, bleed, defended, healed, crit
+        weapon, bleed, defended, healed, crit, charged
     }
 
 
-    public void showTextForUnit(GameObject unit, float dmg, damageType type) {
-        var obj = Instantiate(text, transform);
-        var target = (Vector2)unit.transform.position + offset;
-        obj.transform.position = new Vector3(target.x, target.y, text.transform.position.z);
-        obj.text = dmg.ToString("0.#");
+    public void showDamageTextForUnit(GameObject unit, float dmg, damageType type) {
+        var obj = createTextObj(unit);
+        bool special = false;
 
         if(type == damageType.weapon)
             obj.color = weaponColor;
-        else if(type == damageType.bleed)
+        else if(type == damageType.bleed) {
+            obj.text += "Bleed\n";
             obj.color = bleedColor;
-        else if(type == damageType.defended)
+        }
+        else if(type == damageType.defended) {
+            obj.text += "Blocked\n";
             obj.color = defendedColor;
-        else if(type == damageType.healed)
+        }
+        else if(type == damageType.healed) {
+            obj.text += "Healed\n";
             obj.color = healingColor;
-        else if(type == damageType.crit)
+        }
+        else if(type == damageType.charged) {
+            obj.text += "Charged\n";
+            obj.color = chargedColor;
+        }
+        else if(type == damageType.crit) {
+            special = true;
+            obj.text += "Crit\n";
             obj.color = critColor;
+        }
 
-        StartCoroutine(animateText(obj.gameObject, unit.gameObject));
+        obj.text += dmg.ToString("0.#");
+
+        StartCoroutine(animateText(obj.gameObject, unit.gameObject, special));
     }
 
-    IEnumerator animateText(GameObject obj, GameObject unit) {
+    public void showBreakTextForUnit(GameObject unit) {
+        var obj = createTextObj(unit);
+        obj.text = "Tattered";
+        obj.color = Color.white;
+        StartCoroutine(animateText(obj.gameObject, unit.gameObject, false));
+    }
+    public void showLevelUpTextForUnit(GameObject unit) {
+        var obj = createTextObj(unit);
+        obj.text = "Level Up!";
+        obj.color = Color.white;
+        StartCoroutine(animateText(obj.gameObject, unit.gameObject, false));
+    }
+
+    public void showBluntLevelUpTextForUnit(GameObject unit) {
+        var obj = createTextObj(unit);
+        obj.text = "Blunt Level Up!";
+        obj.color = Color.white;
+        StartCoroutine(animateText(obj.gameObject, unit.gameObject, false));
+    }
+    public void showEdgedLevelUpTextForUnit(GameObject unit) {
+        var obj = createTextObj(unit);
+        obj.text = "Edged Level Up!";
+        obj.color = Color.white;
+        StartCoroutine(animateText(obj.gameObject, unit.gameObject, false));
+    }
+    public void showSummonLevelUpTextForUnit(GameObject unit) {
+        var obj = createTextObj(unit);
+        obj.text = "Summon Level Up!";
+        obj.color = Color.white;
+        StartCoroutine(animateText(obj.gameObject, unit.gameObject, false));
+    }
+
+
+    TextMeshProUGUI createTextObj(GameObject unit) {
+        var obj = Instantiate(text, transform);
+        var target = (Vector2)unit.transform.position + offset;
+        obj.transform.position = new Vector3(target.x, target.y, text.transform.position.z);
+        obj.text = "";
+        return obj;
+    }
+
+    IEnumerator animateText(GameObject obj, GameObject unit, bool supersize) {
         float xVal = unit.transform.position.x + offset.x;
-        float speed = 0.75f;
-        Destroy(obj.gameObject, speed);
-        obj.transform.DOMoveY(obj.transform.position.y + moveY, speed);
+        Destroy(obj.gameObject, time);
+        obj.transform.DOMoveY(obj.transform.position.y + moveY, time);
         obj.transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
-        obj.transform.DOPunchScale(new Vector3(1.5f, 1.5f, 1.0f), speed, 0, 0);
+        if(!supersize)
+            obj.transform.DOPunchScale(new Vector3(0.9f, 0.9f, 1.0f), time, 0, 0);
+        else
+            obj.transform.DOPunchScale(new Vector3(1.0f, 1.0f, 1.0f), time, 0, 0);
 
         float randRot = 0.0f;
         while(Mathf.Abs(randRot) < 10.0f)
             randRot = Random.Range(-45.0f, 45.0f);
-        obj.transform.DORotate(new Vector3(0.0f, 0.0f, randRot), speed);
+        obj.transform.DORotate(new Vector3(0.0f, 0.0f, randRot), time);
 
         while(obj.gameObject != null) {
             obj.transform.position = new Vector3(xVal, obj.transform.position.y);

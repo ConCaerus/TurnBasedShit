@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5987526660653550806}
   - component: {fileID: 388398904771254684}
   - component: {fileID: 474083618000127873}
+  - component: {fileID: -7754875373195535219}
   m_Layer: 0
   m_Name: RedSlime
   m_TagString: Untagged
@@ -29,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 5988970855522526352}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -2.919, y: -0.193, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.35, y: 0.35, z: 1}
   m_Children:
   - {fileID: 2507085719765456309}
   - {fileID: 9068062225352390931}
@@ -101,7 +102,9 @@ MonoBehaviour:
     type: 3}
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   isPlayerUnit: 0
+  defending: 0
   stunned: 0
+  charging: 0
   isMouseOverUnit: 0
   tempPowerMod: 1
   tempDefenceMod: 0
@@ -110,7 +113,7 @@ MonoBehaviour:
   weapon: {fileID: 0}
   armor: {fileID: 0}
   stats:
-    u_name: Slime
+    u_name: Slime in a Box
     u_expCap: 25
     u_exp: 0
     u_level: 5
@@ -135,11 +138,10 @@ MonoBehaviour:
       w_name: Slime Weapon
       w_rarity: 0
       w_element: 0
-      w_wornAmount: 0
+      w_wornAmount: 3
       w_attributes: 03000000
       w_specialUsage: 0
       w_specialUsageAmount: 0
-      w_summonedUnit: {fileID: 0}
       w_attackType: 0
       w_power: 15
       w_speedMod: 0
@@ -207,9 +209,8 @@ MonoBehaviour:
       i_instanceID: -1
       i_name: 
       i_rarity: 0
-      i_useTimes: 
-      i_useConditions: 
-      i_useEffects: []
+      i_timedEffects: []
+      i_passiveEffects: []
       i_coinCost: 0
       i_sprite:
         sprite: {fileID: 0}
@@ -251,6 +252,22 @@ MonoBehaviour:
   highlightOffset: {x: 0, y: 0.07}
   stunOffset: {x: 0, y: 2.11}
   bleedOffset: {x: 0.58, y: 0.16}
+  showingWouldBeHealedValue: 0
+--- !u!114 &-7754875373195535219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5988970855522526352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b50cf52fd2f3020489dae1d0b81e3fc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  infos:
+  - Enemy Unit
+  hideWhenMenuOpen: 1
 --- !u!1001 &3141562952938185721
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -42,9 +42,11 @@ public class TurnOrderSorter : MonoBehaviour {
     public GameObject setNextInTurnOrder() {
         //  removes current unit from list
         if(playingUnit != null) {
-            //  triggers
-            FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterTurn, playingUnit.GetComponent<UnitClass>(), true);
-            FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterEachTurn, playingUnit.GetComponent<UnitClass>(), false);
+            //  trigger items
+            if(playingUnit.GetComponent<UnitClass>().stats.equippedItem != null && !playingUnit.GetComponent<UnitClass>().stats.equippedItem.isEmpty()) {
+                playingUnit.GetComponent<UnitClass>().stats.equippedItem.triggerUseTime(playingUnit.GetComponent<UnitClass>(), Item.useTimes.afterTurn);
+                playingUnit.GetComponent<UnitClass>().stats.equippedItem.triggerUseTime(playingUnit.GetComponent<UnitClass>(), Item.useTimes.afterEachTurn);
+            }
 
             //  resets unit after turn, and removes it from the list of playing units
             unitsInPlay.Remove(playingUnit);
@@ -62,13 +64,18 @@ public class TurnOrderSorter : MonoBehaviour {
             if(i == null)
                 unitsInPlay.Remove(i);
         }
-        FindObjectOfType<ItemUser>().resetInplayItems();
 
 
         //  resets round if needed
         if(unitsInPlay.Count == 0) {
             FindObjectOfType<UnitBattleMech>().resetBattleRound();
-            FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.afterRound, playingUnit.GetComponent<UnitClass>(), false);
+
+            //  trigger items
+            foreach(var i in unitsInPlay) {
+                if(i.GetComponent<UnitClass>().stats.equippedItem != null && !i.GetComponent<UnitClass>().stats.equippedItem.isEmpty()) {
+                    i.GetComponent<UnitClass>().stats.equippedItem.triggerUseTime(i.GetComponent<UnitClass>(), Item.useTimes.afterRound);
+                }
+            }
             return null;
         }
 
@@ -88,13 +95,16 @@ public class TurnOrderSorter : MonoBehaviour {
 
         //  flair
         foreach(var i in FindObjectsOfType<CombatSpot>())
-            i.updateRenderer();
+            i.setColor();
         FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
         FindObjectOfType<CombatCameraController>().resetLookingAtObj();
 
         //  triggers
-        FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeTurn, playingUnit.GetComponent<UnitClass>(), true);
-        FindObjectOfType<ItemUser>().triggerTime(Item.useTimes.beforeEachTurn, playingUnit.GetComponent<UnitClass>(), false);
+        if(playingUnit.GetComponent<UnitClass>().stats.equippedItem != null && !playingUnit.GetComponent<UnitClass>().stats.equippedItem.isEmpty()) {
+            playingUnit.GetComponent<UnitClass>().stats.equippedItem.triggerUseTime(playingUnit.GetComponent<UnitClass>(), Item.useTimes.beforeTurn);
+            playingUnit.GetComponent<UnitClass>().stats.equippedItem.triggerUseTime(playingUnit.GetComponent<UnitClass>(), Item.useTimes.beforeEachTurn);
+        }
+
         FindObjectOfType<BattleOptionsCanvas>().battleState = 0;
 
         return playingUnit;

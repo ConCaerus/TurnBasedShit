@@ -75,15 +75,20 @@ public class UnitCanvas : MonoBehaviour {
             //  does not need second trait preset
             if(traitCount == 1) {
                 firstTraitText.text = shownUnit.u_traits[0].t_name;
+                firstTraitText.GetComponent<InfoBearer>().infos[0] = InfoTextCreator.createForUnitTrait(shownUnit.u_traits[0]);
                 secondTraitText.text = "";
             }
             else {
                 Vector2 prevPos = secondTraitText.transform.position;
                 for(int i = 0; i < traitCount; i++) {
-                    if(i == 0)
+                    if(i == 0) {
                         firstTraitText.text = shownUnit.u_traits[i].t_name;
-                    else if(i == 1)
+                        firstTraitText.GetComponent<InfoBearer>().infos[0] = InfoTextCreator.createForUnitTrait(shownUnit.u_traits[i]);
+                    }
+                    else if(i == 1) {
                         secondTraitText.text = shownUnit.u_traits[i].t_name;
+                        secondTraitText.GetComponent<InfoBearer>().infos[0] = InfoTextCreator.createForUnitTrait(shownUnit.u_traits[i]);
+                    }
 
                     //  create a new trait text
                     else {
@@ -91,6 +96,7 @@ public class UnitCanvas : MonoBehaviour {
                         var t = Instantiate(firstTraitText, firstTraitText.transform.parent);
                         t.transform.position = prevPos - new Vector2(0.0f, buffer);
                         t.text = shownUnit.u_traits[i].t_name;
+                        t.GetComponent<InfoBearer>().infos[0] = InfoTextCreator.createForUnitTrait(shownUnit.u_traits[i]);
                         traits.Add(t.gameObject);
 
 
@@ -125,6 +131,7 @@ public class UnitCanvas : MonoBehaviour {
             weaponImage.sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(shownUnit.equippedWeapon).sprite;
             weaponImage.material = FindObjectOfType<PresetLibrary>().getRarityMaterial(shownUnit.equippedWeapon.w_rarity);
             weaponImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownUnit.equippedWeapon.w_rarity);
+            weaponImage.GetComponent<InfoBearer>().infos.Add(InfoTextCreator.createForWeapon(shownUnit.equippedWeapon));
         }
         else {
             weaponImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
@@ -134,6 +141,7 @@ public class UnitCanvas : MonoBehaviour {
             armorImage.sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(shownUnit.equippedArmor).sprite;
             armorImage.material = FindObjectOfType<PresetLibrary>().getRarityMaterial(shownUnit.equippedArmor.a_rarity);
             armorImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownUnit.equippedArmor.a_rarity);
+            armorImage.GetComponent<InfoBearer>().infos.Add(InfoTextCreator.createForArmor(shownUnit.equippedArmor));
         }
         else {
             armorImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
@@ -141,11 +149,17 @@ public class UnitCanvas : MonoBehaviour {
         }
         if(shownUnit.equippedItem != null && !shownUnit.equippedItem.isEmpty()) {
             itemImage.sprite = FindObjectOfType<PresetLibrary>().getItemSprite(shownUnit.equippedItem).sprite;
+            if(shownUnit.equippedItem.isTheSameTypeAs(FindObjectOfType<PresetLibrary>().getItem("Dummy")))
+                itemImage.color = shownUnit.u_sprite.color;
+            else
+                itemImage.color = Color.white;
             itemImage.material = FindObjectOfType<PresetLibrary>().getRarityMaterial(shownUnit.equippedItem.i_rarity);
             itemImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownUnit.equippedItem.i_rarity);
+            itemImage.GetComponent<InfoBearer>().infos.Add(InfoTextCreator.createForItem(shownUnit.equippedItem));
         }
         else {
             itemImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
+            itemImage.color = Color.white;
             itemImage.enabled = false;
         }
 
