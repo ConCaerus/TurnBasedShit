@@ -14,6 +14,7 @@ public class UnitCanvas : MonoBehaviour {
     public float equippmentTransitionTime = 0.01f;
     public float timeBtwTransition = 0.05f;
 
+    const string indexTag = "UnitCanvas shown unit index";
     public UnitStats shownUnit;
 
     public Color leaderColor, nonLeaderColor;
@@ -35,7 +36,12 @@ public class UnitCanvas : MonoBehaviour {
 
     public void setup() {
         lockColor = true;
-        shownUnit = Party.getMemberStats(0);
+        if(SaveData.getInt(indexTag) < Party.getMemberCount())
+            shownUnit = Party.getMemberStats(SaveData.getInt(indexTag));
+        else {
+            shownUnit = Party.getMemberStats(0);
+            SaveData.setInt(indexTag, 0);
+        }
         updateUnitWindow();
     }
 
@@ -46,6 +52,8 @@ public class UnitCanvas : MonoBehaviour {
         healthSlider.value = shownUnit.u_health;
         expSlider.maxValue = shownUnit.u_expCap;
         expSlider.value = shownUnit.u_exp;
+        healthSlider.GetComponent<InfoBearer>().infos[0] = "<b><u>HP: " + shownUnit.u_health.ToString("0.0") + " / " + shownUnit.getModifiedMaxHealth().ToString("0.0");
+        expSlider.GetComponent<InfoBearer>().infos[0] = "<b><u>EXP: " + shownUnit.u_exp.ToString("0.0") + " / " + shownUnit.u_expCap.ToString("0.0");
 
         rSlider.value = shownUnit.u_sprite.color.r;
         gSlider.value = shownUnit.u_sprite.color.g;
@@ -129,22 +137,22 @@ public class UnitCanvas : MonoBehaviour {
         itemImage.enabled = true;
         if(shownUnit.equippedWeapon != null && !shownUnit.equippedWeapon.isEmpty()) {
             weaponImage.sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(shownUnit.equippedWeapon).sprite;
-            weaponImage.material = FindObjectOfType<PresetLibrary>().getRarityMaterial(shownUnit.equippedWeapon.w_rarity);
             weaponImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownUnit.equippedWeapon.w_rarity);
             weaponImage.GetComponent<InfoBearer>().infos.Add(InfoTextCreator.createForWeapon(shownUnit.equippedWeapon));
         }
         else {
             weaponImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
+            weaponImage.GetComponent<InfoBearer>().infos.Clear();
             weaponImage.enabled = false;
         }
         if(shownUnit.equippedArmor != null && !shownUnit.equippedArmor.isEmpty()) {
             armorImage.sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(shownUnit.equippedArmor).sprite;
-            armorImage.material = FindObjectOfType<PresetLibrary>().getRarityMaterial(shownUnit.equippedArmor.a_rarity);
             armorImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownUnit.equippedArmor.a_rarity);
             armorImage.GetComponent<InfoBearer>().infos.Add(InfoTextCreator.createForArmor(shownUnit.equippedArmor));
         }
         else {
             armorImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
+            armorImage.GetComponent<InfoBearer>().infos.Clear();
             armorImage.enabled = false;
         }
         if(shownUnit.equippedItem != null && !shownUnit.equippedItem.isEmpty()) {
@@ -153,13 +161,13 @@ public class UnitCanvas : MonoBehaviour {
                 itemImage.color = shownUnit.u_sprite.color;
             else
                 itemImage.color = Color.white;
-            itemImage.material = FindObjectOfType<PresetLibrary>().getRarityMaterial(shownUnit.equippedItem.i_rarity);
             itemImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownUnit.equippedItem.i_rarity);
             itemImage.GetComponent<InfoBearer>().infos.Add(InfoTextCreator.createForItem(shownUnit.equippedItem));
         }
         else {
             itemImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
             itemImage.color = Color.white;
+            itemImage.GetComponent<InfoBearer>().infos.Clear();
             itemImage.enabled = false;
         }
 
@@ -244,6 +252,7 @@ public class UnitCanvas : MonoBehaviour {
         else if(index < 0)
             index = Party.getMemberCount() - 1;
 
+        SaveData.setInt(indexTag, index);
         shownUnit = Party.getMemberStats(index);
         updateUnitWindow();
     }

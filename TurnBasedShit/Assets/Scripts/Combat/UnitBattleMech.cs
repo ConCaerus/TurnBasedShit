@@ -23,7 +23,7 @@ public class UnitBattleMech : MonoBehaviour {
 
     void setUp() {
         GameInfo.currentGameState = GameInfo.state.Combat;
-        if(GameInfo.getCombatDetails() == null || GameInfo.getCombatDetails().waves == null || GameInfo.getCombatDetails().waves.Count == 0 || GameInfo.getCombatDetails().waves[0].enemies.Count == 0 || GameInfo.getCombatDetails().waves[0].enemies[0] == null) {
+        if(GameInfo.getCombatDetails() == null || GameInfo.getCombatDetails().waves == null || GameInfo.getCombatDetails().waves.Count == 0 || GameInfo.getCombatDetails().waves[0].enemyIndexes.Count == 0) {
             GameInfo.setCombatDetails(FindObjectOfType<PresetLibrary>().createCombatLocation(0));
             Debug.Log("created");
         }

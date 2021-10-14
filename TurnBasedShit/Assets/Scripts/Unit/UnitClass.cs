@@ -49,6 +49,8 @@ public abstract class UnitClass : MonoBehaviour {
     }
 
     private void OnMouseOver() {
+        GetComponent<InfoBearer>().infos.Clear();
+        GetComponent<InfoBearer>().infos.Add(InfoTextCreator.createForUnitClass(this));
         if(FindObjectOfType<BattleOptionsCanvas>().battleState == 3) {
             GetComponent<CombatUnitUI>().showingWouldBeHealedValue = true;
             GetComponent<CombatUnitUI>().moveLightHealthSliderToValue(stats.u_health + FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().stats.equippedWeapon.w_specialUsageAmount);
@@ -69,7 +71,7 @@ public abstract class UnitClass : MonoBehaviour {
         tempPowerMod = 1.0f;
         tempDefenceMod = 0.0f;
         tempSpeedMod = 1.0f;
-        if(isPlayerUnit) {
+        if(isPlayerUnit && GetComponentInChildren<UnitSpriteHandler>() != null) {
             GetComponentInChildren<UnitSpriteHandler>().setEverything(stats.u_sprite, stats.equippedWeapon, stats.equippedArmor);
         }
         GetComponent<InfoBearer>().infos.Clear();
@@ -291,14 +293,23 @@ public abstract class UnitClass : MonoBehaviour {
             if(stats.equippedItem != null && !stats.equippedItem.isEmpty())
                 stats.equippedItem.triggerUseTime(killer.GetComponent<UnitClass>(), Item.useTimes.afterKill);
 
-            //  add exp to weapon
-            if(killer != null && killer.GetComponent<PlayerUnitInstance>() != null)
-                killer.GetComponent<PlayerUnitInstance>().addWeaponTypeExpOnKill(GetComponent<EnemyUnitInstance>().enemyDiff);
+
+            //  add exp
+            if(killer != null && killer.GetComponent<PlayerUnitInstance>() != null) {
+                if(killer.GetComponent<PlayerUnitInstance>().addWeaponTypeExpOnKill(GameVariables.getExpForDefeatedEnemy(GetComponent<EnemyUnitInstance>().enemyDiff)))
+                    FindObjectOfType<DamageTextCanvas>().showBluntLevelUpTextForUnit(gameObject);
+
+                if(killer.GetComponent<PlayerUnitInstance>().stats.addExp(GameVariables.getExpForDefeatedEnemy(GetComponent<EnemyUnitInstance>().enemyDiff)))
+                    FindObjectOfType<DamageTextCanvas>().showLevelUpTextForUnit(gameObject);
+            }
             else if(killer != null && killer.GetComponent<SummonedUnitInstance>() != null) {
                 int lvlBefore = killer.GetComponent<SummonedUnitInstance>().summoner.getSummonedLevel();
                 killer.GetComponent<SummonedUnitInstance>().summoner.u_summonedExp += GameVariables.getExpForDefeatedEnemy(GetComponent<EnemyUnitInstance>().enemyDiff);
                 if(lvlBefore != killer.GetComponent<SummonedUnitInstance>().summoner.getSummonedLevel())
                     FindObjectOfType<DamageTextCanvas>().showSummonLevelUpTextForUnit(FindObjectOfType<PartyObject>().getInstantiatedMember(killer.GetComponent<SummonedUnitInstance>().summoner).gameObject);
+
+                if(killer.GetComponent<SummonedUnitInstance>().summoner.addExp(GameVariables.getExpForDefeatedEnemy(GetComponent<EnemyUnitInstance>().enemyDiff)))
+                    FindObjectOfType<DamageTextCanvas>().showLevelUpTextForUnit(FindObjectOfType<PartyObject>().getInstantiatedMember(killer.GetComponent<SummonedUnitInstance>().summoner).gameObject);
             }
 
             //  get enemy drops

@@ -21,6 +21,7 @@ public class CombatUnitUI : MonoBehaviour {
 
     private void Start() {
         spawnCanvas();
+        hardSetHealthSliders();
         updateUIInfo();
     }
 
@@ -113,6 +114,14 @@ public class CombatUnitUI : MonoBehaviour {
             bleedObj.transform.DOScale(0.0f, waitTime);
             Destroy(bleedObj.gameObject, waitTime);
         }
+    }
+
+    public void hardSetHealthSliders() {
+        uiObj.transform.GetChild(0).GetComponent<Slider>().maxValue = GetComponent<UnitClass>().stats.getModifiedMaxHealth();
+        uiObj.transform.GetChild(2).GetComponent<Slider>().maxValue = GetComponent<UnitClass>().stats.getModifiedMaxHealth();
+
+        uiObj.transform.GetChild(0).GetComponent<Slider>().value = GetComponent<UnitClass>().stats.u_health;
+        uiObj.transform.GetChild(2).GetComponent<Slider>().value = GetComponent<UnitClass>().stats.u_health;
     }
 
     public void moveLightHealthSliderToValue(float value) {

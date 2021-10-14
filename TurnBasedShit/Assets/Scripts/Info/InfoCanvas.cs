@@ -30,7 +30,7 @@ public class InfoCanvas : MonoBehaviour {
     }
 
     void positionInfoBox() {
-        var offset = (background.GetComponent<RectTransform>().sizeDelta / 2.0f) * new Vector2(1.0f, -1.0f);
+        var offset = (background.GetComponent<RectTransform>().sizeDelta / 2.9f) * new Vector2(1.0f, -1.0f);
         Vector2 pos;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(GetComponent<Canvas>().transform as RectTransform, Input.mousePosition, GetComponent<Canvas>().worldCamera, out pos);
         background.transform.position = GetComponent<Canvas>().transform.TransformPoint(pos + offset);

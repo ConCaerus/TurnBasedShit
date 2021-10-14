@@ -17,7 +17,7 @@ public class BossLocation : MapLocation {
         else
             combatLocation.createWaves(diff, lib, 1);
 
-        combatLocation.waves[0].enemies.Add(boss);
+        combatLocation.waves[0].bossIndexes.Add(lib.getBossIndex(boss));
 
         bossUnit = boss.GetComponent<UnitClass>().stats;
     }

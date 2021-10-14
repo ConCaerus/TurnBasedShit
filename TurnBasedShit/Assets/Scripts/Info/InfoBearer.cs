@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InfoBearer : MonoBehaviour {
-    public List<string> infos = new List<string>();
+    public List<string> infos = new List<string>() { "Information" };
 
     public bool hideWhenMenuOpen = true;
 
@@ -20,6 +20,8 @@ public class InfoBearer : MonoBehaviour {
 
     public void show() {
         if(hideWhenMenuOpen && FindObjectOfType<MenuCanvas>().isOpen())
+            return;
+        if(infos.Count == 0)
             return;
         FindObjectOfType<InfoCanvas>().startShowing(infos[0]);
     }

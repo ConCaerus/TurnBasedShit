@@ -28,7 +28,6 @@ public class ItemSelectionCanvas : UnitEquipmentSelectionCanvas {
         var shownItem = getItemInSlot(selectedIndex);
         shownImage.sprite = FindObjectOfType<PresetLibrary>().getItemSprite(shownItem).sprite;
         shownImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownItem.i_rarity);
-        shownImage.material = FindObjectOfType<PresetLibrary>().getRarityMaterial(shownItem.i_rarity);
         //  elementImage shit here
 
         //  stats

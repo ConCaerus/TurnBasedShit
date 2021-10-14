@@ -102,6 +102,14 @@ public class UnitStats {
         if(u_health > getModifiedMaxHealth())
             u_health = getModifiedMaxHealth();
     }
+    public bool addExp(float ex) {
+        u_exp += ex;
+        if(canLevelUp()) {
+            levelUp();
+            return true;
+        }
+        return false;
+    }
 
     //  Attack amount
     public float getBasePower() {

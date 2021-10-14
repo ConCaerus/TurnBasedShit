@@ -30,8 +30,7 @@ public class CombatLocation {
 
             int enemyCount = Random.Range(minNumberOfEnemies, maxNumberOfEnemies + 1);
             for(int e = 0; e < enemyCount; e++) {
-                var enemy = lib.getRandomEnemy(diff);
-                temp.enemies.Add(enemy);
+                temp.enemyIndexes.Add(lib.getRandomEnemyIndex(diff));
             }
             waves.Add(temp);
         }
@@ -60,5 +59,6 @@ public class CombatLocation {
 
 [System.Serializable]
 public class Wave {
-    public List<GameObject> enemies = new List<GameObject>();
+    public List<int> enemyIndexes = new List<int>();
+    public List<int> bossIndexes = new List<int>();
 }

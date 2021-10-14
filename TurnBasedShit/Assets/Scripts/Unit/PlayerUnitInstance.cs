@@ -74,6 +74,7 @@ public class PlayerUnitInstance : UnitClass {
             obj.GetComponent<SummonedUnitInstance>().summoner = stats;
             FindObjectOfType<SummonSpotSpawner>().getCombatSpotAtIndexForUnit(gameObject, getSummonCount() - 1).GetComponentInChildren<CombatSpot>().unit = obj.gameObject;
             obj.transform.position = FindObjectOfType<SummonSpotSpawner>().getCombatSpotAtIndexForUnit(gameObject, getSummonCount() - 1).transform.GetChild(0).transform.position + new Vector3(0.0f, obj.GetComponent<UnitClass>().spotOffset);
+            obj.GetComponent<UnitClass>().setup();
 
             //  apply item modifiers to summon
             if(stats.equippedItem != null && !stats.equippedItem.isEmpty()) {
@@ -104,14 +105,19 @@ public class PlayerUnitInstance : UnitClass {
         return count;
     }
 
-
-    public void addWeaponTypeExpOnKill(GameInfo.diffLvl diff) {
+    //  returns true if the level increased
+    public bool addWeaponTypeExpOnKill(float ex) {
         if(stats.equippedWeapon.w_attackType == Weapon.attackType.blunt) {
-            stats.u_bluntExp += GameVariables.getExpForDefeatedEnemy(diff);
+            int temp = stats.getBluntLevel();
+            stats.u_bluntExp += ex;
+            return temp != stats.getBluntLevel();
         }
         else if(stats.equippedWeapon.w_attackType == Weapon.attackType.edged) {
-            stats.u_edgedExp += GameVariables.getExpForDefeatedEnemy(diff);
+            int temp = stats.getEdgedLevel();
+            stats.u_edgedExp += ex;
+            return temp != stats.getEdgedLevel();
         }
+        return false;
     }
 
     public void updateSprites() {

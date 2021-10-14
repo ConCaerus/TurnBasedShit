@@ -31,7 +31,6 @@ public class WeaponSelectionCanvas : UnitEquipmentSelectionCanvas {
         var shownWeapon = getWeaponInSlot(selectedIndex);
         shownImage.sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(shownWeapon).sprite;
         shownImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownWeapon.w_rarity);
-        shownImage.GetComponent<Image>().material = FindObjectOfType<PresetLibrary>().getRarityMaterial(shownWeapon.w_rarity);
 
 
         //  stats

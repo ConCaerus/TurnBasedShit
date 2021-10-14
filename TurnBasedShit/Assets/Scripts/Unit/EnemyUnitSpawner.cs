@@ -17,12 +17,12 @@ public class EnemyUnitSpawner : MonoBehaviour {
                 unusedSpawnPoses.Add(i.gameObject);
         }
 
-        foreach(var i in info.waves[waveIndex].enemies) { 
-            if(i == null || i.GetComponent<PlayerUnitInstance>() != null) {
+        foreach(var i in info.waves[waveIndex].enemyIndexes) { 
+            if(i == -1) {
                 continue;
             }
-            var obj = Instantiate(i.gameObject);
-            obj.name = "Enemy: " + i.GetComponent<UnitClass>().stats.u_name;
+            var obj = Instantiate(FindObjectOfType<PresetLibrary>().getEnemy(i).gameObject);
+            obj.name = "Enemy: " + obj.GetComponent<UnitClass>().stats.u_name;
 
             obj.GetComponent<UnitClass>().setup();
 

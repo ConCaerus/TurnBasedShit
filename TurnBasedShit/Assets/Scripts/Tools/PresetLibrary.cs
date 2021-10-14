@@ -5,6 +5,7 @@ using UnityEngine;
 public class PresetLibrary : MonoBehaviour {
     //  Units
     [SerializeField] GameObject playerUnit;
+    [SerializeField] GameObject[] startingUnits;
     [SerializeField] GameObject[] enemies;
     [SerializeField] GameObject[] bosses;
     [SerializeField] UnitTraitPreset[] unitTraits;
@@ -15,9 +16,6 @@ public class PresetLibrary : MonoBehaviour {
     [SerializeField] GameObject[] unitBodies;
 
     [SerializeField] CombatScarSpriteHolder[] combatScars;
-
-    //  Materials
-    [SerializeField] Material[] rarityMaterials;
 
     //  Equipment
     [SerializeField] WeaponPreset[] weapons;
@@ -48,6 +46,9 @@ public class PresetLibrary : MonoBehaviour {
     }
     public GameObject getPlayerUnitObject() {
         return playerUnit.gameObject;
+    }
+    public GameObject getEnemy(int index) {
+        return enemies[index].gameObject;
     }
     public GameObject getEnemy(string name) {
         foreach(var i in enemies) {
@@ -131,6 +132,38 @@ public class PresetLibrary : MonoBehaviour {
         }
 
         return temp.gameObject;
+    }
+
+    public int getRandomEnemyIndex(GameInfo.diffLvl diff = (GameInfo.diffLvl)(-1)) {
+        //  no specified difficulty level
+        if(diff != (GameInfo.diffLvl)(-1)) {
+            List<int> useables = new List<int>();
+            useables.Clear();
+            for(int i = 0; i < enemies.Length; i++) {
+                if(enemies[i].GetComponent<EnemyUnitInstance>().enemyDiff == diff)
+                    useables.Add(i);
+
+                else if(enemies[i].GetComponent<EnemyUnitInstance>().enemyDiff == diff + 1) {
+                    if(GameVariables.chanceOutOfHundred(25))
+                        useables.Add(i);
+                }
+
+                else if(enemies[i].GetComponent<EnemyUnitInstance>().enemyDiff == diff - 1)
+                    if(GameVariables.chanceOutOfHundred(25))
+                        useables.Add(i);
+            }
+
+            if(useables.Count > 0)
+                return useables[Random.Range(0, useables.Count)];
+        }
+        return Random.Range(0, enemies.Length);
+    }
+    public int getBossIndex(GameObject boss) {
+        for(int i = 0; i < bosses.Length; i++) {
+            if(bosses[i] == boss)
+                return i;
+        }
+        return -1;
     }
 
     public UnitTrait getRandomGoodUnitTrait() {
@@ -225,11 +258,6 @@ public class PresetLibrary : MonoBehaviour {
     }
     public int getBodyCount() {
         return unitBodies.Length;
-    }
-
-    //  Materials
-    public Material getRarityMaterial(GameInfo.rarityLvl rarity) {
-        return rarityMaterials[(int)rarity];
     }
 
     //  Equipment

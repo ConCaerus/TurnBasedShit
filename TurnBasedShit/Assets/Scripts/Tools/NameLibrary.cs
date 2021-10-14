@@ -4,23 +4,33 @@ using UnityEngine;
 
 public static class NameLibrary {
     static List<string> playerNames = new List<string>() {
-        "Carl", "Victor", "Harold", "Felix", "Vermont", "Lars", "Tars", "Mars", "Lucky", "Courage"
+        "Vermont", "Lucky", "Mars", "Aldous", "Gayla", "Kilie", "Phiobe", "Kayson", "Bilha", "Saule",
+        "Flynn", "Elmo", "Gloria", "Ansley", "Rita", "Natalius", "Kaley", "Rufus", "Japheth", "Reuven",
+        "Chesley", "Celsus", "Maddy", "Dayna", "Waldo", "Ivan", "Rilla", "Rhode", "Burke", "Ester",
+        "Anzo", "Yama", "Modred", "Kelley", "Shane", "Audra", "Connor", "Dina", "Glenn", "Colbert",
+        "Deana", "Abe", "Pax", "Tabetha", "Tara", "Gayle", "Mandy", "Kosmas", "Tane", "Everlee",
+        "Luna", "Medrod", "Davy", "Jeptha", "Cealia", "Hester", "Claude", "Peony", "Lana", "Anil"
     };
 
 
     static List<string> enemyFirstNames = new List<string>() {
-        "Tim", "Todd", "Marlin", "Rupert", "Larry"
+        "Tim", "Todd", "Marlin", "Rupert", "Magnolia", "Oddbjorn", "Marcellus", "Osee", "Mnemosyne", "Veles",
+        "Dennis", "Ukko", "Clemens", "Yair", "Mary", "Pearle", "Lynn", "Myra", "Terminus", "Deven",
+        "Celine", "Tristan", "Zoey", "Pele", "Stigr", "Gavin", "Euphemia", "Lycus", "Zosime", "Rylee"
     };
     static List<string> enemyLastNames = new List<string>() {
-        "the Terrible", "the Fearful", "the Handsome", "the Miserable", "the Merriful", "of the Forrest", "of the Wild", "the Killer"
+        "the Terrible", "the Fearful", "the Handsome", "the Miserable", "the Merriful", 
+        "of the Forrest", "of the Wild", "the Killer", "the Harmful", "the Negative",
+        "the Ruinous", "the Sinister", "the Menacing", "the Bad", "the Noxious",
+        "The Fluffy", "the Obese", "the Unsafe", "the Fragile", "the Breaker"
     };
 
     static List<string> townNames = new List<string>() {
-        "Cuntsville", "Fucksville", "Bitchville", "Whoreville", "Yucksville",
-        "Ballsmouth", "Greensville", "Mornse", "Flornse", "Yorkshire", "Forkshire",
-        "Mas", "Kuor", "Moorse", "Torense", "Portur", "Ooren", "Boore", "Maor",
-        "Gheast", "Relment", "Quendid", "Marense", "Larense", "Harense", "Basmerd", 
-        "Jorvin", "Kilmed", "Vulpin", "Corense", "Whilbed"
+        "Ballsmouth", "Mornse", "Flornse", "Boore", "Ooren", "Quendid", "Jorvin", "Gheast", "Portur", "Yorkshire",
+        "Lustinus", "Yeshua", "Hattie", "Solon", "Damocles", "Pomona", "Walt", "Dunstan", "Melitta", "Petru",
+        "Magni", "Bronte", "Kacie", "Lucilla", "Edith", "Euandros", "Flaviana", "Romilly", "Lewi", "Laila",
+        "Dex", "Westley", "Rowland", "Kurt", "Liv", "Paulina", "Elwood", "Wayne", "Meridith", "Kian",
+        "Daphne", "Martina", "Phodopis", "Romaine", "Amos", "Humphry", "Alodia", "Ouranos", "Coronis", "Diodoros"
     };
 
 

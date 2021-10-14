@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UnitSpriteHandler : MonoBehaviour {
     public GameObject head, face, body;
-    bool showingFace = true;
+    bool showingFace = true, hatInfrontOfHead = true;
     int faceIndex = -1, headIndex, bodyIndex = -1;
     int animState = 0;
     int orderOffset = 0;
@@ -150,6 +150,7 @@ public class UnitSpriteHandler : MonoBehaviour {
         }
 
         if(aSprite.equippedHat != null) {
+            hatInfrontOfHead = aSprite.hatInfrontOfHead;
             hat.GetComponent<SpriteRenderer>().sprite = aSprite.equippedHat;
             hat.transform.localPosition = aSprite.getRelevantHatPos(headIndex);
             hat.transform.localScale = aSprite.getRelevantHatSize(headIndex);
@@ -220,7 +221,10 @@ public class UnitSpriteHandler : MonoBehaviour {
         //  head / face
         head.GetComponent<SpriteRenderer>().sortingOrder = body.GetComponent<SpriteRenderer>().sortingOrder + 3;
         head.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = body.GetComponent<SpriteRenderer>().sortingOrder + 4;
-        head.transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = body.GetComponent<SpriteRenderer>().sortingOrder + 5;
+        if(hatInfrontOfHead)
+            head.transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = body.GetComponent<SpriteRenderer>().sortingOrder + 5;
+        else
+            head.transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = body.GetComponent<SpriteRenderer>().sortingOrder + 2;
     }
 
 

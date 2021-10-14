@@ -156,6 +156,7 @@ public class ArmorSpriteHolder {
     public float xShoulderPos1, yShoulderPos1, xShoulderSize1, yShoulderSize1;
     public float xShoulderPos2, yShoulderPos2, xShoulderSize2, yShoulderSize2;
 
+    public bool hatInfrontOfHead = true;
     public float xHatPos0, yHatPos0, xHatSize0, yHatSize0, hatRot;
     public float xHatPos1, yHatPos1, xHatSize1, yHatSize1;
     public float xHatPos2, yHatPos2, xHatSize2, yHatSize2;

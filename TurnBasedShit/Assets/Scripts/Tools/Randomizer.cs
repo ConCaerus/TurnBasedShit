@@ -129,13 +129,7 @@ public static class Randomizer {
     }
 
     public static CombatLocation randomizeCombatLocation(CombatLocation cl) {
-        //  randomize enemies
-        for(int j = 0; j < cl.waves.Count; j++) {
-            for(int i = 0; i < cl.waves[j].enemies.Count; i++) {
-                var enemy = cl.waves[j].enemies[i];
-                cl.waves[j].enemies[i] = enemy;
-            }
-        }
+        //  this function currently does nothing
         return cl;
     }
 
