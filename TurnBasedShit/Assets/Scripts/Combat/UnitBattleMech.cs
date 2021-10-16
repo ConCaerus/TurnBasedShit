@@ -18,7 +18,7 @@ public class UnitBattleMech : MonoBehaviour {
                 i.ForceStateNormalizedTime(i.gameObject.transform.position.x / 20.0f);
             }
         }
-        StartCoroutine(FindObjectOfType<TransitionCanvas>().runAfterLoading(setUp));
+        setUp();
     }
 
     void setUp() {
@@ -52,12 +52,11 @@ public class UnitBattleMech : MonoBehaviour {
 
         //  enemies killed all of the players units
         if(FindObjectsOfType<PlayerUnitInstance>().Length == 0) {
-            //  do stuff.
+            FindObjectOfType<TransitionCanvas>().loadSceneWithTransition("MainMenu");
         }
 
         //  player killed all enemies and the battle is over
         else if(FindObjectsOfType<EnemyUnitInstance>().Length == 0) {
-            GameInfo.getCombatDetails().addSpoils();
             showBattleResults();
             battleResultsCanvas.GetComponent<BattleResultsCanvas>().showCombatLocationEquipment();
         }

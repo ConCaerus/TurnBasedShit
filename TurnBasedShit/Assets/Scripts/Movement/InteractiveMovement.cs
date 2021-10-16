@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
+using TMPro;
 
 public abstract class InteractiveMovement : UnitMovement {
     public abstract bool outOfBounds();
@@ -12,6 +14,10 @@ public abstract class InteractiveMovement : UnitMovement {
     public abstract void deinteract();
 
     public int interactDist;
+
+    bool showingInteractText = false;
+    public string interactString = "W";
+    public TextMeshProUGUI interactText;
 
     private void Update() {
         if(FindObjectOfType<MenuCanvas>().isOpen())
@@ -90,5 +96,32 @@ public abstract class InteractiveMovement : UnitMovement {
 
         if(anim == null)
             anim = StartCoroutine(walkAnim());
+    }
+
+
+    public void showInteractText() {
+        if(showingInteractText)
+            return;
+        showingInteractText = true;
+        float speed = 0.15f;
+        float offset = 50f;
+
+        interactText.text = interactString;
+        interactText.gameObject.transform.localPosition = Vector3.zero;
+        interactText.gameObject.transform.localScale = Vector3.zero;
+        interactText.transform.DOComplete();
+        interactText.gameObject.transform.DOScale(1.0f, speed);
+        interactText.gameObject.transform.DOLocalMoveY(offset, speed);
+    }
+    public void hideInteractText() {
+        if(!showingInteractText)
+            return;
+        showingInteractText = false;
+        float speed = 0.25f;
+
+        interactText.text = interactString;
+        interactText.transform.DOComplete();
+        interactText.gameObject.transform.DOScale(0.0f, speed);
+        interactText.gameObject.transform.DOLocalMoveY(0.0f, speed);
     }
 }

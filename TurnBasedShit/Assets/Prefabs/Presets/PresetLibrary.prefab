@@ -53,7 +53,7 @@ MonoBehaviour:
   - {fileID: 7965800103628401659, guid: c3ac61417ba571f488f2e9ce4301e0a0, type: 3}
   - {fileID: 1139315496115550824, guid: 05e7172bdc1aa0942bc7595b8f1c3ee7, type: 3}
   bosses:
-  - {fileID: 6037864551336239585, guid: 021ed20cc3c35ee4e87aaea09b917065, type: 3}
+  - {fileID: 4044643730084277563, guid: b3f1952a01d71034c8de53cf61b84c60, type: 3}
   unitTraits:
   - {fileID: 11400000, guid: a9cda2bcdb5e2a544a1aa7da91c2d545, type: 2}
   - {fileID: 11400000, guid: 5e86da285b788e84f8dd41ad927418d5, type: 2}
@@ -82,7 +82,6 @@ MonoBehaviour:
   - sprite: {fileID: 21300000, guid: 39ec644c379dfa5429bc12fc2c4c4390, type: 3}
     scale: 0
     rot: 0
-  rarityMaterials: []
   weapons:
   - {fileID: 11400000, guid: ea5fe6f9629f7b04eba4614bd981b91c, type: 2}
   - {fileID: 11400000, guid: 220aca2325dfbbc43ba1ff7dd240297f, type: 2}
@@ -119,9 +118,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b95696a5bd89c5f47a4195e159d7659a, type: 2}
   - {fileID: 11400000, guid: 17142b7f9d9b4a8439280c28ade623ee, type: 2}
   armor:
-  - {fileID: 11400000, guid: c35ec3980a4a9a94b8c3a1bb7fc85faf, type: 2}
-  - {fileID: 11400000, guid: 30ccb2a1f14fbe84db341f5a49465d02, type: 2}
-  - {fileID: 11400000, guid: 37267c66de7378647863e49163311691, type: 2}
   - {fileID: 11400000, guid: e83b8e3612930c145ae0cd437c975fa6, type: 2}
   - {fileID: 11400000, guid: ddc40d19f1b80454db44bfa1e785edef, type: 2}
   - {fileID: 11400000, guid: 279f0ea0e8b30404f963a84dbd4d5dee, type: 2}
@@ -157,6 +153,18 @@ MonoBehaviour:
   - weapon: {fileID: 11400000, guid: 17142b7f9d9b4a8439280c28ade623ee, type: 2}
     summon: {fileID: 2737049258412808082, guid: c081a5f9e5d5dec46b024f21b3be42d7,
       type: 3}
+  startingUnitCount: 3
+  startingWeapons:
+  - {fileID: 11400000, guid: 17142b7f9d9b4a8439280c28ade623ee, type: 2}
+  - {fileID: 11400000, guid: b95696a5bd89c5f47a4195e159d7659a, type: 2}
+  - {fileID: 11400000, guid: 7cf5a84a4bfc7354a89a2d74421f410a, type: 2}
+  startingArmor:
+  - {fileID: 11400000, guid: f1ad452374fcbcc4e86f0f6aa62524c0, type: 2}
+  - {fileID: 11400000, guid: e83b8e3612930c145ae0cd437c975fa6, type: 2}
+  - {fileID: 0}
+  startingItems:
+  - {fileID: 11400000, guid: 5a2f7061ac2a3e841bdda873c5a59799, type: 2}
+  - {fileID: 11400000, guid: 559c64e214f93cd408bd57d883966358, type: 2}
   buildings:
   - {fileID: 8276380999552465835, guid: 2041b81f4fbd6324ea21719bdfaa1a06, type: 3}
   - {fileID: 3953769566449601916, guid: 199c26ebb27a8ad408fd00611e57eb7a, type: 3}

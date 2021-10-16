@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 
 public abstract class UnitClass : MonoBehaviour {
-    [SerializeField] AudioClip hitSound, dieSound;
+    [SerializeField] AudioClip hurtSound, dieSound;
     public GameObject attackingTarget = null;
     public ParticleSystem bloodParticles;
     public Color hitColor;
@@ -20,9 +20,6 @@ public abstract class UnitClass : MonoBehaviour {
     public float tempSpeedMod = 1.0f;
 
     public float spotOffset = 0.0f;
-
-    [SerializeField] WeaponPreset weapon = null;
-    [SerializeField] ArmorPreset armor = null;
 
     Vector2 normalSize, normalPos;
     public Coroutine attackAnim, defendAnim;
@@ -135,51 +132,12 @@ public abstract class UnitClass : MonoBehaviour {
     }
 
 
-
-
-
-    public void setRandomAttackingTarget() {
-        List<GameObject> units = new List<GameObject>();
-        foreach(var i in FindObjectsOfType<UnitClass>()) {
-            if(i.isPlayerUnit != isPlayerUnit) {
-                units.Add(i.gameObject);
-            }
-        }
-
-        attackingTarget = units[Random.Range(0, units.Count)];
-    }
-
-    public void setEquippedWeapon(Weapon w = null) {
-        if(w == null && weapon != null) {
-            w = weapon.preset;
-            weapon = null;
-        }
-        if(w == null) return;
-        stats.equippedWeapon = w;
-
-        FindObjectOfType<PartyObject>().resaveInstantiatedUnit(stats);
-    }
     public void removeEquippedWeapon() {
         stats.equippedWeapon = null;
     }
 
-    public void setEquippedArmor(Armor a = null) {
-        if(a == null && armor != null) {
-            a = armor.preset;
-            armor = null;
-        }
-        if(a == null) return;
-        stats.equippedArmor = a;
-
-        FindObjectOfType<PartyObject>().resaveInstantiatedUnit(stats);
-    }
     public void removeEquippedArmor() {
         stats.equippedArmor = null;
-    }
-
-    public void setEquipment(Weapon w = null, Armor a = null) {
-        setEquippedWeapon(w);
-        setEquippedArmor(a);
     }
 
     public void setDefending(bool b) {
@@ -259,6 +217,7 @@ public abstract class UnitClass : MonoBehaviour {
         var blood = Instantiate(bloodParticles);
         Destroy(blood.gameObject, blood.main.startLifetimeMultiplier);
         blood.gameObject.transform.position = transform.position;
+        FindObjectOfType<AudioManager>().playSound(hurtSound);
         defendAnim = StartCoroutine(defendingAnim());
 
         //  chance worn state decrease
@@ -296,11 +255,8 @@ public abstract class UnitClass : MonoBehaviour {
 
             //  add exp
             if(killer != null && killer.GetComponent<PlayerUnitInstance>() != null) {
-                if(killer.GetComponent<PlayerUnitInstance>().addWeaponTypeExpOnKill(GameVariables.getExpForDefeatedEnemy(GetComponent<EnemyUnitInstance>().enemyDiff)))
-                    FindObjectOfType<DamageTextCanvas>().showBluntLevelUpTextForUnit(gameObject);
-
-                if(killer.GetComponent<PlayerUnitInstance>().stats.addExp(GameVariables.getExpForDefeatedEnemy(GetComponent<EnemyUnitInstance>().enemyDiff)))
-                    FindObjectOfType<DamageTextCanvas>().showLevelUpTextForUnit(gameObject);
+                killer.GetComponent<PlayerUnitInstance>().addWeaponTypeExpOnKill(GameVariables.getExpForDefeatedEnemy(GetComponent<EnemyUnitInstance>().enemyDiff));
+                killer.GetComponent<PlayerUnitInstance>().stats.addExp(GameVariables.getExpForDefeatedEnemy(GetComponent<EnemyUnitInstance>().enemyDiff));
             }
             else if(killer != null && killer.GetComponent<SummonedUnitInstance>() != null) {
                 int lvlBefore = killer.GetComponent<SummonedUnitInstance>().summoner.getSummonedLevel();
@@ -378,10 +334,10 @@ public abstract class UnitClass : MonoBehaviour {
         yield return new WaitForSeconds(0.35f);
         int bluntLvlBefore = stats.getBluntLevel();
         int edgedLvlBefore = stats.getEdgedLevel();
+        int lvlBefore = stats.u_level;
 
         //  play animation and hold position
         setAttackingAnim();
-        FindObjectOfType<AudioManager>().playSound(hitSound);
 
         //  actually deal damage to defender
         var dmg = stats.getDamageGiven(FindObjectOfType<PresetLibrary>()) * tempPowerMod;
@@ -402,6 +358,8 @@ public abstract class UnitClass : MonoBehaviour {
             FindObjectOfType<DamageTextCanvas>().showBluntLevelUpTextForUnit(gameObject);
         if(edgedLvlBefore != stats.getEdgedLevel())
             FindObjectOfType<DamageTextCanvas>().showEdgedLevelUpTextForUnit(gameObject);
+        if(lvlBefore != stats.u_level)
+            FindObjectOfType<DamageTextCanvas>().showLevelUpTextForUnit(gameObject);
 
         //  non value based traits in attack
         foreach(var i in stats.u_traits) {
@@ -419,6 +377,7 @@ public abstract class UnitClass : MonoBehaviour {
         }
 
         attackAnim = null;
+        attackingTarget = null;
         FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
     }
 }

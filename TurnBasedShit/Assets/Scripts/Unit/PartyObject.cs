@@ -21,11 +21,6 @@ public class PartyObject : MonoBehaviour {
             var obj = Instantiate(FindObjectOfType<PresetLibrary>().getPlayerUnitObject());
             obj.GetComponent<UnitClass>().stats = FindObjectOfType<PresetLibrary>().createRandomPlayerUnitStats(false);
 
-            if(Party.getMemberStats(i) == null || Party.getMemberStats(i).isEmpty()) {
-                obj.gameObject.GetComponent<UnitClass>().setEquipment();
-                Party.addUnitAtIndex(i, obj.gameObject.GetComponent<UnitClass>().stats);
-            }
-
             //  sets up stats
             obj.GetComponent<UnitClass>().stats = Party.getMemberStats(i);
             obj.GetComponent<UnitClass>().setup();
@@ -99,14 +94,6 @@ public static class Party {
     public const string partyLeaderTag = "PartyLeader";
     public static string memberTag(int index) { return "Party" + index.ToString(); }
 
-
-
-    public static void createDefaultParty(PresetLibrary lib) {
-        addUnit(new UnitStats());
-        addUnit(new UnitStats());
-
-        SaveData.setInt(partySizeTag, 2);
-    }
 
     public static void clearParty(bool resetInstanceQueue) {
         for(int i = 0; i < SaveData.getInt(partySizeTag); i++) {

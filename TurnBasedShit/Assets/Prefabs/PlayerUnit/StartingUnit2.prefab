@@ -73,7 +73,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99b1e960874d0d84f831b39cc89d74c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitSound: {fileID: 8300000, guid: f9ab6cd3341723f4f8a4cb65b539d7c3, type: 3}
+  hurtSound: {fileID: 8300000, guid: f9ab6cd3341723f4f8a4cb65b539d7c3, type: 3}
   dieSound: {fileID: 8300000, guid: 5665238162eda3c4e8090423e9059acf, type: 3}
   attackingTarget: {fileID: 0}
   bloodParticles: {fileID: 2915087688519792205, guid: 4fdf5a70cefb9dc409fa113f55c33321,
@@ -87,9 +87,7 @@ MonoBehaviour:
   tempPowerMod: 1
   tempDefenceMod: 0
   tempSpeedMod: 1
-  spotOffset: 0.42
-  weapon: {fileID: 0}
-  armor: {fileID: 0}
+  spotOffset: 1
   stats:
     u_name: Eburwin
     u_expCap: 25

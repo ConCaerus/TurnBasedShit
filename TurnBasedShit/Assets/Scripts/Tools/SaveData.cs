@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class SaveData {
-    public static int saveIndex = 0;
+    static string saveIndexString = "Save Data Save Index";
     static string saveIndexTag() {
-        return saveTag(saveIndex);
+        return saveTag(PlayerPrefs.GetInt(saveIndexString));
     }
     static string saveTag(int i) {
         return "Save" + i.ToString() + " ";
@@ -59,32 +59,44 @@ public static class SaveData {
 
 
     public static void createSaveDataForCurrentSave(PresetLibrary lib) {
-        createSaveDataForSave(saveIndex, lib);
+        createSaveDataForSave(lib);
     }
-    public static void createSaveDataForSave(int index, PresetLibrary lib) {
+    public static void createSaveDataForSave(PresetLibrary lib) {
         //  Party
-        Party.createDefaultParty(lib);
-
-        //  Inventory 
-        Inventory.createDefaultInventory();
+        lib.addStartingUnits();
+        Debug.Log("Added starting units: " + Time.realtimeSinceStartup.ToString("0.00"));
+        Map.populateTowns(lib);
+        Debug.Log("Town Shit: " + Time.realtimeSinceStartup.ToString("0.00"));
     }
 
     public static void deleteCurrentSave() {
-        deleteSave(saveIndex);
+        deleteSave(PlayerPrefs.GetInt(saveIndexString));
     }
-    //  TODO: fucking update this peice of shit
     public static void deleteSave(int i) {
-        var prevIndex = saveIndex;
-        saveIndex = i;
+        var prevIndex = getCurrentSaveIndex();
+        setCurrentSaveIndex(i);
+
+        //  clear shit
         Inventory.clearInventory(true);
         Party.clearParty(true);
-        saveIndex = prevIndex;
+        Party.clearPartyEquipment();
+        MapLocationHolder.clear();
+
+
+        setCurrentSaveIndex(prevIndex);
         PlayerPrefs.Save();
+    }
+
+    public static int getCurrentSaveIndex() {
+        return PlayerPrefs.GetInt(saveIndexString);
+    }
+    public static void setCurrentSaveIndex(int i) {
+        PlayerPrefs.SetInt(saveIndexString, i);
     }
 
 
     public static bool hasSaveDataForCurrentSave() {
-        return hasSaveDataForSave(saveIndex);
+        return hasSaveDataForSave(getCurrentSaveIndex());
     }
     public static bool hasSaveDataForSave(int index) {
         return getIntInSave(index, Party.partySizeTag) > 0;

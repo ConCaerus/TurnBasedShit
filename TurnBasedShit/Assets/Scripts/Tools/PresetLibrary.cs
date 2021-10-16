@@ -5,7 +5,6 @@ using UnityEngine;
 public class PresetLibrary : MonoBehaviour {
     //  Units
     [SerializeField] GameObject playerUnit;
-    [SerializeField] GameObject[] startingUnits;
     [SerializeField] GameObject[] enemies;
     [SerializeField] GameObject[] bosses;
     [SerializeField] UnitTraitPreset[] unitTraits;
@@ -25,6 +24,13 @@ public class PresetLibrary : MonoBehaviour {
     [SerializeField] EquipmentPair[] equipmentPairs;
     [SerializeField] SummonPair[] summonParis;
 
+    //  starting equipment
+    [SerializeField] int startingUnitCount;
+    [SerializeField] WeaponPreset[] startingWeapons;
+    [SerializeField] ArmorPreset[] startingArmor;
+    [SerializeField] ItemPreset[] startingItems;
+
+
     //  Map
     [SerializeField] GameObject[] buildings;
     [SerializeField] GameObject townMember;
@@ -33,6 +39,23 @@ public class PresetLibrary : MonoBehaviour {
 
 
     //  Units
+    public void addStartingUnits() {
+        Party.clearParty(true);
+        Party.clearPartyEquipment();
+        for(int i = 0; i < startingUnitCount; i++) {
+            var stats = createRandomPlayerUnitStats(true);
+
+            if(i < startingWeapons.Length && startingWeapons[i] != null && !startingWeapons[i].preset.isEmpty())
+                stats.equippedWeapon = startingWeapons[i].preset;
+            if(i < startingArmor.Length && startingArmor[i] != null && !startingArmor[i].preset.isEmpty())
+                stats.equippedArmor = startingArmor[i].preset;
+            if(i < startingItems.Length && startingItems[i] != null && !startingItems[i].preset.isEmpty())
+                stats.equippedItem = startingItems[i].preset;
+
+            Party.addUnit(stats);
+        }
+    }
+
     public UnitStats createRandomPlayerUnitStats(bool setID) {
         var stats = new UnitStats(playerUnit.GetComponent<UnitClass>().stats);
         stats = Randomizer.randomizePlayerUnitStats(stats, this);
@@ -193,7 +216,7 @@ public class PresetLibrary : MonoBehaviour {
         foreach(var i in unitTraits) {
             bool hasTrait = false;
             foreach(var s in stats.u_traits) {
-                if(s == i.preset) {
+                if(s.isTheSameTypeAs(i.preset)) {
                     hasTrait = true;
                     break;
                 }
@@ -477,22 +500,6 @@ public class PresetLibrary : MonoBehaviour {
 
         loc.coinReward = 2 * ((int)lvl + 1) * waveCount; // default value
         loc.coinReward += (int)Random.Range(loc.coinReward * -0.1f, loc.coinReward * 0.1f);   //  randomizes it
-
-        //  chance for weapon
-        while(GameVariables.chanceWeaponDrop())
-            loc.weapons.Add(Randomizer.randomizeWeapon(getRandomWeapon((GameInfo.rarityLvl)lvl), lvl));
-
-        //  chance for armor
-        while(GameVariables.chanceArmorDrop())
-            loc.armor.Add(Randomizer.randomizeArmor(getRandomArmor((GameInfo.rarityLvl)lvl), lvl));
-
-        //  chance for item
-        while(GameVariables.chanceItemDrop())
-            loc.items.Add(getRandomItem((GameInfo.rarityLvl)lvl));
-
-        //  chance for consumable
-        while(GameVariables.chanceConsumableDrop())
-            loc.consumables.Add(getRandomConsumable((GameInfo.rarityLvl)lvl));
 
         return loc;
     }

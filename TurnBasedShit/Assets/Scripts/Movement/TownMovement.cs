@@ -8,6 +8,7 @@ public class TownMovement : LocationMovement {
 
     private void Start() {
         var town = GameInfo.getCurrentLocationAsTown();
+        hideInteractText();
 
         rightMost = FindObjectOfType<BuildingSpawner>().endingX;
 

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3582552737713610942}
   - component: {fileID: 3582552737713610940}
   - component: {fileID: 8318769425679748248}
+  - component: {fileID: 3380180195124333692}
   m_Layer: 0
   m_Name: Blacksmith
   m_TagString: Untagged
@@ -126,3 +127,19 @@ MonoBehaviour:
   reference:
     orderInTown: -1
     b_type: 4
+    chargeRate: 1
+--- !u!114 &3380180195124333692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3582552737713610914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b50cf52fd2f3020489dae1d0b81e3fc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  infos:
+  - <b><u>Blacksmith
+  hideWhenMenuOpen: 1

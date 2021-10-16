@@ -193,12 +193,11 @@ public class BlacksmithCanvas : MonoBehaviour {
         transform.GetChild(0).DOScale(1.0f, 0.15f);
         updateSlots();
         isShowing = true;
-        FindObjectOfType<LocationMovement>().canMove = false;
     }
     public void hide() {
         transform.GetChild(0).DOScale(0.0f, 0.15f);
         isShowing = false;
-        FindObjectOfType<LocationMovement>().canMove = true;
+        FindObjectOfType<LocationMovement>().deinteract();
     }
 
     SlotMenu getCurrentlyUsingMenu() {

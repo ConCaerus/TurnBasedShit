@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8276380999552465839}
   - component: {fileID: 8276380999552465833}
   - component: {fileID: 4948861360787419821}
+  - component: {fileID: 7100966617796586668}
   m_Layer: 0
   m_Name: Hospital
   m_TagString: Untagged
@@ -128,3 +129,18 @@ MonoBehaviour:
     b_type: 0
     freeHeals: 0
     pricePerHeal: 0
+--- !u!114 &7100966617796586668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8276380999552465835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b50cf52fd2f3020489dae1d0b81e3fc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  infos:
+  - <b><u>Hospital
+  hideWhenMenuOpen: 1

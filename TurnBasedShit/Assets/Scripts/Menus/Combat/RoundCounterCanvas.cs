@@ -16,7 +16,7 @@ public class RoundCounterCanvas : MonoBehaviour {
 
     public void updateInfo() {
         roundCounter.text = "Round\n" + roundCount .ToString();
-        waveCounter.text = "Wave\n" + (waveCount + 1).ToString() + " of " + (GameInfo.getCombatDetails().waves.Count + 1).ToString();
+        waveCounter.text = "Wave\n" + (waveCount + 1).ToString() + " of " + (GameInfo.getCombatDetails().waves.Count).ToString();
     }
 
     public void incrementAndUpdateRoundCount() {
@@ -26,6 +26,6 @@ public class RoundCounterCanvas : MonoBehaviour {
 
     public void incrementAndUpdateWaveCount() {
         waveCount++;
-        waveCounter.text = "Wave\n" + (waveCount + 1).ToString() + " of " + (GameInfo.getCombatDetails().waves.Count + 1).ToString();
+        waveCounter.text = "Wave\n" + (waveCount + 1).ToString() + " of " + (GameInfo.getCombatDetails().waves.Count).ToString();
     }
 }

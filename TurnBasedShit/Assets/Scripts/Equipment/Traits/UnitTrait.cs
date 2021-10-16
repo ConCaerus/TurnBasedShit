@@ -99,4 +99,9 @@ public class UnitTrait {
         }
         return false;
     }
+
+
+    public bool isTheSameTypeAs(UnitTrait other) {
+        return t_name == other.t_name && t_isGood == other.t_isGood;
+    }
 }

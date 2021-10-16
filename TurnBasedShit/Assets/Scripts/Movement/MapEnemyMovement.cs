@@ -25,7 +25,7 @@ public class MapEnemyMovement : MonoBehaviour {
 
     private void Update() {
         if(Vector2.Distance(transform.position, FindObjectOfType<MapMovement>().transform.position) < distToAttack) {
-            //FindObjectOfType<MapEventsHandler>().triggerEncounter();
+            FindObjectOfType<MapEventsHandler>().triggerEncounter();
         }
 
         if(transform.position.x > target.x && movingRight)

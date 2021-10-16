@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3953769566449601912}
   - component: {fileID: 3953769566449601918}
   - component: {fileID: 6854156815284823016}
+  - component: {fileID: -3444701433657171354}
   m_Layer: 0
   m_Name: Church
   m_TagString: Untagged
@@ -128,3 +129,18 @@ MonoBehaviour:
     b_type: 2
     priceToRemove: 0
     priceToAdd: 0
+--- !u!114 &-3444701433657171354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3953769566449601916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b50cf52fd2f3020489dae1d0b81e3fc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  infos:
+  - <b><u>Church
+  hideWhenMenuOpen: 1

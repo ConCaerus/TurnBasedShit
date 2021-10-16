@@ -10,8 +10,6 @@ public class BattleOptionsCanvas : MonoBehaviour {
     bool showing = false;
     float showTime = 0.15f;
 
-    [SerializeField] Material selectedMat;
-
 
     private void Start() {
         transform.GetChild(0).gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0.0f, -100.0f);
@@ -110,13 +108,5 @@ public class BattleOptionsCanvas : MonoBehaviour {
         else
             battleState = 0;
         FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
-    }
-
-
-    public void hoverOverButton(GameObject thing) {
-        thing.GetComponent<Image>().material = selectedMat;
-    }
-    public void dehoverOverButton(GameObject thing) {
-        thing.GetComponent<Image>().material = null;
     }
 }

@@ -17,7 +17,7 @@ MonoBehaviour:
     a_name: Suit
     a_rarity: 0
     a_wornAmount: 0
-    a_attributes: 00000000
+    a_attributes: 
     a_defence: 3
     a_speedMod: 0
     a_coinCost: 1
@@ -52,6 +52,7 @@ MonoBehaviour:
       yShoulderPos2: 0.173
       xShoulderSize2: -0.95
       yShoulderSize2: 0.95
+      hatInfrontOfHead: 1
       xHatPos0: -0.026
       yHatPos0: 0.558
       xHatSize0: 1

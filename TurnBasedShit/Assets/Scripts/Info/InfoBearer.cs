@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InfoBearer : MonoBehaviour {
-    public List<string> infos = new List<string>() { "Information" };
+    public List<string> infos = new List<string>() { "<b><u>Information" };
 
     public bool hideWhenMenuOpen = true;
 

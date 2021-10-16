@@ -48,6 +48,7 @@ public class UpgradeCanvas : MonoBehaviour {
     public void hide() {
         float speed = 0.25f;
         transform.GetChild(0).DOScale(new Vector2(0.0f, 0.0f), speed);
+        FindObjectOfType<LocationMovement>().deinteract();
         isShowing = false;
     }
 

@@ -1328,7 +1328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa06e361c1cc4654bb21458ac9ab693e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitSound: {fileID: 8300000, guid: f9ab6cd3341723f4f8a4cb65b539d7c3, type: 3}
+  hurtSound: {fileID: 8300000, guid: a34773faaf7c9a24ca77541ba1e855e5, type: 3}
   dieSound: {fileID: 8300000, guid: 5665238162eda3c4e8090423e9059acf, type: 3}
   attackingTarget: {fileID: 0}
   bloodParticles: {fileID: 2915087688519792205, guid: 4fdf5a70cefb9dc409fa113f55c33321,
@@ -1342,9 +1342,7 @@ MonoBehaviour:
   tempPowerMod: 1
   tempDefenceMod: 0
   tempSpeedMod: 1
-  spotOffset: 0.374
-  weapon: {fileID: 0}
-  armor: {fileID: 0}
+  spotOffset: 0.25
   stats:
     u_name: Ground Bird
     u_expCap: 25
@@ -1425,6 +1423,7 @@ MonoBehaviour:
         yShoulderPos2: 0
         xShoulderSize2: 0
         yShoulderSize2: 0
+        hatInfrontOfHead: 1
         xHatPos0: 0
         yHatPos0: 0
         xHatSize0: 0
@@ -1452,7 +1451,7 @@ MonoBehaviour:
       nameOfKiller: 
       causeOfDeath: 0
       enemyType: 0
-  enemyDiff: 2
+  enemyDiff: 4
   weakTo: 0
   weaponDrop: {fileID: 0}
   chanceToDropWeapon: 0
@@ -1500,6 +1499,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   infos:
   - Enemy Unit
+  hideWhenMenuOpen: 1
 --- !u!1 &7965800103761106458
 GameObject:
   m_ObjectHideFlags: 0

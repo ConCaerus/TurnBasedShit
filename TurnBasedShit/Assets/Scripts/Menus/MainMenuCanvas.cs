@@ -26,7 +26,7 @@ public class MainMenuCanvas : MonoBehaviour {
     public void updateNameText(string s) {
         nameInputCanvas.GetComponentInChildren<TextMeshProUGUI>().text = s;
         foreach(var i in FindObjectsOfType<SaveSlotInformation>()) {
-            if(i.saveIndex == SaveData.saveIndex) {
+            if(i.saveIndex == SaveData.getCurrentSaveIndex()) {
                 i.setName(s);
                 break;
             }
@@ -35,13 +35,18 @@ public class MainMenuCanvas : MonoBehaviour {
     public void setNameText(string s) {
         nameInputCanvas.SetActive(false);
         SaveData.setString("Save Name", s);
-        SaveData.deleteCurrentSave();
-        loadCurrentState();
+        StartCoroutine(loadCurrentState());
     }
 
-    void loadCurrentState() {
-        if(!SaveData.hasSaveDataForCurrentSave())
+    IEnumerator loadCurrentState() {
+        FindObjectOfType<TransitionCanvas>().showBackground();
+
+        yield return new WaitForSeconds(FindObjectOfType<TransitionCanvas>().getTransitionTime());
+
+        if(createNewSave) {
+            SaveData.deleteCurrentSave();
             SaveData.createSaveDataForCurrentSave(FindObjectOfType<PresetLibrary>());
+        }
 
         switch(GameInfo.currentGameState) {
             case GameInfo.state.Combat:
@@ -59,14 +64,14 @@ public class MainMenuCanvas : MonoBehaviour {
 
     //  games buttons
     public void loadGame(int index) {
-        SaveData.saveIndex = index;
+        SaveData.setCurrentSaveIndex(index);
 
         if(createNewSave) {
             nameInputCanvas.SetActive(true);
             FindObjectOfType<TextInputReader>().startReading(GameVariables.getMaxPlayerUnitNameLength(), updateNameText, setNameText);
         }
         else {
-            loadCurrentState();
+            StartCoroutine(loadCurrentState());
         }
     }
 }

@@ -30,6 +30,7 @@ public class BattleResultsCanvas : MonoBehaviour {
         var armor = GameInfo.getCombatDetails().armor;
         var consumables = GameInfo.getCombatDetails().consumables;
         var items = GameInfo.getCombatDetails().items;
+        GameInfo.getCombatDetails().addSpoils();
 
         coinsText.text = "Coins Earned: " + GameInfo.getCombatDetails().coinReward.ToString();
 

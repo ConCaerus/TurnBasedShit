@@ -13,12 +13,12 @@ public class UnitSpriteHandler : MonoBehaviour {
     Coroutine idler = null;
 
     public void setEverything(UnitStats stats) {
-        setEverything(stats.u_sprite, stats.equippedWeapon, stats.equippedArmor);;
+        setEverything(stats.u_sprite, stats.equippedWeapon, stats.equippedArmor); ;
     }
     public void setEverything(int h, int f, int b, Color c, Weapon w, Armor a) {
         setHead(h, a);
         setFace(f, a);
-        setBody(b, w, a); 
+        setBody(b, w, a);
         setColor(c);
         offsetLayer();
 
@@ -32,7 +32,8 @@ public class UnitSpriteHandler : MonoBehaviour {
     public void setHead(int index, Armor a) {
         if(index == -1)
             index = Random.Range(0, FindObjectOfType<PresetLibrary>().getHeadCount());
-        Destroy(head.gameObject);
+        if(head != null)
+            Destroy(head.gameObject);
         GameObject obj = FindObjectOfType<PresetLibrary>().getUnitHead(index);
 
         head = Instantiate(obj, body.transform).transform.GetChild(0).gameObject;
@@ -191,8 +192,10 @@ public class UnitSpriteHandler : MonoBehaviour {
     }
 
     public void setAnimSpeed(float sp) {
-        body.GetComponent<Animator>().speed = sp;
-        head.GetComponent<Animator>().speed = sp;
+        if(body != null && body.GetComponent<Animator>() != null)
+            body.GetComponent<Animator>().speed = sp;
+        if(head != null && head.GetComponent<Animator>() != null)
+            head.GetComponent<Animator>().speed = sp;
     }
 
 

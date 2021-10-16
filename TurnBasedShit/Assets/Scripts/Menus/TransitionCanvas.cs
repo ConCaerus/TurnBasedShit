@@ -8,14 +8,17 @@ using UnityEngine.SceneManagement;
 public class TransitionCanvas : MonoBehaviour {
     [SerializeField] GameObject background;
 
-    [SerializeField] float transitionSpeed = 0.25f;
+    float transitionTime = 0.5f;
 
     public bool loaded = false;
     public delegate void func();
 
     private void Awake() {
-        background.SetActive(true);
         DOTween.Init();
+    }
+
+    private void Start() {
+        background.SetActive(true);
         hideBackground();
     }
 
@@ -35,7 +38,7 @@ public class TransitionCanvas : MonoBehaviour {
         loaded = false;
         background.SetActive(true);
         background.transform.localPosition = new Vector3(0.0f, -1000.0f, 0.0f);
-        background.transform.DOLocalMove(new Vector3(0.0f, 0.0f, 0.0f), transitionSpeed);
+        background.transform.DOLocalMove(new Vector3(0.0f, 0.0f, 0.0f), transitionTime);
     }
 
     IEnumerator hideBackgroundObject() {
@@ -43,22 +46,22 @@ public class TransitionCanvas : MonoBehaviour {
 
         background.SetActive(true);
         background.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
-        background.transform.DOLocalMove(new Vector3(0.0f, -1000.0f, 0.0f), transitionSpeed);
+        background.transform.DOLocalMove(new Vector3(0.0f, -1000.0f, 0.0f), transitionTime);
 
-        yield return new WaitForSeconds(transitionSpeed);
+        yield return new WaitForSeconds(transitionTime);
         background.SetActive(false);
         loaded = true;
     }
 
     IEnumerator loadSceneAfterBackgroundShown(string name) {
         showBackground();
-        yield return new WaitForSeconds(transitionSpeed);
+        yield return new WaitForSeconds(transitionTime);
 
         SceneManager.LoadScene(name);
     }
     IEnumerator runFuncAfterBackgroundShown(func funcToRun) {
         showBackground();
-        yield return new WaitForSeconds(transitionSpeed);
+        yield return new WaitForSeconds(transitionTime);
 
         funcToRun();
     }
@@ -80,5 +83,9 @@ public class TransitionCanvas : MonoBehaviour {
 
     public void loadSceneWithFunction(func funcToRun) {
         StartCoroutine(runFuncAfterBackgroundShown(funcToRun));
+    }
+
+    public float getTransitionTime() {
+        return transitionTime;
     }
 }

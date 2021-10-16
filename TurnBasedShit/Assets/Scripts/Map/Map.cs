@@ -48,13 +48,13 @@ public static class Map {
     }
 
     public static void populateTowns(PresetLibrary lib) {
-        int cakeCount = 5;
-        int easyCount = 7;
-        int normalCount = 10;
-        int interCount = 15;
-        int hardCount = 20;
-        int heroicCount = 30;
-        int legendaryCount = 40;
+        int cakeCount = 2;
+        int easyCount = 3;
+        int normalCount = 4;
+        int interCount = 5;
+        int hardCount = 7;
+        int heroicCount = 8;
+        int legendaryCount = 10;
 
         for(int i = 0; i < cakeCount + easyCount + normalCount + interCount + hardCount + heroicCount + legendaryCount; i++) {
             if(i < cakeCount)

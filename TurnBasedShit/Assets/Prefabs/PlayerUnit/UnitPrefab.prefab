@@ -93,40 +93,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99b1e960874d0d84f831b39cc89d74c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitSound: {fileID: 8300000, guid: f9ab6cd3341723f4f8a4cb65b539d7c3, type: 3}
+  hurtSound: {fileID: 8300000, guid: f9ab6cd3341723f4f8a4cb65b539d7c3, type: 3}
   dieSound: {fileID: 8300000, guid: 5665238162eda3c4e8090423e9059acf, type: 3}
   attackingTarget: {fileID: 0}
   bloodParticles: {fileID: 2915087688519792205, guid: 4fdf5a70cefb9dc409fa113f55c33321,
     type: 3}
-  u_sprite:
-    sprite: {fileID: 21300000, guid: 026728a4d01cdb549889f7c3fa7f975e, type: 3}
-    attackingSprite: {fileID: 1463458838281765825, guid: baae3e43bd852014dbbdc6cf491e0473,
-      type: 3}
-    defendingSprite: {fileID: 1465780817400294621, guid: baae3e43bd852014dbbdc6cf491e0473,
-      type: 3}
-    idleAnim: {fileID: 0}
-    attackAnim: {fileID: 0}
-    anim: {fileID: 0}
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   isPlayerUnit: 1
   defending: 0
   stunned: 0
+  charging: 0
   isMouseOverUnit: 0
-  tempPower: 0
-  tempDefence: 0
-  tempSpeed: 0
-  spotOffset: 0.42
-  weapon: {fileID: 0}
-  armor: {fileID: 0}
+  tempPowerMod: 1
+  tempDefenceMod: 0
+  tempSpeedMod: 1
+  spotOffset: 1
   stats:
     u_name: Felix
     u_expCap: 25
     u_exp: 0
     u_level: 0
-    u_headSpriteIndex: 0
-    u_faceSpriteIndex: 0
-    u_bodySpriteIndex: 0
-    u_color: {r: 0.6260321, g: 0.42259994, b: 0.7264151, a: 1}
+    u_bluntExp: 0
+    u_edgedExp: 0
+    u_summonedExp: 0
+    u_sprite:
+      headIndex: 0
+      faceIndex: 0
+      bodyIndex: 0
+      color: {r: 1, g: 1, b: 1, a: 1}
     u_baseMaxHealth: 100
     u_health: 14
     u_speed: 0
@@ -134,7 +128,7 @@ MonoBehaviour:
     u_defence: 0
     u_critChance: 0
     u_bleedCount: 0
-    u_order: 2
+    u_instanceID: -1
     equippedWeapon:
       w_instanceID: -1
       w_name: 
@@ -142,6 +136,9 @@ MonoBehaviour:
       w_element: 0
       w_wornAmount: 0
       w_attributes: 
+      w_specialUsage: 0
+      w_specialUsageAmount: 0
+      w_attackType: 0
       w_power: 0
       w_speedMod: 0
       w_coinCost: 0
@@ -150,7 +147,8 @@ MonoBehaviour:
         equippedX: 0
         equippedY: 0
         equippedRot: 0
-        equippedSize: 0
+        equippedXSize: 0
+        equippedYSize: 0
     equippedArmor:
       a_instanceID: -1
       a_name: 
@@ -163,24 +161,61 @@ MonoBehaviour:
       a_sprite:
         sprite: {fileID: 0}
         equippedSprite: {fileID: 0}
+        equippedShoulder: {fileID: 0}
+        equippedHat: {fileID: 0}
+        xPos0: 0
+        yPos0: 0
+        xSize0: 0
+        ySize0: 0
+        xPos1: 0
+        yPos1: 0
+        xSize1: 0
+        ySize1: 0
+        xPos2: 0
+        yPos2: 0
+        xSize2: 0
+        ySize2: 0
+        xShoulderPos0: 0
+        yShoulderPos0: 0
+        xShoulderSize0: 0
+        yShoulderSize0: 0
+        shoulderRot: 0
+        xShoulderPos1: 0
+        yShoulderPos1: 0
+        xShoulderSize1: 0
+        yShoulderSize1: 0
+        xShoulderPos2: 0
+        yShoulderPos2: 0
+        xShoulderSize2: 0
+        yShoulderSize2: 0
+        hatInfrontOfHead: 1
+        xHatPos0: 0
+        yHatPos0: 0
+        xHatSize0: 0
+        yHatSize0: 0
+        hatRot: 0
+        xHatPos1: 0
+        yHatPos1: 0
+        xHatSize1: 0
+        yHatSize1: 0
+        xHatPos2: 0
+        yHatPos2: 0
+        xHatSize2: 0
+        yHatSize2: 0
     equippedItem:
       i_instanceID: -1
       i_name: 
       i_rarity: 0
-      i_useTimes: 
-      i_useConditions: 
-      i_useEffects: []
+      i_timedEffects: []
+      i_passiveEffects: []
       i_coinCost: 0
       i_sprite:
         sprite: {fileID: 0}
-    u_slaveStats:
-      isSlave: 1
-      escapeDesire: 24.40264
-      scaredModifier: 1.3825283
-      idealWeathLevel: 2
     u_traits: []
-  equippedWeaponPosition: {fileID: 6280682056052294380}
-  equippedArmorPosition: {fileID: 6733269046301558630}
+    u_deathInfo:
+      nameOfKiller: 
+      causeOfDeath: 0
+      enemyType: 0
 --- !u!1001 &954274707321897296
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -257,12 +292,12 @@ PrefabInstance:
         type: 3}
       propertyPath: face
       value: 
-      objectReference: {fileID: 7914469020637666138}
+      objectReference: {fileID: 0}
     - target: {fileID: 1499956658857944862, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
         type: 3}
       propertyPath: head
       value: 
-      objectReference: {fileID: 4055968980765052278}
+      objectReference: {fileID: 0}
     - target: {fileID: 1499956658857944862, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
         type: 3}
       propertyPath: lArm
@@ -293,33 +328,9 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 954274707321897296}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &6280682056052294380 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6491715421042181052, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-    type: 3}
-  m_PrefabInstance: {fileID: 954274707321897296}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6720565979185711774 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5799084827323878350, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-    type: 3}
-  m_PrefabInstance: {fileID: 954274707321897296}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &6733269046301558630 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5786882871188768310, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-    type: 3}
-  m_PrefabInstance: {fileID: 954274707321897296}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &4055968980765052278 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3852813565049097254, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-    type: 3}
-  m_PrefabInstance: {fileID: 954274707321897296}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &7914469020637666138 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6983838847687645706, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
     type: 3}
   m_PrefabInstance: {fileID: 954274707321897296}
   m_PrefabAsset: {fileID: 0}

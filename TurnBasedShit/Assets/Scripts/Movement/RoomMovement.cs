@@ -20,6 +20,7 @@ public class RoomMovement : LocationMovement {
         foreach(var i in buildingOjbects) {
             if(Mathf.Abs(i.transform.position.x - transform.position.x) < distToInt) {
                 flip(false);
+                canMove = false;
                 if(FindObjectOfType<BuildingCanvas>() != null)
                     FindObjectOfType<BuildingCanvas>().showCanvas();
                 else if(FindObjectOfType<ShopCanvas>() != null)
@@ -30,6 +31,8 @@ public class RoomMovement : LocationMovement {
                     FindObjectOfType<UpgradeCanvas>().show();
                 else if(FindObjectOfType<BlacksmithCanvas>() != null && !FindObjectOfType<BlacksmithCanvas>().isShowing)
                     FindObjectOfType<BlacksmithCanvas>().show();
+                else
+                    canMove = true;
             }
         }
 
@@ -44,6 +47,7 @@ public class RoomMovement : LocationMovement {
 
     public override void deinteract() {
         flip(true);
+        canMove = true;
         if(FindObjectOfType<BuildingCanvas>() != null)
             FindObjectOfType<BuildingCanvas>().hideCanvas();
         else if(FindObjectOfType<ShopCanvas>() != null)

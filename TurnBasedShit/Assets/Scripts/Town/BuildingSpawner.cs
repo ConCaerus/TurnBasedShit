@@ -41,6 +41,23 @@ public class BuildingSpawner : MonoBehaviour {
 
 
 
+    private void Update() {
+        bool close = false;
+        foreach(var i in buildingObjects) {
+            if(Mathf.Abs(i.transform.position.x - FindObjectOfType<LocationMovement>().transform.position.x) < distToInteract) {
+                close = true;
+                break;
+            }
+        }
+
+        if(close)
+            FindObjectOfType<LocationMovement>().showInteractText();
+        else
+            FindObjectOfType<LocationMovement>().hideInteractText();
+    }
+
+
+
     void spawnBuildings() {
         for(int i = 0; i < reference.getBuildingCount(); i++) {
             Vector2 pos = startingPoint + new Vector2(buildingBuffer * i, 0.0f);

@@ -73,7 +73,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99b1e960874d0d84f831b39cc89d74c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitSound: {fileID: 8300000, guid: f9ab6cd3341723f4f8a4cb65b539d7c3, type: 3}
+  hurtSound: {fileID: 8300000, guid: f9ab6cd3341723f4f8a4cb65b539d7c3, type: 3}
   dieSound: {fileID: 8300000, guid: 5665238162eda3c4e8090423e9059acf, type: 3}
   attackingTarget: {fileID: 0}
   bloodParticles: {fileID: 2915087688519792205, guid: 4fdf5a70cefb9dc409fa113f55c33321,
@@ -87,9 +87,7 @@ MonoBehaviour:
   tempPowerMod: 1
   tempDefenceMod: 0
   tempSpeedMod: 1
-  spotOffset: 0.42
-  weapon: {fileID: 0}
-  armor: {fileID: 0}
+  spotOffset: 1
   stats:
     u_name: Alphaeus
     u_expCap: 25
@@ -99,16 +97,16 @@ MonoBehaviour:
     u_edgedExp: 0
     u_summonedExp: 0
     u_sprite:
-      headIndex: 2
-      faceIndex: 2
-      bodyIndex: 0
-      color: {r: 0.6390952, g: 0.18760765, b: 0.0914644, a: 1}
+      headIndex: 3
+      faceIndex: 3
+      bodyIndex: 3
+      color: {r: 0.7984654, g: 0.49783427, b: 0.9150943, a: 1}
     u_baseMaxHealth: 100
     u_health: 100
-    u_speed: 1
+    u_speed: 3
     u_power: 1
     u_defence: 1
-    u_critChance: 0
+    u_critChance: 0.01
     u_bleedCount: 0
     u_instanceID: -1
     equippedWeapon:

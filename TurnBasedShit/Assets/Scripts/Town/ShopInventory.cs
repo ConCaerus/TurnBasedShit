@@ -76,39 +76,27 @@ public static class ShopInventory {
 
         int weaponCount = Random.Range(1, 11);
         for(int i = 0; i < weaponCount; i++) {
-            Weapon temp = library.getRandomWeapon((GameInfo.rarityLvl)lvl);
-            temp = Randomizer.randomizeWeapon(temp, lvl);
-
-            addWeapon(townIndex, temp);
+            addWeapon(townIndex, library.getRandomWeapon((GameInfo.rarityLvl)lvl));
         }
 
         int armorCount = Random.Range(1, 11);
         for(int i = 0; i < armorCount; i++) {
-            Armor temp = library.getRandomArmor((GameInfo.rarityLvl)lvl);
-            temp = Randomizer.randomizeArmor(temp, lvl);
-
-            addArmor(townIndex, temp);
+            addArmor(townIndex, library.getRandomArmor((GameInfo.rarityLvl)lvl));
         }
 
         int consumableCount = Random.Range(1, 11);
         for(int i = 0; i < consumableCount; i++) {
-            Consumable temp = library.getRandomConsumable((GameInfo.rarityLvl)lvl);
-
-            addConsumable(townIndex, temp);
+            addConsumable(townIndex, library.getRandomConsumable((GameInfo.rarityLvl)lvl));
         }
 
         int itemCount = Random.Range(1, 11);
         for(int i = 0; i < itemCount; i++) {
-            Item temp = library.getRandomItem((GameInfo.rarityLvl)lvl);
-
-            addItem(townIndex, temp);
+            addItem(townIndex, library.getRandomItem((GameInfo.rarityLvl)lvl));
         }
 
         int slaveCount = Random.Range(0, 3);
         for(int i = 0; i < slaveCount; i++) {
-            UnitStats temp = library.createRandomPlayerUnitStats(true);
-
-            addSlave(townIndex, temp);
+            addSlave(townIndex, library.createRandomPlayerUnitStats(true));
         }
     }
 

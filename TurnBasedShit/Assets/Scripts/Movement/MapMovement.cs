@@ -16,6 +16,7 @@ public class MapMovement : InteractiveMovement {
         transform.position = GameInfo.getCurrentMapPos();
         currentDiff = GameInfo.getCurrentDiff();
         GameInfo.currentGameState = GameInfo.state.Map;
+        hideInteractText();
         createSideUnitObjects();
     }
 
@@ -24,9 +25,12 @@ public class MapMovement : InteractiveMovement {
         foreach(var i in FindObjectsOfType<MapIcon>()) {
             if(Vector2.Distance(i.transform.position, transform.position) < distToInt) {
                 i.lightUp(distToInt - Vector2.Distance(i.transform.position, transform.position));
+                showInteractText();
             }
-            else if(!i.isMouseOver) {
-                i.lightDown();
+            else {
+                hideInteractText();
+                if(!i.isMouseOver)
+                    i.lightDown();
             }
         }
 
@@ -110,6 +114,7 @@ public class MapMovement : InteractiveMovement {
     public override void interact() {
         if(MapLocationHolder.locationCloseToPos(transform.position, distToInt)) {
             GameInfo.setCurrentMapPos(MapLocationHolder.getClostestLocation(transform.position).pos);
+            Debug.Log(MapLocationHolder.getClostestLocation(transform.position).type);
             MapLocationHolder.getClostestLocation(transform.position).enterLocation();
         }
     }

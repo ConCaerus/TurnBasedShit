@@ -20,12 +20,15 @@ public class MenuCanvas : MonoBehaviour {
     }
 
     private void Update() {
-        if(Input.GetKeyDown(KeyCode.Tab)) {
+        if(Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.Escape)) {
             if(isOpen()) {
                 hide();
             }
-            else 
+            else {
                 show();
+                if(Input.GetKeyDown(KeyCode.Escape))
+                    optionsTab();
+            }
         }
     }
 
