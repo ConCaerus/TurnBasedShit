@@ -120,7 +120,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 4957244312305419724}
         m_TargetAssemblyTypeName: ShopCanvas, Assembly-CSharp
         m_MethodName: setSlotState
         m_Mode: 3
@@ -145,7 +145,7 @@ GameObject:
   - component: {fileID: 3018189332369263850}
   - component: {fileID: 5551947513174346542}
   m_Layer: 5
-  m_Name: Button
+  m_Name: BuyButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -252,7 +252,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 4957244312305419724}
         m_TargetAssemblyTypeName: ShopCanvas, Assembly-CSharp
         m_MethodName: transaction
         m_Mode: 1
@@ -482,6 +482,7 @@ GameObject:
   - component: {fileID: 5383030579636126434}
   - component: {fileID: 6422538279759625212}
   - component: {fileID: 8780328322821550621}
+  - component: {fileID: 111104502}
   m_Layer: 5
   m_Name: Slots
   m_TagString: Untagged
@@ -560,6 +561,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
+--- !u!114 &111104502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2035933165208818938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3df1418f03525d7499c32bbda26c191d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2037648802975739034
 GameObject:
   m_ObjectHideFlags: 0
@@ -680,7 +693,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 4957244312305419724}
         m_TargetAssemblyTypeName: ShopCanvas, Assembly-CSharp
         m_MethodName: toggleState
         m_Mode: 1
@@ -1099,10 +1112,7 @@ MonoBehaviour:
   slotHolder: {fileID: 2035933165208818938}
   slotObject: {fileID: 4572787218034622832, guid: a55b90106c1c6e249a807b6f70fef777,
     type: 3}
-  slotTopY: 120
-  slotBotY: -120
-  slotBuffer: 10
-  scrollSpeed: 35
+  slot: {fileID: 111104502}
 --- !u!1 &3172147010240377346
 GameObject:
   m_ObjectHideFlags: 0
@@ -1532,7 +1542,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 4957244312305419724}
         m_TargetAssemblyTypeName: ShopCanvas, Assembly-CSharp
         m_MethodName: setSlotState
         m_Mode: 3
@@ -1876,7 +1886,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 4957244312305419724}
         m_TargetAssemblyTypeName: ShopCanvas, Assembly-CSharp
         m_MethodName: setSlotState
         m_Mode: 3
@@ -2008,7 +2018,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 4957244312305419724}
         m_TargetAssemblyTypeName: ShopCanvas, Assembly-CSharp
         m_MethodName: setSlotState
         m_Mode: 3
@@ -2140,7 +2150,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 4957244312305419724}
         m_TargetAssemblyTypeName: ShopCanvas, Assembly-CSharp
         m_MethodName: setSlotState
         m_Mode: 3
@@ -2244,7 +2254,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5024313743961766884
 RectTransform:
   m_ObjectHideFlags: 0
