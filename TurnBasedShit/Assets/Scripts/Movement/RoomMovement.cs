@@ -31,8 +31,6 @@ public class RoomMovement : LocationMovement {
                     FindObjectOfType<UpgradeCanvas>().show();
                 else if(FindObjectOfType<BlacksmithCanvas>() != null && !FindObjectOfType<BlacksmithCanvas>().isShowing)
                     FindObjectOfType<BlacksmithCanvas>().show();
-                else
-                    canMove = true;
             }
         }
 

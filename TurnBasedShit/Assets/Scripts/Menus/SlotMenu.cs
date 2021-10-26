@@ -5,23 +5,41 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
+[System.Serializable]
 public class SlotMenu : MonoBehaviour {
-    float slotTopY = 120, slotBotY = -120;
-    float slotBuffer = 10.0f;
-    float scrollSpeed = 35.0f;
-
-    float scrollPos = 0.0f;
+    public GameObject slotPreset;
 
     List<GameObject> slots = new List<GameObject>();
     int selectedSlotIndex = -1;
 
 
 
+    public void init() {
+        int count = GetComponentInChildren<GridLayoutGroup>().constraintCount;
+        float xSize = 0.0f;
+        if(count > 1) {
+            float width = transform.GetChild(0).GetComponent<RectTransform>().rect.width - GetComponentInChildren<GridLayoutGroup>().padding.left - GetComponentInChildren<GridLayoutGroup>().padding.right;
+            width -= GetComponentInChildren<GridLayoutGroup>().spacing.x / (count - 1);
+
+            xSize = width / count;
+        }
+        else if(count == 1) {
+            xSize = slotPreset.GetComponent<RectTransform>().rect.width + GetComponentInChildren<GridLayoutGroup>().padding.left + GetComponentInChildren<GridLayoutGroup>().padding.right;
+        }
+        else
+            return;
+
+        float ySize = (xSize / slotPreset.GetComponent<RectTransform>().rect.width) * slotPreset.GetComponent<RectTransform>().rect.height;
+        GetComponentInChildren<GridLayoutGroup>().cellSize = new Vector2(xSize, ySize);
+    }
 
     //  update func
     //  returns true when a change in the selected slot could have occured
     public bool run() {
-        scrollThoughList();
+        if(slots.Count == 0)
+            return false;
+
+        //  returns true if selected slot changed
         if(Input.GetMouseButtonDown(0)) {
             for(int i = 0; i < slots.Count; i++) {
                 if(slots[i].gameObject == EventSystem.current.currentSelectedGameObject) {
@@ -54,53 +72,61 @@ public class SlotMenu : MonoBehaviour {
         return null;
     }
 
-    public GameObject createNewSlot(int index, GameObject slotPreset, Transform holder, Color slotColor) {
-        GameObject obj;
-        if(index >= slots.Count)
-            obj = Instantiate(slotPreset, holder);
-        else
-            obj = slots[index];
 
-        //  position and scale
-        float step = slotPreset.GetComponent<RectTransform>().rect.height + slotBuffer;
-        obj.transform.localPosition = new Vector3(0.0f, slotTopY - (step * index) + scrollPos, 0.0f);
-        //obj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+    //  instantiates a new slot object at the end of the list
+    public GameObject instantiateNewSlot(Color slotColor) {
+        var obj = Instantiate(slotPreset, gameObject.transform.GetChild(0).transform);
+        slots.Add(obj);
 
-        //  width and height
-        var x = obj.GetComponent<RectTransform>().rect.width;
-        var y = obj.GetComponent<RectTransform>().rect.height;
+        float count = slots.Count / GetComponentInChildren<GridLayoutGroup>().constraintCount;
+        if(slots.Count % GetComponentInChildren<GridLayoutGroup>().constraintCount != 0)
+            count++;
+        float size = count * GetComponentInChildren<GridLayoutGroup>().cellSize.y;
+        size += GetComponentInChildren<GridLayoutGroup>().padding.top + GetComponentInChildren<GridLayoutGroup>().padding.bottom;
+        if(count > 1)
+            size += GetComponentInChildren<GridLayoutGroup>().spacing.y * (count - 1);
 
-        //  text and images
+        transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.x, size);
+
+        //  color
         obj.GetComponent<Image>().color = slotColor;
-
-        if(index >= slots.Count)
-            slots.Add(obj);
 
         return obj;
     }
 
 
-    public List<GameObject> createANumberOfSlots(int num, GameObject slotPreset, Transform holder, Color slotColor) {
+    //  recycles slot object at index, if no existing slot at the index, creats a new slot object
+    public GameObject createSlot(int index, Color slotColor) {
+        if(index >= slots.Count)
+            return instantiateNewSlot(slotColor);
+        GameObject obj;
+        obj = slots[index];
+
+        //  color
+        obj.GetComponent<Image>().color = slotColor;
+
+        return obj;
+    }
+
+
+
+    public List<GameObject> createANumberOfSlots(int num, Color slotColor) {
         var temp = new List<GameObject>();
 
         //  delete unusable slots
-        for(int i = 0; i < slots.Count; i++) {
-            if(i >= num) {
-                temp.Add(slots[i]);
-                continue;
-            }
-            if(slots[i].transform.childCount != slotPreset.transform.childCount) {
+        if(num < slots.Count) {
+            for(int i = num; i < slots.Count; i++) {
                 temp.Add(slots[i]);
             }
+            foreach(var i in temp) {
+                slots.Remove(i.gameObject);
+                Destroy(i.gameObject);
+            }
+            temp = new List<GameObject>();
         }
-        foreach(var i in temp) {
-            slots.Remove(i.gameObject);
-            Destroy(i.gameObject);
-        }
-        temp = new List<GameObject>();
 
         for(int i = 0; i < num; i++) {
-            temp.Add(createNewSlot(i, slotPreset, holder, slotColor));
+            temp.Add(createSlot(i, slotColor));
         }
 
         return temp;
@@ -111,16 +137,6 @@ public class SlotMenu : MonoBehaviour {
         GameObject sl = slots[index];
         slots.RemoveAt(index);
         Destroy(sl.gameObject);
-
-        //  reposition existing slots
-        if(slots.Count == 0)
-            return;
-        float step = slots[0].GetComponent<RectTransform>().rect.height + slotBuffer;
-        for(int i = 0; i < slots.Count; i++) {
-            slots[i].transform.localPosition = new Vector3(0.0f, slotTopY - (step * i) + scrollPos, 0.0f);
-        }
-
-        clampScroll();
     }
     public void moveSlot(int slotIndex, int moveToIndex) {
         if(slotIndex >= slots.Count || moveToIndex >= slots.Count || slotIndex == moveToIndex)
@@ -136,11 +152,6 @@ public class SlotMenu : MonoBehaviour {
 
         var obj = Instantiate(slotPreset, holder);
 
-        //  position and scale
-        float step = slotPreset.GetComponent<RectTransform>().rect.height + slotBuffer;
-        obj.transform.localPosition = new Vector3(0.0f, slotTopY - (step * index) + scrollPos, 0.0f);
-        //obj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-
         //  width and height
         var x = obj.GetComponent<RectTransform>().rect.width;
         var y = obj.GetComponent<RectTransform>().rect.height;
@@ -154,34 +165,6 @@ public class SlotMenu : MonoBehaviour {
 
     }
 
-    public void scrollThoughList() {
-        float scroll = Input.mouseScrollDelta.y;
-
-        if(scroll == 0 || slots.Count == 0)
-            return;
-        scrollSlots(-scroll * scrollSpeed);
-
-        clampScroll();
-    }
-
-    void clampScroll() {
-        if(slots.Count == 0)
-            return;
-        //  Top bounds
-        if(slots[0].transform.localPosition.y < slotTopY)
-            scrollSlots(slotTopY - slots[0].transform.localPosition.y);
-
-        //  Bot bounds
-        else if(slots[slots.Count - 1].transform.localPosition.y > slotBotY)
-            scrollSlots(slotBotY - slots[slots.Count - 1].transform.localPosition.y);
-    }
-
-    void scrollSlots(float val) {
-        scrollPos = val;
-        foreach(var i in slots) {
-            i.transform.localPosition = new Vector3(0.0f, i.transform.localPosition.y + val, 0.0f);
-        }
-    }
 
     public void destroySlots() {
         foreach(var i in slots)

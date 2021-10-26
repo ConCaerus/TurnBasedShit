@@ -9,7 +9,6 @@ public class ShopCanvas : MonoBehaviour {
     [SerializeField] GameObject canvas;
     [SerializeField] TextMeshProUGUI coinCounter, nameText, toggleText, sellReductionText, transactionText;
     [SerializeField] TextMeshProUGUI costText;
-    [SerializeField] GameObject slotHolder, slotObject;
     float showTime = 0.15f;
 
     [SerializeField] SlotMenu slot;
@@ -25,6 +24,7 @@ public class ShopCanvas : MonoBehaviour {
 
     private void Start() {
         DOTween.Init();
+        slot.init();
         hideCanvas();
         currentTown = GameInfo.getCurrentLocationAsTown().town;
         currentShop = GameInfo.getCurrentLocationAsTown().town.getShop();
@@ -174,7 +174,7 @@ public class ShopCanvas : MonoBehaviour {
                     if(weaponCount <= 0)
                         break;
                     for(int i = 0; i < weaponCount; i++) {
-                        var obj = slot.createNewSlot(i, slotObject, slotHolder.transform, Color.white);
+                        var obj = slot.createSlot(i, Color.white);
                         obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(ShopInventory.getWeapon(currentTown.t_instanceID, i)).sprite;
                     }
                     break;
@@ -185,7 +185,7 @@ public class ShopCanvas : MonoBehaviour {
                     if(armorCount <= 0)
                         break;
                     for(int i = 0; i < armorCount; i++) {
-                        var obj = slot.createNewSlot(i, slotObject, slotHolder.transform, Color.white);
+                        var obj = slot.createSlot(i, Color.white);
                         obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(ShopInventory.getArmor(currentTown.t_instanceID, i)).sprite;
                     }
                     break;
@@ -196,7 +196,7 @@ public class ShopCanvas : MonoBehaviour {
                     if(consumableCount <= 0)
                         break;
                     for(int i = 0; i < consumableCount; i++) {
-                        var obj = slot.createNewSlot(i, slotObject, slotHolder.transform, Color.white);
+                        var obj = slot.createSlot(i, Color.white);
                         obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getConsumableSprite(ShopInventory.getConsumable(currentTown.t_instanceID, i)).sprite;
                     }
                     break;
@@ -207,7 +207,7 @@ public class ShopCanvas : MonoBehaviour {
                     if(itemCount <= 0)
                         break;
                     for(int i = 0; i < itemCount; i++) {
-                        var obj = slot.createNewSlot(i, slotObject, slotHolder.transform, Color.white);
+                        var obj = slot.createSlot(i, Color.white);
                         obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(ShopInventory.getItem(currentTown.t_instanceID, i)).sprite;
                     }
                     break;
@@ -233,7 +233,7 @@ public class ShopCanvas : MonoBehaviour {
                         break;
 
                     for(int i = 0; i < Inventory.getWeaponCount(); i++) {
-                        var obj = slot.createNewSlot(i, slotObject, slotHolder.transform, Color.white);
+                        var obj = slot.createSlot(i, Color.white);
                         obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getWeapon(i)).sprite;
                     }
                     break;
@@ -244,7 +244,7 @@ public class ShopCanvas : MonoBehaviour {
                         break;
 
                     for(int i = 0; i < Inventory.getArmorCount(); i++) {
-                        var obj = slot.createNewSlot(i, slotObject, slotHolder.transform, Color.white);
+                        var obj = slot.createSlot(i, Color.white);
                         obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getArmor(i)).sprite;
                     }
                     break;
@@ -255,7 +255,7 @@ public class ShopCanvas : MonoBehaviour {
                         break;
 
                     for(int i = 0; i < Inventory.getConsumabeCount(); i++) {
-                        var obj = slot.createNewSlot(i, slotObject, slotHolder.transform, Color.white);
+                        var obj = slot.createSlot(i, Color.white);
                         obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getConsumableSprite(Inventory.getConsumable(i)).sprite;
                     }
                     break;
@@ -266,7 +266,7 @@ public class ShopCanvas : MonoBehaviour {
                         break;
 
                     for(int i = 0; i < Inventory.getItemCount(); i++) {
-                        var obj = slot.createNewSlot(i, slotObject, slotHolder.transform, Color.white);
+                        var obj = slot.createSlot(i, Color.white);
                         obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(Inventory.getItem(i)).sprite;
                     }
                     break;

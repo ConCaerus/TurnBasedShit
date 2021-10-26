@@ -7,7 +7,6 @@ using TMPro;
 public class MapQuestMenu : MonoBehaviour {
     public bool shown;
 
-    [SerializeField] GameObject slotPreset;
     [SerializeField] SlotMenu slot;
 
     [SerializeField] Color bossColor, delColor, pickColor;
@@ -32,15 +31,15 @@ public class MapQuestMenu : MonoBehaviour {
     void createSlots() {
         int slotIndex = 0;
         foreach(var i in ActiveQuests.getAllBossFightQuests()) {
-            slot.createNewSlot(slotIndex, slotPreset, slot.gameObject.transform, bossColor);
+            slot.createSlot(slotIndex, bossColor);
             slotIndex++;
         }
         foreach(var i in ActiveQuests.getAllDeliveryQuests()) {
-            slot.createNewSlot(slotIndex, slotPreset, slot.gameObject.transform, delColor);
+            slot.createSlot(slotIndex, delColor);
             slotIndex++;
         }
         foreach(var i in ActiveQuests.getAllPickupQuests()) {
-            slot.createNewSlot(slotIndex, slotPreset, slot.gameObject.transform, pickColor);
+            slot.createSlot(slotIndex, pickColor);
             slotIndex++;
         }
     }

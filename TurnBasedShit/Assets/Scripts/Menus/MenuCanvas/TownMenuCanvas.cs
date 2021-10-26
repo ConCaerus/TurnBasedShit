@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class TownMenuCanvas : MonoBehaviour {
     [SerializeField] SlotMenu slot;
-    [SerializeField] GameObject townSlotPreset, unknownTownSlotPreset;
+    [SerializeField] GameObject townSlotPreset;
     [SerializeField] TextMeshProUGUI countText;
 
     [SerializeField] Color visitedColor, unvisitedColor;
@@ -22,7 +22,7 @@ public class TownMenuCanvas : MonoBehaviour {
 
 
     public void updateSlots() {
-        var slots = slot.createANumberOfSlots(MapLocationHolder.getTownCount(), unknownTownSlotPreset, slot.gameObject.transform.GetChild(0).transform, unvisitedColor);
+        var slots = slot.createANumberOfSlots(MapLocationHolder.getTownCount(), unvisitedColor);
 
         //  by time
         if(!state) {

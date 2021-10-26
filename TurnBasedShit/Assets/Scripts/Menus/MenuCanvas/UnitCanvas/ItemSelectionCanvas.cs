@@ -8,6 +8,9 @@ using TMPro;
 
 
 public class ItemSelectionCanvas : UnitEquipmentSelectionCanvas {
+    [SerializeField] Image itemImage;
+    [SerializeField] TextMeshProUGUI nameText;
+
     public Item getItemInSlot(int index) {
         if(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem == null || FindObjectOfType<UnitCanvas>().shownUnit.equippedItem.isEmpty())
             return Inventory.getItem(index);
@@ -16,19 +19,37 @@ public class ItemSelectionCanvas : UnitEquipmentSelectionCanvas {
         return FindObjectOfType<UnitCanvas>().shownUnit.equippedItem;
     }
 
+
+    public override void populateSlots() {
+        int slotIndex = 0;
+        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedItem.isEmpty()) {
+            var obj = slot.createSlot(slotIndex, FindObjectOfType<UnitCanvas>().shownUnit.u_sprite.color);
+            obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem).sprite;
+            slotIndex++;
+        }
+
+        for(int i = 0; i < Inventory.getItemCount(); i++) {
+            if(Inventory.getItem(i) == null || Inventory.getItem(i).isEmpty())
+                continue;
+            var obj = slot.createSlot(slotIndex, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getItem(i).i_rarity));
+            obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(Inventory.getItem(i)).sprite;
+            slotIndex++;
+        }
+    }
+
     public override void updateInfo() {
         //                          Item shit
-        if(getItemInSlot(selectedIndex) == null || getItemInSlot(selectedIndex).isEmpty()) {
-            shownImage.sprite = null;
-            shownImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
+        if(getItemInSlot(slot.getSelectedSlotIndex()) == null || getItemInSlot(slot.getSelectedSlotIndex()).isEmpty()) {
+            itemImage.sprite = null;
+            itemImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
 
             nameText.text = "";
             return;
         }
-        var shownItem = getItemInSlot(selectedIndex);
-        shownImage.sprite = FindObjectOfType<PresetLibrary>().getItemSprite(shownItem).sprite;
-        shownImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownItem.i_rarity);
-        //  elementImage shit here
+        var shownItem = getItemInSlot(slot.getSelectedSlotIndex());
+        itemImage.sprite = FindObjectOfType<PresetLibrary>().getItemSprite(shownItem).sprite;
+        itemImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownItem.i_rarity);
+
 
         //  stats
         nameText.text = shownItem.i_name;
@@ -36,7 +57,7 @@ public class ItemSelectionCanvas : UnitEquipmentSelectionCanvas {
 
     public override void rotateEquipment() {
         if(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedItem.isEmpty()) {
-            var slottedItem = getItemInSlot(selectedIndex);
+            var slottedItem = getItemInSlot(slot.getSelectedSlotIndex());
             Inventory.addItem(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem);
             FindObjectOfType<UnitCanvas>().setUnitItem(slottedItem);
             Inventory.removeItem(slottedItem);
@@ -44,17 +65,15 @@ public class ItemSelectionCanvas : UnitEquipmentSelectionCanvas {
 
         //  unit just takes
         else {
-            var slottedItem = getItemInSlot(selectedIndex);
+            var slottedItem = getItemInSlot(slot.getSelectedSlotIndex());
             FindObjectOfType<UnitCanvas>().setUnitItem(slottedItem);
 
             Inventory.removeItem(slottedItem);
         }
-        selectedIndex = -1;
     }
 
 
     public override void removeUnitEquipmentAndResetSelection() {
-        selectedIndex = -1;
         if(shown) {
             updateInfo();
         }
@@ -67,6 +86,6 @@ public class ItemSelectionCanvas : UnitEquipmentSelectionCanvas {
     }
 
     public override int getState() {
-        return 2;
+        return 3;
     }
 }

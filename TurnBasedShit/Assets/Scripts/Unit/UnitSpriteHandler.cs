@@ -25,6 +25,9 @@ public class UnitSpriteHandler : MonoBehaviour {
         if(FindObjectOfType<PartyObject>() != null)
             FindObjectOfType<PartyObject>().repositionUnit(FindObjectOfType<PartyObject>().getInstantiatedMember(GetComponentInParent<UnitClass>().stats));
     }
+    public void setEverythingButWeapon(UnitStats stats) {
+        setEverything(stats.u_sprite, null, stats.equippedArmor);
+    }
     public void setEverything(UnitSpriteInfo info, Weapon w, Armor a) {
         setEverything(info.headIndex, info.faceIndex, info.bodyIndex, info.color, w, a);
         setColor(info.color);
@@ -164,14 +167,14 @@ public class UnitSpriteHandler : MonoBehaviour {
     }
 
 
-    public void setAnimState(int i) {
+    public void setAnimState(int i, bool loop = false) {
         body.GetComponent<Animator>().SetInteger("state", i);
         head.GetComponent<Animator>().SetInteger("state", i);
         animState = i;
 
         if(idler != null)
             StopCoroutine(idler);
-        if(i > 0) {
+        if(i > 0 && !loop) {
             idler = StartCoroutine(returnToIdle());
         }
     }

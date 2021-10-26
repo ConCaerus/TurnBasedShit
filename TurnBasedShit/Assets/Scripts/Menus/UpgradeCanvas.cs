@@ -13,7 +13,6 @@ public class UpgradeCanvas : MonoBehaviour {
     int attUpgrade = -1;
     float statUpgrade = 0.0f;
 
-    [SerializeField] GameObject slotPreset;
     [SerializeReference] GameObject shrine;
     [SerializeField] TextMeshProUGUI attributeText, statText;
     public SlotMenu slot;
@@ -104,7 +103,7 @@ public class UpgradeCanvas : MonoBehaviour {
             int index = 0;
             for(int i = 0; i < Party.getMemberCount(); i++) {
                 if(Party.getMemberStats(i).equippedWeapon != null && !Party.getMemberStats(i).equippedWeapon.isEmpty()) {
-                    var s = slot.createNewSlot(index, slotPreset, slot.gameObject.transform.GetChild(0), FindObjectOfType<PresetLibrary>().getRarityColor(Party.getMemberStats(i).equippedWeapon.w_rarity));
+                    var s = slot.createSlot(index, FindObjectOfType<PresetLibrary>().getRarityColor(Party.getMemberStats(i).equippedWeapon.w_rarity));
                     s.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Party.getMemberStats(i).u_name + "'s Weapon";
                     s.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Party.getMemberStats(i).equippedWeapon).sprite;
                     index++;
@@ -113,7 +112,7 @@ public class UpgradeCanvas : MonoBehaviour {
 
             //  Inventory Equipment
             for(int i = 0; i < Inventory.getWeaponCount(); i++) {
-                var s = slot.createNewSlot(index, slotPreset, slot.gameObject.transform.GetChild(0), FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getWeapon(i).w_rarity));
+                var s = slot.createSlot(index, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getWeapon(i).w_rarity));
                 s.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Inv";
                 s.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getWeapon(i)).sprite;
                 index++;
@@ -125,7 +124,7 @@ public class UpgradeCanvas : MonoBehaviour {
             int index = 0;
             for(int i = 0; i < Party.getMemberCount(); i++) {
                 if(Party.getMemberStats(i).equippedArmor != null && !Party.getMemberStats(i).equippedArmor.isEmpty()) {
-                    var s = slot.createNewSlot(index, slotPreset, slot.gameObject.transform.GetChild(0), FindObjectOfType<PresetLibrary>().getRarityColor(Party.getMemberStats(i).equippedArmor.a_rarity));
+                    var s = slot.createSlot(index, FindObjectOfType<PresetLibrary>().getRarityColor(Party.getMemberStats(i).equippedArmor.a_rarity));
                     s.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Party.getMemberStats(i).u_name + "'s Armor";
                     s.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Party.getMemberStats(i).equippedArmor).sprite;
                     index++;
@@ -134,7 +133,7 @@ public class UpgradeCanvas : MonoBehaviour {
 
             //  Inventory Equipment
             for(int i = 0; i < Inventory.getArmorCount(); i++) {
-                var s = slot.createNewSlot(index, slotPreset, slot.gameObject.transform.GetChild(0), FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getArmor(i).a_rarity));
+                var s = slot.createSlot(index, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getArmor(i).a_rarity));
                 s.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Inv";
                 s.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getArmor(i)).sprite;
                 index++;

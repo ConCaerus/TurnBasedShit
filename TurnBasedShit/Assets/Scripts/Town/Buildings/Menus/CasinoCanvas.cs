@@ -160,10 +160,10 @@ public class CasinoCanvas : MonoBehaviour {
         keepCostAmountShown();
     }
 
-
     public void exit() {
-        if(!spinning)
-            FindObjectOfType<LocationMovement>().deinteract();
+        if(!spinning) {
+            FindObjectOfType<RoomMovement>().deinteract();
+        }
     }
 
     public void showCanvas(GameObject usedMachine) {
@@ -186,8 +186,9 @@ public class CasinoCanvas : MonoBehaviour {
         spawnNewNums();
     }
     public void hideCanvas() {
-        if(!spinning)
+        if(!spinning) {
             StartCoroutine(hider());
+        }
     }
     public IEnumerator hider() {
         transform.GetChild(0).gameObject.transform.DOScale(new Vector3(0.0f, 0.0f, 0.0f), showTime);

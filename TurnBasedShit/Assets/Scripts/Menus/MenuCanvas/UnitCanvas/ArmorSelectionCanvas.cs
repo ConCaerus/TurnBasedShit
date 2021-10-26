@@ -7,6 +7,9 @@ using UnityEngine.EventSystems;
 using TMPro;
 
 public class ArmorSelectionCanvas : UnitEquipmentSelectionCanvas {
+    [SerializeField] Image armorImage;
+    [SerializeField] TextMeshProUGUI nameText, defText, spdText, firstAttributeText, secondAttributeText;
+
     public Armor getArmorInSlot(int index) {
         if(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor == null || FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor.isEmpty())
             return Inventory.getArmor(index);
@@ -15,28 +18,46 @@ public class ArmorSelectionCanvas : UnitEquipmentSelectionCanvas {
         return FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor;
     }
 
+
+    public override void populateSlots() {
+        int slotIndex = 0;
+        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor.isEmpty()) {
+            var obj = slot.createSlot(slotIndex, FindObjectOfType<UnitCanvas>().shownUnit.u_sprite.color);
+            obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor).sprite;
+            slotIndex++;
+        }
+
+        for(int i = 0; i < Inventory.getArmorCount(); i++) {
+            if(Inventory.getArmor(i) == null || Inventory.getArmor(i).isEmpty())
+                continue;
+            var obj = slot.createSlot(slotIndex, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getArmor(i).a_rarity));
+            obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getArmor(i)).sprite;
+            slotIndex++;
+        }
+    }
+
     public override void updateInfo() {
         //                          Armor shit
-        if(getArmorInSlot(selectedIndex) == null || getArmorInSlot(selectedIndex).isEmpty()) {
-            shownImage.sprite = null;
-            shownImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
+        if(getArmorInSlot(slot.getSelectedSlotIndex()) == null || getArmorInSlot(slot.getSelectedSlotIndex()).isEmpty()) {
+            armorImage.sprite = null;
+            armorImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
 
             nameText.text = "";
-            firstText.text = "0.0";
-            secondText.text = "0.0";
+            defText.text = "0.0";
+            spdText.text = "0.0";
             firstAttributeText.text = "";
             secondAttributeText.text = "";
             return;
         }
-        var shownArmor = getArmorInSlot(selectedIndex);
-        shownImage.sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(shownArmor).sprite;
-        shownImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownArmor.a_rarity);
+        var shownArmor = getArmorInSlot(slot.getSelectedSlotIndex());
+        armorImage.sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(shownArmor).sprite;
+        armorImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownArmor.a_rarity);
 
 
         //  stats
         nameText.text = shownArmor.a_name;
-        firstText.text = shownArmor.a_defence.ToString("0.0");
-        secondText.text = shownArmor.a_speedMod.ToString("0.0");
+        defText.text = shownArmor.a_defence.ToString("0.0");
+        spdText.text = shownArmor.a_speedMod.ToString("0.0");
 
         //  attributes
         List<Armor.attribute> usedAtts = new List<Armor.attribute>();
@@ -79,7 +100,7 @@ public class ArmorSelectionCanvas : UnitEquipmentSelectionCanvas {
 
     public override void rotateEquipment() {
         if(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor.isEmpty()) {
-            var slottedArmor = getArmorInSlot(selectedIndex);
+            var slottedArmor = getArmorInSlot(slot.getSelectedSlotIndex());
             Inventory.addArmor(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor);
             FindObjectOfType<UnitCanvas>().setUnitArmor(slottedArmor);
             Inventory.removeArmor(slottedArmor);
@@ -87,17 +108,15 @@ public class ArmorSelectionCanvas : UnitEquipmentSelectionCanvas {
 
         //  unit just takes
         else {
-            var slottedArmor = getArmorInSlot(selectedIndex);
+            var slottedArmor = getArmorInSlot(slot.getSelectedSlotIndex());
             FindObjectOfType<UnitCanvas>().setUnitArmor(slottedArmor);
 
             Inventory.removeArmor(slottedArmor);
         }
-        selectedIndex = -1;
     }
 
 
     public override void removeUnitEquipmentAndResetSelection() {
-        selectedIndex = -1;
         if(shown) {
             updateInfo();
         }

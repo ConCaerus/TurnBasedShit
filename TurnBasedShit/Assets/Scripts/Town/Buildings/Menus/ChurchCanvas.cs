@@ -21,21 +21,25 @@ public class ChurchCanvas : BuildingCanvas {
 
 
     public override void updateCustomInfo() {
+        //  trait texts
         foreach(var i in traits.GetComponentsInChildren<Button>()) {
             i.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "";
             i.GetComponent<Image>().color = Color.white;
+
             i.interactable = false;
         }
-        for(int i = 0; i < getSelectedUnit().u_traits.Count; i++) {
-            traits.transform.GetChild(i).GetComponent<Button>().interactable = true;
-            traits.transform.GetChild(i).transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = getSelectedUnit().u_traits[i].t_name;
-            if(getSelectedUnit().u_traits[i].t_isGood)
-                traits.transform.GetChild(i).transform.GetComponentInChildren<TextMeshProUGUI>().color = goodColor;
-            else
-                traits.transform.GetChild(i).transform.GetComponentInChildren<TextMeshProUGUI>().color = badColor;
+        if(getSelectedUnit() != null) {
+            for(int i = 0; i < getSelectedUnit().u_traits.Count; i++) {
+                traits.transform.GetChild(i).GetComponent<Button>().interactable = true;
+                traits.transform.GetChild(i).transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = getSelectedUnit().u_traits[i].t_name;
+                if(getSelectedUnit().u_traits[i].t_isGood)
+                    traits.transform.GetChild(i).transform.GetComponentInChildren<TextMeshProUGUI>().color = goodColor;
+                else
+                    traits.transform.GetChild(i).transform.GetComponentInChildren<TextMeshProUGUI>().color = badColor;
 
-            if(i == traitInd)
-                traits.transform.GetChild(i).GetComponent<Image>().color = selectedColor;
+                if(i == traitInd)
+                    traits.transform.GetChild(i).GetComponent<Image>().color = selectedColor;
+            }
         }
 
         removeText.text = "Remove Cost: " + church.priceToRemove.ToString();

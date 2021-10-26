@@ -5,7 +5,6 @@ using TMPro;
 
 public class QuestCanvas : MonoBehaviour {
     [SerializeField] SlotMenu slot;
-    [SerializeField] GameObject slotObj;
 
     [SerializeField] TextMeshProUGUI nameText, infoText, countText;
 
@@ -60,7 +59,7 @@ public class QuestCanvas : MonoBehaviour {
                 bool found = false;
                 foreach(var i in b) {
                     if(i.q_instanceID == index) {
-                        slot.createNewSlot(slotIndex, slotObj, slot.gameObject.transform.GetChild(0).transform, bossColor);
+                        slot.createSlot(slotIndex, bossColor);
                         infos.Add(new questSlotInfo(GameInfo.questType.bossFight, i.q_instanceID));
                         slotIndex++;
                         found = true;
@@ -75,7 +74,7 @@ public class QuestCanvas : MonoBehaviour {
                 }
                 foreach(var i in k) {
                     if(i.q_instanceID == index) {
-                        slot.createNewSlot(slotIndex, slotObj, slot.gameObject.transform.GetChild(0).transform, killColor);
+                        slot.createSlot(slotIndex, killColor);
                         infos.Add(new questSlotInfo(GameInfo.questType.kill, i.q_instanceID));
                         slotIndex++;
                         found = true;
@@ -90,7 +89,7 @@ public class QuestCanvas : MonoBehaviour {
                 }
                 foreach(var i in d) {
                     if(i.q_instanceID == index) {
-                        slot.createNewSlot(slotIndex, slotObj, slot.gameObject.transform.GetChild(0).transform, delColor);
+                        slot.createSlot(slotIndex, delColor);
                         infos.Add(new questSlotInfo(GameInfo.questType.delivery, i.q_instanceID));
                         slotIndex++;
                         found = true;
@@ -105,7 +104,7 @@ public class QuestCanvas : MonoBehaviour {
                 }
                 foreach(var i in p) {
                     if(i.q_instanceID == index) {
-                        slot.createNewSlot(slotIndex, slotObj, slot.gameObject.transform.GetChild(0).transform, pickColor);
+                        slot.createSlot(slotIndex, pickColor);
                         infos.Add(new questSlotInfo(GameInfo.questType.pickup, i.q_instanceID));
                         slotIndex++;
                         found = true;
@@ -119,22 +118,22 @@ public class QuestCanvas : MonoBehaviour {
         }
         else {
             foreach(var i in b) {
-                slot.createNewSlot(slotIndex, slotObj, slot.gameObject.transform.GetChild(0).transform, bossColor);
+                slot.createSlot(slotIndex, bossColor);
                 infos.Add(new questSlotInfo(GameInfo.questType.bossFight, i.q_instanceID));
                 slotIndex++;
             }
             foreach(var i in k) {
-                slot.createNewSlot(slotIndex, slotObj, slot.gameObject.transform.GetChild(0).transform, killColor);
+                slot.createSlot(slotIndex, killColor);
                 infos.Add(new questSlotInfo(GameInfo.questType.kill, i.q_instanceID));
                 slotIndex++;
             }
             foreach(var i in d) {
-                slot.createNewSlot(slotIndex, slotObj, slot.gameObject.transform.GetChild(0).transform, delColor);
+                slot.createSlot(slotIndex, delColor);
                 infos.Add(new questSlotInfo(GameInfo.questType.delivery, i.q_instanceID));
                 slotIndex++;
             }
             foreach(var i in p) {
-                slot.createNewSlot(slotIndex, slotObj, slot.gameObject.transform.GetChild(0).transform, pickColor);
+                slot.createSlot(slotIndex, pickColor);
                 infos.Add(new questSlotInfo(GameInfo.questType.pickup, i.q_instanceID));
                 slotIndex++;
             }

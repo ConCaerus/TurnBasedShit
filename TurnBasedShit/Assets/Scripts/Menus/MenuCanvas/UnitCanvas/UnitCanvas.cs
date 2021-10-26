@@ -131,6 +131,9 @@ public class UnitCanvas : MonoBehaviour {
         rArmImage.color = shownUnit.u_sprite.color;
         lArmImage.color = shownUnit.u_sprite.color;
 
+        weaponImage.GetComponent<InfoBearer>().infos.Clear();
+        armorImage.GetComponent<InfoBearer>().infos.Clear();
+        itemImage.GetComponent<InfoBearer>().infos.Clear();
 
         weaponImage.enabled = true;
         armorImage.enabled = true;
@@ -142,7 +145,6 @@ public class UnitCanvas : MonoBehaviour {
         }
         else {
             weaponImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
-            weaponImage.GetComponent<InfoBearer>().infos.Clear();
             weaponImage.enabled = false;
         }
         if(shownUnit.equippedArmor != null && !shownUnit.equippedArmor.isEmpty()) {
@@ -152,7 +154,6 @@ public class UnitCanvas : MonoBehaviour {
         }
         else {
             armorImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
-            armorImage.GetComponent<InfoBearer>().infos.Clear();
             armorImage.enabled = false;
         }
         if(shownUnit.equippedItem != null && !shownUnit.equippedItem.isEmpty()) {
@@ -167,7 +168,6 @@ public class UnitCanvas : MonoBehaviour {
         else {
             itemImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
             itemImage.color = Color.white;
-            itemImage.GetComponent<InfoBearer>().infos.Clear();
             itemImage.enabled = false;
         }
 
@@ -181,6 +181,8 @@ public class UnitCanvas : MonoBehaviour {
         else if(FindObjectOfType<LocationMovement>() != null && shownUnit != null && !shownUnit.isEmpty()) {
             FindObjectOfType<LocationMovement>().setVisuals();
         }
+        else if(FindObjectOfType<FishingUnit>() != null && shownUnit != null && !shownUnit.isEmpty())
+            FindObjectOfType<FishingUnit>().setVisuals();
 
         lockColor = false;
     }

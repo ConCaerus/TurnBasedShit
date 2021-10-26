@@ -7,6 +7,9 @@ using UnityEngine.EventSystems;
 using DG.Tweening;
 
 public class WeaponSelectionCanvas : UnitEquipmentSelectionCanvas {
+    [SerializeField] Image weaponImage;
+    [SerializeField] TextMeshProUGUI nameText, powText, spdText, firstAttributeText, secondAttributeText;
+
     public Weapon getWeaponInSlot(int index) {
         if(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon == null || FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon.isEmpty())
             return Inventory.getWeapon(index);
@@ -15,28 +18,46 @@ public class WeaponSelectionCanvas : UnitEquipmentSelectionCanvas {
         return FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon;
     }
 
+
+    public override void populateSlots() {
+        int slotIndex = 0;
+        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon.isEmpty()) {
+            var obj = slot.createSlot(slotIndex, FindObjectOfType<UnitCanvas>().shownUnit.u_sprite.color);
+            obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon).sprite;
+            slotIndex++;
+        }
+
+        for(int i = 0; i < Inventory.getWeaponCount(); i++) {
+            if(Inventory.getWeapon(i) == null || Inventory.getWeapon(i).isEmpty())
+                continue;
+            var obj = slot.createSlot(slotIndex, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getWeapon(i).w_rarity));
+            obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getWeapon(i)).sprite;
+            slotIndex++;
+        }
+    }
+
     public override void updateInfo() {
         //                          Weapon shit
-        if(getWeaponInSlot(selectedIndex) == null || getWeaponInSlot(selectedIndex).isEmpty()) {
-            shownImage.sprite = null;
-            shownImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
+        if(getWeaponInSlot(slot.getSelectedSlotIndex()) == null || getWeaponInSlot(slot.getSelectedSlotIndex()).isEmpty()) {
+            weaponImage.sprite = null;
+            weaponImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
 
             nameText.text = "";
-            firstText.text = "0.0";
-            secondText.text = "0.0";
+            powText.text = "0.0";
+            spdText.text = "0.0";
             firstAttributeText.text = "";
             secondAttributeText.text = "";
             return;
         }
-        var shownWeapon = getWeaponInSlot(selectedIndex);
-        shownImage.sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(shownWeapon).sprite;
-        shownImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownWeapon.w_rarity);
+        var shownWeapon = getWeaponInSlot(slot.getSelectedSlotIndex());
+        weaponImage.sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(shownWeapon).sprite;
+        weaponImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownWeapon.w_rarity);
 
 
         //  stats
         nameText.text = shownWeapon.w_name;
-        firstText.text = shownWeapon.w_power.ToString("0.0");
-        secondText.text = shownWeapon.w_speedMod.ToString("0.0");
+        powText.text = shownWeapon.w_power.ToString("0.0");
+        spdText.text = shownWeapon.w_speedMod.ToString("0.0");
 
         //  attributes
         List<Weapon.attribute> usedAtts = new List<Weapon.attribute>();
@@ -79,7 +100,7 @@ public class WeaponSelectionCanvas : UnitEquipmentSelectionCanvas {
 
     public override void rotateEquipment() {
         if(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon.isEmpty()) {
-            var slottedWeapon = getWeaponInSlot(selectedIndex);
+            var slottedWeapon = getWeaponInSlot(slot.getSelectedSlotIndex());
             Inventory.addWeapon(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon);
             FindObjectOfType<UnitCanvas>().setUnitWeapon(slottedWeapon);
             Inventory.removeWeapon(slottedWeapon);
@@ -87,17 +108,15 @@ public class WeaponSelectionCanvas : UnitEquipmentSelectionCanvas {
 
         //  unit just takes
         else {
-            var slottedWeapon = getWeaponInSlot(selectedIndex);
+            var slottedWeapon = getWeaponInSlot(slot.getSelectedSlotIndex());
             FindObjectOfType<UnitCanvas>().setUnitWeapon(slottedWeapon);
 
             Inventory.removeWeapon(slottedWeapon);
         }
-        selectedIndex = -1;
     }
 
 
     public override void removeUnitEquipmentAndResetSelection() {
-        selectedIndex = -1;
         if(shown) {
             updateInfo();
         }
