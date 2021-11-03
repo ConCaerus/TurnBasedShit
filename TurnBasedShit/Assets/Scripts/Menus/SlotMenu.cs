@@ -20,6 +20,7 @@ public class SlotMenu : MonoBehaviour {
         if(count > 1) {
             float width = transform.GetChild(0).GetComponent<RectTransform>().rect.width - GetComponentInChildren<GridLayoutGroup>().padding.left - GetComponentInChildren<GridLayoutGroup>().padding.right;
             width -= GetComponentInChildren<GridLayoutGroup>().spacing.x / (count - 1);
+            width -= (count - 1) * GetComponentInChildren<GridLayoutGroup>().spacing.x;
 
             xSize = width / count;
         }
@@ -31,6 +32,8 @@ public class SlotMenu : MonoBehaviour {
 
         float ySize = (xSize / slotPreset.GetComponent<RectTransform>().rect.width) * slotPreset.GetComponent<RectTransform>().rect.height;
         GetComponentInChildren<GridLayoutGroup>().cellSize = new Vector2(xSize, ySize);
+
+        transform.GetChild(1).GetComponent<Scrollbar>().value = 1.0f;
     }
 
     //  update func
@@ -96,7 +99,7 @@ public class SlotMenu : MonoBehaviour {
 
 
     //  recycles slot object at index, if no existing slot at the index, creats a new slot object
-    public GameObject createSlot(int index, Color slotColor) {
+    public GameObject createSlot(int index, Color slotColor, string mousedOverInfo = "") {
         if(index >= slots.Count)
             return instantiateNewSlot(slotColor);
         GameObject obj;
@@ -105,7 +108,22 @@ public class SlotMenu : MonoBehaviour {
         //  color
         obj.GetComponent<Image>().color = slotColor;
 
+        if(obj.GetComponent<InfoBearer>() != null)
+            obj.GetComponent<InfoBearer>().setInfo(mousedOverInfo);
+
+        //  collider
+        if(obj.GetComponent<BoxCollider2D>() != null) {
+            obj.GetComponent<BoxCollider2D>().offset = new Vector2(0.0f, 0.0f);
+            obj.GetComponent<BoxCollider2D>().size = GetComponentInChildren<GridLayoutGroup>().cellSize;
+        }
+
         return obj;
+    }
+
+
+    public void deleteSlotsAfterIndex(int index) {
+        for(int i = slots.Count - 1; i >= index; i--)
+            deleteSlotAtIndex(i);
     }
 
 

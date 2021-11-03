@@ -23,7 +23,7 @@ public class ItemSelectionCanvas : UnitEquipmentSelectionCanvas {
     public override void populateSlots() {
         int slotIndex = 0;
         if(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedItem.isEmpty()) {
-            var obj = slot.createSlot(slotIndex, FindObjectOfType<UnitCanvas>().shownUnit.u_sprite.color);
+            var obj = slot.createSlot(slotIndex, FindObjectOfType<UnitCanvas>().shownUnit.u_sprite.color, InfoTextCreator.createForCollectable(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem));
             obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem).sprite;
             slotIndex++;
         }
@@ -31,10 +31,12 @@ public class ItemSelectionCanvas : UnitEquipmentSelectionCanvas {
         for(int i = 0; i < Inventory.getItemCount(); i++) {
             if(Inventory.getItem(i) == null || Inventory.getItem(i).isEmpty())
                 continue;
-            var obj = slot.createSlot(slotIndex, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getItem(i).i_rarity));
+            var obj = slot.createSlot(slotIndex, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getItem(i).rarity), InfoTextCreator.createForCollectable(Inventory.getItem(i)));
             obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(Inventory.getItem(i)).sprite;
             slotIndex++;
         }
+
+        slot.deleteSlotsAfterIndex(slotIndex);
     }
 
     public override void updateInfo() {
@@ -48,11 +50,11 @@ public class ItemSelectionCanvas : UnitEquipmentSelectionCanvas {
         }
         var shownItem = getItemInSlot(slot.getSelectedSlotIndex());
         itemImage.sprite = FindObjectOfType<PresetLibrary>().getItemSprite(shownItem).sprite;
-        itemImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownItem.i_rarity);
+        itemImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownItem.rarity);
 
 
         //  stats
-        nameText.text = shownItem.i_name;
+        nameText.text = shownItem.name;
     }
 
     public override void rotateEquipment() {

@@ -13,15 +13,22 @@ MonoBehaviour:
   m_Name: CultistCloak
   m_EditorClassIdentifier: 
   preset:
-    a_instanceID: -1
-    a_name: Cultist Cloak
-    a_rarity: 5
-    a_wornAmount: 3
-    a_attributes: 
-    a_defence: 25
-    a_speedMod: 10
-    a_coinCost: 50
-    a_sprite:
+    instanceID: -1
+    name: Cultist Cloak
+    type: 1
+    rarity: 4
+    coinCost: 50
+    canBeFished: 0
+    fishedData:
+      hookedPos: {x: 0, y: 0}
+      hookedRot: 0
+      diffRegion: 0
+      chanceToCatch: 0
+    wornAmount: 3
+    attributes: 
+    defence: 25
+    speedMod: 25
+    sprite:
       sprite: {fileID: 21300000, guid: 63ce9f6f8c8abc7488b95a9f8276b336, type: 3}
       equippedSprite: {fileID: -4395235836452357905, guid: af98eec13ce920244b412a35fce3ac85,
         type: 3}
@@ -41,30 +48,30 @@ MonoBehaviour:
       yPos2: 0
       xSize2: 1.1
       ySize2: 1.1
-      xShoulderPos0: 0.038
-      yShoulderPos0: -0.124
-      xShoulderSize0: 0.85
-      yShoulderSize0: 0.85
+      xShoulderPos0: 0.04
+      yShoulderPos0: -0.15
+      xShoulderSize0: 0.9
+      yShoulderSize0: 0.9
       shoulderRot: 0
-      xShoulderPos1: 0.032
-      yShoulderPos1: -0.088
+      xShoulderPos1: 0.02
+      yShoulderPos1: -0.13
       xShoulderSize1: 0.75
-      yShoulderSize1: 0.65
-      xShoulderPos2: 0.143
-      yShoulderPos2: -0.087
-      xShoulderSize2: 1.15
-      yShoulderSize2: 0.8
+      yShoulderSize1: 0.75
+      xShoulderPos2: 0.12
+      yShoulderPos2: -0.12
+      xShoulderSize2: 1.1
+      yShoulderSize2: 0.9
       hatInfrontOfHead: 0
-      xHatPos0: -0.013
-      yHatPos0: 0.224
-      xHatSize0: 1
-      yHatSize0: 1
+      xHatPos0: -0.02
+      yHatPos0: 0.12
+      xHatSize0: 0.85
+      yHatSize0: 0.85
       hatRot: 0
       xHatPos1: -0.005
-      yHatPos1: 0.327
-      xHatSize1: 1
-      yHatSize1: 1
-      xHatPos2: -0.04
-      yHatPos2: 0.18
-      xHatSize2: 1
-      yHatSize2: 1
+      yHatPos1: 0.13
+      xHatSize1: 0.75
+      yHatSize1: 0.75
+      xHatPos2: -0.01
+      yHatPos2: 0.09
+      xHatSize2: 0.85
+      yHatSize2: 0.85

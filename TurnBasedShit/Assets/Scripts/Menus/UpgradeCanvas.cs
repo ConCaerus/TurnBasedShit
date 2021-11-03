@@ -103,7 +103,7 @@ public class UpgradeCanvas : MonoBehaviour {
             int index = 0;
             for(int i = 0; i < Party.getMemberCount(); i++) {
                 if(Party.getMemberStats(i).equippedWeapon != null && !Party.getMemberStats(i).equippedWeapon.isEmpty()) {
-                    var s = slot.createSlot(index, FindObjectOfType<PresetLibrary>().getRarityColor(Party.getMemberStats(i).equippedWeapon.w_rarity));
+                    var s = slot.createSlot(index, FindObjectOfType<PresetLibrary>().getRarityColor(Party.getMemberStats(i).equippedWeapon.rarity));
                     s.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Party.getMemberStats(i).u_name + "'s Weapon";
                     s.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Party.getMemberStats(i).equippedWeapon).sprite;
                     index++;
@@ -112,7 +112,7 @@ public class UpgradeCanvas : MonoBehaviour {
 
             //  Inventory Equipment
             for(int i = 0; i < Inventory.getWeaponCount(); i++) {
-                var s = slot.createSlot(index, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getWeapon(i).w_rarity));
+                var s = slot.createSlot(index, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getWeapon(i).rarity));
                 s.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Inv";
                 s.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getWeapon(i)).sprite;
                 index++;
@@ -124,7 +124,7 @@ public class UpgradeCanvas : MonoBehaviour {
             int index = 0;
             for(int i = 0; i < Party.getMemberCount(); i++) {
                 if(Party.getMemberStats(i).equippedArmor != null && !Party.getMemberStats(i).equippedArmor.isEmpty()) {
-                    var s = slot.createSlot(index, FindObjectOfType<PresetLibrary>().getRarityColor(Party.getMemberStats(i).equippedArmor.a_rarity));
+                    var s = slot.createSlot(index, FindObjectOfType<PresetLibrary>().getRarityColor(Party.getMemberStats(i).equippedArmor.rarity));
                     s.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Party.getMemberStats(i).u_name + "'s Armor";
                     s.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Party.getMemberStats(i).equippedArmor).sprite;
                     index++;
@@ -133,7 +133,7 @@ public class UpgradeCanvas : MonoBehaviour {
 
             //  Inventory Equipment
             for(int i = 0; i < Inventory.getArmorCount(); i++) {
-                var s = slot.createSlot(index, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getArmor(i).a_rarity));
+                var s = slot.createSlot(index, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getArmor(i).rarity));
                 s.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Inv";
                 s.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getArmor(i)).sprite;
                 index++;
@@ -150,14 +150,14 @@ public class UpgradeCanvas : MonoBehaviour {
 
             attributeText.text = "";
             if(attUpgrade != -1) {
-                foreach(var i in we.w_attributes)
+                foreach(var i in we.attributes)
                     attributeText.text += i.ToString() + ", ";
                 attributeText.text += "  +  " + ((Weapon.attribute)attUpgrade).ToString();
             }
 
             statText.text = "";
             if(statUpgrade > 1.0f) {
-                statText.text = we.w_power.ToString("0.0") + " >>> " + (statUpgrade * we.w_power).ToString("0.0");
+                statText.text = we.power.ToString("0.0") + " >>> " + (statUpgrade * we.power).ToString("0.0");
             }
         }
 
@@ -169,14 +169,14 @@ public class UpgradeCanvas : MonoBehaviour {
 
             attributeText.text = "";
             if(attUpgrade != -1) {
-                foreach(var i in ar.a_attributes)
+                foreach(var i in ar.attributes)
                     attributeText.text += i.ToString() + ", ";
                 attributeText.text += "  +  " + ((Armor.attribute)attUpgrade).ToString();
             }
 
             statText.text = "";
             if(statUpgrade > 1.0f) {
-                statText.text = ar.a_defence.ToString("0.0") + " >>> " + (statUpgrade * ar.a_defence).ToString("0.0");
+                statText.text = ar.defence.ToString("0.0") + " >>> " + (statUpgrade * ar.defence).ToString("0.0");
             }
         }
     }
@@ -189,17 +189,17 @@ public class UpgradeCanvas : MonoBehaviour {
 
             var we = getSelectedWeapon();
             if(attUpgrade != -1)
-                we.w_attributes.Add((Weapon.attribute)attUpgrade);
+                we.attributes.Add((Weapon.attribute)attUpgrade);
 
             if(statUpgrade > 1.0f)
-                we.w_power *= statUpgrade;
+                we.power *= statUpgrade;
 
             shrine.GetComponent<SpriteRenderer>().color = Color.grey;
 
             //  Party Equipment
             for(int i = 0; i < Party.getMemberCount(); i++) {
                 if(Party.getMemberStats(i).equippedWeapon != null && !Party.getMemberStats(i).equippedWeapon.isEmpty()) {
-                    if(we.isEqualTo(Party.getMemberStats(i).equippedWeapon)) {
+                    if(we.isTheSameInstanceAs(Party.getMemberStats(i).equippedWeapon)) {
                         var stats = Party.getMemberStats(i);
                         stats.equippedWeapon.setEqualTo(we, false);
                         Party.overrideUnit(stats);
@@ -214,7 +214,7 @@ public class UpgradeCanvas : MonoBehaviour {
 
             //  Inventory Equipment
             for(int i = 0; i < Inventory.getWeaponCount(); i++) {
-                if(we.isEqualTo(Inventory.getWeapon(i))) {
+                if(we.isTheSameInstanceAs(Inventory.getWeapon(i))) {
                     Inventory.overrideWeapon(i, we);
 
                     hasBeenUsed = true;
@@ -231,17 +231,17 @@ public class UpgradeCanvas : MonoBehaviour {
 
             var ar = getSelectedArmor();
             if(attUpgrade != -1)
-                ar.a_attributes.Add((Armor.attribute)attUpgrade);
+                ar.attributes.Add((Armor.attribute)attUpgrade);
 
             if(statUpgrade > 1.0f)
-                ar.a_defence *= statUpgrade;
+                ar.defence *= statUpgrade;
 
             shrine.GetComponent<SpriteRenderer>().color = Color.grey;
 
             //  Party Equipment
             for(int i = 0; i < Party.getMemberCount(); i++) {
                 if(Party.getMemberStats(i).equippedArmor != null && !Party.getMemberStats(i).equippedArmor.isEmpty()) {
-                    if(ar.isEqualTo(Party.getMemberStats(i).equippedArmor)) {
+                    if(ar.isTheSameInstanceAs(Party.getMemberStats(i).equippedArmor)) {
                         var stats = Party.getMemberStats(i);
                         stats.equippedArmor.setEqualTo(ar, false);
                         Party.overrideUnit(stats);
@@ -256,7 +256,7 @@ public class UpgradeCanvas : MonoBehaviour {
 
             //  Inventory Equipment
             for(int i = 0; i < Inventory.getArmorCount(); i++) {
-                if(ar.isEqualTo(Inventory.getArmor(i))) {
+                if(ar.isTheSameInstanceAs(Inventory.getArmor(i))) {
                     Inventory.overrideArmor(i, ar);
 
                     hasBeenUsed = true;

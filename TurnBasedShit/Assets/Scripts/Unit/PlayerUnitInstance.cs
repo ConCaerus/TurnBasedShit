@@ -10,6 +10,7 @@ public class PlayerUnitInstance : UnitClass {
 
     private void Start() {
         updateSprites();
+        FindObjectOfType<MenuCanvas>().addNewRunOnClose(updateSprites);
     }
 
 
@@ -61,15 +62,15 @@ public class PlayerUnitInstance : UnitClass {
 
     void useWeaponSpecialUse() {
         //  wants to heal but no target
-        if(stats.equippedWeapon.w_specialUsage == Weapon.specialUsage.healing && attackingTarget == null)
+        if(stats.equippedWeapon.sUsage == Weapon.specialUsage.healing && attackingTarget == null)
             return;
-        if(stats.equippedWeapon.w_specialUsage == Weapon.specialUsage.healing && attackingTarget != null) {
+        if(stats.equippedWeapon.sUsage == Weapon.specialUsage.healing && attackingTarget != null) {
             stats.equippedWeapon.applySpecailUsage(stats, attackingTarget.GetComponent<UnitClass>());
             FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
         }
 
         //  summon
-        if(stats.equippedWeapon.w_specialUsage == Weapon.specialUsage.summoning && roomToSummon()) {
+        if(stats.equippedWeapon.sUsage == Weapon.specialUsage.summoning && roomToSummon()) {
             var obj = Instantiate(FindObjectOfType<PresetLibrary>().getSummonForWeapon(stats.equippedWeapon).gameObject);
             obj.GetComponent<SummonedUnitInstance>().summoner = stats;
             FindObjectOfType<SummonSpotSpawner>().getCombatSpotAtIndexForUnit(gameObject, getSummonCount() - 1).GetComponentInChildren<CombatSpot>().unit = obj.gameObject;
@@ -107,12 +108,12 @@ public class PlayerUnitInstance : UnitClass {
 
     //  returns true if the level increased
     public bool addWeaponTypeExpOnKill(float ex) {
-        if(stats.equippedWeapon.w_attackType == Weapon.attackType.blunt) {
+        if(stats.equippedWeapon.aType == Weapon.attackType.blunt) {
             int temp = stats.getBluntLevel();
             stats.u_bluntExp += ex;
             return temp != stats.getBluntLevel();
         }
-        else if(stats.equippedWeapon.w_attackType == Weapon.attackType.edged) {
+        else if(stats.equippedWeapon.aType == Weapon.attackType.edged) {
             int temp = stats.getEdgedLevel();
             stats.u_edgedExp += ex;
             return temp != stats.getEdgedLevel();
@@ -131,7 +132,7 @@ public class PlayerUnitInstance : UnitClass {
         }
 
         //  if not summoning, kill all summoned shit
-        if(stats.equippedWeapon == null || stats.equippedWeapon.isEmpty() || stats.equippedWeapon.w_specialUsage != Weapon.specialUsage.summoning) {
+        if(stats.equippedWeapon == null || stats.equippedWeapon.isEmpty() || stats.equippedWeapon.sUsage != Weapon.specialUsage.summoning) {
             foreach(var i in FindObjectsOfType<SummonedUnitInstance>()) {
                 if(i.summoner.isEqualTo(stats))
                     i.die(DeathInfo.killCause.murdered);

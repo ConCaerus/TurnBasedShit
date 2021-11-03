@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: ShockAbsorber
   m_EditorClassIdentifier: 
   preset:
-    i_instanceID: -1
-    i_name: Shock Absorber
-    i_rarity: 5
-    i_timedEffects: []
-    i_passiveEffects:
+    instanceID: -1
+    name: Shock Absorber
+    type: 2
+    rarity: 5
+    coinCost: 35
+    tEffects: []
+    pEffects:
     - effect: 6
-      effectAmount: 0.5
-    i_coinCost: 40
-    i_sprite:
+      effectAmount: 0.35
+    sprite:
       sprite: {fileID: 21300000, guid: e73d448d548e24b43a636735186f9912, type: 3}

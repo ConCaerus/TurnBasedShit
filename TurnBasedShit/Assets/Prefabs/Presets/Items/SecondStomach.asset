@@ -13,14 +13,15 @@ MonoBehaviour:
   m_Name: SecondStomach
   m_EditorClassIdentifier: 
   preset:
-    i_instanceID: -1
-    i_name: Second Stomach
-    i_rarity: 4
-    i_timedEffects:
-    - effect: 2
+    instanceID: -1
+    name: Second Stomach
+    type: 2
+    rarity: 3
+    coinCost: 10
+    tEffects:
+    - effect: 3
       time: 7
-      effectAmount: 0.1
-    i_passiveEffects: []
-    i_coinCost: 50
-    i_sprite:
+      effectAmount: 0.2
+    pEffects: []
+    sprite:
       sprite: {fileID: 21300000, guid: e44ac80f3f1e1ae4c9c63bdbe4ff7dca, type: 3}

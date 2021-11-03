@@ -12,7 +12,7 @@ public class PickupLocation : MapLocation {
 
     public Weapon pickupWeapon = null;
     public Armor pickupArmor = null;
-    public Consumable pickupConsumable = null;
+    public Usable pickupConsumable = null;
     public Item pickupItem = null;
 
     //public PickupQuest attachedQuest = null;
@@ -21,7 +21,7 @@ public class PickupLocation : MapLocation {
     public pickupType pType = (pickupType)(-1);
 
     //  weapon
-    public PickupLocation(Vector2 p, Weapon w, PresetLibrary lib, GameInfo.diffLvl diff) {
+    public PickupLocation(Vector2 p, Weapon w, PresetLibrary lib, GameInfo.region diff) {
         pos = p;
         type = locationType.pickup;
         pType = pickupType.weapon;
@@ -33,7 +33,7 @@ public class PickupLocation : MapLocation {
     }
 
     //  armor
-    public PickupLocation(Vector2 p, Armor a, PresetLibrary lib, GameInfo.diffLvl diff) {
+    public PickupLocation(Vector2 p, Armor a, PresetLibrary lib, GameInfo.region diff) {
         pos = p;
         type = locationType.pickup;
         pType = pickupType.armor;
@@ -45,7 +45,7 @@ public class PickupLocation : MapLocation {
     }
 
     //  consumable
-    public PickupLocation(Vector2 p, Consumable con, int count, PresetLibrary lib, GameInfo.diffLvl diff) {
+    public PickupLocation(Vector2 p, Usable con, int count, PresetLibrary lib, GameInfo.region diff) {
         pos = p;
         pType = pickupType.consumable;
 
@@ -57,7 +57,7 @@ public class PickupLocation : MapLocation {
     }
 
     //  item
-    public PickupLocation(Vector2 p, Item it, PresetLibrary lib, GameInfo.diffLvl diff) {
+    public PickupLocation(Vector2 p, Item it, PresetLibrary lib, GameInfo.region diff) {
         pos = p;
         pType = pickupType.item;
 
@@ -68,11 +68,11 @@ public class PickupLocation : MapLocation {
     }
 
 
-    public override void enterLocation() {
+    public override void enterLocation(TransitionCanvas tc) {
         GameInfo.setCombatDetails(combatLocation);
         GameInfo.setCurrentLocationAsPickup(this);
         MapLocationHolder.removeLocation(this);
-        SceneManager.LoadScene("Combat");
+        tc.loadSceneWithTransition("Combat");
     }
 
     public override bool isEqualTo(MapLocation other) {
@@ -82,9 +82,9 @@ public class PickupLocation : MapLocation {
         PickupLocation o = (PickupLocation)other;
 
         return pos == other.pos &&
-            pickupWeapon.isEqualTo(o.pickupWeapon) &&
-            pickupArmor.isEqualTo(o.pickupArmor) &&
-            pickupConsumable.isEqualTo(o.pickupConsumable) &&
-            pickupItem.isEqualTo(o.pickupItem);           
+            pickupWeapon.isTheSameInstanceAs(o.pickupWeapon) &&
+            pickupArmor.isTheSameInstanceAs(o.pickupArmor) &&
+            pickupConsumable.isTheSameInstanceAs(o.pickupConsumable) &&
+            pickupItem.isTheSameInstanceAs(o.pickupItem);           
     }
 }

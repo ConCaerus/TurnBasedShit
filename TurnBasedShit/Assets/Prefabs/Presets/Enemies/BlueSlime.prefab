@@ -2157,29 +2157,36 @@ MonoBehaviour:
       headIndex: 0
       faceIndex: 0
       bodyIndex: 0
+      layerOffset: 0
       color: {r: 1, g: 1, b: 1, a: 1}
     u_baseMaxHealth: 20
     u_health: 20
     u_speed: -0
-    u_power: 1
+    u_power: 10
     u_defence: 1
     u_critChance: 0.02
     u_bleedCount: 0
     u_instanceID: -1
     equippedWeapon:
-      w_instanceID: -1
-      w_name: Slime Weapon
-      w_rarity: 0
-      w_element: 0
-      w_wornAmount: 3
-      w_attributes: 03000000
-      w_specialUsage: 0
-      w_specialUsageAmount: 0
-      w_attackType: 0
-      w_power: 10
-      w_speedMod: 0
-      w_coinCost: 0
-      w_sprite:
+      instanceID: -1
+      name: 
+      type: 0
+      rarity: 0
+      coinCost: 0
+      canBeFished: 0
+      fishedData:
+        hookedPos: {x: 0, y: 0}
+        hookedRot: 0
+        diffRegion: 0
+        chanceToCatch: 0
+      wornAmount: 3
+      attributes: 
+      sUsage: 0
+      sUsageAmount: 0
+      aType: 0
+      power: 0
+      speedMod: 0
+      sprite:
         sprite: {fileID: 0}
         equippedX: 0
         equippedY: 0
@@ -2187,15 +2194,22 @@ MonoBehaviour:
         equippedXSize: 0
         equippedYSize: 0
     equippedArmor:
-      a_instanceID: -1
-      a_name: Slime Armor
-      a_rarity: 0
-      a_wornAmount: 0
-      a_attributes: 
-      a_defence: 10
-      a_speedMod: 0
-      a_coinCost: 0
-      a_sprite:
+      instanceID: -1
+      name: 
+      type: 0
+      rarity: 0
+      coinCost: 0
+      canBeFished: 0
+      fishedData:
+        hookedPos: {x: 0, y: 0}
+        hookedRot: 0
+        diffRegion: 0
+        chanceToCatch: 0
+      wornAmount: 3
+      attributes: 
+      defence: 0
+      speedMod: 0
+      sprite:
         sprite: {fileID: 0}
         equippedSprite: {fileID: 0}
         equippedShoulder: {fileID: 0}
@@ -2240,13 +2254,20 @@ MonoBehaviour:
         xHatSize2: 0
         yHatSize2: 0
     equippedItem:
-      i_instanceID: -1
-      i_name: 
-      i_rarity: 0
-      i_timedEffects: []
-      i_passiveEffects: []
-      i_coinCost: 0
-      i_sprite:
+      instanceID: -1
+      name: 
+      type: 0
+      rarity: 0
+      coinCost: 0
+      canBeFished: 0
+      fishedData:
+        hookedPos: {x: 0, y: 0}
+        hookedRot: 0
+        diffRegion: 0
+        chanceToCatch: 0
+      tEffects: []
+      pEffects: []
+      sprite:
         sprite: {fileID: 0}
     u_traits: []
     u_deathInfo:
@@ -2264,6 +2285,7 @@ MonoBehaviour:
   consumableDrop: {fileID: 0}
   chanceToDropConsumable: 0
   enemyType: 0
+  profileIndex: 1
 --- !u!114 &7335987756038453860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2299,8 +2321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b50cf52fd2f3020489dae1d0b81e3fc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infos:
-  - Enemy Unit
+  info: <b><u>Information
   hideWhenMenuOpen: 1
 --- !u!1 &4187675803224022062
 GameObject:

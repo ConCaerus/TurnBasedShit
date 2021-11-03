@@ -4,7 +4,7 @@ using UnityEngine;
 
 [System.Serializable]
 public class EnemyUnitInstance : UnitClass {
-    public GameInfo.diffLvl enemyDiff = 0;
+    public GameInfo.region enemyDiff = 0;
     public Weapon.attackType weakTo;
 
     public WeaponPreset weaponDrop;
@@ -13,8 +13,9 @@ public class EnemyUnitInstance : UnitClass {
     public int chanceToDropArmor;
     public ItemPreset itemDrop;
     public int chanceToDropItem;
-    public ConsumablePreset consumableDrop;
+    public UsablePreset consumableDrop;
     public int chanceToDropConsumable;
+
 
     public type enemyType;
 
@@ -22,7 +23,7 @@ public class EnemyUnitInstance : UnitClass {
 
     [System.Serializable]
     public enum type {
-        slime, groundBird
+        slime, groundBird, stumpSpider
     }
 
 
@@ -169,7 +170,7 @@ public class EnemyUnitInstance : UnitClass {
             return;
         if(GameVariables.chanceOutOfHundred(chanceToDropConsumable + bonusChance)) {
             var loc = GameInfo.getCombatDetails();
-            loc.consumables.Add(consumableDrop.preset);
+            loc.consumables.Add((Usable)consumableDrop.preset);
             GameInfo.setCombatDetails(loc);
         }
     }

@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: Dummy
   m_EditorClassIdentifier: 
   preset:
-    i_instanceID: -1
-    i_name: Dummy
-    i_rarity: 2
-    i_timedEffects: []
-    i_passiveEffects:
+    instanceID: -1
+    name: Dummy
+    type: 2
+    rarity: 3
+    coinCost: 15
+    tEffects: []
+    pEffects:
     - effect: 7
-      effectAmount: -0.1
-    i_coinCost: 10
-    i_sprite:
+      effectAmount: -0.15
+    sprite:
       sprite: {fileID: 21300000, guid: 1138681757983d34ba457950356dd207, type: 3}

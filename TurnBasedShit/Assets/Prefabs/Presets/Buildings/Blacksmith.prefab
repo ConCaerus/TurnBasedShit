@@ -125,7 +125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   b_type: 4
   reference:
-    orderInTown: -1
+    orderInTown: 1
     b_type: 4
     chargeRate: 1
 --- !u!114 &3380180195124333692
@@ -140,6 +140,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b50cf52fd2f3020489dae1d0b81e3fc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infos:
-  - <b><u>Blacksmith
+  info: <b><u>Blacksmith
   hideWhenMenuOpen: 1

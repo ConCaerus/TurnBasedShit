@@ -13,44 +13,51 @@ MonoBehaviour:
   m_Name: Simple Shirt
   m_EditorClassIdentifier: 
   preset:
-    a_instanceID: -1
-    a_name: Simple Shirt
-    a_rarity: 0
-    a_wornAmount: 0
-    a_attributes: 
-    a_defence: 5
-    a_speedMod: 2
-    a_coinCost: 2
-    a_sprite:
+    instanceID: -1
+    name: Simple Shirt
+    type: 1
+    rarity: 0
+    coinCost: 1
+    canBeFished: 0
+    fishedData:
+      hookedPos: {x: 0, y: 0}
+      hookedRot: 0
+      diffRegion: 0
+      chanceToCatch: 0
+    wornAmount: 3
+    attributes: 
+    defence: 1
+    speedMod: 1
+    sprite:
       sprite: {fileID: 21300000, guid: 659edf7ddf4c930488e38ecd5c72668f, type: 3}
-      equippedSprite: {fileID: 21300000, guid: f3297d1a17f799a42b6a88cde4f12b1e, type: 3}
+      equippedSprite: {fileID: 21300000, guid: 659edf7ddf4c930488e38ecd5c72668f, type: 3}
       equippedShoulder: {fileID: 21300000, guid: a8f6b81c04aab7848913679040562d59,
         type: 3}
       equippedHat: {fileID: 0}
-      xPos0: 0.02
-      yPos0: 0.46
-      xSize0: 0.65
-      ySize0: 0.65
-      xPos1: 0.06
-      yPos1: 0.37
-      xSize1: 0.65
-      ySize1: 0.45
-      xPos2: 0.04
-      yPos2: 0.52
-      xSize2: 0.65
-      ySize2: 0.65
-      xShoulderPos0: -0.089
-      yShoulderPos0: 0.192
-      xShoulderSize0: 0.75
-      yShoulderSize0: 0.75
-      shoulderRot: 0
-      xShoulderPos1: -0.089
-      yShoulderPos1: 0.134
-      xShoulderSize1: 0.65
-      yShoulderSize1: 0.65
-      xShoulderPos2: -0.038
-      yShoulderPos2: 0.179
-      xShoulderSize2: 0.9
+      xPos0: 0.091
+      yPos0: 0.263
+      xSize0: 0.4445
+      ySize0: 0.4396
+      xPos1: 0.095
+      yPos1: 0.184
+      xSize1: 0.4331
+      ySize1: 0.3199
+      xPos2: 0.101
+      yPos2: 0.262
+      xSize2: 0.5763
+      ySize2: 0.552
+      xShoulderPos0: -0.098
+      yShoulderPos0: 0.183
+      xShoulderSize0: 0.819
+      yShoulderSize0: 0.787
+      shoulderRot: -2.731
+      xShoulderPos1: -0.085
+      yShoulderPos1: 0.106
+      xShoulderSize1: 0.75
+      yShoulderSize1: 0.75
+      xShoulderPos2: -0.051
+      yShoulderPos2: 0.189
+      xShoulderSize2: 1.011
       yShoulderSize2: 0.9
       hatInfrontOfHead: 1
       xHatPos0: 0

@@ -6,25 +6,25 @@ using UnityEngine;
 public class CombatLocation {
     [SerializeField] public List<Wave> waves = new List<Wave>(1);
 
-    public GameInfo.diffLvl difficulty;
+    public GameInfo.region difficulty;
 
     public int coinReward = 0;
 
     public List<Weapon> weapons = new List<Weapon>();
     public List<Armor> armor = new List<Armor>();
-    public List<Consumable> consumables = new List<Consumable>();
+    public List<Usable> consumables = new List<Usable>();
     public List<Item> items = new List<Item>();
     public List<UnitStats> rescuedUnits = new List<UnitStats>();
 
-    public CombatLocation(GameInfo.diffLvl diff, PresetLibrary lib, int numberOfWaves = 2, int minNumberOfEnemies = 2, int maxNumberOfEnemies = 4) {
+    public CombatLocation(GameInfo.region diff, PresetLibrary lib, int numberOfWaves = 2, int minNumberOfEnemies = 2, int maxNumberOfEnemies = 4) {
         createWaves(diff, lib, numberOfWaves, minNumberOfEnemies, maxNumberOfEnemies);
     }
 
-    public void createWaves(GameInfo.diffLvl diff, PresetLibrary lib, int numberOfWaves, int minNumberOfEnemies = 2, int maxNumberOfEnemies = 4) {
+    public void createWaves(GameInfo.region diff, PresetLibrary lib, int numberOfWaves, int minNumberOfEnemies = 2, int maxNumberOfEnemies = 4) {
         waves.Clear();
         addWaves(diff, lib, numberOfWaves, minNumberOfEnemies, maxNumberOfEnemies);
     }
-    public void addWaves(GameInfo.diffLvl diff, PresetLibrary lib, int numberOfWaves, int minNumberOfEnemies = 2, int maxNumberOfEnemies = 4) {
+    public void addWaves(GameInfo.region diff, PresetLibrary lib, int numberOfWaves, int minNumberOfEnemies = 2, int maxNumberOfEnemies = 4) {
         for(int i = 0; i < numberOfWaves; i++) {
             Wave temp = new Wave();
 
@@ -49,7 +49,7 @@ public class CombatLocation {
         foreach(var i in armor)
             Inventory.addArmor(i);
         foreach(var i in consumables)
-            Inventory.addConsumable(i);
+            Inventory.addUsable(i);
         foreach(var i in items)
             Inventory.addItem(i);
         foreach(var i in rescuedUnits)

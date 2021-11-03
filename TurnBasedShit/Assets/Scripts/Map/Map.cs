@@ -5,18 +5,26 @@ using UnityEngine;
 public static class Map {
     public static float leftBound = -25.0f, rightBound = 250.0f;
     public static float botBound = -25.0f, topBound = 25.0f;
+    public static float width() {
+        return rightBound - leftBound;
+    }
+    public static float height() {
+        return topBound - botBound;
+    }
 
+
+    const string saveTag = "Map Fog Texture Map";
 
     public static Vector2 getRandPos() {
         return new Vector2(Random.Range(leftBound, rightBound), Random.Range(botBound, topBound));
     }
 
-    public static GameInfo.diffLvl getDiffForX(float x) {
+    public static GameInfo.region getDiffForX(float x) {
         for(int i = 0; i < 6; i++) {
             if(x < getRegionXStartPoint(i + 1))
-                return (GameInfo.diffLvl)(i);
+                return (GameInfo.region)(i);
         }
-        return (GameInfo.diffLvl)(-1);
+        return (GameInfo.region)(-1);
     }
     public static float getRegionXLength(int regionIndex) {
         float totalLength = rightBound - leftBound;
@@ -48,30 +56,41 @@ public static class Map {
     }
 
     public static void populateTowns(PresetLibrary lib) {
-        int cakeCount = 2;
-        int easyCount = 3;
-        int normalCount = 4;
-        int interCount = 5;
-        int hardCount = 7;
-        int heroicCount = 8;
-        int legendaryCount = 10;
+        int grassCount = 1;
+        int forestCount = 3;
+        int swampCount = 5;
+        int mountainsCount = 8;
+        int hell = 10;
 
-        for(int i = 0; i < cakeCount + easyCount + normalCount + interCount + hardCount + heroicCount + legendaryCount; i++) {
-            if(i < cakeCount)
-                MapLocationHolder.addLocation(new TownLocation(getRandomPosInRegion(0), GameInfo.diffLvl.Cake, lib));
-            else if(i < easyCount)
-                MapLocationHolder.addLocation(new TownLocation(getRandomPosInRegion(1), GameInfo.diffLvl.Easy, lib));
-            else if(i < normalCount)
-                MapLocationHolder.addLocation(new TownLocation(getRandomPosInRegion(2), GameInfo.diffLvl.Normal, lib));
-            else if(i < interCount)
-                MapLocationHolder.addLocation(new TownLocation(getRandomPosInRegion(3), GameInfo.diffLvl.Inter, lib));
-            else if(i < hardCount)
-                MapLocationHolder.addLocation(new TownLocation(getRandomPosInRegion(4), GameInfo.diffLvl.Hard, lib));
-            else if(i < heroicCount)
-                MapLocationHolder.addLocation(new TownLocation(getRandomPosInRegion(5), GameInfo.diffLvl.Heroic, lib));
-            else if(i < legendaryCount)
-                MapLocationHolder.addLocation(new TownLocation(getRandomPosInRegion(6), GameInfo.diffLvl.Legendary, lib));
+        for(int i = 0; i < grassCount + forestCount + swampCount + mountainsCount + hell; i++) {
+            if(i < grassCount)
+                MapLocationHolder.addLocation(new TownLocation(getRandomPosInRegion(0), GameInfo.region.grassland, lib));
+            else if(i < forestCount)
+                MapLocationHolder.addLocation(new TownLocation(getRandomPosInRegion(1), GameInfo.region.forest, lib));
+            else if(i < swampCount)
+                MapLocationHolder.addLocation(new TownLocation(getRandomPosInRegion(2), GameInfo.region.swamp, lib));
+            else if(i < mountainsCount)
+                MapLocationHolder.addLocation(new TownLocation(getRandomPosInRegion(3), GameInfo.region.mountains, lib));
+            else if(i < hell)
+                MapLocationHolder.addLocation(new TownLocation(getRandomPosInRegion(4), GameInfo.region.hell, lib));
         }
+    }
+
+
+    public static void clearFogTexture() {
+        SaveData.deleteKey(saveTag);
+    }
+    public static void saveFogTexture(Texture2D map) {
+        FowData data = new FowData(map.GetRawTextureData());
+        SaveData.setString(saveTag, JsonUtility.ToJson(data));
+    }
+    public static Texture2D getFogTexture() {
+        var temp = new Texture2D((int)width(), (int)height());
+        if(string.IsNullOrEmpty(SaveData.getString(saveTag)))
+            return null;
+        var thing = JsonUtility.FromJson<FowData>(SaveData.getString(saveTag));
+        temp.LoadRawTextureData(thing.data);
+        return temp;
     }
 
     public static TownLocation getRandomTownLocationInRegion(int regionIndex) {
@@ -85,5 +104,15 @@ public static class Map {
         }
 
         return pos[Random.Range(0, pos.Count)];
+    }
+}
+
+
+[System.Serializable]
+public struct FowData {
+    public byte[] data;
+
+    public FowData(byte[] d) {
+        data = d;
     }
 }

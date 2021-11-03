@@ -4,6 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class InfoCanvas : MonoBehaviour {
     bool shown = false;
@@ -12,12 +13,14 @@ public class InfoCanvas : MonoBehaviour {
 
     GameObject background;
     TextMeshProUGUI infoText;
+    public InfoBearer shownInfo { get; private set; } = null;
 
     Coroutine shower = null;
 
 
     private void Awake() {
         background = transform.GetChild(0).gameObject;
+        GetComponent<Canvas>().worldCamera = Camera.main;
         infoText = transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
         startHiding();
     }
@@ -38,20 +41,20 @@ public class InfoCanvas : MonoBehaviour {
 
 
 
-    public void showOneSentenceInfo(string info) {
+    void setAndPositionInfo(string info) {
         positionInfoBox();
         infoText.text = info;
     }
 
-    public void startShowing(string info) {
+    public void startShowing(InfoBearer ib) {
         if(shower != null)
             StopCoroutine(shower);
 
-
+        shownInfo = ib;
         background.GetComponent<Image>().DOComplete();
         infoText.GetComponent<TextMeshProUGUI>().DOComplete();
 
-        shower = StartCoroutine(waitToShow(info));
+        shower = StartCoroutine(waitToShow(ib.getInfo()));
     }
 
     public void startHiding() {
@@ -59,8 +62,7 @@ public class InfoCanvas : MonoBehaviour {
             StopCoroutine(shower);
         shower = null;
 
-
-
+        shownInfo = null;
         background.GetComponent<Image>().DOComplete();
         infoText.GetComponent<TextMeshProUGUI>().DOComplete();
 
@@ -73,19 +75,25 @@ public class InfoCanvas : MonoBehaviour {
 
     IEnumerator waitToShow(string info) {
         infoText.GetComponent<LayoutElement>().preferredWidth = 200.0f;
-        showOneSentenceInfo(info);
-        yield return new WaitForSeconds(waitTimeForInfo);
+        setAndPositionInfo(info);
+
+        if(!shown)
+            yield return new WaitForSeconds(waitTimeForInfo);
+        else
+            yield return new WaitForEndOfFrame();
 
         if(infoText.textBounds.size.x < 200.0f && infoText.textInfo.lineCount == 1)
             infoText.GetComponent<LayoutElement>().preferredWidth = infoText.textBounds.size.x;
-        shown = true;
 
-        background.GetComponent<Image>().color = Color.clear;
-        infoText.GetComponent<TextMeshProUGUI>().color = Color.clear;
-        background.GetComponent<Image>().DOColor(Color.black, 0.1f);
-        infoText.GetComponent<TextMeshProUGUI>().DOColor(Color.white, 0.1f);
+        if(!shown) {
+            background.GetComponent<Image>().color = Color.clear;
+            infoText.GetComponent<TextMeshProUGUI>().color = Color.clear;
+            background.GetComponent<Image>().DOColor(Color.black, 0.1f);
+            infoText.GetComponent<TextMeshProUGUI>().DOColor(Color.white, 0.1f);
+            shown = true;
 
-        yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.1f);
+        }
 
         shower = null;
     }

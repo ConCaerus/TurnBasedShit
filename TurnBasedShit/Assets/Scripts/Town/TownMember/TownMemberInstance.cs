@@ -22,7 +22,7 @@ public class TownMemberInstance : MonoBehaviour {
     float dialogMoveSpeed = 2.5f;
 
     private void Start() {
-        GetComponentInChildren<UnitSpriteHandler>().setEverything(reference.m_sprite, null, null);
+        GetComponentInChildren<UnitSpriteHandler>().setEverything(reference.m_sprite, null, null, reference.m_sprite.layerOffset);
 
         if(reference.hasQuest) {
             mark = createMark(quMark);

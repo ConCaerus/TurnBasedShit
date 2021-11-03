@@ -5,6 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class UnitSpriteInfo {
     public int headIndex = 0, faceIndex = 0, bodyIndex = 0;
+    public int layerOffset = 0;
     public Color color = Color.white;
 
     public void randomize(PresetLibrary lib) {

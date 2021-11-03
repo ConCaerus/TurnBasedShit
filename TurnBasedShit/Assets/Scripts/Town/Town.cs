@@ -293,7 +293,7 @@ public class Town {
     }
 
 
-    public Town(GameInfo.diffLvl diff, PresetLibrary lib, bool giveID) {
+    public Town(GameInfo.region diff, PresetLibrary lib, bool giveID) {
         if(giveID)
             t_instanceID = GameInfo.getNextTownInstanceID();
 

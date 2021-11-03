@@ -125,10 +125,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   b_type: 0
   reference:
-    orderInTown: -1
+    orderInTown: 0
     b_type: 0
-    freeHeals: 0
-    pricePerHeal: 0
+    freeHeals: 2
+    pricePerHeal: 2
 --- !u!114 &7100966617796586668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,6 +141,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b50cf52fd2f3020489dae1d0b81e3fc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infos:
-  - <b><u>Hospital
+  info: <b><u>Hospital
   hideWhenMenuOpen: 1

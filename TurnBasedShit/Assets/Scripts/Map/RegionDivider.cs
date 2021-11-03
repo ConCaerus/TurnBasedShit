@@ -14,7 +14,7 @@ public class RegionDivider : MonoBehaviour {
 
 
     void spawnDividers() {
-        for(int i = 1; i < (int)GameInfo.diffLvl.Legendary; i++) {
+        for(int i = 1; i < (int)GameInfo.region.hell; i++) {
             var obj = Instantiate(regionDividerPreset.gameObject, transform.GetChild(0));
             obj.transform.position = new Vector3(Map.getRegionXStartPoint(i), 0.0f, 0.0f);
 

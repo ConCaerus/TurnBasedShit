@@ -9,7 +9,8 @@ public class DebuggerWindow : EditorWindow {
     int invCount = 0;
     [SerializeField] WeaponPreset weaponToAdd;
     [SerializeField] ArmorPreset armorToAdd;
-    [SerializeField] ConsumablePreset consumableToAdd;
+    [SerializeField] UsablePreset usableToAdd;
+    [SerializeField] UnusablePreset unusableToAdd;
     [SerializeField] ItemPreset itemToAdd;
 
     [MenuItem("Window/Debugger")]
@@ -24,7 +25,8 @@ public class DebuggerWindow : EditorWindow {
         GUILayout.BeginHorizontal();
         weaponToAdd = (WeaponPreset)EditorGUILayout.ObjectField(weaponToAdd, typeof(WeaponPreset), true);
         armorToAdd = (ArmorPreset)EditorGUILayout.ObjectField(armorToAdd, typeof(ArmorPreset), true);
-        consumableToAdd = (ConsumablePreset)EditorGUILayout.ObjectField(consumableToAdd, typeof(ConsumablePreset), true);
+        usableToAdd = (UsablePreset)EditorGUILayout.ObjectField(usableToAdd, typeof(UsablePreset), true);
+        unusableToAdd = (UnusablePreset)EditorGUILayout.ObjectField(unusableToAdd, typeof(UnusablePreset), true);
         itemToAdd = (ItemPreset)EditorGUILayout.ObjectField(itemToAdd, typeof(ItemPreset), true);
 
         GUILayout.EndHorizontal();
@@ -144,9 +146,14 @@ public class DebuggerWindow : EditorWindow {
                 Inventory.addArmor(a);
             }
 
-            if(consumableToAdd != null) {
-                Consumable c = FindObjectOfType<PresetLibrary>().getConsumable(consumableToAdd.preset);
-                Inventory.addConsumable(c);
+            if(usableToAdd != null) {
+                Usable c = FindObjectOfType<PresetLibrary>().getUsable(usableToAdd.preset);
+                Inventory.addUsable(c);
+            }
+
+            if(unusableToAdd != null) {
+                Unusable c = FindObjectOfType<PresetLibrary>().getUnusable(unusableToAdd.preset);
+                Inventory.addUnusable(c);
             }
 
             if(itemToAdd != null) {
@@ -157,7 +164,8 @@ public class DebuggerWindow : EditorWindow {
 
         weaponToAdd = null;
         armorToAdd = null;
-        consumableToAdd = null;
+        usableToAdd = null;
+        unusableToAdd = null;
         itemToAdd = null;
     }
 }

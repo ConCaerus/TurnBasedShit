@@ -6,7 +6,7 @@ using DG.Tweening;
 public class MapEnemyMovement : MonoBehaviour {
     Vector2 target;
     Vector2 patrolAreaMidPoint;
-    public GameInfo.diffLvl currentDiff;
+    public GameInfo.region currentDiff;
 
     float travelTime = 1.0f, incTravelTime = 0.0f;
     bool movingRight = true;

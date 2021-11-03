@@ -22,7 +22,7 @@ public class ArmorSelectionCanvas : UnitEquipmentSelectionCanvas {
     public override void populateSlots() {
         int slotIndex = 0;
         if(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor.isEmpty()) {
-            var obj = slot.createSlot(slotIndex, FindObjectOfType<UnitCanvas>().shownUnit.u_sprite.color);
+            var obj = slot.createSlot(slotIndex, FindObjectOfType<UnitCanvas>().shownUnit.u_sprite.color, InfoTextCreator.createForCollectable(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor));
             obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor).sprite;
             slotIndex++;
         }
@@ -30,10 +30,12 @@ public class ArmorSelectionCanvas : UnitEquipmentSelectionCanvas {
         for(int i = 0; i < Inventory.getArmorCount(); i++) {
             if(Inventory.getArmor(i) == null || Inventory.getArmor(i).isEmpty())
                 continue;
-            var obj = slot.createSlot(slotIndex, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getArmor(i).a_rarity));
+            var obj = slot.createSlot(slotIndex, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getArmor(i).rarity), InfoTextCreator.createForCollectable(Inventory.getArmor(i)));
             obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getArmor(i)).sprite;
             slotIndex++;
         }
+
+        slot.deleteSlotsAfterIndex(slotIndex);
     }
 
     public override void updateInfo() {
@@ -51,13 +53,13 @@ public class ArmorSelectionCanvas : UnitEquipmentSelectionCanvas {
         }
         var shownArmor = getArmorInSlot(slot.getSelectedSlotIndex());
         armorImage.sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(shownArmor).sprite;
-        armorImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownArmor.a_rarity);
+        armorImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownArmor.rarity);
 
 
         //  stats
-        nameText.text = shownArmor.a_name;
-        defText.text = shownArmor.a_defence.ToString("0.0");
-        spdText.text = shownArmor.a_speedMod.ToString("0.0");
+        nameText.text = shownArmor.name;
+        defText.text = shownArmor.defence.ToString("0.0");
+        spdText.text = shownArmor.speedMod.ToString("0.0");
 
         //  attributes
         List<Armor.attribute> usedAtts = new List<Armor.attribute>();
@@ -66,7 +68,7 @@ public class ArmorSelectionCanvas : UnitEquipmentSelectionCanvas {
         firstAttributeText.text = "";
         secondAttributeText.text = "";
         Vector2 prevPos = secondAttributeText.transform.position;
-        foreach(var i in shownArmor.a_attributes) {
+        foreach(var i in shownArmor.attributes) {
             bool useable = true;
             foreach(var u in usedAtts) {
                 if(u == i) {
@@ -105,6 +107,7 @@ public class ArmorSelectionCanvas : UnitEquipmentSelectionCanvas {
             FindObjectOfType<UnitCanvas>().setUnitArmor(slottedArmor);
             Inventory.removeArmor(slottedArmor);
         }
+
 
         //  unit just takes
         else {

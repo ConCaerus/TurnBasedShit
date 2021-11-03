@@ -67,11 +67,11 @@ public class BattleResultsCanvas : MonoBehaviour {
             yield return new WaitForSeconds(waitTime);
             if(i < consumables.Count) {
                 consumableImages[i].transform.DOScale(1.0f, waitTime);
-                consumableImages[i].transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getConsumableSprite(consumables[i]).sprite;
+                consumableImages[i].transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUsableSprite(consumables[i]).sprite;
 
                 //  remove all consumables of this type from the list
                 int count = 0;
-                List<Consumable> removables = new List<Consumable>();
+                List<Usable> removables = new List<Usable>();
                 foreach(var c in consumables) {
                     if(c.isTheSameTypeAs(consumables[i])) {
                         count++;

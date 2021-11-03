@@ -14,12 +14,17 @@ public class PresetLibrary : MonoBehaviour {
     [SerializeField] Sprite[] unitFaces;
     [SerializeField] GameObject[] unitBodies;
 
+    //  profiles
+    [SerializeField] GameObject playerUnitProfile;
+    [SerializeField] GameObject[] enemyProfiles;
+
     [SerializeField] CombatScarSpriteHolder[] combatScars;
 
     //  Equipment
     [SerializeField] WeaponPreset[] weapons;
     [SerializeField] ArmorPreset[] armor;
-    [SerializeField] ConsumablePreset[] consumables;
+    [SerializeField] UsablePreset[] usables;
+    [SerializeField] UnusablePreset[] unusables;
     [SerializeField] ItemPreset[] items;
     [SerializeField] EquipmentPair[] equipmentPairs;
     [SerializeField] SummonPair[] summonParis;
@@ -80,10 +85,10 @@ public class PresetLibrary : MonoBehaviour {
         }
         return null;
     }
-    public GameObject getRandomEnemy(GameInfo.diffLvl diff = (GameInfo.diffLvl)(-1)) {
+    public GameObject getRandomEnemy(GameInfo.region diff = (GameInfo.region)(-1)) {
         GameObject enemy = null;
         //  no specified difficulty level
-        if(diff != (GameInfo.diffLvl)(-1)) {
+        if(diff != (GameInfo.region)(-1)) {
             List<GameObject> useables = new List<GameObject>();
             useables.Clear();
             foreach(var i in enemies) {
@@ -110,10 +115,10 @@ public class PresetLibrary : MonoBehaviour {
         enemy = enemies[Random.Range(0, enemies.Length)].gameObject;
         return enemy;
     }
-    public GameObject getRandomBoss(GameInfo.diffLvl diff = (GameInfo.diffLvl)(-1)) {
+    public GameObject getRandomBoss(GameInfo.region diff = (GameInfo.region)(-1)) {
         GameObject boss = null;
 
-        if(diff != (GameInfo.diffLvl)(-1)) {
+        if(diff != (GameInfo.region)(-1)) {
             List<GameObject> useables = new List<GameObject>();
             foreach(var i in bosses) {
                 //  same difficulty
@@ -137,7 +142,7 @@ public class PresetLibrary : MonoBehaviour {
                 boss = useables[Random.Range(0, useables.Count)];
         }
 
-        else if(diff == (GameInfo.diffLvl)(-1) || boss == null) {
+        else if(diff == (GameInfo.region)(-1) || boss == null) {
             //  not useable enemies, return random enemy from all enemies
             boss = bosses[Random.Range(0, bosses.Length)];
         }
@@ -157,9 +162,9 @@ public class PresetLibrary : MonoBehaviour {
         return temp.gameObject;
     }
 
-    public int getRandomEnemyIndex(GameInfo.diffLvl diff = (GameInfo.diffLvl)(-1)) {
+    public int getRandomEnemyIndex(GameInfo.region diff = (GameInfo.region)(-1)) {
         //  no specified difficulty level
-        if(diff != (GameInfo.diffLvl)(-1)) {
+        if(diff != (GameInfo.region)(-1)) {
             List<int> useables = new List<int>();
             useables.Clear();
             for(int i = 0; i < enemies.Length; i++) {
@@ -283,13 +288,71 @@ public class PresetLibrary : MonoBehaviour {
         return unitBodies.Length;
     }
 
+
+    //  Profiles
+    public GameObject getProfileForUnit(UnitClass unit) {
+        if(unit.isPlayerUnit)
+            return getPlayerUnitProfile();
+
+        return getEnemyProfile(unit.GetComponent<EnemyUnitInstance>().enemyType);
+    }
+    public GameObject getPlayerUnitProfile() {
+        return playerUnitProfile;
+    }
+    public GameObject getEnemyProfile(EnemyUnitInstance.type type) {
+        switch(type) {
+            case EnemyUnitInstance.type.groundBird: return enemyProfiles[0];
+            case EnemyUnitInstance.type.slime: return enemyProfiles[1];
+            case EnemyUnitInstance.type.stumpSpider: return enemyProfiles[2];
+            default: return playerUnitProfile;
+        }
+    }
+
     //  Equipment
-    public Weapon getWeapon(string name, GameInfo.element ele) {
+    public List<Collectable> getAllCollectables(GameInfo.region lvl = (GameInfo.region)(-1)) {
+        List<Collectable> temp = new List<Collectable>();
+        if(lvl == (GameInfo.region)(-1)) {
+            foreach(var i in weapons)
+                temp.Add(i.preset);
+            foreach(var i in armor)
+                temp.Add(i.preset);
+            foreach(var i in items)
+                temp.Add(i.preset);
+            foreach(var i in usables)
+                temp.Add(i.preset);
+            foreach(var i in unusables)
+                temp.Add(i.preset);
+            return temp;
+        }
+
+        foreach(var i in weapons) {
+            if(i.preset.rarity == lvl)
+                temp.Add(i.preset);
+        }
+        foreach(var i in armor) {
+            if(i.preset.rarity == lvl)
+                temp.Add(i.preset);
+        }
+        foreach(var i in items) {
+            if(i.preset.rarity == lvl)
+                temp.Add(i.preset);
+        }
+        foreach(var i in usables) {
+            if(i.preset.rarity == lvl)
+                temp.Add(i.preset);
+        }
+        foreach(var i in unusables) {
+            if(i.preset.rarity == lvl)
+                temp.Add(i.preset);
+        }
+        return temp;
+    }
+    public Weapon getWeapon(string name) {
         Weapon temp = new Weapon();
         foreach(var i in weapons) {
-            if(i.preset.w_name == name && ele == i.preset.w_element) {
+            if(i.preset.name == name) {
                 temp.setEqualTo(i.preset, false);
-                temp.w_instanceID = GameInfo.getNextWeaponInstanceID();
+                temp.instanceID = GameInfo.getNextWeaponInstanceID();
                 return temp;
             }
         }
@@ -297,23 +360,23 @@ public class PresetLibrary : MonoBehaviour {
         return null;
     }
     public Weapon getWeapon(Weapon we) {
-        return getWeapon(we.w_name, we.w_element);
+        return getWeapon(we.name);
     }
-    public Weapon getRandomWeapon(GameInfo.rarityLvl lvl = (GameInfo.rarityLvl)(-1)) {
+    public Weapon getRandomWeapon(GameInfo.region lvl = (GameInfo.region)(-1)) {
 
-        if(lvl == (GameInfo.rarityLvl)(-1)) {
+        if(lvl == (GameInfo.region)(-1)) {
             return getWeapon(weapons[Random.Range(0, weapons.Length)].preset);
         }
 
         List<Weapon> useables = new List<Weapon>();
         foreach(var i in weapons) {
             //  same lvl
-            if(i.preset.w_rarity == lvl)
+            if(i.preset.rarity == lvl)
                 useables.Add(i.preset);
 
             //  higher lvl
-            if(i.preset.w_rarity > lvl) {
-                int lvlOffset = i.preset.w_rarity - lvl;
+            if(i.preset.rarity > lvl) {
+                int lvlOffset = i.preset.rarity - lvl;
                 float threshold = 75.0f / (float)lvlOffset;
                 if(Random.Range(0, 101) < threshold)
                     useables.Add(i.preset);
@@ -329,9 +392,9 @@ public class PresetLibrary : MonoBehaviour {
     public Armor getArmor(string name) {
         Armor temp = new Armor();
         foreach(var i in armor) {
-            if(i.preset.a_name == name) {
+            if(i.preset.name == name) {
                 temp.setEqualTo(i.preset, false);
-                temp.a_instanceID = GameInfo.getNextArmorInstanceID();
+                temp.instanceID = GameInfo.getNextArmorInstanceID();
                 return temp;
             }
         }
@@ -339,22 +402,22 @@ public class PresetLibrary : MonoBehaviour {
         return null;
     }
     public Armor getArmor(Armor a) {
-        return getArmor(a.a_name);
+        return getArmor(a.name);
     }
-    public Armor getRandomArmor(GameInfo.rarityLvl lvl = (GameInfo.rarityLvl)(-1)) {
-        if(lvl == (GameInfo.rarityLvl)(-1)) {
+    public Armor getRandomArmor(GameInfo.region lvl = (GameInfo.region)(-1)) {
+        if(lvl == (GameInfo.region)(-1)) {
             return getArmor(armor[Random.Range(0, armor.Length)].preset);
         }
 
         List<Armor> useables = new List<Armor>();
         foreach(var i in armor) {
             //  same lvl
-            if(i.preset.a_rarity == lvl)
+            if(i.preset.rarity == lvl)
                 useables.Add(i.preset);
 
             //  higher lvl
-            if(i.preset.a_rarity > lvl) {
-                int lvlOffset = i.preset.a_rarity - lvl;
+            if(i.preset.rarity > lvl) {
+                int lvlOffset = i.preset.rarity - lvl;
                 float threshold = 75.0f / (float)lvlOffset;
                 if(Random.Range(0, 101) < threshold)
                     useables.Add(i.preset);
@@ -368,53 +431,94 @@ public class PresetLibrary : MonoBehaviour {
         return getArmor(armor[Random.Range(0, armor.Length)].preset);
     }
 
-    public Consumable getConsumable(string name) {
-        Consumable temp = new Consumable();
-        foreach(var i in consumables) {
-            if(i.preset.c_name == name) {
+    public Usable getUsable(string name) {
+        Usable temp = new Usable();
+        foreach(var i in usables) {
+            if(i.preset.name == name) {
                 temp.setEqualTo(i.preset, false);
-                temp.c_instanceID = GameInfo.getNextConsumableInstanceID();
+                temp.instanceID = GameInfo.getNextUsableInstanceID();
                 return temp;
             }
         }
 
         return null;
     }
-    public Consumable getConsumable(Consumable c) {
-        return getConsumable(c.c_name);
+    public Usable getUsable(Usable c) {
+        return getUsable(c.name);
     }
-    public Consumable getRandomConsumable(GameInfo.rarityLvl lvl = (GameInfo.rarityLvl)(-1)) {
-        if(lvl == (GameInfo.rarityLvl)(-1)) {
-            return getConsumable(consumables[Random.Range(0, consumables.Length)].preset);
+    public Usable getRandomUsable(GameInfo.region lvl = (GameInfo.region)(-1)) {
+        if(lvl == (GameInfo.region)(-1)) {
+            return getUsable(usables[Random.Range(0, usables.Length)].preset);
         }
 
-        List<Consumable> useables = new List<Consumable>();
-        foreach(var i in consumables) {
+        List<Usable> right = new List<Usable>();
+        foreach(var i in usables) {
             //  same lvl
-            if(i.preset.c_rarity == lvl)
-                useables.Add(i.preset);
+            if(i.preset.rarity == lvl)
+                right.Add(i.preset);
 
             //  higher lvl
-            if(i.preset.c_rarity > lvl) {
-                int lvlOffset = i.preset.c_rarity - lvl;
+            if(i.preset.rarity > lvl) {
+                int lvlOffset = i.preset.rarity - lvl;
                 float threshold = 75.0f / (float)lvlOffset;
                 if(Random.Range(0, 101) < threshold)
-                    useables.Add(i.preset);
+                    right.Add(i.preset);
             }
         }
 
-        if(useables.Count > 0) {
-            return getConsumable(useables[Random.Range(0, useables.Count)]);
+        if(right.Count > 0) {
+            return getUsable(right[Random.Range(0, right.Count)]);
         }
-        return getConsumable(consumables[Random.Range(0, consumables.Length)].preset);
+        return getUsable(usables[Random.Range(0, usables.Length)].preset);
+    }
+
+    public Unusable getUnusable(string name) {
+        Unusable temp = new Unusable();
+        foreach(var i in unusables) {
+            if(i.preset.name == name) {
+                temp.setEqualTo(i.preset, false);
+                temp.instanceID = GameInfo.getNextUsableInstanceID();
+                return temp;
+            }
+        }
+
+        return null;
+    }
+    public Unusable getUnusable(Unusable c) {
+        return getUnusable(c.name);
+    }
+    public Unusable getRandomUnusable(GameInfo.region lvl = (GameInfo.region)(-1)) {
+        if(lvl == (GameInfo.region)(-1)) {
+            return getUnusable(unusables[Random.Range(0, unusables.Length)].preset);
+        }
+
+        List<Unusable> right = new List<Unusable>();
+        foreach(var i in unusables) {
+            //  same lvl
+            if(i.preset.rarity == lvl)
+                right.Add(i.preset);
+
+            //  higher lvl
+            if(i.preset.rarity > lvl) {
+                int lvlOffset = i.preset.rarity - lvl;
+                float threshold = 75.0f / (float)lvlOffset;
+                if(Random.Range(0, 101) < threshold)
+                    right.Add(i.preset);
+            }
+        }
+
+        if(right.Count > 0) {
+            return getUnusable(right[Random.Range(0, right.Count)]);
+        }
+        return getUnusable(unusables[Random.Range(0, unusables.Length)].preset);
     }
 
     public Item getItem(string name) {
         Item temp = new Item();
         foreach(var i in items) {
-            if(i.preset.i_name == name) {
+            if(i.preset.name == name) {
                 temp.setEqualTo(i.preset, false);
-                temp.i_instanceID = GameInfo.getNextItemInstanceID();
+                temp.instanceID = GameInfo.getNextItemInstanceID();
                 return temp;
             }
         }
@@ -422,22 +526,22 @@ public class PresetLibrary : MonoBehaviour {
         return null;
     }
     public Item getItem(Item i) {
-        return getItem(i.i_name);
+        return getItem(i.name);
     }
-    public Item getRandomItem(GameInfo.rarityLvl lvl = (GameInfo.rarityLvl)(-1)) {
-        if(lvl == (GameInfo.rarityLvl)(-1)) {
+    public Item getRandomItem(GameInfo.region lvl = (GameInfo.region)(-1)) {
+        if(lvl == (GameInfo.region)(-1)) {
             return getItem(items[Random.Range(0, items.Length)].preset);
         }
 
         List<Item> useables = new List<Item>();
         foreach(var i in items) {
             //  same lvl
-            if(i.preset.i_rarity == lvl)
+            if(i.preset.rarity == lvl)
                 useables.Add(i.preset);
 
             //  higher lvl
-            if(i.preset.i_rarity > lvl) {
-                int lvlOffset = i.preset.i_rarity - lvl;
+            if(i.preset.rarity > lvl) {
+                int lvlOffset = i.preset.rarity - lvl;
                 float threshold = 75.0f / (float)lvlOffset;
                 if(Random.Range(0, 101) < threshold)
                     useables.Add(i.preset);
@@ -456,7 +560,17 @@ public class PresetLibrary : MonoBehaviour {
                 return i;
         }
         return null;
-    } 
+    }
+
+    public List<Collectable> getFishableCollectables(GameInfo.region diff = (GameInfo.region)(-1)) {
+        List<Collectable> fishables = new List<Collectable>();
+        foreach(var i in getAllCollectables(diff)) {
+            if(i.canBeFished)
+                fishables.Add(i);
+        }
+
+        return fishables;
+    }
 
     //  Map
     public TownMember createRandomTownMember(bool autoHasQuest = false) {
@@ -493,7 +607,7 @@ public class PresetLibrary : MonoBehaviour {
     }
 
     //  special locations
-    public CombatLocation createCombatLocation(GameInfo.diffLvl lvl) {
+    public CombatLocation createCombatLocation(GameInfo.region lvl) {
         int waveCount = Random.Range(1, 4);
         var loc = new CombatLocation(lvl, this, waveCount);
         loc.difficulty = lvl;
@@ -514,7 +628,7 @@ public class PresetLibrary : MonoBehaviour {
         else if(type == 1)
             return new PickupLocation(Map.getRandPos(), getRandomArmor(), this, GameInfo.getCurrentDiff());
         else if(type == 2)
-            return new PickupLocation(Map.getRandPos(), getRandomConsumable(), Random.Range(1, 16), this, GameInfo.getCurrentDiff());
+            return new PickupLocation(Map.getRandPos(), getRandomUsable(), Random.Range(1, 16), this, GameInfo.getCurrentDiff());
         else
             return new PickupLocation(Map.getRandPos(), getRandomItem(), this, GameInfo.getCurrentDiff());
     }
@@ -567,8 +681,8 @@ public class PresetLibrary : MonoBehaviour {
             return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd), things, setID);
         }
         if(rand == 2) {
-            var things = new List<Consumable>();
-            var con = getRandomConsumable();
+            var things = new List<Usable>();
+            var con = getRandomUsable();
             for(int i = 0; i < Random.Range(1, 26); i++)
                 things.Add(con);
 
@@ -598,22 +712,46 @@ public class PresetLibrary : MonoBehaviour {
         return combatScars.Length;
     }
 
+    public Sprite getGenericSpriteForCollectable(Collectable c) {
+        switch(c.type) {
+            case Collectable.collectableType.weapon:
+                return getWeaponSprite((Weapon)c).sprite;
+            case Collectable.collectableType.armor:
+                return getArmorSprite((Armor)c).sprite;
+            case Collectable.collectableType.item:
+                return getItemSprite((Item)c).sprite;
+            case Collectable.collectableType.usable:
+                return getUsableSprite((Usable)c).sprite;
+            case Collectable.collectableType.unusable:
+                return getUnusableSprite((Unusable)c).sprite;
+            default:
+                return null;
+        }
+    }
     public WeaponSpriteHolder getWeaponSprite(Weapon we) {
         foreach(var i in weapons) {
-            if(i.preset.w_name == we.w_name && i.preset.w_element == we.w_element)
+            if(i.preset.isTheSameTypeAs(we))
                 return i.preset.getSpriteHolder();
         }
+        Debug.Log("here");
         return null;
     }
     public ArmorSpriteHolder getArmorSprite(Armor ar) {
         foreach(var i in armor) {
-            if(i.preset.a_name == ar.a_name)
+            if(i.preset.name == ar.name)
                 return i.preset.getSpriteHolder();
         }
         return null;
     }
-    public ConsumableSpriteHolder getConsumableSprite(Consumable con) {
-        foreach(var i in consumables) {
+    public UsableSpriteHolder getUsableSprite(Usable con) {
+        foreach(var i in usables) {
+            if(i.preset.isTheSameTypeAs(con))
+                return i.preset.getSpriteHolder();
+        }
+        return null;
+    }
+    public UnusableSpriteHolder getUnusableSprite(Unusable con) {
+        foreach(var i in unusables) {
             if(i.preset.isTheSameTypeAs(con))
                 return i.preset.getSpriteHolder();
         }
@@ -621,13 +759,28 @@ public class PresetLibrary : MonoBehaviour {
     }
     public ItemSpriteHolder getItemSprite(Item it) {
         foreach(var i in items) {
-            if(i.preset.i_name == it.i_name)
+            if(i.preset.name == it.name)
                 return i.preset.getSpriteHolder();
         }
         return null;
     }
 
-    public Color getRarityColor(GameInfo.rarityLvl lvl) {
+    public Usable getUsableFromSprite(Sprite s) {
+        foreach(var i in usables) {
+            if(i.preset.getSpriteHolder().sprite == s)
+                return i.preset;
+        }
+        return null;
+    }
+    public Unusable getUnusableFromSprite(Sprite s) {
+        foreach(var i in unusables) {
+            if(i.preset.getSpriteHolder().sprite == s)
+                return i.preset;
+        }
+        return null;
+    }
+
+    public Color getRarityColor(GameInfo.region lvl) {
         return rarityColors[(int)lvl];
     }
 }

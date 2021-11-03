@@ -9,7 +9,7 @@ public class TownLocation : MapLocation {
 
     public int region = -1;
 
-    public TownLocation(Vector2 p, GameInfo.diffLvl diff, PresetLibrary lib, Town t = null) {
+    public TownLocation(Vector2 p, GameInfo.region diff, PresetLibrary lib, Town t = null) {
         type = locationType.town;
         pos = p;
 
@@ -23,10 +23,10 @@ public class TownLocation : MapLocation {
         town = t;
     }
 
-    public override void enterLocation() {
+    public override void enterLocation(TransitionCanvas tc) {
         GameInfo.resetCombatDetails();
         GameInfo.setCurrentLocationAsTown(this);
-        SceneManager.LoadScene("Town");
+        tc.loadSceneWithTransition("Town");
     }
 
     public override bool isEqualTo(MapLocation other) {

@@ -18,7 +18,7 @@ public class BuildingSpawner : MonoBehaviour {
     public List<GameObject> buildingObjects = new List<GameObject>();
 
     private void Awake() {
-        GameInfo.currentGameState = GameInfo.state.Town;
+        GameInfo.currentGameState = GameInfo.state.town;
         if(GameInfo.getCurrentLocationAsTown() != null && !createNewTown)
             reference = GameInfo.getCurrentLocationAsTown().town;
         else {

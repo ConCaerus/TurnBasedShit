@@ -16,7 +16,10 @@ public class ChurchCanvas : BuildingCanvas {
     ChurchBuilding church;
 
     private void Awake() {
-        church = GameInfo.getCurrentLocationAsTown().town.getChurch();
+        if(GameInfo.getCurrentLocationAsTown().town.hasBuilding(Building.type.Church))
+            church = GameInfo.getCurrentLocationAsTown().town.getChurch();
+        else
+            church = Randomizer.randomizeBuilding(new ChurchBuilding());
     }
 
 

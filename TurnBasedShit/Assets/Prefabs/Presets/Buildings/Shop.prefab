@@ -125,10 +125,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   b_type: 1
   reference:
-    orderInTown: -1
+    orderInTown: 0
     b_type: 1
-    sellReduction: 0.05
-    priceMod: 0
+    sellReduction: 0.14316326
+    priceMod: 0.024856403
 --- !u!114 &7076091851056932991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,6 +141,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b50cf52fd2f3020489dae1d0b81e3fc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infos:
-  - <b><u>Shop
+  info: <b><u>Shop
   hideWhenMenuOpen: 1

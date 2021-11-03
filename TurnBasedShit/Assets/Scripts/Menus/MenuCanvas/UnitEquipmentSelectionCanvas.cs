@@ -15,6 +15,7 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
     public SlotMenu slot;
 
     bool shouldShowState = false;
+    bool mouseOverX = false;
 
     public bool shown = false;
 
@@ -25,9 +26,8 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
     private void Update() {
         if(slot.run())
             updateInfo();
-        if(Input.GetMouseButtonDown(0)) {
+        if(Input.GetMouseButtonDown(0) && !mouseOverX) {
             if(shouldShowState) {
-                transform.parent.GetComponentInChildren<InfoBearer>().hide();
                 startShowing();
             }
             else
@@ -37,15 +37,20 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
 
 
     public void startShowing() {
+        transform.parent.GetComponent<BoxCollider2D>().enabled = false;
         populateSlots();
         updateInfo();
         StartCoroutine(show());
     }
 
     public void startHiding() {
+        transform.parent.GetComponent<BoxCollider2D>().enabled = true;
         if(slot.getSelectedSlotIndex() != -1)
             rotateEquipment();
         StartCoroutine(hide());
+    }
+    public void setMouseOverX(bool b) {
+        mouseOverX = b;
     }
     public void setShownState(bool b) {
         shouldShowState = b;

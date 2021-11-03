@@ -13,7 +13,7 @@ public class PickupQuest {
 
     public Weapon pickupWeapon = null;
     public Armor pickupArmor = null;
-    public Consumable pickupConsumable = null;
+    public Usable pickupConsumable = null;
     public Item pickupItem = null;
 
 
@@ -37,7 +37,7 @@ public class PickupQuest {
             pickupArmor.setEqualTo(pickup.pickupArmor, true);
         }
         if(pickup.pickupConsumable != null && !pickup.pickupConsumable.isEmpty()) {
-            pickupConsumable = new Consumable();
+            pickupConsumable = new Usable();
             pickupConsumable.setEqualTo(pickup.pickupConsumable, true);
         }
         if(pickup.pickupItem != null && !pickup.pickupItem.isEmpty()) {

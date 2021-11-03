@@ -8,7 +8,7 @@ public static class GameVariables {
         return 18;
     }
 
-    public static float getExpForDefeatedEnemy(GameInfo.diffLvl lvl) {
+    public static float getExpForDefeatedEnemy(GameInfo.region lvl) {
         return 10.0f * (1 + (int)lvl);
     }
 
@@ -41,6 +41,21 @@ public static class GameVariables {
         return chanceOutOfHundred(10);
     }
 
+
+    public static float getChanceToCatchFish(GameInfo.fishCatchRate rate) {
+        switch(rate) {
+            case GameInfo.fishCatchRate.almostImpossible:
+                return 0.1f;
+            case GameInfo.fishCatchRate.rare:
+                return 0.25f;
+            case GameInfo.fishCatchRate.normal:
+                return .5f;
+            case GameInfo.fishCatchRate.easy:
+                return .75f;
+            default:
+                return 0.0f;
+        }
+    }
 
     public static bool shouldMemberHaveQuest() {
         return chanceOutOfHundred(35);

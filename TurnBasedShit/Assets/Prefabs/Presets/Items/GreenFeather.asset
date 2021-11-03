@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: GreenFeather
   m_EditorClassIdentifier: 
   preset:
-    i_instanceID: -1
-    i_name: Green Feather
-    i_rarity: 0
-    i_timedEffects: []
-    i_passiveEffects:
+    instanceID: -1
+    name: Green Feather
+    type: 2
+    rarity: 0
+    coinCost: 1
+    tEffects: []
+    pEffects:
     - effect: 1
-      effectAmount: 2
-    i_coinCost: 3
-    i_sprite:
+      effectAmount: 1
+    sprite:
       sprite: {fileID: 21300000, guid: 6e1fa5fb923a5d4418eea5b0a126c675, type: 3}

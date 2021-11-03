@@ -673,6 +673,9 @@ MonoBehaviour:
         u_expCap: 25
         u_exp: 0
         u_level: 0
+        u_bluntExp: 0
+        u_edgedExp: 0
+        u_summonedExp: 0
         u_sprite:
           headIndex: 0
           faceIndex: 0
@@ -687,17 +690,25 @@ MonoBehaviour:
         u_bleedCount: 0
         u_instanceID: -1
         equippedWeapon:
-          w_instanceID: -1
-          w_name: 
-          w_rarity: 0
-          w_element: 0
-          w_wornAmount: 0
-          w_attributes: 
-          w_attackType: 0
-          w_power: 0
-          w_speedMod: 0
-          w_coinCost: 0
-          w_sprite:
+          instanceID: -1
+          name: 
+          type: 0
+          rarity: 0
+          coinCost: 0
+          canBeFished: 0
+          fishedData:
+            hookedPos: {x: 0, y: 0}
+            hookedRot: 0
+            diffRegion: 0
+            chanceToCatch: 0
+          wornAmount: 3
+          attributes: 
+          sUsage: 0
+          sUsageAmount: 0
+          aType: 0
+          power: 0
+          speedMod: 0
+          sprite:
             sprite: {fileID: 0}
             equippedX: 0
             equippedY: 0
@@ -705,15 +716,22 @@ MonoBehaviour:
             equippedXSize: 0
             equippedYSize: 0
         equippedArmor:
-          a_instanceID: -1
-          a_name: 
-          a_rarity: 0
-          a_wornAmount: 0
-          a_attributes: 
-          a_defence: 0
-          a_speedMod: 0
-          a_coinCost: 0
-          a_sprite:
+          instanceID: -1
+          name: 
+          type: 0
+          rarity: 0
+          coinCost: 0
+          canBeFished: 0
+          fishedData:
+            hookedPos: {x: 0, y: 0}
+            hookedRot: 0
+            diffRegion: 0
+            chanceToCatch: 0
+          wornAmount: 3
+          attributes: 
+          defence: 0
+          speedMod: 0
+          sprite:
             sprite: {fileID: 0}
             equippedSprite: {fileID: 0}
             equippedShoulder: {fileID: 0}
@@ -743,6 +761,7 @@ MonoBehaviour:
             yShoulderPos2: 0
             xShoulderSize2: 0
             yShoulderSize2: 0
+            hatInfrontOfHead: 1
             xHatPos0: 0
             yHatPos0: 0
             xHatSize0: 0
@@ -757,28 +776,187 @@ MonoBehaviour:
             xHatSize2: 0
             yHatSize2: 0
         equippedItem:
-          i_instanceID: -1
-          i_name: 
-          i_rarity: 0
-          i_useTimes: 
-          i_useConditions: 
-          i_useEffects: []
-          i_coinCost: 0
-          i_sprite:
+          instanceID: -1
+          name: 
+          type: 0
+          rarity: 0
+          coinCost: 0
+          canBeFished: 0
+          fishedData:
+            hookedPos: {x: 0, y: 0}
+            hookedRot: 0
+            diffRegion: 0
+            chanceToCatch: 0
+          tEffects: []
+          pEffects: []
+          sprite:
             sprite: {fileID: 0}
         u_traits: []
         u_deathInfo:
           nameOfKiller: 
           causeOfDeath: 0
           enemyType: 0
+      location:
+        pos: {x: 0, y: 0}
+        type: 0
+        combatLocation:
+          waves: []
+          difficulty: 0
+          coinReward: 0
+          weapons: []
+          armor: []
+          consumables: []
+          items: []
+          rescuedUnits: []
+        bossUnit:
+          u_name: 
+          u_expCap: 25
+          u_exp: 0
+          u_level: 0
+          u_bluntExp: 0
+          u_edgedExp: 0
+          u_summonedExp: 0
+          u_sprite:
+            headIndex: 0
+            faceIndex: 0
+            bodyIndex: 0
+            color: {r: 1, g: 1, b: 1, a: 1}
+          u_baseMaxHealth: 0
+          u_health: 100
+          u_speed: 0
+          u_power: 0
+          u_defence: 0
+          u_critChance: 0
+          u_bleedCount: 0
+          u_instanceID: -1
+          equippedWeapon:
+            instanceID: -1
+            name: 
+            type: 0
+            rarity: 0
+            coinCost: 0
+            canBeFished: 0
+            fishedData:
+              hookedPos: {x: 0, y: 0}
+              hookedRot: 0
+              diffRegion: 0
+              chanceToCatch: 0
+            wornAmount: 3
+            attributes: 
+            sUsage: 0
+            sUsageAmount: 0
+            aType: 0
+            power: 0
+            speedMod: 0
+            sprite:
+              sprite: {fileID: 0}
+              equippedX: 0
+              equippedY: 0
+              equippedRot: 0
+              equippedXSize: 0
+              equippedYSize: 0
+          equippedArmor:
+            instanceID: -1
+            name: 
+            type: 0
+            rarity: 0
+            coinCost: 0
+            canBeFished: 0
+            fishedData:
+              hookedPos: {x: 0, y: 0}
+              hookedRot: 0
+              diffRegion: 0
+              chanceToCatch: 0
+            wornAmount: 3
+            attributes: 
+            defence: 0
+            speedMod: 0
+            sprite:
+              sprite: {fileID: 0}
+              equippedSprite: {fileID: 0}
+              equippedShoulder: {fileID: 0}
+              equippedHat: {fileID: 0}
+              xPos0: 0
+              yPos0: 0
+              xSize0: 0
+              ySize0: 0
+              xPos1: 0
+              yPos1: 0
+              xSize1: 0
+              ySize1: 0
+              xPos2: 0
+              yPos2: 0
+              xSize2: 0
+              ySize2: 0
+              xShoulderPos0: 0
+              yShoulderPos0: 0
+              xShoulderSize0: 0
+              yShoulderSize0: 0
+              shoulderRot: 0
+              xShoulderPos1: 0
+              yShoulderPos1: 0
+              xShoulderSize1: 0
+              yShoulderSize1: 0
+              xShoulderPos2: 0
+              yShoulderPos2: 0
+              xShoulderSize2: 0
+              yShoulderSize2: 0
+              hatInfrontOfHead: 1
+              xHatPos0: 0
+              yHatPos0: 0
+              xHatSize0: 0
+              yHatSize0: 0
+              hatRot: 0
+              xHatPos1: 0
+              yHatPos1: 0
+              xHatSize1: 0
+              yHatSize1: 0
+              xHatPos2: 0
+              yHatPos2: 0
+              xHatSize2: 0
+              yHatSize2: 0
+          equippedItem:
+            instanceID: -1
+            name: 
+            type: 0
+            rarity: 0
+            coinCost: 0
+            canBeFished: 0
+            fishedData:
+              hookedPos: {x: 0, y: 0}
+              hookedRot: 0
+              diffRegion: 0
+              chanceToCatch: 0
+            tEffects: []
+            pEffects: []
+            sprite:
+              sprite: {fileID: 0}
+          u_traits: []
+          u_deathInfo:
+            nameOfKiller: 
+            causeOfDeath: 0
+            enemyType: 0
     m_deliveryQuest:
       q_instanceID: 0
       deliveryLocation:
-        t_name: 
-        t_instanceID: 0
-        interactedBuildingIndex: 0
-        townMemberCount: 0
-        visited: 0
+        pos: {x: 0, y: 0}
+        type: 0
+        combatLocation:
+          waves: []
+          difficulty: 0
+          coinReward: 0
+          weapons: []
+          armor: []
+          consumables: []
+          items: []
+          rescuedUnits: []
+        town:
+          t_name: 
+          t_instanceID: 0
+          interactedBuildingIndex: 0
+          townMemberCount: 0
+          visited: 0
+        region: 0
       type: 0
       weaponsToDeliver: []
       armorToDeliver: []
@@ -793,18 +971,158 @@ MonoBehaviour:
     m_pickupQuest:
       q_instanceID: 0
       pType: 0
+      location:
+        pos: {x: 0, y: 0}
+        type: 0
+        combatLocation:
+          waves: []
+          difficulty: 0
+          coinReward: 0
+          weapons: []
+          armor: []
+          consumables: []
+          items: []
+          rescuedUnits: []
+        pickupWeapon:
+          instanceID: -1
+          name: 
+          type: 0
+          rarity: 0
+          coinCost: 0
+          canBeFished: 0
+          fishedData:
+            hookedPos: {x: 0, y: 0}
+            hookedRot: 0
+            diffRegion: 0
+            chanceToCatch: 0
+          wornAmount: 3
+          attributes: 
+          sUsage: 0
+          sUsageAmount: 0
+          aType: 0
+          power: 0
+          speedMod: 0
+          sprite:
+            sprite: {fileID: 0}
+            equippedX: 0
+            equippedY: 0
+            equippedRot: 0
+            equippedXSize: 0
+            equippedYSize: 0
+        pickupArmor:
+          instanceID: -1
+          name: 
+          type: 0
+          rarity: 0
+          coinCost: 0
+          canBeFished: 0
+          fishedData:
+            hookedPos: {x: 0, y: 0}
+            hookedRot: 0
+            diffRegion: 0
+            chanceToCatch: 0
+          wornAmount: 3
+          attributes: 
+          defence: 0
+          speedMod: 0
+          sprite:
+            sprite: {fileID: 0}
+            equippedSprite: {fileID: 0}
+            equippedShoulder: {fileID: 0}
+            equippedHat: {fileID: 0}
+            xPos0: 0
+            yPos0: 0
+            xSize0: 0
+            ySize0: 0
+            xPos1: 0
+            yPos1: 0
+            xSize1: 0
+            ySize1: 0
+            xPos2: 0
+            yPos2: 0
+            xSize2: 0
+            ySize2: 0
+            xShoulderPos0: 0
+            yShoulderPos0: 0
+            xShoulderSize0: 0
+            yShoulderSize0: 0
+            shoulderRot: 0
+            xShoulderPos1: 0
+            yShoulderPos1: 0
+            xShoulderSize1: 0
+            yShoulderSize1: 0
+            xShoulderPos2: 0
+            yShoulderPos2: 0
+            xShoulderSize2: 0
+            yShoulderSize2: 0
+            hatInfrontOfHead: 1
+            xHatPos0: 0
+            yHatPos0: 0
+            xHatSize0: 0
+            yHatSize0: 0
+            hatRot: 0
+            xHatPos1: 0
+            yHatPos1: 0
+            xHatSize1: 0
+            yHatSize1: 0
+            xHatPos2: 0
+            yHatPos2: 0
+            xHatSize2: 0
+            yHatSize2: 0
+        pickupConsumable:
+          instanceID: -1
+          name: 
+          type: 0
+          rarity: 0
+          coinCost: 0
+          canBeFished: 0
+          fishedData:
+            hookedPos: {x: 0, y: 0}
+            hookedRot: 0
+            diffRegion: 0
+            chanceToCatch: 0
+          maxStackCount: 1
+          sprite:
+            sprite: {fileID: 0}
+          effect: 0
+          effectAmount: 0
+        pickupItem:
+          instanceID: -1
+          name: 
+          type: 0
+          rarity: 0
+          coinCost: 0
+          canBeFished: 0
+          fishedData:
+            hookedPos: {x: 0, y: 0}
+            hookedRot: 0
+            diffRegion: 0
+            chanceToCatch: 0
+          tEffects: []
+          pEffects: []
+          sprite:
+            sprite: {fileID: 0}
+        pType: 0
       pickupWeapon:
-        w_instanceID: -1
-        w_name: 
-        w_rarity: 0
-        w_element: 0
-        w_wornAmount: 0
-        w_attributes: 
-        w_attackType: 0
-        w_power: 0
-        w_speedMod: 0
-        w_coinCost: 0
-        w_sprite:
+        instanceID: -1
+        name: 
+        type: 0
+        rarity: 0
+        coinCost: 0
+        canBeFished: 0
+        fishedData:
+          hookedPos: {x: 0, y: 0}
+          hookedRot: 0
+          diffRegion: 0
+          chanceToCatch: 0
+        wornAmount: 3
+        attributes: 
+        sUsage: 0
+        sUsageAmount: 0
+        aType: 0
+        power: 0
+        speedMod: 0
+        sprite:
           sprite: {fileID: 0}
           equippedX: 0
           equippedY: 0
@@ -812,15 +1130,22 @@ MonoBehaviour:
           equippedXSize: 0
           equippedYSize: 0
       pickupArmor:
-        a_instanceID: -1
-        a_name: 
-        a_rarity: 0
-        a_wornAmount: 0
-        a_attributes: 
-        a_defence: 0
-        a_speedMod: 0
-        a_coinCost: 0
-        a_sprite:
+        instanceID: -1
+        name: 
+        type: 0
+        rarity: 0
+        coinCost: 0
+        canBeFished: 0
+        fishedData:
+          hookedPos: {x: 0, y: 0}
+          hookedRot: 0
+          diffRegion: 0
+          chanceToCatch: 0
+        wornAmount: 3
+        attributes: 
+        defence: 0
+        speedMod: 0
+        sprite:
           sprite: {fileID: 0}
           equippedSprite: {fileID: 0}
           equippedShoulder: {fileID: 0}
@@ -850,6 +1175,7 @@ MonoBehaviour:
           yShoulderPos2: 0
           xShoulderSize2: 0
           yShoulderSize2: 0
+          hatInfrontOfHead: 1
           xHatPos0: 0
           yHatPos0: 0
           xHatSize0: 0
@@ -864,24 +1190,37 @@ MonoBehaviour:
           xHatSize2: 0
           yHatSize2: 0
       pickupConsumable:
-        c_instanceID: -1
-        c_name: 
-        c_rarity: 0
-        c_coinCost: 0
-        c_maxStackCount: 0
-        c_effect: 0
-        c_effectAmount: 0
-        c_sprite:
+        instanceID: -1
+        name: 
+        type: 0
+        rarity: 0
+        coinCost: 0
+        canBeFished: 0
+        fishedData:
+          hookedPos: {x: 0, y: 0}
+          hookedRot: 0
+          diffRegion: 0
+          chanceToCatch: 0
+        maxStackCount: 1
+        sprite:
           sprite: {fileID: 0}
+        effect: 0
+        effectAmount: 0
       pickupItem:
-        i_instanceID: -1
-        i_name: 
-        i_rarity: 0
-        i_useTimes: 
-        i_useConditions: 
-        i_useEffects: []
-        i_coinCost: 0
-        i_sprite:
+        instanceID: -1
+        name: 
+        type: 0
+        rarity: 0
+        coinCost: 0
+        canBeFished: 0
+        fishedData:
+          hookedPos: {x: 0, y: 0}
+          hookedRot: 0
+          diffRegion: 0
+          chanceToCatch: 0
+        tEffects: []
+        pEffects: []
+        sprite:
           sprite: {fileID: 0}
     home:
       t_name: 
@@ -1110,6 +1449,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Unit
+      objectReference: {fileID: 0}
+    - target: {fileID: 1208831996744763874, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2924904593095227002, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4677402125838763087, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8833651223801544769, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8833651223801544769, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e, type: 3}

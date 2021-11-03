@@ -22,8 +22,8 @@ public class UnitBattleMech : MonoBehaviour {
     }
 
     void setUp() {
-        GameInfo.currentGameState = GameInfo.state.Combat;
-        if(GameInfo.getCombatDetails() == null || GameInfo.getCombatDetails().waves == null || GameInfo.getCombatDetails().waves.Count == 0 || GameInfo.getCombatDetails().waves[0].enemyIndexes.Count == 0) {
+        GameInfo.currentGameState = GameInfo.state.combat;
+        if(GameInfo.getCombatDetails() == null || GameInfo.getCombatDetails().waves == null || GameInfo.getCombatDetails().waves.Count == 0 || GameInfo.getCombatDetails().waves[0].enemyIndexes.Count == 0 || true) {
             GameInfo.setCombatDetails(FindObjectOfType<PresetLibrary>().createCombatLocation(0));
             Debug.Log("created");
         }

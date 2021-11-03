@@ -5,7 +5,7 @@ using UnityEngine;
 public static class InfoTextCreator {
 
     public static string createForUnitClass(UnitClass unit) {
-        string temp = "<u><b>";
+        string temp = "";
         temp += unit.stats.u_name + "\n";
         temp += "</b></u>hp: " + unit.stats.u_health.ToString("0.0") + " / " + unit.stats.getModifiedMaxHealth().ToString("0.0");
         temp += "\n   pow: " + unit.stats.u_power.ToString("0.0");
@@ -23,7 +23,7 @@ public static class InfoTextCreator {
         return temp;
     }
     public static string createForUnitStats(UnitStats stats) {
-        string temp = "<u><b>";
+        string temp = "";
         temp += stats.u_name + "\n";
         temp += "</b></u>hp: " + stats.u_health.ToString("0.0") + " / " + stats.getModifiedMaxHealth().ToString("0.0");
         temp += "\n   pow: " + stats.u_power.ToString("0.0");
@@ -101,16 +101,9 @@ public static class InfoTextCreator {
     }
 
 
-    public static string createForWeapon(Weapon we) {
-        return "<b><u>" + we.w_name;
-    }
-    public static string createForArmor(Armor ar) {
-        return "<b><u>" + ar.a_name;
-    }
-    public static string createForItem(Item it) {
-        return "<b><u>" + it.i_name;
-    }
-    public static string createForConsumable(Consumable con) {
-        return "<b><u>" + con.c_name;
+    public static string createForCollectable(Collectable col) {
+        if(col == null || col.isEmpty())
+            return "Empty";
+        return col.name;
     }
 }

@@ -29,11 +29,11 @@ public class UpgradeLocation : MapLocation {
     }
 
 
-    public override void enterLocation() {
+    public override void enterLocation(TransitionCanvas tc) {
         GameInfo.resetCombatDetails();
         GameInfo.setCurrentLocationAsUpgrade(this);
         MapLocationHolder.removeLocation(this);
-        SceneManager.LoadScene("UpgradeLocation");
+        tc.loadSceneWithTransition("UpgradeLocation");
     }
 
     public override bool isEqualTo(MapLocation other) {

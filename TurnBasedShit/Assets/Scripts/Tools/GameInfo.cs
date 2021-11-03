@@ -5,22 +5,22 @@ using UnityEngine;
 public static class GameInfo {
 
     public enum state {
-        Combat, Town, Map
+        combat, town, map
     }
-    public enum diffLvl {
-        Cake, Easy, Normal, Inter, Hard, Heroic, Legendary
+    public enum region {
+        grassland, forest, swamp, mountains, hell
     }
-    public enum rarityLvl {
-        Worthless, Common, Uncommon, Unusual, Rare, Legendary, Mythical
-    }
-    public enum element {
-        Bronze, Gold, Iron, Obsidian, Unique
+    public enum rarity {
+        common, uncommon, unusual, rare, legendary
     }
     public enum wornState {
-        Old, Used, Normal, New
+        old, used, normal, perfect
     }
     public enum questType {
         bossFight, pickup, delivery, kill
+    }
+    public enum fishCatchRate {
+        almostImpossible, rare, normal, easy,
     }
 
 
@@ -37,7 +37,8 @@ public static class GameInfo {
 
     public const string nextWeaponID = "Next Weapon ID";
     public const string nextArmorID = "Next Armor ID";
-    public const string nextConsumableID = "Next Consumable ID";
+    public const string nextUsableID = "Next Usable ID";
+    public const string nextUnusableID = "Next Unusable ID";
     public const string nextItemID = "Next Item ID";
 
     public const string nextTownID = "Next Town ID";
@@ -87,6 +88,10 @@ public static class GameInfo {
         var data = JsonUtility.ToJson(loc);
         SaveData.setString(currentMapLocation, data);
     }
+    public static void setCurrentLocationAsFishing(FishingLocation loc) {
+        var data = JsonUtility.ToJson(loc);
+        SaveData.setString(currentMapLocation, data);
+    }
 
     public static TownLocation getCurrentLocationAsTown() {
         var data = SaveData.getString(currentMapLocation);
@@ -121,7 +126,7 @@ public static class GameInfo {
         return new Vector2(SaveData.getFloat(currentMapPosX), SaveData.getFloat(currentMapPosY));
     }
 
-    public static diffLvl getCurrentDiff() {
+    public static region getCurrentDiff() {
         return Map.getDiffForX(getCurrentMapPos().x);
     }
 
@@ -145,8 +150,8 @@ public static class GameInfo {
     public static questType getRandomQuestType() {
         return (questType)Random.Range(0, 4);
     }
-    public static diffLvl getRandomDiff() {
-        return (diffLvl)Random.Range(0, 7);
+    public static region getRandomDiff() {
+        return (region)Random.Range(0, 7);
     }
 
     public static int getNextUnitInstanceID() {
@@ -165,9 +170,14 @@ public static class GameInfo {
         SaveData.setInt(nextArmorID, index + 1);
         return index;
     }
-    public static int getNextConsumableInstanceID() {
-        int index = SaveData.getInt(nextConsumableID);
-        SaveData.setInt(nextConsumableID, index + 1);
+    public static int getNextUsableInstanceID() {
+        int index = SaveData.getInt(nextUsableID);
+        SaveData.setInt(nextUsableID, index + 1);
+        return index;
+    }
+    public static int getNextUnusableInstanceID() {
+        int index = SaveData.getInt(nextUnusableID);
+        SaveData.setInt(nextUnusableID, index + 1);
         return index;
     }
     public static int getNextItemInstanceID() {
@@ -195,7 +205,8 @@ public static class GameInfo {
     public static void clearInventoryInstanceIDQueue() {
         clearWeaponInstanceIDQueue();
         clearArmorInstanceIDQueue();
-        clearConsumableInstanceIDQueue();
+        clearUsableInstanceIDQueue();
+        clearUnusableInstanceIDQueue();
         clearItemInstanceIDQueue();
     }
     public static void clearUnitInstanceIDQueue() {
@@ -207,8 +218,11 @@ public static class GameInfo {
     public static void clearArmorInstanceIDQueue() {
         SaveData.deleteKey(nextArmorID);
     }
-    public static void clearConsumableInstanceIDQueue() {
-        SaveData.deleteKey(nextConsumableID);
+    public static void clearUsableInstanceIDQueue() {
+        SaveData.deleteKey(nextUsableID);
+    }
+    public static void clearUnusableInstanceIDQueue() {
+        SaveData.deleteKey(nextUnusableID);
     }
     public static void clearItemInstanceIDQueue() {
         SaveData.deleteKey(nextItemID);

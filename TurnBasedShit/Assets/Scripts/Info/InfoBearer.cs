@@ -3,29 +3,53 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InfoBearer : MonoBehaviour {
-    public List<string> infos = new List<string>() { "<b><u>Information" };
+    [SerializeField] string info = "<b><u>Information";
 
     public bool hideWhenMenuOpen = true;
+
+
+    public delegate void func();
+    func mouseOverFunc = null, mouseExitFunc = null;
+
 
     private void OnMouseEnter() {
         if(hideWhenMenuOpen && FindObjectOfType<MenuCanvas>().isOpen())
             return;
-        FindObjectOfType<InfoCanvas>().startShowing(infos[0]);
+        if(string.IsNullOrEmpty(info))
+            return;
+        FindObjectOfType<InfoCanvas>().startShowing(this);
+
+        if(mouseOverFunc != null)
+            mouseOverFunc();
     }
 
     private void OnMouseExit() {
         FindObjectOfType<InfoCanvas>().startHiding();
+
+        if(mouseExitFunc != null)
+            mouseExitFunc();
     }
 
 
-    public void show() {
-        if(hideWhenMenuOpen && FindObjectOfType<MenuCanvas>().isOpen())
-            return;
-        if(infos.Count == 0)
-            return;
-        FindObjectOfType<InfoCanvas>().startShowing(infos[0]);
+    public void setInfo(string st, bool hasUnderlinedBold = true) {
+
+        if(hasUnderlinedBold)
+            info = "<b><u>" + st;
+        else
+            info = st;
+
+        if(FindObjectOfType<InfoCanvas>().shownInfo == this)
+            FindObjectOfType<InfoCanvas>().startShowing(this);
     }
-    public void hide() {
-        FindObjectOfType<InfoCanvas>().startHiding();
+    public string getInfo() {
+        return info;
+    }
+
+
+    public void runOnMouseOver(func f) {
+        mouseOverFunc = f;
+    }
+    public void runOnMouseExit(func f) {
+        mouseExitFunc = f;
     }
 }

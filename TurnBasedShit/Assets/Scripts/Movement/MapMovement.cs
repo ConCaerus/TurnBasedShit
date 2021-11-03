@@ -7,7 +7,7 @@ public class MapMovement : InteractiveMovement {
     List<int> sideUnitIndexes = new List<int>();
     List<GameObject> sideUnits = new List<GameObject>();
 
-    GameInfo.diffLvl currentDiff;
+    GameInfo.region currentDiff;
 
     float distToInt = 1f;
 
@@ -15,7 +15,7 @@ public class MapMovement : InteractiveMovement {
     private void Start() {
         transform.position = GameInfo.getCurrentMapPos();
         currentDiff = GameInfo.getCurrentDiff();
-        GameInfo.currentGameState = GameInfo.state.Map;
+        GameInfo.currentGameState = GameInfo.state.map;
         hideInteractText();
         createSideUnitObjects();
     }
@@ -115,7 +115,8 @@ public class MapMovement : InteractiveMovement {
         if(MapLocationHolder.locationCloseToPos(transform.position, distToInt)) {
             GameInfo.setCurrentMapPos(MapLocationHolder.getClostestLocation(transform.position).pos);
             Debug.Log(MapLocationHolder.getClostestLocation(transform.position).type);
-            MapLocationHolder.getClostestLocation(transform.position).enterLocation();
+            FindObjectOfType<MapFogTexture>().saveTexture();
+            MapLocationHolder.getClostestLocation(transform.position).enterLocation(FindObjectOfType<TransitionCanvas>());
         }
     }
 

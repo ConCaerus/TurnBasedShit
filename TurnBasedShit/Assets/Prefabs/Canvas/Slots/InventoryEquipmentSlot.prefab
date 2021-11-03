@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 167373286404851036}
   - component: {fileID: 7585982147603112672}
   - component: {fileID: 1116297080692499832}
+  - component: {fileID: 3808846684646832836}
+  - component: {fileID: 2986017692293940965}
   m_Layer: 5
   m_Name: InventoryEquipmentSlot
   m_TagString: Untagged
@@ -121,6 +123,47 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3808846684646832836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2409199764669834413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b50cf52fd2f3020489dae1d0b81e3fc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  infos:
+  - <b><u>Slot
+  hideWhenMenuOpen: 0
+--- !u!61 &2986017692293940965
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2409199764669834413}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.07095337, y: -0.071014404}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 50.279602, y: 50.279236}
+  m_EdgeRadius: 0
 --- !u!1 &2706841520891236764
 GameObject:
   m_ObjectHideFlags: 0

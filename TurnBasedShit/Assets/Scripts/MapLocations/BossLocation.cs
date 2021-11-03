@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class BossLocation : MapLocation {
     public UnitStats bossUnit;
 
-    public BossLocation(Vector2 p, GameObject boss, GameInfo.diffLvl diff, PresetLibrary lib, bool areOtherEnemiesBesidesBoss = false) {
+    public BossLocation(Vector2 p, GameObject boss, GameInfo.region diff, PresetLibrary lib, bool areOtherEnemiesBesidesBoss = false) {
         pos = p;
         type = locationType.boss;
 
@@ -24,11 +24,11 @@ public class BossLocation : MapLocation {
     
 
 
-    public override void enterLocation() {
+    public override void enterLocation(TransitionCanvas tc) {
         GameInfo.setCombatDetails(combatLocation);
         GameInfo.setCurrentLocationAsBoss(this);
         MapLocationHolder.removeLocation(this);
-        SceneManager.LoadScene("Combat");
+        tc.loadSceneWithTransition("Combat");
     }
 
     public override bool isEqualTo(MapLocation other) {

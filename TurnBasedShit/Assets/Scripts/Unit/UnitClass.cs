@@ -38,7 +38,7 @@ public abstract class UnitClass : MonoBehaviour {
 
         if(FindObjectOfType<BattleOptionsCanvas>().battleState == 3) {
             GetComponent<CombatUnitUI>().showingWouldBeHealedValue = true;
-            GetComponent<CombatUnitUI>().moveLightHealthSliderToValue(stats.u_health + FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().stats.equippedWeapon.w_specialUsageAmount);
+            GetComponent<CombatUnitUI>().moveLightHealthSliderToValue(stats.u_health + FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().stats.equippedWeapon.sUsageAmount);
         }
 
         isMouseOverUnit = true;
@@ -46,11 +46,10 @@ public abstract class UnitClass : MonoBehaviour {
     }
 
     private void OnMouseOver() {
-        GetComponent<InfoBearer>().infos.Clear();
-        GetComponent<InfoBearer>().infos.Add(InfoTextCreator.createForUnitClass(this));
+        GetComponent<InfoBearer>().setInfo(InfoTextCreator.createForUnitClass(this));
         if(FindObjectOfType<BattleOptionsCanvas>().battleState == 3) {
             GetComponent<CombatUnitUI>().showingWouldBeHealedValue = true;
-            GetComponent<CombatUnitUI>().moveLightHealthSliderToValue(stats.u_health + FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().stats.equippedWeapon.w_specialUsageAmount);
+            GetComponent<CombatUnitUI>().moveLightHealthSliderToValue(stats.u_health + FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().stats.equippedWeapon.sUsageAmount);
         }
     }
 
@@ -71,8 +70,7 @@ public abstract class UnitClass : MonoBehaviour {
         if(isPlayerUnit && GetComponentInChildren<UnitSpriteHandler>() != null) {
             GetComponentInChildren<UnitSpriteHandler>().setEverything(stats.u_sprite, stats.equippedWeapon, stats.equippedArmor);
         }
-        GetComponent<InfoBearer>().infos.Clear();
-        GetComponent<InfoBearer>().infos.Add(InfoTextCreator.createForUnitClass(this));
+        GetComponent<InfoBearer>().setInfo(InfoTextCreator.createForUnitClass(this));
 
         if(string.IsNullOrEmpty(stats.u_name)) {
             name = NameLibrary.getRandomUsablePlayerName();
@@ -87,6 +85,11 @@ public abstract class UnitClass : MonoBehaviour {
             FindObjectOfType<PartyObject>().resaveInstantiatedUnit(stats);
     }
 
+
+
+    public float getSpeed() {
+        return stats.getModifiedSpeed(tempSpeedMod);
+    }
 
 
     public void takeBleedDamage() {
@@ -192,7 +195,7 @@ public abstract class UnitClass : MonoBehaviour {
         //  if defender is an enemy, check if it's weak or strong to the attack
         if(!isPlayerUnit) {
             //  check if it's weak to the attack
-            if(GetComponent<EnemyUnitInstance>().weakTo == attacker.GetComponent<UnitClass>().stats.equippedWeapon.w_attackType)
+            if(GetComponent<EnemyUnitInstance>().weakTo == attacker.GetComponent<UnitClass>().stats.equippedWeapon.aType)
                 dmg *= 1.25f;
         }
         dmg *= (stats.getDefenceMult(defending, FindObjectOfType<PresetLibrary>()) - tempDefenceMod);
@@ -221,8 +224,8 @@ public abstract class UnitClass : MonoBehaviour {
         defendAnim = StartCoroutine(defendingAnim());
 
         //  chance worn state decrease
-        if(stats.equippedArmor != null && !stats.equippedArmor.isEmpty() && stats.equippedArmor.a_wornAmount > GameInfo.wornState.Old && GameVariables.chanceEquipmentWornDecrease() && isPlayerUnit) {
-            stats.equippedArmor.a_wornAmount--;
+        if(stats.equippedArmor != null && !stats.equippedArmor.isEmpty() && stats.equippedArmor.wornAmount > GameInfo.wornState.old && GameVariables.chanceEquipmentWornDecrease() && isPlayerUnit) {
+            stats.equippedArmor.wornAmount--;
             FindObjectOfType<DamageTextCanvas>().showBreakTextForUnit(gameObject);
         }
 
@@ -235,7 +238,7 @@ public abstract class UnitClass : MonoBehaviour {
         //  end battle turn
         if(FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject)
             return;
-        foreach(var i in stats.equippedArmor.a_attributes) {
+        foreach(var i in stats.equippedArmor.attributes) {
             if(i == Armor.attribute.Reflex)
                 attack(attacker.gameObject);
             return;
@@ -371,9 +374,9 @@ public abstract class UnitClass : MonoBehaviour {
         }
 
         //  chance worn state decrease
-        if(stats.equippedWeapon != null && !stats.equippedWeapon.isEmpty() && stats.equippedWeapon.w_wornAmount > GameInfo.wornState.Old && GameVariables.chanceEquipmentWornDecrease() && isPlayerUnit) {
+        if(stats.equippedWeapon != null && !stats.equippedWeapon.isEmpty() && stats.equippedWeapon.wornAmount > GameInfo.wornState.old && GameVariables.chanceEquipmentWornDecrease() && isPlayerUnit) {
             FindObjectOfType<DamageTextCanvas>().showBreakTextForUnit(gameObject);
-            stats.equippedWeapon.w_wornAmount--;
+            stats.equippedWeapon.wornAmount--;
         }
 
         attackAnim = null;

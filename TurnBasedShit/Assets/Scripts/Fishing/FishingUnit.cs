@@ -34,7 +34,8 @@ public class FishingUnit : MonoBehaviour {
 
         var rod = rodHolder.transform.GetChild(0).gameObject;
 
-        WeaponSpriteHolder sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(FindObjectOfType<PresetLibrary>().getWeapon("FishingRod", GameInfo.element.Unique));
+        var we = FindObjectOfType<PresetLibrary>().getWeapon("Fishing Rod");
+        WeaponSpriteHolder sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(we);
         rod.transform.localPosition = new Vector3(0.31f, 0.76f);   //  from the animation
         rod.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
         rod.transform.localScale = new Vector3(sprite.equippedXSize, sprite.equippedYSize);

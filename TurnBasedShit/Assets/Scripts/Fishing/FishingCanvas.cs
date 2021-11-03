@@ -6,12 +6,16 @@ using DG.Tweening;
 
 public class FishingCanvas : MonoBehaviour {
     public Slider reelSlider, fishSlider, reelTargetSlider, progressSlider;
+    [SerializeField] GameObject fishSliderImage, reelSliderImage;
+    [SerializeField] Vector2 spoilsImageEndPos;
 
     public float fishTarget = 0.0f;
     public float reelTarget = 0.0f;
     float reelOffset = 0.0f;
 
-    float points = 0.0f;
+    float distToGainPoints = .15f;
+
+    public bool running = false;
 
 
     Coroutine fishWaiter = null, randReelWaiter = null;
@@ -28,26 +32,70 @@ public class FishingCanvas : MonoBehaviour {
         progressSlider.value = 0.0f;
 
         reelTargetSlider.onValueChanged.AddListener(delegate { reelTarget = reelTargetSlider.value; });
+
+        stopFishing();
     }
 
     private void Update() {
-        fishMovement();
+        if(running) {
+            fishMovement();
+            reelMovement();
+            gainPoints();
+            //  fishSliderImage shit
+            if(Mathf.Abs(reelSlider.value - fishSlider.value) < distToGainPoints) {
+                float scale = 0.1f + (distToGainPoints - Mathf.Abs(reelSlider.value - fishSlider.value)) * .3f;
+                fishSliderImage.transform.localScale = new Vector3(scale, scale);
+            }
+            else
+                fishSliderImage.transform.localScale = new Vector3(.1f, .1f);
 
-        reelMovement();
+            fishSliderImage.transform.GetChild(0).transform.rotation = Quaternion.Euler(0.0f, 0.0f, (-20.0f * (1.0f - progressSlider.value)) + (progressSlider.value * 65.0f));
 
-        gainPoints();
 
-        if(progressSlider.value == 1.0f) {
-            Debug.Log("Done");
-            this.enabled = false;
+            //  reelSliderImage shit
+            if(Mathf.Abs(reelSlider.value - fishSlider.value) < distToGainPoints) {
+                float scale = 0.15f + (distToGainPoints - Mathf.Abs(reelSlider.value - fishSlider.value)) * .1f;
+                reelSliderImage.transform.localScale = new Vector3(scale, .15f);
+            }
+            else
+                reelSliderImage.transform.localScale = new Vector3(.15f, .15f);
+
+
+            if(progressSlider.value == 1.0f) {
+                Debug.Log("Done");
+                stopFishing();
+                FindObjectOfType<RoomMovement>().deinteract();
+
+                addSpoils();
+                running = false;
+            }
         }
     }
 
 
-    void gainPoints() {
+
+    public void startFishing() {
+        FindObjectOfType<RoomMovement>().gameObject.transform.localScale = new Vector3(0.0f, 0.0f);
+        FindObjectOfType<FishingUnit>().gameObject.transform.localScale = new Vector3(.5f, .5f);
+        running = true;
+    }
+
+    public void stopFishing() {
+        FindObjectOfType<RoomMovement>().gameObject.transform.localScale = new Vector3(.5f, .5f);
+        FindObjectOfType<FishingUnit>().gameObject.transform.localScale = new Vector3(0.0f, 0.0f);
+        FindObjectOfType<Bobber>().resetValues();
+
+        progressSlider.value = 0.0f;
+        running = false;
+    }
+
+
+    bool gainPoints() {
         float diff = Mathf.Abs(fishSlider.value - reelSlider.value);
-        float pointsForDiff = Mathf.Clamp(((0.15f - diff)) * Time.deltaTime, -0.002f, 0.002f);
+        float pointsForDiff = Mathf.Clamp(((distToGainPoints - diff)) * Time.deltaTime, -0.002f, 0.002f);
         progressSlider.value = Mathf.Clamp(progressSlider.value + pointsForDiff, 0.0f, 1.0f);
+
+        return pointsForDiff > 0.0f;
     }
 
 
@@ -115,5 +163,28 @@ public class FishingCanvas : MonoBehaviour {
 
         fishTarget = newTarget;
         fishWaiter = null;
+    }
+
+
+    void addSpoils() {
+        var col = calcCaughtFish();
+        Inventory.addCollectable(col);
+
+        FindObjectOfType<Bobber>().showSpoils(col);
+    }
+
+
+
+    public Collectable calcCaughtFish() {
+        var l = FindObjectOfType<PresetLibrary>().getFishableCollectables();
+        var temp = new List<Collectable>();
+
+        foreach(var i in l) {
+            for(int j = 0; j < (int)i.fishedData.chanceToCatch + 1; j++) {
+                temp.Add(i);
+            }
+        }
+
+        return temp[Random.Range(0, temp.Count)];
     }
 }

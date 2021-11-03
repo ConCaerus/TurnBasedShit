@@ -13,56 +13,63 @@ MonoBehaviour:
   m_Name: Suit
   m_EditorClassIdentifier: 
   preset:
-    a_instanceID: -1
-    a_name: Suit
-    a_rarity: 0
-    a_wornAmount: 0
-    a_attributes: 
-    a_defence: 3
-    a_speedMod: 0
-    a_coinCost: 1
-    a_sprite:
+    instanceID: -1
+    name: Suit
+    type: 1
+    rarity: 3
+    coinCost: 15
+    canBeFished: 0
+    fishedData:
+      hookedPos: {x: 0, y: 0}
+      hookedRot: 0
+      diffRegion: 0
+      chanceToCatch: 0
+    wornAmount: 3
+    attributes: 01000000
+    defence: 10
+    speedMod: 2
+    sprite:
       sprite: {fileID: 21300000, guid: 591a94783f579234d84a4d505bbae7c7, type: 3}
       equippedSprite: {fileID: 21300000, guid: 631fa8954b890a74f9e18699193a77fa, type: 3}
       equippedShoulder: {fileID: 21300000, guid: cd591ea5de4e1b54cab82ccf39015b52,
         type: 3}
       equippedHat: {fileID: 21300000, guid: 90bef587cb61eb54aa127070eb470864, type: 3}
-      xPos0: 0.12
-      yPos0: 0.35
-      xSize0: 1
-      ySize0: 0.9
-      xPos1: 0.113
-      yPos1: 0.311
-      xSize1: 0.9
-      ySize1: 0.65
-      xPos2: 0.16
-      yPos2: 0.4
-      xSize2: 1
-      ySize2: 1
-      xShoulderPos0: -0.027
-      yShoulderPos0: 0.146
-      xShoulderSize0: -0.85
-      yShoulderSize0: 0.85
-      shoulderRot: 36.4
-      xShoulderPos1: -0.073
-      yShoulderPos1: 0.118
-      xShoulderSize1: -0.7
-      yShoulderSize1: 0.7
-      xShoulderPos2: -0.018
-      yShoulderPos2: 0.173
-      xShoulderSize2: -0.95
-      yShoulderSize2: 0.95
+      xPos0: 0.108
+      yPos0: 0.279
+      xSize0: 0.8231
+      ySize0: 0.8141
+      xPos1: 0.117
+      yPos1: 0.245
+      xSize1: 0.8333
+      ySize1: 0.577
+      xPos2: 0.158
+      yPos2: 0.378
+      xSize2: 0.951
+      ySize2: 0.912
+      xShoulderPos0: -0.032
+      yShoulderPos0: 0.162
+      xShoulderSize0: -0.824
+      yShoulderSize0: 0.824
+      shoulderRot: 36.82
+      xShoulderPos1: -0.06
+      yShoulderPos1: 0.117
+      xShoulderSize1: -0.7117
+      yShoulderSize1: 0.7117
+      xShoulderPos2: -0.013
+      yShoulderPos2: 0.176
+      xShoulderSize2: -0.9353
+      yShoulderSize2: 0.9353
       hatInfrontOfHead: 1
-      xHatPos0: -0.026
-      yHatPos0: 0.558
-      xHatSize0: 1
-      yHatSize0: 1
+      xHatPos0: -0.03
+      yHatPos0: 0.54
+      xHatSize0: 0.85
+      yHatSize0: 0.85
       hatRot: 0
-      xHatPos1: -0.049
-      yHatPos1: 0.489
-      xHatSize1: 1
-      yHatSize1: 1
-      xHatPos2: -0.055
-      yHatPos2: 0.601
-      xHatSize2: 0.75
-      yHatSize2: 0.75
+      xHatPos1: -0.04
+      yHatPos1: 0.47
+      xHatSize1: 0.75
+      yHatSize1: 0.75
+      xHatPos2: -0.04
+      yHatPos2: 0.56
+      xHatSize2: 0.85
+      yHatSize2: 0.85

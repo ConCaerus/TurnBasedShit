@@ -113,16 +113,16 @@ public class UnitStats {
 
     //  Attack amount
     public float getBasePower() {
-        float weaponPower = equippedWeapon.w_power * (((float)equippedWeapon.w_wornAmount + 7.0f) / 10.0f);
+        float weaponPower = equippedWeapon.power * (((float)equippedWeapon.wornAmount + 7.0f) / 10.0f);
         return u_power + weaponPower;
     }
     float getLevelDamageMult() {
         float baseMult = 1.25f;
         if(equippedWeapon == null || equippedWeapon.isEmpty())
             return 1.0f;
-        if(equippedWeapon.w_attackType == Weapon.attackType.blunt && getBluntLevel() > 0)
+        if(equippedWeapon.aType == Weapon.attackType.blunt && getBluntLevel() > 0)
             return baseMult * (getBluntLevel() / 2.0f);
-        if(equippedWeapon.w_attackType == Weapon.attackType.edged && getEdgedLevel() > 0)
+        if(equippedWeapon.aType == Weapon.attackType.edged && getEdgedLevel() > 0)
             return baseMult * (getEdgedLevel() / 2.0f);
         return 1.0f;
     }
@@ -152,9 +152,9 @@ public class UnitStats {
         if(equippedItem != null && !equippedItem.isEmpty()) {   //  adds whatever the item's power mod is times the base damage
             dmg += equippedItem.getPassiveMod(Item.passiveEffectTypes.modPower) * baseDmg;
 
-            if(equippedWeapon.w_attackType == Weapon.attackType.edged)
+            if(equippedWeapon.aType == Weapon.attackType.edged)
                 dmg += equippedItem.getPassiveMod(Item.passiveEffectTypes.modEdgedDamageGiven) * baseDmg;
-            else if(equippedWeapon.w_attackType == Weapon.attackType.blunt)
+            else if(equippedWeapon.aType == Weapon.attackType.blunt)
                 dmg += equippedItem.getPassiveMod(Item.passiveEffectTypes.modBluntDamageGiven) * baseDmg;
         }
 
@@ -177,7 +177,7 @@ public class UnitStats {
 
     //  Defence amount
     public float getBaseDefence() {
-        float armorDefence = equippedArmor.a_defence * (((float)equippedArmor.a_wornAmount + 7.0f) / 10.0f);
+        float armorDefence = equippedArmor.defence * (((float)equippedArmor.wornAmount + 7.0f) / 10.0f);
         return Mathf.Clamp(u_defence + armorDefence, 0.0f, 100.0f);
     }
     public float getDefenceMult(bool defending, PresetLibrary lib) {    //  this value is multiplied by the damage taken
@@ -225,9 +225,9 @@ public class UnitStats {
     public float getModifiedSpeed(float tempSpeedMod) {
         float temp = u_speed * tempSpeedMod;
         if(equippedWeapon != null && !equippedWeapon.isEmpty())
-            temp += equippedWeapon.w_speedMod;
+            temp += equippedWeapon.speedMod;
         if(equippedArmor != null && !equippedArmor.isEmpty())
-            temp += equippedArmor.a_speedMod;
+            temp += equippedArmor.speedMod;
         if(equippedItem != null && !equippedItem.isEmpty())
             temp += equippedItem.getPassiveMod(Item.passiveEffectTypes.modSpeed);
         foreach(var i in u_traits)

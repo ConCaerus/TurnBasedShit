@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class FishingLineMover : MonoBehaviour {
     LineRenderer ln;
@@ -23,7 +24,10 @@ public class FishingLineMover : MonoBehaviour {
         float area = maxXArea - minXArea;
         float percentage = minXArea + area * FindObjectOfType<FishingCanvas>().fishSlider.value;
 
-        FindObjectOfType<Bobber>().transform.position = new Vector3(percentage, FindObjectOfType<Bobber>().transform.position.y, 0.0f);
+        //  position bobber
+        if(FindObjectOfType<FishingCanvas>().running) {
+            FindObjectOfType<Bobber>().transform.position = new Vector3(percentage, FindObjectOfType<Bobber>().transform.position.y, 0.0f);
+        }
         ln.SetPosition(1, FindObjectOfType<Bobber>().transform.GetChild(0).position);
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 
 public class Bobber : MonoBehaviour {
-
+    [SerializeField] Vector2 showPos;
 
     private void Start() {
         transform.position = new Vector3(transform.position.x, FindObjectOfType<FishingLineMover>().yPos);
@@ -13,7 +13,8 @@ public class Bobber : MonoBehaviour {
 
 
     private void Update() {
-        rotate();
+        if(FindObjectOfType<FishingCanvas>().running)
+            rotate();
     }
 
 
@@ -35,14 +36,34 @@ public class Bobber : MonoBehaviour {
         transform.GetChild(1).GetComponent<ParticleSystem>().emissionRate = rate;
     }
 
+    public void resetValues() {
+        transform.GetChild(1).GetComponent<ParticleSystem>().emissionRate = 0;
+        transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+    }
+
+    public void showSpoils(Collectable fish) {
+        transform.GetChild(2).GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getGenericSpriteForCollectable(fish);
+        transform.GetChild(2).rotation = Quaternion.Euler(0.0f, 0.0f, fish.fishedData.hookedRot);
+        transform.GetChild(2).transform.localPosition = fish.fishedData.hookedPos;
+        StartCoroutine(showSpoilsAnim());
+    }
+
+
+
 
     IEnumerator animateBob() {
         float randTime = Random.Range(0.25f, 0.35f);
 
         transform.DOPunchPosition(new Vector3(0.0f, -Random.Range(0.01f, 0.1f)), randTime);
-
         yield return new WaitForSeconds(randTime);
-
+        while(!FindObjectOfType<FishingCanvas>().running)
+            yield return new WaitForSeconds(randTime);
         StartCoroutine(animateBob());
+    }
+
+    IEnumerator showSpoilsAnim() {
+        yield return new WaitForSeconds(0.25f);
+        transform.DOMove(showPos, 0.25f);
+        transform.GetChild(2).transform.DOScale(3.0f, 0.25f);
     }
 }

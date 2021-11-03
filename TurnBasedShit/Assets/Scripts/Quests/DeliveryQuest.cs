@@ -16,7 +16,7 @@ public class DeliveryQuest {
 
     public List<Weapon> weaponsToDeliver = new List<Weapon>();
     public List<Armor> armorToDeliver = new List<Armor>();
-    public List<Consumable> consumablesToDeliver = new List<Consumable>();
+    public List<Usable> consumablesToDeliver = new List<Usable>();
     public List<Item> itemsToDeliver = new List<Item>();
     public List<UnitStats> unitsToDeliver = new List<UnitStats>();
 
@@ -43,7 +43,7 @@ public class DeliveryQuest {
 
         type = deliveryType.armor;
     }
-    public DeliveryQuest(TownLocation t, List<Consumable> c, bool setID) {
+    public DeliveryQuest(TownLocation t, List<Usable> c, bool setID) {
         if(setID)
             q_instanceID = GameInfo.getNextQuestInstanceID();
 

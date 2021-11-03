@@ -166,20 +166,25 @@ public class CasinoCanvas : MonoBehaviour {
         }
     }
 
-    public void showCanvas(GameObject usedMachine) {
+    public void showCanvas() {
         transform.GetChild(0).gameObject.SetActive(true);
         transform.GetChild(0).gameObject.transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
         transform.GetChild(0).gameObject.transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f), showTime);
         numOf7 = 1;
 
-        for(int i = 0; i < machines.Length; i++) {
-            if(machines[i].gameObject == usedMachine.gameObject) {
-                machineNumberText.text = (i + 1).ToString();
-                if(i == 1)
-                    numOf7 = 2;
-                break;
+        float closest = Mathf.Abs(FindObjectOfType<RoomMovement>().transform.position.x - machines[0].transform.position.x);
+        int closestIndex = 0;
+        for(int i = 1; i < machines.Length; i++) {
+            if(Mathf.Abs(FindObjectOfType<RoomMovement>().transform.position.x - machines[i].transform.position.x) < closest) {
+                closest = Mathf.Abs(FindObjectOfType<RoomMovement>().transform.position.x - machines[i].transform.position.x);
+                closestIndex = i;
             }
         }
+
+
+        machineNumberText.text = (closestIndex + 1).ToString();
+        if(closestIndex == 1)
+            numOf7 = 2;
 
         keepCostAmountShown();
 

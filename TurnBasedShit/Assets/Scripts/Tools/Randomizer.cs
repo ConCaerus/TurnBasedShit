@@ -33,22 +33,20 @@ public static class Randomizer {
         temp.freeHeals = Random.Range(0, 4);
 
         switch(GameInfo.getCurrentDiff()) {
-            case GameInfo.diffLvl.Cake:
-            case GameInfo.diffLvl.Easy:
+            case GameInfo.region.grassland:
+            case GameInfo.region.forest:
                 temp.pricePerHeal = Random.Range(1, 6);
                 break;
 
-            case GameInfo.diffLvl.Normal:
-            case GameInfo.diffLvl.Inter:
+            case GameInfo.region.swamp:
                 temp.pricePerHeal = Random.Range(5, 11);
                 break;
 
-            case GameInfo.diffLvl.Hard:
-            case GameInfo.diffLvl.Heroic:
+            case GameInfo.region.mountains:
                 temp.pricePerHeal = Random.Range(10, 16);
                 break;
 
-            case GameInfo.diffLvl.Legendary:
+            case GameInfo.region.hell:
                 temp.pricePerHeal = Random.Range(10, 31);
                 break;
         }

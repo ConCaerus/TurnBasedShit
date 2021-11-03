@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class NestLocation : MapLocation {
 
-    public NestLocation(Vector2 p, int waveNumber, PresetLibrary lib, GameInfo.diffLvl diff) {
+    public NestLocation(Vector2 p, int waveNumber, PresetLibrary lib, GameInfo.region diff) {
         pos = p;
         type = locationType.nest;
 
@@ -14,11 +14,11 @@ public class NestLocation : MapLocation {
     }
 
 
-    public override void enterLocation() {
+    public override void enterLocation(TransitionCanvas tc) {
         GameInfo.setCombatDetails(combatLocation);
         GameInfo.setCurrentLocationAsNest(this);
         MapLocationHolder.removeLocation(this);
-        SceneManager.LoadScene("Combat");
+        tc.loadSceneWithTransition("Combat");
     }
 
     public override bool isEqualTo(MapLocation other) {

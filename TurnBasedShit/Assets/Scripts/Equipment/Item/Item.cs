@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Item {
+public class Item : Collectable {
     //  times at which the item is used
     [System.Serializable]
     public enum useTimes {
@@ -35,22 +35,15 @@ public class Item {
     }
 
 
-    public int i_instanceID = -1;
+    public List<timedEffects> tEffects = new List<timedEffects>();
+    public List<passiveEffects> pEffects = new List<passiveEffects>();
 
-    public string i_name;
-    public GameInfo.rarityLvl i_rarity;
-
-    public List<timedEffects> i_timedEffects = new List<timedEffects>();
-    public List<passiveEffects> i_passiveEffects = new List<passiveEffects>();
-
-    public int i_coinCost;
-
-    [SerializeField] ItemSpriteHolder i_sprite;
+    [SerializeField] ItemSpriteHolder sprite;
 
     //  passive shit
     public float getPassiveMod(passiveEffectTypes type) {
         float temp = 0.0f;
-        foreach(var i in i_passiveEffects) {
+        foreach(var i in pEffects) {
             if(i.effect == type)
                 temp += i.effectAmount;
         }
@@ -59,7 +52,7 @@ public class Item {
 
 
     public void triggerUseTime(UnitClass unit, useTimes time) {
-        foreach(var i in i_timedEffects) {
+        foreach(var i in tEffects) {
             if(i.time == time) {
                 switch(i.effect) {
                     case timedEffectTypes.healSelf:
@@ -83,46 +76,28 @@ public class Item {
         }
     }
 
+    public override void setEqualTo(Collectable col, bool takeID) {
+        if(col.type != collectableType.item || col == null || col.isEmpty())
+            return;
 
+        var other = (Item)col;
 
-    public bool isEqualTo(Item other) {
-        if(other == null || other.isEmpty())
-            return false;
-        return i_instanceID == other.i_instanceID;
-    }
-
-    public bool isTheSameTypeAs(Item other) {
-        if(other == null || other.isEmpty())
-            return false;
-        return i_name == other.i_name && i_rarity == other.i_rarity;
-    }
-
-    public void setEqualTo(Item other, bool takeID) {
         if(other == null || other.isEmpty())
             return;
 
-        i_passiveEffects.Clear();
-        for(int i = 0; i < other.i_passiveEffects.Count; i++)
-            i_passiveEffects.Add(other.i_passiveEffects[i]);
+        matchParentValues(col, takeID);
 
-        i_timedEffects.Clear();
-        for(int i = 0; i < other.i_timedEffects.Count; i++)
-            i_timedEffects.Add(other.i_timedEffects[i]);
+        pEffects.Clear();
+        for(int i = 0; i < other.pEffects.Count; i++)
+            pEffects.Add(other.pEffects[i]);
 
-        i_name = other.i_name;
-        i_rarity = other.i_rarity;
-        i_coinCost = other.i_coinCost;
-
-        if(takeID)
-            i_instanceID = other.i_instanceID;
-    }
-
-    public bool isEmpty() {
-        return string.IsNullOrEmpty(i_name) && i_timedEffects.Count == 0 && i_passiveEffects.Count == 0;
+        tEffects.Clear();
+        for(int i = 0; i < other.tEffects.Count; i++)
+            tEffects.Add(other.tEffects[i]);
     }
 
     public ItemSpriteHolder getSpriteHolder() {
-        return i_sprite;
+        return sprite;
     }
 }
 

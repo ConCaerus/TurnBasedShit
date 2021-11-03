@@ -11,6 +11,10 @@ public class MenuCanvas : MonoBehaviour {
 
     const string openTag = "Opened Tab Index";
 
+    public delegate void func();
+    List<func> runOnOpen = new List<func>();
+    List<func> runOnClose = new List<func>();
+
 
     private void Start() {
         GetComponent<Canvas>().worldCamera = Camera.main;
@@ -60,25 +64,57 @@ public class MenuCanvas : MonoBehaviour {
 
 
     public void show() {
+        showing = true;
         if(FindObjectOfType<UnitCanvas>() != null)
             FindObjectOfType<UnitCanvas>().setup();
         else if(FindObjectOfType<QuestCanvas>() != null)
             FindObjectOfType<QuestCanvas>().updateMenu();
         else if(FindObjectOfType<TownMenuCanvas>() != null)
             FindObjectOfType<TownMenuCanvas>().updateSlots();
+        else if(FindObjectOfType<InventoryCanvas>() != null)
+            FindObjectOfType<InventoryCanvas>().populateSlots();
         else if(FindObjectOfType<GraveyardMenuCanvas>() != null)
             FindObjectOfType<GraveyardMenuCanvas>().createSlots();
 
+        foreach(var i in runOnOpen)
+            i();
+
         GetComponent<Animator>().StopPlayback();
         GetComponent<Animator>().Play("MenuOpenAnim");
-        showing = true;
+
+        foreach(var i in FindObjectsOfType<InfoBearer>()) {
+            if(i.hideWhenMenuOpen)
+                i.GetComponent<BoxCollider2D>().enabled = false;
+            else
+                i.GetComponent<BoxCollider2D>().enabled = true;
+        }
     }
     public void hide() {
         GetComponent<Animator>().StopPlayback();
         GetComponent<Animator>().Play("MenuCloseAnim");
+
+        foreach(var i in runOnClose)
+            i();
+        
+        foreach(var i in FindObjectsOfType<InfoBearer>()) {
+            if(i.hideWhenMenuOpen)
+                i.GetComponent<BoxCollider2D>().enabled = true;
+            else
+                i.GetComponent<BoxCollider2D>().enabled = false;
+        }
         showing = false;
     }
     public void hardHide() {
+        foreach(var i in FindObjectsOfType<InfoBearer>()) {
+            if(i.GetComponent<BoxCollider2D>() == null) {
+                Debug.Log(i.name);
+                continue;
+            }
+            if(i.hideWhenMenuOpen)
+                i.GetComponent<BoxCollider2D>().enabled = true;
+            else
+                i.GetComponent<BoxCollider2D>().enabled = false;
+        }
         GetComponent<Animator>().StopPlayback();
         GetComponent<Animator>().Play("MenuIdle");
         showing = false;
@@ -107,8 +143,7 @@ public class MenuCanvas : MonoBehaviour {
         graveyardCanvas.SetActive(false);
         optionsCanvas.SetActive(false);
 
-        foreach(var i in FindObjectsOfType<InventorySelectionCanvas>())
-            i.populateSlots();
+        FindObjectOfType<InventoryCanvas>().populateSlots();
     }
     public void questTab() {
         SaveData.setInt(openTag, 2);
@@ -153,8 +188,11 @@ public class MenuCanvas : MonoBehaviour {
         unitCanvas.SetActive(false);
     }
 
-    public void showUnitCanvas() {
-        unitCanvas.SetActive(true);
+    public void addNewRunOnOpen(func f) {
+        runOnOpen.Add(f);
+    }
+    public void addNewRunOnClose(func f) {
+        runOnClose.Add(f);
     }
 
 

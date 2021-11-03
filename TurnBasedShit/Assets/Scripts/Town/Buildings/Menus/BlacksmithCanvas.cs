@@ -49,7 +49,7 @@ public class BlacksmithCanvas : MonoBehaviour {
 
         int slotIndex = 0;
         for(int i = 0; i < Inventory.getWeaponCount(); i++) {
-            if(Inventory.getWeapon(i).w_wornAmount != GameInfo.wornState.New) {
+            if(Inventory.getWeapon(i).wornAmount != GameInfo.wornState.perfect) {
                 var temp = inventoryWeapons.createSlot(slotIndex, Color.white);
                 temp.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getWeapon(i)).sprite;
                 slotIndex++;
@@ -58,7 +58,7 @@ public class BlacksmithCanvas : MonoBehaviour {
 
         slotIndex = 0;
         for(int i = 0; i < Party.getMemberCount(); i++) {
-            if(Party.getMemberStats(i).equippedWeapon != null && !Party.getMemberStats(i).equippedWeapon.isEmpty() && Party.getMemberStats(i).equippedWeapon.w_wornAmount != GameInfo.wornState.New) {
+            if(Party.getMemberStats(i).equippedWeapon != null && !Party.getMemberStats(i).equippedWeapon.isEmpty() && Party.getMemberStats(i).equippedWeapon.wornAmount != GameInfo.wornState.perfect) {
                 var temp = partyWeapons.createSlot(slotIndex, Color.white);
                 temp.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Party.getMemberStats(i).equippedWeapon).sprite;
                 slotIndex++;
@@ -67,7 +67,7 @@ public class BlacksmithCanvas : MonoBehaviour {
 
         slotIndex = 0;
         for(int i = 0; i < Inventory.getArmorCount(); i++) {
-            if(Inventory.getArmor(i).a_wornAmount != GameInfo.wornState.New) {
+            if(Inventory.getArmor(i).wornAmount != GameInfo.wornState.perfect) {
                 var temp = inventoryArmor.createSlot(slotIndex, Color.white);
                 temp.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getArmor(i)).sprite;
                 slotIndex++;
@@ -76,7 +76,7 @@ public class BlacksmithCanvas : MonoBehaviour {
 
         slotIndex = 0;
         for(int i = 0; i < Party.getMemberCount(); i++) {
-            if(Party.getMemberStats(i).equippedArmor != null && !Party.getMemberStats(i).equippedArmor.isEmpty() && Party.getMemberStats(i).equippedArmor.a_wornAmount != GameInfo.wornState.New) {
+            if(Party.getMemberStats(i).equippedArmor != null && !Party.getMemberStats(i).equippedArmor.isEmpty() && Party.getMemberStats(i).equippedArmor.wornAmount != GameInfo.wornState.perfect) {
                 var temp = partyArmor.createSlot(slotIndex, Color.white);
                 temp.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Party.getMemberStats(i).equippedArmor).sprite;
                 slotIndex++;
@@ -96,7 +96,7 @@ public class BlacksmithCanvas : MonoBehaviour {
         if(getCurrentlyUsingMenu() == inventoryWeapons) {
             int slotIndex = 0;
             for(int i = 0; i < Inventory.getWeaponCount(); i++) {
-                if(Inventory.getWeapon(i).w_wornAmount != GameInfo.wornState.New) {
+                if(Inventory.getWeapon(i).wornAmount != GameInfo.wornState.perfect) {
                     if(slotIndex == getCurrentlyUsingMenu().getSelectedSlotIndex()) {
                         setWeaponInfo(Inventory.getWeapon(i));
                         return;
@@ -109,7 +109,7 @@ public class BlacksmithCanvas : MonoBehaviour {
         else if(getCurrentlyUsingMenu() == partyWeapons) {
             int slotIndex = 0;
             for(int i = 0; i < Party.getMemberCount(); i++) {
-                if(Party.getMemberStats(i).equippedWeapon != null && !Party.getMemberStats(i).equippedWeapon.isEmpty() && Party.getMemberStats(i).equippedWeapon.w_wornAmount != GameInfo.wornState.New) {
+                if(Party.getMemberStats(i).equippedWeapon != null && !Party.getMemberStats(i).equippedWeapon.isEmpty() && Party.getMemberStats(i).equippedWeapon.wornAmount != GameInfo.wornState.perfect) {
                     if(slotIndex == getCurrentlyUsingMenu().getSelectedSlotIndex()) {
                         setWeaponInfo(Party.getMemberStats(i).equippedWeapon);
                         return;
@@ -122,7 +122,7 @@ public class BlacksmithCanvas : MonoBehaviour {
         else if(getCurrentlyUsingMenu() == inventoryArmor) {
             int slotIndex = 0;
             for(int i = 0; i < Inventory.getArmorCount(); i++) {
-                if(Inventory.getArmor(i).a_wornAmount != GameInfo.wornState.New) {
+                if(Inventory.getArmor(i).wornAmount != GameInfo.wornState.perfect) {
                     if(slotIndex == getCurrentlyUsingMenu().getSelectedSlotIndex()) {
                         setArmorInfo(Inventory.getArmor(i));
                         return;
@@ -135,7 +135,7 @@ public class BlacksmithCanvas : MonoBehaviour {
         else if(getCurrentlyUsingMenu() == partyArmor) {
             int slotIndex = 0;
             for(int i = 0; i < Party.getMemberCount(); i++) {
-                if(Party.getMemberStats(i).equippedArmor != null && !Party.getMemberStats(i).equippedArmor.isEmpty() && Party.getMemberStats(i).equippedArmor.a_wornAmount != GameInfo.wornState.New) {
+                if(Party.getMemberStats(i).equippedArmor != null && !Party.getMemberStats(i).equippedArmor.isEmpty() && Party.getMemberStats(i).equippedArmor.wornAmount != GameInfo.wornState.perfect) {
                     if(slotIndex == getCurrentlyUsingMenu().getSelectedSlotIndex()) {
                         setArmorInfo(Party.getMemberStats(i).equippedArmor);
                         return;
@@ -154,17 +154,17 @@ public class BlacksmithCanvas : MonoBehaviour {
 
     void setWeaponInfo(Weapon we) {
         selectedEquipment.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(we).sprite;
-        nameText.text = we.w_name;
-        costText.text = getCost(we.w_rarity, we.w_wornAmount).ToString("0") + "c";
+        nameText.text = we.name;
+        costText.text = getCost(we.rarity, we.wornAmount).ToString("0") + "c";
     }
     void setArmorInfo(Armor ar) {
         selectedEquipment.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(ar).sprite;
-        nameText.text = ar.a_name;
-        costText.text = getCost(ar.a_rarity, ar.a_wornAmount).ToString("0") + "c";
+        nameText.text = ar.name;
+        costText.text = getCost(ar.rarity, ar.wornAmount).ToString("0") + "c";
     }
 
-    int getCost(GameInfo.rarityLvl rar, GameInfo.wornState state) {
-        return ((((int)rar) + 1) * reference.chargeRate) * ((int)GameInfo.wornState.New - (int)state);
+    int getCost(GameInfo.region rar, GameInfo.wornState state) {
+        return ((((int)rar) + 1) * reference.chargeRate) * ((int)GameInfo.wornState.perfect - (int)state);
     }
 
 
@@ -173,10 +173,11 @@ public class BlacksmithCanvas : MonoBehaviour {
         updateSlots();
         isShowing = true;
     }
-    public void hide() {
+    public void hide(bool deinteractWalker) {
         transform.GetChild(0).DOScale(0.0f, 0.15f);
         isShowing = false;
-        FindObjectOfType<LocationMovement>().deinteract();
+        if(deinteractWalker)
+            FindObjectOfType<LocationMovement>().deinteract();
     }
 
     SlotMenu getCurrentlyUsingMenu() {
@@ -199,14 +200,14 @@ public class BlacksmithCanvas : MonoBehaviour {
         if(getCurrentlyUsingMenu() == inventoryWeapons) {
             int slotIndex = 0;
             for(int i = 0; i < Inventory.getWeaponCount(); i++) {
-                if(Inventory.getWeapon(i).w_wornAmount != GameInfo.wornState.New) {
+                if(Inventory.getWeapon(i).wornAmount != GameInfo.wornState.perfect) {
                     if(slotIndex == getCurrentlyUsingMenu().getSelectedSlotIndex()) {
                         var temp = Inventory.getWeapon(i);
-                        if(getCost(temp.w_rarity, temp.w_wornAmount) > Inventory.getCoinCount())
+                        if(getCost(temp.rarity, temp.wornAmount) > Inventory.getCoinCount())
                             return;
-                        Inventory.addCoins(-getCost(temp.w_rarity, temp.w_wornAmount));
+                        Inventory.addCoins(-getCost(temp.rarity, temp.wornAmount));
 
-                        temp.w_wornAmount = GameInfo.wornState.New;
+                        temp.wornAmount = GameInfo.wornState.perfect;
                         Inventory.overrideWeapon(i, temp);
 
                         updateSlots();
@@ -220,14 +221,14 @@ public class BlacksmithCanvas : MonoBehaviour {
         else if(getCurrentlyUsingMenu() == partyWeapons) {
             int slotIndex = 0;
             for(int i = 0; i < Party.getMemberCount(); i++) {
-                if(Party.getMemberStats(i).equippedWeapon != null && !Party.getMemberStats(i).equippedWeapon.isEmpty() && Party.getMemberStats(i).equippedWeapon.w_wornAmount != GameInfo.wornState.New) {
+                if(Party.getMemberStats(i).equippedWeapon != null && !Party.getMemberStats(i).equippedWeapon.isEmpty() && Party.getMemberStats(i).equippedWeapon.wornAmount != GameInfo.wornState.perfect) {
                     if(slotIndex == getCurrentlyUsingMenu().getSelectedSlotIndex()) {
                         var temp = Party.getMemberStats(i).equippedWeapon;
-                        if(getCost(temp.w_rarity, temp.w_wornAmount) > Inventory.getCoinCount())
+                        if(getCost(temp.rarity, temp.wornAmount) > Inventory.getCoinCount())
                             return;
-                        Inventory.addCoins(-getCost(temp.w_rarity, temp.w_wornAmount));
+                        Inventory.addCoins(-getCost(temp.rarity, temp.wornAmount));
 
-                        temp.w_wornAmount = GameInfo.wornState.New;
+                        temp.wornAmount = GameInfo.wornState.perfect;
                         var unit = Party.getMemberStats(i);
                         unit.equippedWeapon.setEqualTo(temp, true);
                         Party.overrideUnit(unit);
@@ -243,14 +244,14 @@ public class BlacksmithCanvas : MonoBehaviour {
         else if(getCurrentlyUsingMenu() == inventoryArmor) {
             int slotIndex = 0;
             for(int i = 0; i < Inventory.getArmorCount(); i++) {
-                if(Inventory.getArmor(i).a_wornAmount != GameInfo.wornState.New) {
+                if(Inventory.getArmor(i).wornAmount != GameInfo.wornState.perfect) {
                     if(slotIndex == getCurrentlyUsingMenu().getSelectedSlotIndex()) {
                         var temp = Inventory.getArmor(i);
-                        if(getCost(temp.a_rarity, temp.a_wornAmount) > Inventory.getCoinCount())
+                        if(getCost(temp.rarity, temp.wornAmount) > Inventory.getCoinCount())
                             return;
-                        Inventory.addCoins(-getCost(temp.a_rarity, temp.a_wornAmount));
+                        Inventory.addCoins(-getCost(temp.rarity, temp.wornAmount));
 
-                        temp.a_wornAmount = GameInfo.wornState.New;
+                        temp.wornAmount = GameInfo.wornState.perfect;
                         Inventory.overrideArmor(i, temp);
 
                         updateSlots();
@@ -264,14 +265,14 @@ public class BlacksmithCanvas : MonoBehaviour {
         else if(getCurrentlyUsingMenu() == partyArmor) {
             int slotIndex = 0;
             for(int i = 0; i < Party.getMemberCount(); i++) {
-                if(Party.getMemberStats(i).equippedArmor != null && !Party.getMemberStats(i).equippedArmor.isEmpty() && Party.getMemberStats(i).equippedArmor.a_wornAmount != GameInfo.wornState.New) {
+                if(Party.getMemberStats(i).equippedArmor != null && !Party.getMemberStats(i).equippedArmor.isEmpty() && Party.getMemberStats(i).equippedArmor.wornAmount != GameInfo.wornState.perfect) {
                     if(slotIndex == getCurrentlyUsingMenu().getSelectedSlotIndex()) {
                         var temp = Party.getMemberStats(i).equippedArmor;
-                        if(getCost(temp.a_rarity, temp.a_wornAmount) > Inventory.getCoinCount())
+                        if(getCost(temp.rarity, temp.wornAmount) > Inventory.getCoinCount())
                             return;
-                        Inventory.addCoins(-getCost(temp.a_rarity, temp.a_wornAmount));
+                        Inventory.addCoins(-getCost(temp.rarity, temp.wornAmount));
 
-                        temp.a_wornAmount = GameInfo.wornState.New;
+                        temp.wornAmount = GameInfo.wornState.perfect;
                         var unit = Party.getMemberStats(i);
                         unit.equippedArmor.setEqualTo(temp, true);
                         Party.overrideUnit(unit);

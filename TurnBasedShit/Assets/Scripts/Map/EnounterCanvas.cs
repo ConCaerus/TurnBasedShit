@@ -31,6 +31,6 @@ public class EnounterCanvas : MonoBehaviour {
         if(loc == null)
             FindObjectOfType<TransitionCanvas>().loadSceneWithTransition("Combat");
         else
-            FindObjectOfType<TransitionCanvas>().loadSceneWithFunction(loc.enterLocation);
+            loc.enterLocation(FindObjectOfType<TransitionCanvas>());
     }
 }

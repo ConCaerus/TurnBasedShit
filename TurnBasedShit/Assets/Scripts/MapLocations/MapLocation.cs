@@ -9,7 +9,7 @@ public abstract class MapLocation {
 
     [Serializable]
     public enum locationType {
-        empty, town, pickup, upgrade, rescue, nest, boss
+        empty, town, pickup, upgrade, rescue, nest, boss, fishing
     }
 
 
@@ -19,7 +19,7 @@ public abstract class MapLocation {
 
     public CombatLocation combatLocation = null;
 
-    public abstract void enterLocation();
+    public abstract void enterLocation(TransitionCanvas tc);
 
     public abstract bool isEqualTo(MapLocation other);
 }

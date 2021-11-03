@@ -63,16 +63,16 @@ public class ShopCanvas : MonoBehaviour {
                     //  Buying 
                     if(shopState == 0) {
                         Weapon w = ShopInventory.getWeapon(currentTown.t_instanceID, slot.getSelectedSlotIndex());
-                        nameText.text = w.w_name;
-                        costText.text = getBuyPrice(w.w_coinCost).ToString() + "c";
+                        nameText.text = w.name;
+                        costText.text = getBuyPrice(w.coinCost).ToString() + "c";
                         break;
                     }
 
                     //  Selling
                     else if(shopState == 1) {
                         Weapon w = Inventory.getWeapon(slot.getSelectedSlotIndex());
-                        nameText.text = w.w_name;
-                        costText.text = getSellPrice(w.w_coinCost).ToString() + "c";
+                        nameText.text = w.name;
+                        costText.text = getSellPrice(w.coinCost).ToString() + "c";
                         break;
                     }
                     break;
@@ -81,16 +81,16 @@ public class ShopCanvas : MonoBehaviour {
                 case 1://  Buying 
                     if(shopState == 0) {
                         Armor a = ShopInventory.getArmor(currentTown.t_instanceID, slot.getSelectedSlotIndex());
-                        nameText.text = a.a_name;
-                        costText.text = getBuyPrice(a.a_coinCost).ToString() + "c";
+                        nameText.text = a.name;
+                        costText.text = getBuyPrice(a.coinCost).ToString() + "c";
                         break;
                     }
 
                     //  Selling
                     else if(shopState == 1) {
                         Armor a = Inventory.getArmor(slot.getSelectedSlotIndex());
-                        nameText.text = a.a_name;
-                        costText.text = getSellPrice(a.a_coinCost).ToString() + "c";
+                        nameText.text = a.name;
+                        costText.text = getSellPrice(a.coinCost).ToString() + "c";
                         break;
                     }
                     break;
@@ -99,17 +99,17 @@ public class ShopCanvas : MonoBehaviour {
                 case 2:
                     //  Buying 
                     if(shopState == 0) {
-                        Consumable c = ShopInventory.getConsumable(currentTown.t_instanceID, slot.getSelectedSlotIndex());
-                        nameText.text = c.c_name;
-                        costText.text = getBuyPrice(c.c_coinCost).ToString() + "c";
+                        Usable c = ShopInventory.getConsumable(currentTown.t_instanceID, slot.getSelectedSlotIndex());
+                        nameText.text = c.name;
+                        costText.text = getBuyPrice(c.coinCost).ToString() + "c";
                         break;
                     }
 
                     //  Selling
                     else if(shopState == 1) {
-                        Consumable c = Inventory.getConsumable(slot.getSelectedSlotIndex());
-                        nameText.text = c.c_name;
-                        costText.text = getSellPrice(c.c_coinCost).ToString() + "c";
+                        Usable c = Inventory.getUsable(slot.getSelectedSlotIndex());
+                        nameText.text = c.name;
+                        costText.text = getSellPrice(c.coinCost).ToString() + "c";
                         break;
                     }
                     break;
@@ -119,16 +119,16 @@ public class ShopCanvas : MonoBehaviour {
                     //  Buying 
                     if(shopState == 0) {
                         Item i = ShopInventory.getItem(currentTown.t_instanceID, slot.getSelectedSlotIndex());
-                        nameText.text = i.i_name;
-                        costText.text = getBuyPrice(i.i_coinCost).ToString() + "c";
+                        nameText.text = i.name;
+                        costText.text = getBuyPrice(i.coinCost).ToString() + "c";
                         break;
                     }
 
                     //  Selling
                     else if(shopState == 1) {
                         Item i = Inventory.getItem(slot.getSelectedSlotIndex());
-                        nameText.text = i.i_name;
-                        costText.text = getSellPrice(i.i_coinCost).ToString() + "c";
+                        nameText.text = i.name;
+                        costText.text = getSellPrice(i.coinCost).ToString() + "c";
                         break;
                     }
                     break;
@@ -174,7 +174,7 @@ public class ShopCanvas : MonoBehaviour {
                     if(weaponCount <= 0)
                         break;
                     for(int i = 0; i < weaponCount; i++) {
-                        var obj = slot.createSlot(i, Color.white);
+                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForCollectable(Inventory.getWeapon(i)));
                         obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(ShopInventory.getWeapon(currentTown.t_instanceID, i)).sprite;
                     }
                     break;
@@ -185,19 +185,19 @@ public class ShopCanvas : MonoBehaviour {
                     if(armorCount <= 0)
                         break;
                     for(int i = 0; i < armorCount; i++) {
-                        var obj = slot.createSlot(i, Color.white);
+                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForCollectable(Inventory.getArmor(i)));
                         obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(ShopInventory.getArmor(currentTown.t_instanceID, i)).sprite;
                     }
                     break;
 
                 //  Consumable
                 case 2:
-                    int consumableCount = ShopInventory.getTypeCount(currentTown.t_instanceID, typeof(Consumable));
+                    int consumableCount = ShopInventory.getTypeCount(currentTown.t_instanceID, typeof(Usable));
                     if(consumableCount <= 0)
                         break;
                     for(int i = 0; i < consumableCount; i++) {
                         var obj = slot.createSlot(i, Color.white);
-                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getConsumableSprite(ShopInventory.getConsumable(currentTown.t_instanceID, i)).sprite;
+                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUsableSprite(ShopInventory.getConsumable(currentTown.t_instanceID, i)).sprite;
                     }
                     break;
 
@@ -233,7 +233,7 @@ public class ShopCanvas : MonoBehaviour {
                         break;
 
                     for(int i = 0; i < Inventory.getWeaponCount(); i++) {
-                        var obj = slot.createSlot(i, Color.white);
+                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForCollectable(Inventory.getWeapon(i)));
                         obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getWeapon(i)).sprite;
                     }
                     break;
@@ -244,19 +244,19 @@ public class ShopCanvas : MonoBehaviour {
                         break;
 
                     for(int i = 0; i < Inventory.getArmorCount(); i++) {
-                        var obj = slot.createSlot(i, Color.white);
+                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForCollectable(Inventory.getArmor(i)));
                         obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getArmor(i)).sprite;
                     }
                     break;
 
                 //  Consumable
                 case 2:
-                    if(Inventory.getConsumabeCount() <= 0)
+                    if(Inventory.getUsableCount() <= 0)
                         break;
 
-                    for(int i = 0; i < Inventory.getConsumabeCount(); i++) {
-                        var obj = slot.createSlot(i, Color.white);
-                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getConsumableSprite(Inventory.getConsumable(i)).sprite;
+                    for(int i = 0; i < Inventory.getUsableCount(); i++) {
+                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForCollectable(Inventory.getUsable(i)));
+                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUsableSprite(Inventory.getUsable(i)).sprite;
                     }
                     break;
 
@@ -266,7 +266,7 @@ public class ShopCanvas : MonoBehaviour {
                         break;
 
                     for(int i = 0; i < Inventory.getItemCount(); i++) {
-                        var obj = slot.createSlot(i, Color.white);
+                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForCollectable(Inventory.getItem(i)));
                         obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(Inventory.getItem(i)).sprite;
                     }
                     break;
@@ -306,7 +306,7 @@ public class ShopCanvas : MonoBehaviour {
                     //  Weapon
                     case 0:
                         Weapon weaponInSlot = ShopInventory.getWeapon(townIndex, slot.getSelectedSlotIndex());
-                        var wPrice = getBuyPrice(weaponInSlot.w_coinCost);
+                        var wPrice = getBuyPrice(weaponInSlot.coinCost);
 
                         if(Inventory.getCoinCount() >= wPrice) {
                             Inventory.removeCoins(wPrice);
@@ -318,7 +318,7 @@ public class ShopCanvas : MonoBehaviour {
                     //  Armor
                     case 1:
                         Armor armorInSlot = ShopInventory.getArmor(townIndex, slot.getSelectedSlotIndex());
-                        var aPrice = getBuyPrice(armorInSlot.a_coinCost);
+                        var aPrice = getBuyPrice(armorInSlot.coinCost);
 
                         if(Inventory.getCoinCount() >= aPrice) {
                             Inventory.removeCoins(aPrice);
@@ -329,12 +329,12 @@ public class ShopCanvas : MonoBehaviour {
 
                     //  Consumable
                     case 2:
-                        Consumable consumableInSlot = ShopInventory.getConsumable(townIndex, slot.getSelectedSlotIndex());
-                        var cPrice = getBuyPrice(consumableInSlot.c_coinCost);
+                        Usable consumableInSlot = ShopInventory.getConsumable(townIndex, slot.getSelectedSlotIndex());
+                        var cPrice = getBuyPrice(consumableInSlot.coinCost);
 
                         if(Inventory.getCoinCount() >= cPrice) {
                             Inventory.removeCoins(cPrice);
-                            Inventory.addConsumable(consumableInSlot);
+                            Inventory.addUsable(consumableInSlot);
                             ShopInventory.removeConsumable(townIndex, slot.getSelectedSlotIndex());
                         }
                         break;
@@ -342,7 +342,7 @@ public class ShopCanvas : MonoBehaviour {
                     //  Item
                     case 3:
                         Item itemInSlot = ShopInventory.getItem(townIndex, slot.getSelectedSlotIndex());
-                        var iPrice = getBuyPrice(itemInSlot.i_coinCost);
+                        var iPrice = getBuyPrice(itemInSlot.coinCost);
 
                         if(Inventory.getCoinCount() >= iPrice) {
                             Inventory.removeCoins(iPrice);
@@ -371,25 +371,25 @@ public class ShopCanvas : MonoBehaviour {
                 switch(slotState) {
                     //  Weapon
                     case 0:
-                        Inventory.addCoins(getSellPrice(Inventory.getWeapon(slot.getSelectedSlotIndex()).w_coinCost));
+                        Inventory.addCoins(getSellPrice(Inventory.getWeapon(slot.getSelectedSlotIndex()).coinCost));
                         Inventory.removeWeapon(slot.getSelectedSlotIndex());
                         break;
 
                     //  Armor
                     case 1:
-                        Inventory.addCoins(getSellPrice(Inventory.getArmor(slot.getSelectedSlotIndex()).a_coinCost));
+                        Inventory.addCoins(getSellPrice(Inventory.getArmor(slot.getSelectedSlotIndex()).coinCost));
                         Inventory.removeArmor(slot.getSelectedSlotIndex());
                         break;
 
                     //  Consumable
                     case 2:
-                        Inventory.addCoins(getSellPrice(Inventory.getConsumable(slot.getSelectedSlotIndex()).c_coinCost));
-                        Inventory.removeConsumable(slot.getSelectedSlotIndex());
+                        Inventory.addCoins(getSellPrice(Inventory.getUsable(slot.getSelectedSlotIndex()).coinCost));
+                        Inventory.removeUsable(slot.getSelectedSlotIndex());
                         break;
 
                     //  Item
                     case 3:
-                        Inventory.addCoins(getSellPrice(Inventory.getItem(slot.getSelectedSlotIndex()).i_coinCost));
+                        Inventory.addCoins(getSellPrice(Inventory.getItem(slot.getSelectedSlotIndex()).coinCost));
                         Inventory.removeItem(slot.getSelectedSlotIndex());
                         break;
 

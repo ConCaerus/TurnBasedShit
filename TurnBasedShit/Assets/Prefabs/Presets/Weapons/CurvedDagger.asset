@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8314e47df0f35fa40a5735bae29e2b0f, type: 3}
+  m_Name: CurvedDagger
+  m_EditorClassIdentifier: 
+  preset:
+    instanceID: -1
+    name: CurvedDagger
+    type: 0
+    rarity: 1
+    coinCost: 4
+    canBeFished: 0
+    fishedData:
+      hookedPos: {x: 0, y: 0}
+      hookedRot: 0
+      diffRegion: 0
+      chanceToCatch: 0
+    wornAmount: 3
+    attributes: 
+    sUsage: 0
+    sUsageAmount: 0
+    aType: 1
+    power: 5
+    speedMod: -2
+    sprite:
+      sprite: {fileID: 21300000, guid: 8d269c34fef512d40a82735577bcc52b, type: 3}
+      equippedX: 0.56
+      equippedY: 0.22
+      equippedRot: -117.5
+      equippedXSize: -0.35
+      equippedYSize: 0.35

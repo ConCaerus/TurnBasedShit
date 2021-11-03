@@ -13,23 +13,24 @@ public class UnitSpriteHandler : MonoBehaviour {
     Coroutine idler = null;
 
     public void setEverything(UnitStats stats) {
-        setEverything(stats.u_sprite, stats.equippedWeapon, stats.equippedArmor); ;
+        setEverything(stats.u_sprite, stats.equippedWeapon, stats.equippedArmor, stats.u_sprite.layerOffset);
     }
-    public void setEverything(int h, int f, int b, Color c, Weapon w, Armor a) {
+    public void setEverything(int h, int f, int b, Color c, Weapon w, Armor a, int layerOffset = 0) {
         setHead(h, a);
         setFace(f, a);
         setBody(b, w, a);
         setColor(c);
+        setLayerOffset(layerOffset);
         offsetLayer();
 
         if(FindObjectOfType<PartyObject>() != null)
             FindObjectOfType<PartyObject>().repositionUnit(FindObjectOfType<PartyObject>().getInstantiatedMember(GetComponentInParent<UnitClass>().stats));
     }
-    public void setEverythingButWeapon(UnitStats stats) {
-        setEverything(stats.u_sprite, null, stats.equippedArmor);
+    public void setEverythingButWeapon(UnitStats stats, int layerOffset = 0) {
+        setEverything(stats.u_sprite, null, stats.equippedArmor, layerOffset);
     }
-    public void setEverything(UnitSpriteInfo info, Weapon w, Armor a) {
-        setEverything(info.headIndex, info.faceIndex, info.bodyIndex, info.color, w, a);
+    public void setEverything(UnitSpriteInfo info, Weapon w, Armor a, int layerOffset = 0) {
+        setEverything(info.headIndex, info.faceIndex, info.bodyIndex, info.color, w, a, layerOffset);
         setColor(info.color);
     }
     public void setHead(int index, Armor a) {
@@ -207,30 +208,31 @@ public class UnitSpriteHandler : MonoBehaviour {
     }
 
     void offsetLayer() {
+        int normOffset = FindObjectOfType<PresetLibrary>().getRandomUnitBody().GetComponent<SpriteRenderer>().sortingOrder + orderOffset;
         //  body
-        body.GetComponent<SpriteRenderer>().sortingOrder = FindObjectOfType<PresetLibrary>().getRandomUnitBody().GetComponent<SpriteRenderer>().sortingOrder + orderOffset;
+        body.GetComponent<SpriteRenderer>().sortingOrder = normOffset;
 
         //  arms
-        body.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = body.GetComponent<SpriteRenderer>().sortingOrder - 2;
-        body.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = body.GetComponent<SpriteRenderer>().sortingOrder + 4;
+        body.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = normOffset - 2;
+        body.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = normOffset + 4;
 
         //  arm armor
-        body.transform.GetChild(0).GetChild(0).GetChild(1).gameObject.GetComponent<SpriteRenderer>().sortingOrder = body.GetComponent<SpriteRenderer>().sortingOrder - 1;
-        body.transform.GetChild(1).GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = body.GetComponent<SpriteRenderer>().sortingOrder + 5;
+        body.transform.GetChild(0).GetChild(0).GetChild(1).gameObject.GetComponent<SpriteRenderer>().sortingOrder = normOffset - 1;
+        body.transform.GetChild(1).GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = normOffset + 5;
 
 
         //  weapon / armor
-        body.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = body.GetComponent<SpriteRenderer>().sortingOrder - 3;
-        body.transform.GetChild(2).GetComponent<SpriteRenderer>().sortingOrder = body.GetComponent<SpriteRenderer>().sortingOrder + 1;
+        body.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = normOffset - 3;
+        body.transform.GetChild(2).GetComponent<SpriteRenderer>().sortingOrder = normOffset + 1;
 
 
         //  head / face
-        head.GetComponent<SpriteRenderer>().sortingOrder = body.GetComponent<SpriteRenderer>().sortingOrder + 3;
-        head.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = body.GetComponent<SpriteRenderer>().sortingOrder + 4;
+        head.GetComponent<SpriteRenderer>().sortingOrder = normOffset + 3;
+        head.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = normOffset + 4;
         if(hatInfrontOfHead)
-            head.transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = body.GetComponent<SpriteRenderer>().sortingOrder + 5;
+            head.transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = normOffset + 5;
         else
-            head.transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = body.GetComponent<SpriteRenderer>().sortingOrder + 2;
+            head.transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = normOffset + 2;
     }
 
 

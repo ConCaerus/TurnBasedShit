@@ -3,29 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Armor {
+public class Armor : Collectable {
     public const int attributeCount = 2;
     public enum attribute {
         Turtle, Reflex, Power
     }
+    public GameInfo.wornState wornAmount = GameInfo.wornState.perfect;
+    public List<attribute> attributes = new List<attribute>();
 
-    public int a_instanceID = -1;
+    public float defence;
+    public float speedMod;
 
-    public string a_name;
-
-    public GameInfo.rarityLvl a_rarity;
-    public GameInfo.wornState a_wornAmount;
-    public List<attribute> a_attributes = new List<attribute>();
-
-    public float a_defence;
-    public float a_speedMod;
-    public int a_coinCost;
-
-    [SerializeField] ArmorSpriteHolder a_sprite;
+    [SerializeField] ArmorSpriteHolder sprite;
 
     //  this function is applied by the defending unit while the weapon class has its function called by the attacker
     public int applyAttributes(GameObject weilder, GameObject attacker, GameObject turnTaker) {
-        foreach(var i in a_attributes) {
+        foreach(var i in attributes) {
             if(i == attribute.Reflex && turnTaker != weilder) {
                 weilder.GetComponent<UnitClass>().attack(attacker);
                 return 1;
@@ -37,7 +30,7 @@ public class Armor {
 
     public float getBonusAttributeDefenceMult() {
         float temp = 0.0f;
-        foreach(var i in a_attributes) {
+        foreach(var i in attributes) {
             if(i == attribute.Turtle) {
                 temp += 0.15f;
             }
@@ -47,7 +40,7 @@ public class Armor {
 
     public int getTurtleAttCount() {
         int count = 0;
-        foreach(var i in a_attributes) {
+        foreach(var i in attributes) {
             if(i == attribute.Turtle) {
                 count++;
             }
@@ -57,7 +50,7 @@ public class Armor {
 
     public int getPowerAttCount() {
         int count = 0;
-        foreach(var i in a_attributes) {
+        foreach(var i in attributes) {
             if(i == attribute.Power) {
                 count++;
             }
@@ -65,58 +58,26 @@ public class Armor {
         return count;
     }
 
-    public bool isEmpty() {
-        return a_attributes.Count == 0 && a_defence == 0 && a_speedMod == 0;
-    }
-
-    public bool isEqualTo(Armor other) {
-        if(other == null || other.isEmpty())
-            return false;
-        return a_instanceID == other.a_instanceID;
-    }
-
-    public bool isTheSameTypeAs(Armor other) {
-        if(other == null || other.isEmpty())
-            return false;
-        return a_name == other.a_name && a_rarity == other.a_rarity;
-    }
-
-
-    public void setToPreset(ArmorPreset preset) {
-        var temp = preset.preset;
-        a_defence = temp.a_defence;
-        a_speedMod = temp.a_speedMod;
-        a_attributes = temp.a_attributes;
-        a_sprite = temp.a_sprite;
-        a_rarity = temp.a_rarity;
-        a_wornAmount = temp.a_wornAmount;
-    }
-
-    public ArmorPreset armorToPreset() {
-        ArmorPreset preset = (ArmorPreset)ScriptableObject.CreateInstance("ArmorPreset");
-        preset.preset = this;
-        return preset;
-    }
-
-    public void setEqualTo(Armor other, bool takeID) {
-        if(other == null)
+    public override void setEqualTo(Collectable col, bool takeID) {
+        if(col.type != collectableType.armor || col == null || col.isEmpty())
             return;
-        a_name = other.a_name;
-        a_defence = other.a_defence;
-        a_speedMod = other.a_speedMod;
-        a_attributes = other.a_attributes;
-        a_sprite = other.a_sprite;
-        a_rarity = other.a_rarity;
-        a_wornAmount = other.a_wornAmount;
 
-        if(takeID)
-            a_instanceID = other.a_instanceID;
+        var other = (Armor)col;
+        if(other == null || other.isEmpty())
+            return;
+
+        matchParentValues(col, takeID);
+        defence = other.defence;
+        speedMod = other.speedMod;
+        attributes = other.attributes;
+        sprite = other.sprite;
+        wornAmount = other.wornAmount;
     }
 
 
     public int howManyOfAttribute(attribute a) {
         var count = 0;
-        foreach(var i in a_attributes) {
+        foreach(var i in attributes) {
             if(i == a)
                 count++;
         }
@@ -139,7 +100,7 @@ public class Armor {
 
 
     public ArmorSpriteHolder getSpriteHolder() {
-        return a_sprite;
+        return sprite;
     }
 }
 

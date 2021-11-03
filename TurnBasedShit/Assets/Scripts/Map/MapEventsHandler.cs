@@ -28,7 +28,7 @@ public class MapEventsHandler : MonoBehaviour {
             var loc = MapLocationHolder.getTownLocation(i);
 
             if(partyPos == loc.pos) {
-                FindObjectOfType<TransitionCanvas>().loadSceneWithFunction(loc.enterLocation);
+                loc.enterLocation(FindObjectOfType<TransitionCanvas>());
                 return;
             }
         }

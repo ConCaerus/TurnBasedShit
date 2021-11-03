@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: OrangeFeather
   m_EditorClassIdentifier: 
   preset:
-    i_instanceID: -1
-    i_name: Orange Feather
-    i_rarity: 2
-    i_timedEffects: []
-    i_passiveEffects:
+    instanceID: -1
+    name: Orange Feather
+    type: 2
+    rarity: 4
+    coinCost: 20
+    tEffects: []
+    pEffects:
     - effect: 1
-      effectAmount: 5
-    i_coinCost: 7
-    i_sprite:
+      effectAmount: 7
+    sprite:
       sprite: {fileID: 21300000, guid: 60f575d7aa9c7364da252d6867638eb8, type: 3}

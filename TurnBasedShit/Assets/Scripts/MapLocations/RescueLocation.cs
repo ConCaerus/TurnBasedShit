@@ -27,11 +27,11 @@ public class RescueLocation : MapLocation {
         unit = stats;
     }
 
-    public override void enterLocation() {
+    public override void enterLocation(TransitionCanvas tc) {
         GameInfo.setCombatDetails(combatLocation);
         GameInfo.setCurrentLocationAsRescue(this);
         MapLocationHolder.removeLocation(this);
-        SceneManager.LoadScene("Combat");
+        tc.loadSceneWithTransition("Combat");
     }
 
     public override bool isEqualTo(MapLocation other) {

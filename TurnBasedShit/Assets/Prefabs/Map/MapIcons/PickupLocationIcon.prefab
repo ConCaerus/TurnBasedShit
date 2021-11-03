@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4275493026100185753}
   - component: {fileID: 1378582747974189867}
   - component: {fileID: 6996003004313916212}
+  - component: {fileID: 1296993937974490061}
   m_Layer: 5
   m_Name: PickupLocationIcon
   m_TagString: Untagged
@@ -66,12 +67,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b50cf52fd2f3020489dae1d0b81e3fc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
-  distToShowInfo: 1
-  waitTime: 0.5
-  titleText: 
-  firstText: 
-  secondText: 
+  info: <b><u>Pickup
+  hideWhenMenuOpen: 1
+--- !u!61 &1296993937974490061
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817932617645908918}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 100, y: 100}
+  m_EdgeRadius: 0
 --- !u!1 &2568536940398328652
 GameObject:
   m_ObjectHideFlags: 0

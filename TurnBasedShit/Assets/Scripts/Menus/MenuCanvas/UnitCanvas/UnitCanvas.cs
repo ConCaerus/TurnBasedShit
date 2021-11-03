@@ -46,14 +46,16 @@ public class UnitCanvas : MonoBehaviour {
     }
 
     public void updateUnitWindow() {
+        if(!FindObjectOfType<MenuCanvas>().isOpen())
+            return;
         nameText.text = shownUnit.u_name;
         levelText.text = shownUnit.u_level.ToString();
         healthSlider.maxValue = shownUnit.getModifiedMaxHealth();
         healthSlider.value = shownUnit.u_health;
         expSlider.maxValue = shownUnit.u_expCap;
         expSlider.value = shownUnit.u_exp;
-        healthSlider.GetComponent<InfoBearer>().infos[0] = "<b><u>HP: " + shownUnit.u_health.ToString("0.0") + " / " + shownUnit.getModifiedMaxHealth().ToString("0.0");
-        expSlider.GetComponent<InfoBearer>().infos[0] = "<b><u>EXP: " + shownUnit.u_exp.ToString("0.0") + " / " + shownUnit.u_expCap.ToString("0.0");
+        healthSlider.GetComponent<InfoBearer>().setInfo(shownUnit.u_health.ToString("0.0") + " / " + shownUnit.getModifiedMaxHealth().ToString("0.0"));
+        expSlider.GetComponent<InfoBearer>().setInfo("EXP: " + shownUnit.u_exp.ToString("0.0") + " / " + shownUnit.u_expCap.ToString("0.0"));
 
         rSlider.value = shownUnit.u_sprite.color.r;
         gSlider.value = shownUnit.u_sprite.color.g;
@@ -83,7 +85,7 @@ public class UnitCanvas : MonoBehaviour {
             //  does not need second trait preset
             if(traitCount == 1) {
                 firstTraitText.text = shownUnit.u_traits[0].t_name;
-                firstTraitText.GetComponent<InfoBearer>().infos[0] = InfoTextCreator.createForUnitTrait(shownUnit.u_traits[0]);
+                firstTraitText.GetComponent<InfoBearer>().setInfo(InfoTextCreator.createForUnitTrait(shownUnit.u_traits[0]));
                 secondTraitText.text = "";
             }
             else {
@@ -91,11 +93,11 @@ public class UnitCanvas : MonoBehaviour {
                 for(int i = 0; i < traitCount; i++) {
                     if(i == 0) {
                         firstTraitText.text = shownUnit.u_traits[i].t_name;
-                        firstTraitText.GetComponent<InfoBearer>().infos[0] = InfoTextCreator.createForUnitTrait(shownUnit.u_traits[i]);
+                        firstTraitText.GetComponent<InfoBearer>().setInfo(InfoTextCreator.createForUnitTrait(shownUnit.u_traits[i]));
                     }
                     else if(i == 1) {
                         secondTraitText.text = shownUnit.u_traits[i].t_name;
-                        secondTraitText.GetComponent<InfoBearer>().infos[0] = InfoTextCreator.createForUnitTrait(shownUnit.u_traits[i]);
+                        secondTraitText.GetComponent<InfoBearer>().setInfo(InfoTextCreator.createForUnitTrait(shownUnit.u_traits[i]));
                     }
 
                     //  create a new trait text
@@ -104,7 +106,7 @@ public class UnitCanvas : MonoBehaviour {
                         var t = Instantiate(firstTraitText, firstTraitText.transform.parent);
                         t.transform.position = prevPos - new Vector2(0.0f, buffer);
                         t.text = shownUnit.u_traits[i].t_name;
-                        t.GetComponent<InfoBearer>().infos[0] = InfoTextCreator.createForUnitTrait(shownUnit.u_traits[i]);
+                        t.GetComponent<InfoBearer>().setInfo(InfoTextCreator.createForUnitTrait(shownUnit.u_traits[i]));
                         traits.Add(t.gameObject);
 
 
@@ -131,17 +133,21 @@ public class UnitCanvas : MonoBehaviour {
         rArmImage.color = shownUnit.u_sprite.color;
         lArmImage.color = shownUnit.u_sprite.color;
 
-        weaponImage.GetComponent<InfoBearer>().infos.Clear();
-        armorImage.GetComponent<InfoBearer>().infos.Clear();
-        itemImage.GetComponent<InfoBearer>().infos.Clear();
+
+        var weaponInfo = weaponImage.transform.parent.GetComponent<InfoBearer>();
+        var armorInfo = armorImage.transform.parent.GetComponent<InfoBearer>();
+        var itemInfo = itemImage.transform.parent.GetComponent<InfoBearer>();
+
+        weaponInfo.setInfo(InfoTextCreator.createForCollectable(shownUnit.equippedWeapon));
+        armorInfo.setInfo(InfoTextCreator.createForCollectable(shownUnit.equippedArmor));
+        itemInfo.setInfo(InfoTextCreator.createForCollectable(shownUnit.equippedItem));
 
         weaponImage.enabled = true;
         armorImage.enabled = true;
         itemImage.enabled = true;
         if(shownUnit.equippedWeapon != null && !shownUnit.equippedWeapon.isEmpty()) {
             weaponImage.sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(shownUnit.equippedWeapon).sprite;
-            weaponImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownUnit.equippedWeapon.w_rarity);
-            weaponImage.GetComponent<InfoBearer>().infos.Add(InfoTextCreator.createForWeapon(shownUnit.equippedWeapon));
+            weaponImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownUnit.equippedWeapon.rarity);
         }
         else {
             weaponImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
@@ -149,8 +155,7 @@ public class UnitCanvas : MonoBehaviour {
         }
         if(shownUnit.equippedArmor != null && !shownUnit.equippedArmor.isEmpty()) {
             armorImage.sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(shownUnit.equippedArmor).sprite;
-            armorImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownUnit.equippedArmor.a_rarity);
-            armorImage.GetComponent<InfoBearer>().infos.Add(InfoTextCreator.createForArmor(shownUnit.equippedArmor));
+            armorImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownUnit.equippedArmor.rarity);
         }
         else {
             armorImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
@@ -162,8 +167,7 @@ public class UnitCanvas : MonoBehaviour {
                 itemImage.color = shownUnit.u_sprite.color;
             else
                 itemImage.color = Color.white;
-            itemImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownUnit.equippedItem.i_rarity);
-            itemImage.GetComponent<InfoBearer>().infos.Add(InfoTextCreator.createForItem(shownUnit.equippedItem));
+            itemImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownUnit.equippedItem.rarity);
         }
         else {
             itemImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
@@ -174,14 +178,14 @@ public class UnitCanvas : MonoBehaviour {
         if(FindObjectOfType<PartyObject>() != null && FindObjectOfType<PartyObject>().getInstantiatedMember(shownUnit) != null) {
             FindObjectOfType<PartyObject>().getInstantiatedMember(shownUnit).GetComponent<PlayerUnitInstance>().updateSprites();
         }
-        else if(FindObjectOfType<MapMovement>() != null) {
+        if(FindObjectOfType<MapMovement>() != null) {
             FindObjectOfType<MapMovement>().setVisuals();
             FindObjectOfType<MapMovement>().setSideUnitVisuals();
         }
-        else if(FindObjectOfType<LocationMovement>() != null && shownUnit != null && !shownUnit.isEmpty()) {
+        if(FindObjectOfType<LocationMovement>() != null && shownUnit != null && !shownUnit.isEmpty()) {
             FindObjectOfType<LocationMovement>().setVisuals();
         }
-        else if(FindObjectOfType<FishingUnit>() != null && shownUnit != null && !shownUnit.isEmpty())
+        if(FindObjectOfType<FishingUnit>() != null && shownUnit != null && !shownUnit.isEmpty())
             FindObjectOfType<FishingUnit>().setVisuals();
 
         lockColor = false;
