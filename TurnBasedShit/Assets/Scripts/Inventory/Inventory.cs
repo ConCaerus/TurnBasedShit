@@ -148,6 +148,25 @@ public static class Inventory {
         SaveData.setInt(coinCount, temp + count);
     }
 
+    public static void removeCollectable(Collectable c) {
+        switch(c.type) {
+            case Collectable.collectableType.weapon:
+                removeWeapon((Weapon)c);
+                return;
+            case Collectable.collectableType.armor:
+                removeArmor((Armor)c);
+                return;
+            case Collectable.collectableType.item:
+                removeItem((Item)c);
+                return;
+            case Collectable.collectableType.usable:
+                removeUsable((Usable)c);
+                return;
+            case Collectable.collectableType.unusable:
+                removeUnusable((Unusable)c);
+                return;
+        }
+    }
     public static void removeWeapon(Weapon w) {
         if(w == null || w.isEmpty())
             return;
@@ -180,15 +199,10 @@ public static class Inventory {
         if(c == null || c.isEmpty())
             return;
         List<Usable> temp = new List<Usable>();
-        bool removed = false;
         for(int i = 0; i < getUsableCount(); i++) {
             Usable invCons = getUsable(i);
-            if((removed || !invCons.isTheSameTypeAs(c)) && invCons != null && !invCons.isEmpty()) {
+            if(invCons != null && !invCons.isEmpty() && !invCons.isTheSameInstanceAs(c))
                 temp.Add(invCons);
-            }
-            else if(!removed && invCons.isTheSameTypeAs(c)) {
-                removed = true;
-            }
         }
 
         clearUsables();
@@ -205,7 +219,7 @@ public static class Inventory {
                 temp.Add(invCons);
         }
 
-        clearUsables();
+        clearUnusables();
         foreach(var i in temp)
             addUnusable(i);
     }

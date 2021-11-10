@@ -24,7 +24,9 @@ public static class ShopInventory {
         else if(type == typeof(Armor))
             return "Town:" + townIndex.ToString() + " Armor Count";
         else if(type == typeof(Usable))
-            return "Town:" + townIndex.ToString() + " Consumable Count";
+            return "Town:" + townIndex.ToString() + " Usable Count";
+        else if(type == typeof(Unusable))
+            return "Town:" + townIndex.ToString() + " Unusable Count";
         else if(type == typeof(Item))
             return "Town:" + townIndex.ToString() + " Item Count";
         else if(type == typeof(UnitStats))
@@ -36,7 +38,8 @@ public static class ShopInventory {
     public static void clearShop(int townIndex) {
         clearWeapons(townIndex);
         clearArmor(townIndex);
-        clearConsumables(townIndex);
+        clearUsables(townIndex);
+        clearUnusables(townIndex);
         clearItems(townIndex);
         clearSlaves(townIndex);
     }
@@ -52,11 +55,17 @@ public static class ShopInventory {
         }
         SaveData.deleteKey(objectCountTag(townIndex, typeof(Armor)));
     }
-    public static void clearConsumables(int townIndex) {
+    public static void clearUsables(int townIndex) {
         for(int i = 0; i < SaveData.getInt(objectCountTag(townIndex, typeof(Usable))); i++) {
             SaveData.deleteKey(objectTag(townIndex, i, typeof(Usable)));
         }
         SaveData.deleteKey(objectCountTag(townIndex, typeof(Usable)));
+    }
+    public static void clearUnusables(int townIndex) {
+        for(int i = 0; i < SaveData.getInt(objectCountTag(townIndex, typeof(Unusable))); i++) {
+            SaveData.deleteKey(objectTag(townIndex, i, typeof(Unusable)));
+        }
+        SaveData.deleteKey(objectCountTag(townIndex, typeof(Unusable)));
     }
     public static void clearItems(int townIndex) {
         for(int i = 0; i < SaveData.getInt(objectCountTag(townIndex, typeof(Item))); i++) {
@@ -76,22 +85,22 @@ public static class ShopInventory {
 
         int weaponCount = Random.Range(1, 11);
         for(int i = 0; i < weaponCount; i++) {
-            addWeapon(townIndex, library.getRandomWeapon((GameInfo.region)lvl));
+            addWeapon(townIndex, library.getRandomWeapon(lvl));
         }
 
         int armorCount = Random.Range(1, 11);
         for(int i = 0; i < armorCount; i++) {
-            addArmor(townIndex, library.getRandomArmor((GameInfo.region)lvl));
+            addArmor(townIndex, library.getRandomArmor(lvl));
         }
 
         int consumableCount = Random.Range(1, 11);
         for(int i = 0; i < consumableCount; i++) {
-            addConsumable(townIndex, library.getRandomUsable((GameInfo.region)lvl));
+            addUsable(townIndex, library.getRandomUsable(lvl));
         }
 
         int itemCount = Random.Range(1, 11);
         for(int i = 0; i < itemCount; i++) {
-            addItem(townIndex, library.getRandomItem((GameInfo.region)lvl));
+            addItem(townIndex, library.getRandomItem(lvl));
         }
 
         int slaveCount = Random.Range(0, 3);
@@ -100,6 +109,25 @@ public static class ShopInventory {
         }
     }
 
+    public static void addCollectable(int townIndex, Collectable c) {
+        switch(c.type) {
+            case Collectable.collectableType.weapon:
+                addWeapon(townIndex, (Weapon)c);
+                return;
+            case Collectable.collectableType.armor:
+                addArmor(townIndex, (Armor)c);
+                return;
+            case Collectable.collectableType.item:
+                addItem(townIndex, (Item)c);
+                return;
+            case Collectable.collectableType.usable:
+                addUsable(townIndex, (Usable)c);
+                return;
+            case Collectable.collectableType.unusable:
+                addUnusable(townIndex, (Unusable)c);
+                return;
+        }
+    }
     public static void addWeapon(int townIndex, Weapon w) {
         var index = SaveData.getInt(objectCountTag(townIndex, typeof(Weapon)));
         var data = JsonUtility.ToJson(w);
@@ -112,11 +140,17 @@ public static class ShopInventory {
         SaveData.setString(objectTag(townIndex, index, typeof(Armor)), data);
         SaveData.setInt(objectCountTag(townIndex, typeof(Armor)), index + 1);
     }
-    public static void addConsumable(int townIndex, Usable c) {
+    public static void addUsable(int townIndex, Usable c) {
         var index = SaveData.getInt(objectCountTag(townIndex, typeof(Usable)));
         var data = JsonUtility.ToJson(c);
         SaveData.setString(objectTag(townIndex, index, typeof(Usable)), data);
         SaveData.setInt(objectCountTag(townIndex, typeof(Usable)), index + 1);
+    }
+    public static void addUnusable(int townIndex, Unusable c) {
+        var index = SaveData.getInt(objectCountTag(townIndex, typeof(Unusable)));
+        var data = JsonUtility.ToJson(c);
+        SaveData.setString(objectTag(townIndex, index, typeof(Unusable)), data);
+        SaveData.setInt(objectCountTag(townIndex, typeof(Unusable)), index + 1);
     }
     public static void addItem(int townIndex, Item i) {
         var index = SaveData.getInt(objectCountTag(townIndex, typeof(Item)));
@@ -131,100 +165,108 @@ public static class ShopInventory {
         SaveData.setInt(objectCountTag(townIndex, typeof(UnitStats)), index + 1);
     }
     
-    public static void removeWeapon(int townIndex, Weapon w) {
-        var tData = JsonUtility.ToJson(w);
-
-        bool past = false;
-        for(int i = 0; i < SaveData.getInt(objectCountTag(townIndex, typeof(Weapon))); i++) {
-            var data = SaveData.getString(objectTag(townIndex, i, typeof(Weapon)));
-
-            if(data == tData && !past) {
-                SaveData.deleteKey(objectTag(townIndex, i, typeof(Weapon)));
-                past = true;
-                continue;
-            }
-            else if(past) {
-                SaveData.deleteKey(objectTag(townIndex, i, typeof(Weapon)));
-                overrideWeapon(townIndex, i - 1, JsonUtility.FromJson<Weapon>(data));
-            }
+    public static void removeCollectable(int townIndex, Collectable c) {
+        switch(c.type) {
+            case Collectable.collectableType.weapon:
+                removeWeapon(townIndex, (Weapon)c);
+                return;
+            case Collectable.collectableType.armor:
+                removeArmor(townIndex, (Armor)c);
+                return;
+            case Collectable.collectableType.item:
+                removeItem(townIndex, (Item)c);
+                return;
+            case Collectable.collectableType.usable:
+                removeUsable(townIndex, (Usable)c);
+                return;
+            case Collectable.collectableType.unusable:
+                removeUnusable(townIndex, (Unusable)c);
+                return;
         }
-        SaveData.setInt(objectCountTag(townIndex, typeof(Weapon)), SaveData.getInt(objectCountTag(townIndex, typeof(Weapon))) - 1);
+    }
+    public static void removeWeapon(int townIndex, Weapon w) {
+        if(w == null || w.isEmpty())
+            return;
+        List<Weapon> temp = new List<Weapon>();
+        for(int i = 0; i < getTypeCount(townIndex, typeof(Weapon)); i++) {
+            Weapon invWeapon = getWeapon(townIndex, i);
+            if(invWeapon != null && !invWeapon.isEmpty() && !invWeapon.isTheSameInstanceAs(w))
+                temp.Add(invWeapon);
+        }
+
+        clearWeapons(townIndex);
+        foreach(var i in temp)
+            addWeapon(townIndex, i);
     }
     public static void removeArmor(int townIndex, Armor a) {
-        var tData = JsonUtility.ToJson(a);
-
-        bool past = false;
-        for(int i = 0; i < SaveData.getInt(objectCountTag(townIndex, typeof(Armor))); i++) {
-            var data = SaveData.getString(objectTag(townIndex, i, typeof(Armor)));
-
-            if(data == tData && !past) {
-                SaveData.deleteKey(objectTag(townIndex, i, typeof(Armor)));
-                past = true;
-                continue;
-            }
-            else if(past) {
-                SaveData.deleteKey(objectTag(townIndex, i, typeof(Armor)));
-                overrideArmor(townIndex, i - 1, JsonUtility.FromJson<Armor>(data));
-            }
+        if(a == null || a.isEmpty())
+            return;
+        List<Armor> temp = new List<Armor>();
+        for(int i = 0; i < getTypeCount(townIndex, typeof(Armor)); i++) {
+            Armor invArmor = getArmor(townIndex, i);
+            if(invArmor != null && !invArmor.isEmpty() && !invArmor.isTheSameInstanceAs(a))
+                temp.Add(invArmor);
         }
-        SaveData.setInt(objectCountTag(townIndex, typeof(Armor)), SaveData.getInt(objectCountTag(townIndex, typeof(Armor))) - 1);
+
+        clearArmor(townIndex);
+        foreach(var i in temp)
+            addArmor(townIndex, i);
     }
-    public static void removeConsumable(int townIndex, Usable c) {
-        var tData = JsonUtility.ToJson(c);
-
-        bool past = false;
-        for(int i = 0; i < SaveData.getInt(objectCountTag(townIndex, typeof(Usable))); i++) {
-            var data = SaveData.getString(objectTag(townIndex, i, typeof(Usable)));
-
-            if(data == tData && !past) {
-                SaveData.deleteKey(objectTag(townIndex, i, typeof(Usable)));
-                past = true;
-                continue;
-            }
-            else if(past) {
-                SaveData.deleteKey(objectTag(townIndex, i, typeof(Usable)));
-                overrideConsumable(townIndex, i - 1, JsonUtility.FromJson<Usable>(data));
-            }
+    public static void removeUsable(int townIndex, Usable c) {
+        if(c == null || c.isEmpty())
+            return;
+        List<Usable> temp = new List<Usable>();
+        for(int i = 0; i < getTypeCount(townIndex, typeof(Usable)); i++) {
+            Usable invCons = getUsable(townIndex, i);
+            if(invCons != null && !invCons.isEmpty() && !invCons.isTheSameInstanceAs(c))
+                temp.Add(invCons);
         }
-        SaveData.setInt(objectCountTag(townIndex, typeof(Usable)), SaveData.getInt(objectCountTag(townIndex, typeof(Usable))) - 1);
+
+        clearUsables(townIndex);
+        foreach(var i in temp)
+            addUsable(townIndex, i);
+    }
+    public static void removeUnusable(int townIndex, Unusable c) {
+        if(c == null || c.isEmpty())
+            return;
+        List<Unusable> temp = new List<Unusable>();
+        for(int i = 0; i < getTypeCount(townIndex, typeof(Unusable)); i++) {
+            Unusable invCons = getUnusable(townIndex, i);
+            if(invCons != null && !invCons.isEmpty() && !invCons.isTheSameInstanceAs(c))
+                temp.Add(invCons);
+        }
+
+        clearUnusables(townIndex);
+        foreach(var i in temp)
+            addUnusable(townIndex, i);
     }
     public static void removeItem(int townIndex, Item it) {
-        var tData = JsonUtility.ToJson(it);
-
-        bool past = false;
-        for(int i = 0; i < SaveData.getInt(objectCountTag(townIndex, typeof(Item))); i++) {
-            var data = SaveData.getString(objectTag(townIndex, i, typeof(Item)));
-
-            if(data == tData && !past) {
-                SaveData.deleteKey(objectTag(townIndex, i, typeof(Item)));
-                past = true;
-                continue;
-            }
-            else if(past) {
-                SaveData.deleteKey(objectTag(townIndex, i, typeof(Item)));
-                overrideItem(townIndex, i - 1, JsonUtility.FromJson<Item>(data));
-            }
+        if(it == null || it.isEmpty())
+            return;
+        List<Item> temp = new List<Item>();
+        for(int i = 0; i < getTypeCount(townIndex, typeof(Item)); i++) {
+            Item invItem = getItem(townIndex, i);
+            if(invItem != null && !invItem.isEmpty() && !invItem.isTheSameInstanceAs(it))
+                temp.Add(invItem);
         }
-        SaveData.setInt(objectCountTag(townIndex, typeof(Item)), SaveData.getInt(objectCountTag(townIndex, typeof(Item))) - 1);
+
+        clearItems(townIndex);
+        foreach(var i in temp)
+            addItem(townIndex, i);
     }
     public static void removeSlave(int townIndex, UnitStats stats) {
-        var tData = JsonUtility.ToJson(stats);
-
-        bool past = false;
-        for(int i = 0; i < SaveData.getInt(objectCountTag(townIndex, typeof(UnitStats))); i++) {
-            var data = SaveData.getString(objectTag(townIndex, i, typeof(UnitStats)));
-
-            if(data == tData && !past) {
-                SaveData.deleteKey(objectTag(townIndex, i, typeof(UnitStats)));
-                past = true;
-                continue;
-            }
-            else if(past) {
-                SaveData.deleteKey(objectTag(townIndex, i, typeof(UnitStats)));
-                overrideSlave(townIndex, i - 1, JsonUtility.FromJson<UnitStats>(data));
-            }
+        if(stats == null || stats.isEmpty())
+            return;
+        List<UnitStats> temp = new List<UnitStats>();
+        for(int i = 0; i < getTypeCount(townIndex, typeof(UnitStats)); i++) {
+            UnitStats invStats = getSlave(townIndex, i);
+            if(invStats != null && !invStats.isEmpty() && !invStats.isTheSameInstanceAs(stats))
+                temp.Add(invStats);
         }
-        SaveData.setInt(objectCountTag(townIndex, typeof(UnitStats)), SaveData.getInt(objectCountTag(townIndex, typeof(UnitStats))) - 1);
+
+        clearSlaves(townIndex);
+        foreach(var i in temp)
+            addSlave(townIndex, i);
     }
     public static void removeWeapon(int townIndex, int index) {
         removeWeapon(townIndex, getWeapon(townIndex, index));
@@ -232,8 +274,11 @@ public static class ShopInventory {
     public static void removeArmor(int townIndex, int index) {
         removeArmor(townIndex, getArmor(townIndex, index));
     }
-    public static void removeConsumable(int townIndex, int index) {
-        removeConsumable(townIndex, getConsumable(townIndex, index));
+    public static void removeUsable(int townIndex, int index) {
+        removeUsable(townIndex, getUsable(townIndex, index));
+    }
+    public static void removeUnusable(int townIndex, int index) {
+        removeUnusable(townIndex, getUnusable(townIndex, index));
     }
     public static void removeItem(int townIndex, int index) {
         removeItem(townIndex, getItem(townIndex, index));
@@ -250,9 +295,13 @@ public static class ShopInventory {
         var data = JsonUtility.ToJson(a);
         SaveData.setString(objectTag(townIndex, index, typeof(Armor)), data);
     }
-    public static void overrideConsumable(int townIndex, int index, Usable c) {
+    public static void overrideUsable(int townIndex, int index, Usable c) {
         var data = JsonUtility.ToJson(c);
         SaveData.setString(objectTag(townIndex, index, typeof(Usable)), data);
+    }
+    public static void overrideUnusable(int townIndex, int index, Unusable c) {
+        var data = JsonUtility.ToJson(c);
+        SaveData.setString(objectTag(townIndex, index, typeof(Unusable)), data);
     }
     public static void overrideItem(int townIndex, int index, Item i) {
         var data = JsonUtility.ToJson(i);
@@ -293,10 +342,16 @@ public static class ShopInventory {
             return JsonUtility.FromJson<Armor>(data);
         return null;
     }
-    public static Usable getConsumable(int townIndex, int index) {
+    public static Usable getUsable(int townIndex, int index) {
         var data = SaveData.getString(objectTag(townIndex, index, typeof(Usable)));
         if(!string.IsNullOrEmpty(data))
             return JsonUtility.FromJson<Usable>(data);
+        return null;
+    }
+    public static Unusable getUnusable(int townIndex, int index) {
+        var data = SaveData.getString(objectTag(townIndex, index, typeof(Unusable)));
+        if(!string.IsNullOrEmpty(data))
+            return JsonUtility.FromJson<Unusable>(data);
         return null;
     }
     public static Item getItem(int townIndex, int index) {

@@ -363,7 +363,6 @@ public class PresetLibrary : MonoBehaviour {
         return getWeapon(we.name);
     }
     public Weapon getRandomWeapon(GameInfo.region lvl = (GameInfo.region)(-1)) {
-
         if(lvl == (GameInfo.region)(-1)) {
             return getWeapon(weapons[Random.Range(0, weapons.Length)].preset);
         }
@@ -624,13 +623,13 @@ public class PresetLibrary : MonoBehaviour {
     public PickupLocation createRandomPickupLocation() {
         int type = Random.Range(0, 4);
         if(type == 0)
-            return new PickupLocation(Map.getRandPos(), getRandomWeapon(), this, GameInfo.getCurrentDiff());
+            return new PickupLocation(Map.getRandPos(), getRandomWeapon(), this, GameInfo.getCurrentRegion());
         else if(type == 1)
-            return new PickupLocation(Map.getRandPos(), getRandomArmor(), this, GameInfo.getCurrentDiff());
+            return new PickupLocation(Map.getRandPos(), getRandomArmor(), this, GameInfo.getCurrentRegion());
         else if(type == 2)
-            return new PickupLocation(Map.getRandPos(), getRandomUsable(), Random.Range(1, 16), this, GameInfo.getCurrentDiff());
+            return new PickupLocation(Map.getRandPos(), getRandomUsable(), Random.Range(1, 16), this, GameInfo.getCurrentRegion());
         else
-            return new PickupLocation(Map.getRandPos(), getRandomItem(), this, GameInfo.getCurrentDiff());
+            return new PickupLocation(Map.getRandPos(), getRandomItem(), this, GameInfo.getCurrentRegion());
     }
     public RescueLocation createRandomRescueLocation() {
         return new RescueLocation(Map.getRandPos(), this);

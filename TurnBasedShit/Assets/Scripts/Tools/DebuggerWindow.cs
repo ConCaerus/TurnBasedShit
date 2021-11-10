@@ -119,6 +119,12 @@ public class DebuggerWindow : EditorWindow {
             MapLocationHolder.addLocation(FindObjectOfType<PresetLibrary>().createRandomUpgradeLocation());
 
         GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+
+        if(GUILayout.Button("Clear Fog Data"))
+            Map.clearFogTexture();
+
+        GUILayout.EndHorizontal();
 
         //  Save Data
         GUILayout.Label("Save Data", EditorStyles.boldLabel);

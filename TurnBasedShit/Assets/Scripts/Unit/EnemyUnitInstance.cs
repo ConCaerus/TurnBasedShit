@@ -106,7 +106,7 @@ public class EnemyUnitInstance : UnitClass {
         float defaultChancePerUnit = 100.0f / attackableCount;
         float moddedChance = defaultChancePerUnit;
 
-        if(stats.isEqualTo(Party.getLeaderStats()))   //  +15% if leader
+        if(stats.isTheSameInstanceAs(Party.getLeaderStats()))   //  +15% if leader
             moddedChance += 0.15f;
 
         foreach(var t in stats.u_traits)  //  apply traits n' shit

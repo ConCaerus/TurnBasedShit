@@ -14,7 +14,7 @@ public class MapMovement : InteractiveMovement {
 
     private void Start() {
         transform.position = GameInfo.getCurrentMapPos();
-        currentDiff = GameInfo.getCurrentDiff();
+        currentDiff = GameInfo.getCurrentRegion();
         GameInfo.currentGameState = GameInfo.state.map;
         hideInteractText();
         createSideUnitObjects();
@@ -37,6 +37,7 @@ public class MapMovement : InteractiveMovement {
         if(Map.getDiffForX(transform.position.x) != currentDiff && FindObjectOfType<RegionNotificationCanvas>().canAnimate()) {
             currentDiff = Map.getDiffForX(transform.position.x);
             GameInfo.setCurrentMapPos(transform.position);
+            FindObjectOfType<MapFogTexture>().saveTexture();
             FindObjectOfType<RegionNotificationCanvas>().startShowing();
         }
 
@@ -48,7 +49,7 @@ public class MapMovement : InteractiveMovement {
         var offset = new Vector3(0.75f, 0.0f, 0.0f);
         var last = transform.position;
         for(int i = 0; i < Party.getMemberCount(); i++) {
-            if(Party.getMemberStats(i).isEqualTo(Party.getLeaderStats()))
+            if(Party.getMemberStats(i).isTheSameInstanceAs(Party.getLeaderStats()))
                 continue;
 
 
@@ -114,6 +115,7 @@ public class MapMovement : InteractiveMovement {
     public override void interact() {
         if(MapLocationHolder.locationCloseToPos(transform.position, distToInt)) {
             GameInfo.setCurrentMapPos(MapLocationHolder.getClostestLocation(transform.position).pos);
+            FindObjectOfType<MapFogTexture>().saveTexture();
             Debug.Log(MapLocationHolder.getClostestLocation(transform.position).type);
             FindObjectOfType<MapFogTexture>().saveTexture();
             MapLocationHolder.getClostestLocation(transform.position).enterLocation(FindObjectOfType<TransitionCanvas>());

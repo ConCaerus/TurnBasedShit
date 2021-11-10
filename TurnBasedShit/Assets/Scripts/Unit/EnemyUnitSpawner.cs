@@ -24,21 +24,13 @@ public class EnemyUnitSpawner : MonoBehaviour {
             var obj = Instantiate(FindObjectOfType<PresetLibrary>().getEnemy(i).gameObject);
             obj.name = "Enemy: " + obj.GetComponent<UnitClass>().stats.u_name;
 
+            //  sassigns a spot
+            var rand = Random.Range(0, unusedSpawnPoses.Count);
+            unusedSpawnPoses[rand].GetComponent<CombatSpot>().unit = obj.gameObject;
+
             obj.GetComponent<UnitClass>().setup();
 
-            //  sets a random position
-            var rand = Random.Range(0, unusedSpawnPoses.Count);
-            obj.transform.position = unusedSpawnPoses[rand].transform.position + new Vector3(0.0f, obj.GetComponent<UnitClass>().spotOffset, 0.0f);
-            unusedSpawnPoses[rand].GetComponent<CombatSpot>().unit = obj.gameObject;
-            animateEnemy(obj);
             unusedSpawnPoses.RemoveAt(rand);
         }
-    }
-
-    public void animateEnemy(GameObject thing) {
-        var target = thing.transform.position;
-
-        thing.transform.position = new Vector3(thing.transform.position.x + 5.0f, thing.transform.position.y, 0.0f);
-        thing.transform.DOMove(target, showingSpeed);
     }
 }

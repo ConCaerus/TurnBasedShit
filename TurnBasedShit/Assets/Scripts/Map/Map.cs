@@ -84,18 +84,23 @@ public static class Map {
         FowData data = new FowData(map.GetRawTextureData());
         SaveData.setString(saveTag, JsonUtility.ToJson(data));
     }
+    public static bool hasSavedFogTexture() {
+        return !string.IsNullOrEmpty(SaveData.getString(saveTag));
+    }
     public static Texture2D getFogTexture() {
         var temp = new Texture2D((int)width(), (int)height());
         if(string.IsNullOrEmpty(SaveData.getString(saveTag)))
-            return null;
+            return temp;
         var thing = JsonUtility.FromJson<FowData>(SaveData.getString(saveTag));
         temp.LoadRawTextureData(thing.data);
         return temp;
     }
 
-    public static TownLocation getRandomTownLocationInRegion(int regionIndex) {
-        if(MapLocationHolder.getTownCount() == 0)
+    public static TownLocation getRandomTownLocationInRegion(GameInfo.region regionIndex) {
+        if(MapLocationHolder.getTownCount() == 0) {
+            Debug.LogError("No Towns My Guy");
             return null;
+        }
 
         var pos = new List<TownLocation>();
         for(int i = 0; i < MapLocationHolder.getTownCount(); i++) {

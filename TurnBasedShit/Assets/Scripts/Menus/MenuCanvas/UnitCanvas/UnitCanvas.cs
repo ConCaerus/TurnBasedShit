@@ -10,6 +10,7 @@ public class UnitCanvas : MonoBehaviour {
     public Slider healthSlider, expSlider;
     public Image faceImage, headImage, bodyImage, rArmImage, lArmImage, weaponImage, armorImage, itemImage;
     public Button leaderButton;
+    public GameObject edgedSlider, bluntSlider, summonSlider;
 
     public float equippmentTransitionTime = 0.01f;
     public float timeBtwTransition = 0.05f;
@@ -61,7 +62,7 @@ public class UnitCanvas : MonoBehaviour {
         gSlider.value = shownUnit.u_sprite.color.g;
         bSlider.value = shownUnit.u_sprite.color.b;
 
-        if(shownUnit.isEqualTo(Party.getLeaderStats()))
+        if(shownUnit.isTheSameInstanceAs(Party.getLeaderStats()))
             leaderButton.GetComponent<Image>().color = leaderColor;
         else
             leaderButton.GetComponent<Image>().color = nonLeaderColor;
@@ -174,6 +175,18 @@ public class UnitCanvas : MonoBehaviour {
             itemImage.color = Color.white;
             itemImage.enabled = false;
         }
+
+
+        //  skill sliders
+        edgedSlider.GetComponent<CircularSlider>().setText(shownUnit.getEdgedLevel().ToString());
+        edgedSlider.GetComponent<CircularSlider>().setValue((shownUnit.u_edgedExp / shownUnit.u_skillExpCap) - shownUnit.getEdgedLevel() + 1);
+
+        bluntSlider.GetComponent<CircularSlider>().setText(shownUnit.getBluntLevel().ToString());
+        bluntSlider.GetComponent<CircularSlider>().setValue((shownUnit.u_bluntExp / shownUnit.u_skillExpCap) - shownUnit.getBluntLevel() + 1);
+
+        summonSlider.GetComponent<CircularSlider>().setText(shownUnit.getSummonedLevel().ToString());
+        summonSlider.GetComponent<CircularSlider>().setValue((shownUnit.u_summonedExp / shownUnit.u_skillExpCap) - shownUnit.getSummonedLevel() + 1);
+
 
         if(FindObjectOfType<PartyObject>() != null && FindObjectOfType<PartyObject>().getInstantiatedMember(shownUnit) != null) {
             FindObjectOfType<PartyObject>().getInstantiatedMember(shownUnit).GetComponent<PlayerUnitInstance>().updateSprites();

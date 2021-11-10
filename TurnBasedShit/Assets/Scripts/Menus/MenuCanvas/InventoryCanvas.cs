@@ -30,11 +30,6 @@ public class InventoryCanvas : MonoBehaviour {
             else
                 itemNameText.text = "";
         }
-        if(Input.GetKeyDown(KeyCode.Space)) {
-            shownUnit.u_health -= 25;
-            Party.overrideUnit(shownUnit);
-            updateInfo();
-        }
     }
 
     public void populateSlots() {

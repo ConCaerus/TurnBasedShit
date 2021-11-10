@@ -47,10 +47,22 @@ public static class GameInfo {
     public const string nextQuestID = "Next Quest ID";
 
 
-    public static void resetCombatDetails() {
+    public static void clearEverything() {
+        clearInventoryInstanceIDQueue();
+        clearTownInstanceIDQueue();
+        clearQuestInstanceIDQueue();
+        clearTownMemberInstanceIDQueue();
+
+        clearCurrentMapPos();
+
+        clearCombatDetails();
+        clearCurrentMapLocation();
+    }
+
+    public static void clearCombatDetails() {
         SaveData.deleteKey(combatDetails);
     }
-    public static void resetCurrentMapLocation() {
+    public static void clearCurrentMapLocation() {
         SaveData.deleteKey(currentMapLocation);
     }
 
@@ -118,6 +130,10 @@ public static class GameInfo {
         return JsonUtility.FromJson<BossLocation>(data);
     }
 
+    public static void clearCurrentMapPos() {
+        SaveData.deleteKey(currentMapPosX);
+        SaveData.deleteKey(currentMapPosY);
+    }
     public static void setCurrentMapPos(Vector2 pos) {
         SaveData.setFloat(currentMapPosX, pos.x);
         SaveData.setFloat(currentMapPosY, pos.y);
@@ -126,7 +142,7 @@ public static class GameInfo {
         return new Vector2(SaveData.getFloat(currentMapPosX), SaveData.getFloat(currentMapPosY));
     }
 
-    public static region getCurrentDiff() {
+    public static region getCurrentRegion() {
         return Map.getDiffForX(getCurrentMapPos().x);
     }
 

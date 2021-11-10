@@ -22,7 +22,7 @@ public class BuildingSpawner : MonoBehaviour {
         if(GameInfo.getCurrentLocationAsTown() != null && !createNewTown)
             reference = GameInfo.getCurrentLocationAsTown().town;
         else {
-            var temp = Map.getRandomTownLocationInRegion((int)GameInfo.getCurrentDiff());
+            var temp = Map.getRandomTownLocationInRegion(GameInfo.getCurrentRegion());
             MapLocationHolder.overrideTownLocation(temp);
             GameInfo.setCurrentLocationAsTown(temp);
             reference = temp.town;

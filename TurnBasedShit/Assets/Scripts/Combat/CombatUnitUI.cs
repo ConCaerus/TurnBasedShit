@@ -20,6 +20,9 @@ public class CombatUnitUI : MonoBehaviour {
 
 
     private void Start() {
+        float randMoveAmount = 5.0f;
+        moveSpeed += Random.Range(-randMoveAmount, randMoveAmount);
+
         spawnCanvas();
         hardSetHealthSliders();
         updateUIInfo();

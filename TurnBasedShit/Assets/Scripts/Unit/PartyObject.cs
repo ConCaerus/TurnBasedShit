@@ -21,8 +21,14 @@ public class PartyObject : MonoBehaviour {
             var obj = Instantiate(FindObjectOfType<PresetLibrary>().getPlayerUnitObject());
             obj.GetComponent<UnitClass>().stats = FindObjectOfType<PresetLibrary>().createRandomPlayerUnitStats(false);
 
+            //  assigns spot
+            int randIndex = Random.Range(0, unusedSpawnPoses.Count);
+            unusedSpawnPoses[randIndex].GetComponent<CombatSpot>().unit = obj.gameObject;
+            unusedSpawnPoses.RemoveAt(randIndex);
+
             //  sets up stats
             obj.GetComponent<UnitClass>().stats = Party.getMemberStats(i);
+            obj.GetComponent<UnitClass>().isPlayerUnit = true;
             obj.GetComponent<UnitClass>().setup();
 
             //  adds a trait if traits are empty
@@ -33,12 +39,6 @@ public class PartyObject : MonoBehaviour {
             //  sets sprite
             obj.GetComponentInChildren<UnitSpriteHandler>().setEverything(obj.GetComponent<UnitClass>().stats.u_sprite, obj.GetComponent<UnitClass>().stats.equippedWeapon, obj.GetComponent<UnitClass>().stats.equippedArmor);
 
-            //  sets pos
-            int randIndex = Random.Range(0, unusedSpawnPoses.Count);
-            obj.transform.position = unusedSpawnPoses[randIndex].transform.position + new Vector3(unitSpotXOffset, obj.GetComponentInChildren<UnitSpriteHandler>().getHeight() + unitSpotYOffset, 0.0f);
-            unusedSpawnPoses[randIndex].GetComponent<CombatSpot>().unit = obj.gameObject;
-            unusedSpawnPoses.RemoveAt(randIndex);
-
             Party.overrideUnit(obj.GetComponent<UnitClass>().stats);
         }
     }
@@ -47,7 +47,7 @@ public class PartyObject : MonoBehaviour {
         Party.overrideUnit(stats);
 
         foreach(var i in FindObjectsOfType<PlayerUnitInstance>()) {
-            if(i.stats.isEqualTo(stats)) {
+            if(i.stats.isTheSameInstanceAs(stats)) {
                 i.stats = stats;
                 i.name = stats.u_name;
                 break;
@@ -63,7 +63,7 @@ public class PartyObject : MonoBehaviour {
 
     public GameObject getInstantiatedMember(UnitStats stats) {
         foreach(var i in FindObjectsOfType<PlayerUnitInstance>()) {
-            if(stats.isEqualTo(i.stats))
+            if(stats.isTheSameInstanceAs(i.stats))
                 return i.gameObject;
         }
         return null;
@@ -139,7 +139,7 @@ public static class Party {
         List<UnitStats> temp = new List<UnitStats>();
         for(int i = 0; i < getMemberCount(); i++) {
             UnitStats mem = getMemberStats(i);
-            if(mem != null && !mem.isEmpty() && !mem.isEqualTo(stats))
+            if(mem != null && !mem.isEmpty() && !mem.isTheSameInstanceAs(stats))
                 temp.Add(mem);
         }
 
@@ -169,7 +169,7 @@ public static class Party {
     }
     public static int getUnitIndex(UnitStats stats) {
         for(int i = 0; i < getMemberCount(); i++) {
-            if(getMemberStats(i).isEqualTo(stats))
+            if(getMemberStats(i).isTheSameInstanceAs(stats))
                 return i;
         }
         return -1;

@@ -82,6 +82,7 @@ public static class SaveData {
         Party.clearPartyEquipment();
         MapLocationHolder.clear();
         Map.clearFogTexture();
+        GameInfo.clearEverything();
 
         setCurrentSaveIndex(prevIndex);
         PlayerPrefs.Save();

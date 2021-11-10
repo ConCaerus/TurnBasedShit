@@ -33,7 +33,7 @@ public class MapEnemyMovement : MonoBehaviour {
         else if(transform.position.x < target.x && !movingRight)
             flip();
 
-        if(currentDiff != GameInfo.getCurrentDiff())
+        if(currentDiff != GameInfo.getCurrentRegion())
             createNewRelevantInstance();
         else if(Vector2.Distance(transform.position, FindObjectOfType<MapMovement>().transform.position) < distToTarget) {
             GetComponent<Animator>().SetInteger("state", 1);

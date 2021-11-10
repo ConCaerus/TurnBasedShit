@@ -30,7 +30,7 @@ public class UpgradeLocation : MapLocation {
 
 
     public override void enterLocation(TransitionCanvas tc) {
-        GameInfo.resetCombatDetails();
+        GameInfo.clearCombatDetails();
         GameInfo.setCurrentLocationAsUpgrade(this);
         MapLocationHolder.removeLocation(this);
         tc.loadSceneWithTransition("UpgradeLocation");

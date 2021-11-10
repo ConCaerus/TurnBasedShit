@@ -18,8 +18,9 @@ public class MapCameraController : MonoBehaviour {
     }
 
     private void Update() {
-        if(Input.GetMouseButtonDown(1))
+        if(Input.GetMouseButtonDown(1)) {
             moveAnchorPoint = GameInfo.getMousePos();
+        }
         else if(Input.GetMouseButtonUp(1))
             moveAnchorPoint = Vector2.zero;
         if(Input.GetMouseButton(1)) {
@@ -30,8 +31,9 @@ public class MapCameraController : MonoBehaviour {
             moveToPartyObject();
             moveState = true;
         }
-        if(!FindObjectOfType<MapQuestMenu>().shown && !FindObjectOfType<MenuCanvas>().isOpen())
+        if(!FindObjectOfType<MapQuestMenu>().shown && !FindObjectOfType<MenuCanvas>().isOpen() && Input.mouseScrollDelta.y != 0) {
             zoom();
+        }
     }
 
 

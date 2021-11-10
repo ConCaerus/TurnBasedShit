@@ -28,7 +28,7 @@ public static class Graveyard {
         List<UnitStats> temp = new List<UnitStats>();
         for(int i = 0; i < getDeadCount(); i++) {
             UnitStats mem = getDeadStats(i);
-            if(mem != null && !mem.isEmpty() && !mem.isEqualTo(stats))
+            if(mem != null && !mem.isEmpty() && !mem.isTheSameInstanceAs(stats))
                 temp.Add(mem);
         }
 

@@ -7,13 +7,13 @@ using UnityEngine.SceneManagement;
 public class TownLocation : MapLocation {
     public Town town;
 
-    public int region = -1;
+    public GameInfo.region region = (GameInfo.region)(-1);
 
     public TownLocation(Vector2 p, GameInfo.region diff, PresetLibrary lib, Town t = null) {
         type = locationType.town;
         pos = p;
 
-        region = (int)diff;
+        region = diff;
 
         //  create a random town
         if(t == null) {
@@ -24,7 +24,7 @@ public class TownLocation : MapLocation {
     }
 
     public override void enterLocation(TransitionCanvas tc) {
-        GameInfo.resetCombatDetails();
+        GameInfo.clearCombatDetails();
         GameInfo.setCurrentLocationAsTown(this);
         tc.loadSceneWithTransition("Town");
     }

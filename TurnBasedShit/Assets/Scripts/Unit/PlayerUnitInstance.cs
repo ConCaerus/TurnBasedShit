@@ -91,7 +91,7 @@ public class PlayerUnitInstance : UnitClass {
         int max = stats.getSummonedLevel();
         int count = 0;
         foreach(var i in FindObjectsOfType<SummonedUnitInstance>()) {
-            if(i.summoner.isEqualTo(stats))
+            if(i.summoner.isTheSameInstanceAs(stats))
                 count++;
         }
         return count < max;
@@ -100,7 +100,7 @@ public class PlayerUnitInstance : UnitClass {
     int getSummonCount() {
         int count = 0;
         foreach(var i in FindObjectsOfType<SummonedUnitInstance>()) {
-            if(i.summoner.isEqualTo(stats))
+            if(i.summoner.isTheSameInstanceAs(stats))
                 count++;
         }
         return count;
@@ -134,7 +134,7 @@ public class PlayerUnitInstance : UnitClass {
         //  if not summoning, kill all summoned shit
         if(stats.equippedWeapon == null || stats.equippedWeapon.isEmpty() || stats.equippedWeapon.sUsage != Weapon.specialUsage.summoning) {
             foreach(var i in FindObjectsOfType<SummonedUnitInstance>()) {
-                if(i.summoner.isEqualTo(stats))
+                if(i.summoner.isTheSameInstanceAs(stats))
                     i.die(DeathInfo.killCause.murdered);
             }
         }

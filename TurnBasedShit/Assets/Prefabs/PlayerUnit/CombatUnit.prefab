@@ -87,12 +87,13 @@ MonoBehaviour:
   tempPowerMod: 1
   tempDefenceMod: 0
   tempSpeedMod: 1
-  spotOffset: 1
+  spotOffset: 0.1
   stats:
     u_name: 
     u_expCap: 25
     u_exp: 0
     u_level: 0
+    u_skillExpCap: 100
     u_bluntExp: 0
     u_edgedExp: 0
     u_summonedExp: 0
@@ -100,6 +101,7 @@ MonoBehaviour:
       headIndex: 2
       faceIndex: 2
       bodyIndex: 0
+      layerOffset: 0
       color: {r: 0.6390952, g: 0.18760765, b: 0.0914644, a: 1}
     u_baseMaxHealth: 100
     u_health: 100
@@ -110,19 +112,25 @@ MonoBehaviour:
     u_bleedCount: 0
     u_instanceID: -1
     equippedWeapon:
-      w_instanceID: -1
-      w_name: 
-      w_rarity: 0
-      w_element: 0
-      w_wornAmount: 0
-      w_attributes: 
-      w_specialUsage: 0
-      w_specialUsageAmount: 0
-      w_attackType: 0
-      w_power: 0
-      w_speedMod: 0
-      w_coinCost: 0
-      w_sprite:
+      instanceID: -1
+      name: 
+      type: 0
+      rarity: 0
+      coinCost: 0
+      canBeFished: 0
+      fishedData:
+        hookedPos: {x: 0, y: 0}
+        hookedRot: 0
+        diffRegion: 0
+        chanceToCatch: 0
+      wornAmount: 3
+      attributes: 
+      sUsage: 0
+      sUsageAmount: 0
+      aType: 0
+      power: 0
+      speedMod: 0
+      sprite:
         sprite: {fileID: 0}
         equippedX: 0
         equippedY: 0
@@ -130,15 +138,22 @@ MonoBehaviour:
         equippedXSize: 0
         equippedYSize: 0
     equippedArmor:
-      a_instanceID: -1
-      a_name: 
-      a_rarity: 0
-      a_wornAmount: 0
-      a_attributes: 
-      a_defence: 0
-      a_speedMod: 0
-      a_coinCost: 0
-      a_sprite:
+      instanceID: -1
+      name: 
+      type: 0
+      rarity: 0
+      coinCost: 0
+      canBeFished: 0
+      fishedData:
+        hookedPos: {x: 0, y: 0}
+        hookedRot: 0
+        diffRegion: 0
+        chanceToCatch: 0
+      wornAmount: 3
+      attributes: 
+      defence: 0
+      speedMod: 0
+      sprite:
         sprite: {fileID: 0}
         equippedSprite: {fileID: 0}
         equippedShoulder: {fileID: 0}
@@ -183,13 +198,20 @@ MonoBehaviour:
         xHatSize2: 0
         yHatSize2: 0
     equippedItem:
-      i_instanceID: -1
-      i_name: 
-      i_rarity: 0
-      i_timedEffects: []
-      i_passiveEffects: []
-      i_coinCost: 0
-      i_sprite:
+      instanceID: -1
+      name: 
+      type: 0
+      rarity: 0
+      coinCost: 0
+      canBeFished: 0
+      fishedData:
+        hookedPos: {x: 0, y: 0}
+        hookedRot: 0
+        diffRegion: 0
+        chanceToCatch: 0
+      tEffects: []
+      pEffects: []
+      sprite:
         sprite: {fileID: 0}
     u_traits:
     - t_name: Thin Skinned
@@ -236,8 +258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b50cf52fd2f3020489dae1d0b81e3fc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infos:
-  - PlayingUnit
+  info: <b><u>Information
   hideWhenMenuOpen: 1
 --- !u!1001 &954274707321897296
 PrefabInstance:

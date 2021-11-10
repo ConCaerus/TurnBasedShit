@@ -14,9 +14,9 @@ public class MapEnemySpawner : MonoBehaviour {
 
     public void createEnemyAroundPlayer() {
         float minDistFromPlayer = 5.0f, maxDistFromPlayer = 10.0f;
-        var pos = Map.getRandomPosInRegion((int)GameInfo.getCurrentDiff());
+        var pos = Map.getRandomPosInRegion((int)GameInfo.getCurrentRegion());
         while(Vector2.Distance(pos, FindObjectOfType<MapMovement>().transform.position) < minDistFromPlayer || Vector2.Distance(pos, FindObjectOfType<MapMovement>().transform.position) > maxDistFromPlayer)
-            pos = Map.getRandomPosInRegion((int)GameInfo.getCurrentDiff());
+            pos = Map.getRandomPosInRegion((int)GameInfo.getCurrentRegion());
 
         var obj = Instantiate(enemyPreset.gameObject, transform);
         obj.transform.localPosition = pos;

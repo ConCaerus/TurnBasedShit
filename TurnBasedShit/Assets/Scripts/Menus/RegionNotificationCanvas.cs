@@ -27,7 +27,7 @@ public class RegionNotificationCanvas : MonoBehaviour {
     public IEnumerator animateNameText() {
         float speed = 0.5f, waitTimeBtw = .75f;
 
-        regionText.text = "Region #" + ((int)GameInfo.getCurrentDiff()).ToString();
+        regionText.text = "Region #" + ((int)GameInfo.getCurrentRegion()).ToString();
         regionText.GetComponent<RectTransform>().DOLocalMoveX(0.0f, speed);
 
         yield return new WaitForSeconds(speed + waitTimeBtw);

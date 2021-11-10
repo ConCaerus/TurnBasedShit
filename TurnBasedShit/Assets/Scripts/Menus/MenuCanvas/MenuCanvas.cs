@@ -84,9 +84,9 @@ public class MenuCanvas : MonoBehaviour {
 
         foreach(var i in FindObjectsOfType<InfoBearer>()) {
             if(i.hideWhenMenuOpen)
-                i.GetComponent<BoxCollider2D>().enabled = false;
+                i.GetComponent<Collider2D>().enabled = false;
             else
-                i.GetComponent<BoxCollider2D>().enabled = true;
+                i.GetComponent<Collider2D>().enabled = true;
         }
     }
     public void hide() {
@@ -98,22 +98,22 @@ public class MenuCanvas : MonoBehaviour {
         
         foreach(var i in FindObjectsOfType<InfoBearer>()) {
             if(i.hideWhenMenuOpen)
-                i.GetComponent<BoxCollider2D>().enabled = true;
+                i.GetComponent<Collider2D>().enabled = true;
             else
-                i.GetComponent<BoxCollider2D>().enabled = false;
+                i.GetComponent<Collider2D>().enabled = false;
         }
         showing = false;
     }
     public void hardHide() {
         foreach(var i in FindObjectsOfType<InfoBearer>()) {
-            if(i.GetComponent<BoxCollider2D>() == null) {
+            if(i.GetComponent<Collider2D>() == null) {
                 Debug.Log(i.name);
                 continue;
             }
             if(i.hideWhenMenuOpen)
-                i.GetComponent<BoxCollider2D>().enabled = true;
+                i.GetComponent<Collider2D>().enabled = true;
             else
-                i.GetComponent<BoxCollider2D>().enabled = false;
+                i.GetComponent<Collider2D>().enabled = false;
         }
         GetComponent<Animator>().StopPlayback();
         GetComponent<Animator>().Play("MenuIdle");

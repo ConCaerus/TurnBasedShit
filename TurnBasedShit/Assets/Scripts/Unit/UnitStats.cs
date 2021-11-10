@@ -10,6 +10,7 @@ public class UnitStats {
     public float u_exp = 0.0f;
     public int u_level = 0;
     const int maxLevel = 5;
+    public float u_skillExpCap = 100.0f;
     public float u_bluntExp;
     public float u_edgedExp;
     public float u_summonedExp;
@@ -63,7 +64,7 @@ public class UnitStats {
             u_traits.Add(i);
     }
 
-    public bool isEqualTo(UnitStats other) {
+    public bool isTheSameInstanceAs(UnitStats other) {
         if(other == null || other.isEmpty())
             return false;
 
@@ -269,19 +270,19 @@ public class UnitStats {
         return u_exp >= u_expCap;
     }
     public int getEdgedLevel() {
-        if(Mathf.FloorToInt(u_edgedExp / 100.0f) + 1 > maxLevel)
+        if(Mathf.FloorToInt(u_edgedExp / u_skillExpCap) + 1 > maxLevel)
             return maxLevel;
-        return Mathf.FloorToInt(u_edgedExp / 100.0f) + 1;
+        return Mathf.FloorToInt(u_edgedExp / u_skillExpCap) + 1;
     }
     public int getBluntLevel() {
-        if(Mathf.FloorToInt(u_bluntExp / 100.0f) + 1 > maxLevel)
+        if(Mathf.FloorToInt(u_bluntExp / u_skillExpCap) + 1 > maxLevel)
             return maxLevel;
-        return Mathf.FloorToInt(u_bluntExp / 100.0f) + 1;
+        return Mathf.FloorToInt(u_bluntExp / u_skillExpCap) + 1;
     }
     public int getSummonedLevel() {
-        if(Mathf.FloorToInt(u_summonedExp / 100.0f) + 1 > maxLevel)
+        if(Mathf.FloorToInt(u_summonedExp / u_skillExpCap) + 1 > maxLevel)
             return maxLevel;
-        return Mathf.FloorToInt(u_summonedExp / 100.0f) + 1;
+        return Mathf.FloorToInt(u_summonedExp / u_skillExpCap) + 1;
     }
 
     public void die(DeathInfo.killCause cause, GameObject killer = null) {

@@ -13,7 +13,7 @@ public class MapLocationSpawner : MonoBehaviour {
 
     private void Start() {
         createIcons();
-        GameInfo.resetCombatDetails();
+        GameInfo.clearCombatDetails();
     }
 
     public void createIcons() {

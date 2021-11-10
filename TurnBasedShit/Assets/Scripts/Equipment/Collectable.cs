@@ -18,6 +18,8 @@ public abstract class Collectable {
     public bool canBeFished = false;
     public FishedLootData fishedData = null;
 
+    public string flavor = "Choco";
+
     public bool isTheSameInstanceAs(Collectable other) {
         if(other == null || other.instanceID == -1)
             return false;

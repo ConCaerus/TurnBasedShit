@@ -12,7 +12,7 @@ public class UnitBattleMech : MonoBehaviour {
 
     bool battleEnded = false;
 
-    private void Awake() {
+    private void Start() {
         foreach(var i in FindObjectsOfType<Animator>()) {
             if(i.runtimeAnimatorController != null && i.runtimeAnimatorController.name == "Tree") {
                 i.ForceStateNormalizedTime(i.gameObject.transform.position.x / 20.0f);

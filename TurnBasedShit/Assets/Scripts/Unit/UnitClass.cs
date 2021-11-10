@@ -79,7 +79,18 @@ public abstract class UnitClass : MonoBehaviour {
             name = stats.u_name;
 
 
-        normalSize = transform.localScale;
+        foreach(var i in FindObjectsOfType<CombatSpot>()) {
+            if(i.unit == gameObject) {
+                transform.parent = i.transform;
+                float size = ((i.transform.localScale.x - .15f) + .35f) / 2.0f;
+                normalSize = new Vector3(1.0f, 1.0f);
+                normalPos = new Vector3(0.0f, spotOffset + .35f - size);
+                break;
+            }
+        }
+
+        transform.DOLocalMove(normalPos, 0.01f);
+        transform.DOScale(normalSize, 0.01f);
 
         if(isPlayerUnit)
             FindObjectOfType<PartyObject>().resaveInstantiatedUnit(stats);
@@ -134,15 +145,6 @@ public abstract class UnitClass : MonoBehaviour {
         return false;
     }
 
-
-    public void removeEquippedWeapon() {
-        stats.equippedWeapon = null;
-    }
-
-    public void removeEquippedArmor() {
-        stats.equippedArmor = null;
-    }
-
     public void setDefending(bool b) {
         if(stunned) {
             stunned = false;
@@ -172,8 +174,6 @@ public abstract class UnitClass : MonoBehaviour {
             return;
         }
         transform.DOComplete();
-        normalPos = transform.position;
-        normalSize = transform.localScale;
         //  triggers
         if(stats.equippedItem != null && !stats.equippedItem.isEmpty())
             stats.equippedItem.triggerUseTime(this, Item.useTimes.beforeAttacking);
@@ -309,8 +309,6 @@ public abstract class UnitClass : MonoBehaviour {
     IEnumerator defendingAnim() {
         if(attackAnim != null)
             StopCoroutine(attackAnim);
-        else
-            normalSize = transform.localScale;
 
         GetComponent<SpriteRenderer>().DOColor(hitColor, 0.05f);
         transform.DOScale(normalSize * 1.5f, 0.15f);
@@ -353,7 +351,7 @@ public abstract class UnitClass : MonoBehaviour {
 
         //  move back to original position
         transform.DOScale(normalSize, 0.15f);
-        transform.DOMove(normalPos, 0.15f);
+        transform.DOLocalMove(normalPos, 0.15f);
 
         yield return new WaitForSeconds(0.15f);
 

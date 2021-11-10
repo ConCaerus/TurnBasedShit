@@ -32,7 +32,7 @@ public static class Randomizer {
         temp.setEqualTo(hos);
         temp.freeHeals = Random.Range(0, 4);
 
-        switch(GameInfo.getCurrentDiff()) {
+        switch(GameInfo.getCurrentRegion()) {
             case GameInfo.region.grassland:
             case GameInfo.region.forest:
                 temp.pricePerHeal = Random.Range(1, 6);
