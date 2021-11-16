@@ -9,9 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4275493026100185753}
-  - component: {fileID: 1378582747974189867}
   - component: {fileID: 6996003004313916212}
-  - component: {fileID: 1296993937974490061}
+  - component: {fileID: 6836106468490571485}
+  - component: {fileID: 7128070331000712704}
+  - component: {fileID: 7677960607196659207}
   m_Layer: 5
   m_Name: PickupLocationIcon
   m_TagString: Untagged
@@ -42,19 +43,6 @@ RectTransform:
   m_AnchoredPosition: {x: -145, y: -6}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1378582747974189867
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 817932617645908918}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ea6a9261bd35104889c1638bc28bd80, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isMouseOver: 0
 --- !u!114 &6996003004313916212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,8 +57,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   info: <b><u>Pickup
   hideWhenMenuOpen: 1
---- !u!61 &1296993937974490061
-BoxCollider2D:
+--- !u!58 &6836106468490571485
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -82,19 +70,40 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
+  m_Offset: {x: -1.1, y: 17.71}
   serializedVersion: 2
-  m_Size: {x: 100, y: 100}
-  m_EdgeRadius: 0
+  m_Radius: 61.38
+--- !u!114 &7128070331000712704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817932617645908918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80f169caa5695f540bc8695af5a9e2f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!95 &7677960607196659207
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817932617645908918}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6f946f4167d537140ac2574dc46eaedd, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &2568536940398328652
 GameObject:
   m_ObjectHideFlags: 0
@@ -423,12 +432,12 @@ PrefabInstance:
     - target: {fileID: 2510250751968256343, guid: cf600a084a9e64249ad78e2817075d89,
         type: 3}
       propertyPath: m_FalloffIntensity
-      value: 0
+      value: 0.56
       objectReference: {fileID: 0}
     - target: {fileID: 2510250751968256343, guid: cf600a084a9e64249ad78e2817075d89,
         type: 3}
       propertyPath: m_LightVolumeOpacity
-      value: 0.52
+      value: 0.357
       objectReference: {fileID: 0}
     - target: {fileID: 2510250751968256343, guid: cf600a084a9e64249ad78e2817075d89,
         type: 3}

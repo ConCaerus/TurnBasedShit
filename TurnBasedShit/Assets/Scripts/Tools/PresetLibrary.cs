@@ -637,6 +637,12 @@ public class PresetLibrary : MonoBehaviour {
     public UpgradeLocation createRandomUpgradeLocation() {
         return new UpgradeLocation(Map.getRandPos(), Random.Range(0, 2));
     }
+    public NestLocation createRandomNestLocation() {
+        return new NestLocation(Map.getRandPos(), Random.Range(1, 4), this, GameInfo.getRandomDiff());
+    }
+    public FishingLocation createRandomFishingLocation() {
+        return new FishingLocation(Map.getRandPos(), GameInfo.getRandomDiff());
+    }
 
 
     public BossFightQuest createRandomBossFightQuest(bool setID) {

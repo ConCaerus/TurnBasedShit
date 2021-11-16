@@ -12,9 +12,9 @@ public class SlotMenu : MonoBehaviour {
     List<GameObject> slots = new List<GameObject>();
     int selectedSlotIndex = -1;
 
+    bool initialized = false;
 
-
-    public void init() {
+    void init() {
         int count = GetComponentInChildren<GridLayoutGroup>().constraintCount;
         float xSize = 0.0f;
         if(count > 1) {
@@ -34,12 +34,14 @@ public class SlotMenu : MonoBehaviour {
         GetComponentInChildren<GridLayoutGroup>().cellSize = new Vector2(xSize, ySize);
 
         transform.GetChild(1).GetComponent<Scrollbar>().value = 1.0f;
+
+        initialized = true;
     }
 
     //  update func
     //  returns true when a change in the selected slot could have occured
     public bool run() {
-        if(slots.Count == 0)
+        if(slots.Count == 0 || !initialized)
             return false;
 
         //  returns true if selected slot changed
@@ -78,6 +80,9 @@ public class SlotMenu : MonoBehaviour {
 
     //  instantiates a new slot object at the end of the list
     public GameObject instantiateNewSlot(Color slotColor) {
+        if(!initialized)
+            init();
+
         var obj = Instantiate(slotPreset, gameObject.transform.GetChild(0).transform);
         slots.Add(obj);
 

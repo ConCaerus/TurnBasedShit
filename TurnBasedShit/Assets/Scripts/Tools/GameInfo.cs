@@ -17,7 +17,7 @@ public static class GameInfo {
         old, used, normal, perfect
     }
     public enum questType {
-        bossFight, pickup, delivery, kill
+        bossFight, pickup, delivery, kill, rescue
     }
     public enum fishCatchRate {
         almostImpossible, rare, normal, easy,

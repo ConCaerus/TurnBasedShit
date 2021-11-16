@@ -179,7 +179,7 @@ RectTransform:
   m_GameObject: {fileID: 1281932240524420599}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.0001645, y: 1.0001645, z: 1.0001645}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 9151206873625816274}
   m_RootOrder: 0
@@ -237,9 +237,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9151206873625816274}
-  - component: {fileID: 43601320462500042}
   - component: {fileID: 3681439808879477447}
-  - component: {fileID: 1187869055368842635}
+  - component: {fileID: 531714198382710365}
+  - component: {fileID: 2893088290332329301}
+  - component: {fileID: 5339193425458189424}
   m_Layer: 5
   m_Name: TownLocationIcon
   m_TagString: Untagged
@@ -270,19 +271,6 @@ RectTransform:
   m_AnchoredPosition: {x: -111.6, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &43601320462500042
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9151206873625816275}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba88aaaf2741420428a5b750214ea90a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isMouseOver: 0
 --- !u!114 &3681439808879477447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -297,8 +285,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   info: <b><u>Town
   hideWhenMenuOpen: 1
---- !u!61 &1187869055368842635
-BoxCollider2D:
+--- !u!58 &531714198382710365
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -310,19 +298,40 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
+  m_Offset: {x: -0.4, y: 27.9}
   serializedVersion: 2
-  m_Size: {x: 100, y: 100}
-  m_EdgeRadius: 0
+  m_Radius: 55.21
+--- !u!114 &2893088290332329301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9151206873625816275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80f169caa5695f540bc8695af5a9e2f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!95 &5339193425458189424
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9151206873625816275}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ffd4234208b24304f8d8df23f0fa7044, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &8657684612785772190
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -428,12 +437,12 @@ PrefabInstance:
     - target: {fileID: 2510250751968256343, guid: cf600a084a9e64249ad78e2817075d89,
         type: 3}
       propertyPath: m_FalloffIntensity
-      value: 0
+      value: 0.506
       objectReference: {fileID: 0}
     - target: {fileID: 2510250751968256343, guid: cf600a084a9e64249ad78e2817075d89,
         type: 3}
       propertyPath: m_LightVolumeOpacity
-      value: 0.52
+      value: 0.488
       objectReference: {fileID: 0}
     - target: {fileID: 2510250751968256343, guid: cf600a084a9e64249ad78e2817075d89,
         type: 3}

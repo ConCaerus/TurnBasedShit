@@ -7,7 +7,6 @@ using UnityEngine.EventSystems;
 using TMPro;
 
 public class ArmorSelectionCanvas : UnitEquipmentSelectionCanvas {
-    [SerializeField] Image armorImage;
     [SerializeField] TextMeshProUGUI nameText, defText, spdText, firstAttributeText, secondAttributeText;
 
     public Armor getArmorInSlot(int index) {
@@ -41,8 +40,8 @@ public class ArmorSelectionCanvas : UnitEquipmentSelectionCanvas {
     public override void updateInfo() {
         //                          Armor shit
         if(getArmorInSlot(slot.getSelectedSlotIndex()) == null || getArmorInSlot(slot.getSelectedSlotIndex()).isEmpty()) {
-            armorImage.sprite = null;
-            armorImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
+            shownSprite.sprite = null;
+            shownSprite.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
 
             nameText.text = "";
             defText.text = "0.0";
@@ -52,8 +51,8 @@ public class ArmorSelectionCanvas : UnitEquipmentSelectionCanvas {
             return;
         }
         var shownArmor = getArmorInSlot(slot.getSelectedSlotIndex());
-        armorImage.sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(shownArmor).sprite;
-        armorImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownArmor.rarity);
+        shownSprite.sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(shownArmor).sprite;
+        shownSprite.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownArmor.rarity);
 
 
         //  stats

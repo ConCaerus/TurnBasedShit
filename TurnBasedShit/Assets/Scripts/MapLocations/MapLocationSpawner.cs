@@ -5,9 +5,11 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class MapLocationSpawner : MonoBehaviour {
-    public GameObject bossLocationPreset, rescueLocationPreset, townLocationPreset, upgradeLocationPreset, pickupLocationPreset;
+    public GameObject bossLocationPreset, rescueLocationPreset, townLocationPreset, upgradeLocationPreset, pickupLocationPreset, fishingLocationPreset;
 
-    public List<GameObject> currentIcons = new List<GameObject>();
+    public List<List<GameObject>> currentIcons = new List<List<GameObject>>();
+
+    float distToInteract = 1.0f;
 
 
 
@@ -20,6 +22,14 @@ public class MapLocationSpawner : MonoBehaviour {
         foreach(var i in GetComponentsInChildren<SpriteRenderer>())
             Destroy(i.gameObject);
 
+
+        currentIcons.Add(new List<GameObject>());
+        currentIcons.Add(new List<GameObject>());
+        currentIcons.Add(new List<GameObject>());
+        currentIcons.Add(new List<GameObject>());
+        currentIcons.Add(new List<GameObject>());
+        currentIcons.Add(new List<GameObject>());
+
         //  Boss Locations
         for(int i = 0; i < ActiveQuests.getBossFightQuestCount(); i++) {
             //  positioning and scaling
@@ -29,13 +39,10 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
 
-            //  info shit
-            //obj.GetComponent<InfoBearer>().titleText = ActiveQuests.getBossFightQuest(i).bossUnit.u_name;
-
-            currentIcons.Add(obj);
+            currentIcons[(int)Map.getDiffForX(obj.transform.position.x)].Add(obj);
         }
 
-        
+
         //  Town locations
         for(int i = 0; i < MapLocationHolder.getTownCount(); i++) {
             //  positioning and scaling
@@ -44,26 +51,18 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
 
-            //  info shit
-            //obj.GetComponent<InfoBearer>().titleText = MapLocationHolder.getTownLocation(i).town.t_name;
-            //obj.GetComponent<InfoBearer>().firstText = "Buidling Count: " + MapLocationHolder.getTownLocation(i).town.getBuildingCount().ToString();
-            //obj.GetComponent<InfoBearer>().secondText = "Population: " + MapLocationHolder.getTownLocation(i).town.townMemberCount.ToString();
-
-            currentIcons.Add(obj);
+            currentIcons[(int)Map.getDiffForX(MapLocationHolder.getTownLocation(i).pos.x)].Add(obj);
         }
 
         //  Rescue Locations
-        for(int i = 0; i < MapLocationHolder.getRescueCount(); i++) {
+        for(int i = 0; i < ActiveQuests.getRescueQuestCount(); i++) {
             //  positioning and scaling
             var obj = Instantiate(rescueLocationPreset.gameObject);
-            obj.transform.position = MapLocationHolder.getRescueLocation(i).pos;
+            obj.transform.position = ActiveQuests.getRescueQuest(i).location.pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
 
-            //  info shit
-            //obj.GetComponent<InfoBearer>().titleText = MapLocationHolder.getRescueLocation(i).unit.u_name;
-
-            currentIcons.Add(obj);
+            currentIcons[(int)Map.getDiffForX(ActiveQuests.getRescueQuest(i).location.pos.x)].Add(obj);
         }
 
         //  Upgrade Locations
@@ -74,10 +73,7 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
 
-            //  info shit
-            //obj.GetComponent<InfoBearer>().titleText = MapLocationHolder.getUpgradeLocation(i).state.ToString();
-
-            currentIcons.Add(obj);
+            currentIcons[(int)Map.getDiffForX(MapLocationHolder.getUpgradeLocation(i).pos.x)].Add(obj);
         }
 
         //  Pickup Locations
@@ -88,22 +84,39 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
 
-            //  info shit
-            //obj.GetComponent<InfoBearer>().titleText = ActiveQuests.getPickupQuest(i).pType.ToString();
-
-            currentIcons.Add(obj);
+            currentIcons[(int)Map.getDiffForX(ActiveQuests.getPickupQuest(i).location.pos.x)].Add(obj);
         }
 
-        //  Pickup Locations
-        for(int i = 0; i < MapLocationHolder.getPickupCount(); i++) {
+        //  FISHING
+        for(int i = 0; i < MapLocationHolder.getFishingCount(); i++) {
+            //  positioning and scaling
+            var obj = Instantiate(fishingLocationPreset.gameObject);
+            obj.transform.position = MapLocationHolder.getFishingLocation(i).pos;
+            obj.transform.SetParent(transform.GetChild(0));
+            obj.transform.localScale = Vector3.one / 2.0f;
+
+            currentIcons[(int)Map.getDiffForX(MapLocationHolder.getFishingLocation(i).pos.x)].Add(obj);
         }
     }
 
 
-    public List<GameObject> getShownLocationObjects() {
-        List<GameObject> temp = new List<GameObject>();
-        foreach(var i in GetComponentsInChildren<SpriteRenderer>())
-            temp.Add(i.gameObject);
-        return temp;
+    GameObject checkIconsProximity() {
+        GameObject selected = null;
+        float d = distToInteract + 1.0f;
+        foreach(var i in currentIcons[(int)Map.getDiffForX(FindObjectOfType<MapMovement>().transform.position.x)]) {
+            var dist = Vector2.Distance(i.transform.position, FindObjectOfType<MapMovement>().transform.position);
+
+            if(dist < distToInteract && selected == null) {
+                selected = i.gameObject;
+                d = dist;
+            }
+
+            else if(dist < distToInteract && selected != null && dist < d) {
+                selected = i.gameObject;
+                d = dist;
+            }
+        }
+
+        return selected;
     }
 }

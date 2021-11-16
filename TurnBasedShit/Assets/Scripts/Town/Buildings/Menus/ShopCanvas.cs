@@ -24,7 +24,6 @@ public class ShopCanvas : MonoBehaviour {
 
     private void Start() {
         DOTween.Init();
-        slot.init();
         hideCanvas();
 
         if(GameInfo.getCurrentLocationAsTown() == null || true) {

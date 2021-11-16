@@ -12,6 +12,7 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
     public abstract int getState();
     public abstract void removeUnitEquipmentAndResetSelection();
 
+    public Image shownSprite;
     public SlotMenu slot;
 
     bool shouldShowState = false;
@@ -20,7 +21,8 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
     public bool shown = false;
 
     private void Awake() {
-        slot.init();
+        GetComponentInParent<InfoBearer>().runOnMouseOver(animateMouseOverSlot);
+        GetComponentInParent<InfoBearer>().runOnMouseExit(animateMouseExitSlot);
     }
 
     private void Update() {
@@ -54,6 +56,15 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
     }
     public void setShownState(bool b) {
         shouldShowState = b;
+    }
+
+    public void animateMouseOverSlot() {
+        transform.parent.DOScale(0.55f, 0.15f);
+        shownSprite.transform.DOScale(0.85f, 0.15f);
+    }
+    public void animateMouseExitSlot() {
+        transform.parent.DOScale(0.5f, 0.25f);
+        shownSprite.transform.DOScale(0.75f, 0.25f);
     }
 
     IEnumerator show() {

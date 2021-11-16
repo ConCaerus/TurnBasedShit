@@ -1,7 +1,16 @@
 fileFormatVersion: 2
 guid: cfa2d5d0e322ee445a0b7cf00ce60ded
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: 2339230985409756
+    second: ChurchBuilding_0
+  - first:
+      213: -2659580183268458083
+    second: ChurchBuilding_1
+  - first:
+      213: -4398861244949813501
+    second: ChurchBuilding_2
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -41,12 +50,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 150
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -99,7 +108,70 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: ChurchBuilding_0
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 723
+        width: 38
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cd4dee7a48f480000800000000000000
+      internalID: 2339230985409756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ChurchBuilding_1
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 665
+        width: 219
+        height: 126
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d918d941ae5471bd0800000000000000
+      internalID: -2659580183268458083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ChurchBuilding_2
+      rect:
+        serializedVersion: 2
+        x: 182
+        y: 136
+        width: 451
+        height: 485
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 307a88ef00b14f2c0800000000000000
+      internalID: -4398861244949813501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []

@@ -15,7 +15,6 @@ public class InventoryCanvas : MonoBehaviour {
     UnitStats shownUnit;
 
     private void Start() {
-        slot.init();
         state = 4;
         shownUnit = Party.getMemberStats(0);
 

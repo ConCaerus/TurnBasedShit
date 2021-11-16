@@ -22,18 +22,6 @@ public class MapMovement : InteractiveMovement {
 
 
     private void LateUpdate() {
-        foreach(var i in FindObjectsOfType<MapIcon>()) {
-            if(Vector2.Distance(i.transform.position, transform.position) < distToInt) {
-                i.lightUp(distToInt - Vector2.Distance(i.transform.position, transform.position));
-                showInteractText();
-            }
-            else {
-                hideInteractText();
-                if(!i.isMouseOver)
-                    i.lightDown();
-            }
-        }
-
         if(Map.getDiffForX(transform.position.x) != currentDiff && FindObjectOfType<RegionNotificationCanvas>().canAnimate()) {
             currentDiff = Map.getDiffForX(transform.position.x);
             GameInfo.setCurrentMapPos(transform.position);

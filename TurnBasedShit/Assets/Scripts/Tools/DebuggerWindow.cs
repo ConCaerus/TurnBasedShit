@@ -105,8 +105,8 @@ public class DebuggerWindow : EditorWindow {
         //  MapLocations
         GUILayout.Label("Map", EditorStyles.boldLabel);
         GUILayout.BeginHorizontal();
-        if(GUILayout.Button("Populate Towns"))
-            Map.populateTowns(FindObjectOfType<PresetLibrary>());
+        if(GUILayout.Button("Create Save Data"))
+            SaveData.createSaveDataForCurrentSave(FindObjectOfType<PresetLibrary>());
         if(GUILayout.Button("Clear Towns"))
             MapLocationHolder.clearTownLocations();
 

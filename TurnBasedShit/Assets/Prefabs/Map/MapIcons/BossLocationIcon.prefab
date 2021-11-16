@@ -237,9 +237,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6946623839833291168}
-  - component: {fileID: 6946623839833291170}
   - component: {fileID: -8795588877981394394}
-  - component: {fileID: 6779971201864411903}
+  - component: {fileID: 8447848547736502915}
+  - component: {fileID: 8169737823336943023}
+  - component: {fileID: 4889615699424100133}
   m_Layer: 5
   m_Name: BossLocationIcon
   m_TagString: Untagged
@@ -270,19 +271,6 @@ RectTransform:
   m_AnchoredPosition: {x: -78, y: 1.1}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &6946623839833291170
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6946623839833291169}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f0b8af83f1045b4ca198144a44cf9ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isMouseOver: 0
 --- !u!114 &-8795588877981394394
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -297,8 +285,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   info: <b><u>Boss
   hideWhenMenuOpen: 1
---- !u!61 &6779971201864411903
-BoxCollider2D:
+--- !u!114 &8447848547736502915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6946623839833291169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80f169caa5695f540bc8695af5a9e2f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!58 &8169737823336943023
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -310,19 +310,28 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
+  m_Offset: {x: -1.53, y: 0}
   serializedVersion: 2
-  m_Size: {x: 100, y: 100}
-  m_EdgeRadius: 0
+  m_Radius: 59.27
+--- !u!95 &4889615699424100133
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6946623839833291169}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 946b3dd6cb73d5643a68a19e02ca1106, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &7025504950059698799
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -408,12 +417,12 @@ PrefabInstance:
     - target: {fileID: 2510250751968256343, guid: cf600a084a9e64249ad78e2817075d89,
         type: 3}
       propertyPath: m_FalloffIntensity
-      value: 0
+      value: 0.601
       objectReference: {fileID: 0}
     - target: {fileID: 2510250751968256343, guid: cf600a084a9e64249ad78e2817075d89,
         type: 3}
       propertyPath: m_LightVolumeOpacity
-      value: 0.52
+      value: 0.655
       objectReference: {fileID: 0}
     - target: {fileID: 2510250751968256343, guid: cf600a084a9e64249ad78e2817075d89,
         type: 3}

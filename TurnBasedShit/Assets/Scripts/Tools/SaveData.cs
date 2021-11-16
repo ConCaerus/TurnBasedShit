@@ -65,7 +65,13 @@ public static class SaveData {
         //  Party
         lib.addStartingUnits();
         Debug.Log("Added starting units: " + Time.realtimeSinceStartup.ToString("0.00"));
+
+        //  Towns
         Map.populateTowns(lib);
+        Debug.Log("Town Shit: " + Time.realtimeSinceStartup.ToString("0.00"));
+
+        //  MapLocations
+        MapLocationHolder.populateMapLocations(lib);
         Debug.Log("Town Shit: " + Time.realtimeSinceStartup.ToString("0.00"));
     }
 

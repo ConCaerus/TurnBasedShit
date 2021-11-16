@@ -84,9 +84,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 978567400240283394}
-  - component: {fileID: 978567400240283392}
   - component: {fileID: -2945196599328420569}
-  - component: {fileID: 43792148268007859}
+  - component: {fileID: 6912056851187739338}
+  - component: {fileID: 6428634293683845914}
+  - component: {fileID: 8260022387777814140}
   m_Layer: 5
   m_Name: RescueLocationIcon
   m_TagString: Untagged
@@ -118,19 +119,6 @@ RectTransform:
   m_AnchoredPosition: {x: -164.9, y: -14.9}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &978567400240283392
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 978567400240283395}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba1a73109dc8b234a9df0fecf47ffc3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isMouseOver: 0
 --- !u!114 &-2945196599328420569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -145,8 +133,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   info: <b><u>Rescue
   hideWhenMenuOpen: 1
---- !u!61 &43792148268007859
-BoxCollider2D:
+--- !u!58 &6912056851187739338
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -158,19 +146,40 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
+  m_Offset: {x: 0, y: 9.71}
   serializedVersion: 2
-  m_Size: {x: 100, y: 100}
-  m_EdgeRadius: 0
+  m_Radius: 53.11
+--- !u!114 &6428634293683845914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 978567400240283395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80f169caa5695f540bc8695af5a9e2f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!95 &8260022387777814140
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 978567400240283395}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: c80ed5ce6079b654b9e321783b2b762f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &978567400992341205
 GameObject:
   m_ObjectHideFlags: 0
@@ -504,12 +513,12 @@ PrefabInstance:
     - target: {fileID: 2510250751968256343, guid: cf600a084a9e64249ad78e2817075d89,
         type: 3}
       propertyPath: m_FalloffIntensity
-      value: 0
+      value: 0.657
       objectReference: {fileID: 0}
     - target: {fileID: 2510250751968256343, guid: cf600a084a9e64249ad78e2817075d89,
         type: 3}
       propertyPath: m_LightVolumeOpacity
-      value: 0.52
+      value: 0.421
       objectReference: {fileID: 0}
     - target: {fileID: 2510250751968256343, guid: cf600a084a9e64249ad78e2817075d89,
         type: 3}

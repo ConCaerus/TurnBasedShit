@@ -22,11 +22,6 @@ public class BlacksmithCanvas : MonoBehaviour {
         reference = GameInfo.getCurrentLocationAsTown().town.getBlacksmith();
         transform.GetChild(0).transform.localScale = new Vector3(0.0f, 0.0f);
 
-        inventoryWeapons.init();
-        inventoryArmor.init();
-        partyWeapons.init();
-        partyArmor.init();
-
         updateInfo();
     }
 

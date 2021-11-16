@@ -7,7 +7,6 @@ using UnityEngine.EventSystems;
 using DG.Tweening;
 
 public class WeaponSelectionCanvas : UnitEquipmentSelectionCanvas {
-    [SerializeField] Image weaponImage;
     [SerializeField] TextMeshProUGUI nameText, powText, spdText, firstAttributeText, secondAttributeText;
 
     public Weapon getWeaponInSlot(int index) {
@@ -41,8 +40,8 @@ public class WeaponSelectionCanvas : UnitEquipmentSelectionCanvas {
     public override void updateInfo() {
         //                          Weapon shit
         if(getWeaponInSlot(slot.getSelectedSlotIndex()) == null || getWeaponInSlot(slot.getSelectedSlotIndex()).isEmpty()) {
-            weaponImage.sprite = null;
-            weaponImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
+            shownSprite.sprite = null;
+            shownSprite.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
 
             nameText.text = "";
             powText.text = "0.0";
@@ -52,8 +51,8 @@ public class WeaponSelectionCanvas : UnitEquipmentSelectionCanvas {
             return;
         }
         var shownWeapon = getWeaponInSlot(slot.getSelectedSlotIndex());
-        weaponImage.sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(shownWeapon).sprite;
-        weaponImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownWeapon.rarity);
+        shownSprite.sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(shownWeapon).sprite;
+        shownSprite.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownWeapon.rarity);
 
 
         //  stats

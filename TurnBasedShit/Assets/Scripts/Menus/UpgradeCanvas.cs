@@ -26,7 +26,8 @@ public class UpgradeCanvas : MonoBehaviour {
         attUpgrade = GameInfo.getCurrentLocationAsUpgrade().attUpgrade;
         statUpgrade = GameInfo.getCurrentLocationAsUpgrade().statUpgrade;
 
-        createSlots();
+        transform.GetChild(0).transform.localScale = new Vector3(0.0f, 0.0f);
+
         attributeText.text = "";
         statText.text = "";
     }
@@ -41,6 +42,7 @@ public class UpgradeCanvas : MonoBehaviour {
     public void show() {
         float speed = 0.15f;
         transform.GetChild(0).DOScale(new Vector2(1.0f, 1.0f), speed);
+        createSlots();
         isShowing = true;
     }
 

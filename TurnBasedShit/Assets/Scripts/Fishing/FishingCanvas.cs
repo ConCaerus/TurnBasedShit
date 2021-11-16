@@ -62,7 +62,6 @@ public class FishingCanvas : MonoBehaviour {
 
 
             if(progressSlider.value == 1.0f) {
-                Debug.Log("Done");
                 stopFishing();
                 FindObjectOfType<RoomMovement>().deinteract();
 

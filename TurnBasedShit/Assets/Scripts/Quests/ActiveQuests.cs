@@ -16,6 +16,9 @@ public static class ActiveQuests {
         else if(type == GameInfo.questType.pickup)
             return "PickupQuestCount";
 
+        else if(type == GameInfo.questType.rescue)
+            return "RescueQuestCount";
+
         return null;
     }
 
@@ -32,6 +35,9 @@ public static class ActiveQuests {
         else if(type == GameInfo.questType.pickup)
             return "PickupQuest" + index.ToString();
 
+        else if(type == GameInfo.questType.rescue)
+            return "RescueQuest" + index.ToString();
+
         return null;
     }
 
@@ -41,6 +47,7 @@ public static class ActiveQuests {
         clearBossFightQuests();
         clearDeliveryQuests();
         clearPickupQuests();
+        clearRescueQuests();
 
         if(clearInstanceQueue)
             GameInfo.clearQuestInstanceIDQueue();
@@ -69,6 +76,12 @@ public static class ActiveQuests {
         }
         SaveData.deleteKey(countTag(GameInfo.questType.pickup));
     }
+    public static void clearRescueQuests() {
+        for(int i = 0; i < getRescueQuestCount(); i++) {
+            SaveData.deleteKey(tag(i, GameInfo.questType.rescue));
+        }
+        SaveData.deleteKey(countTag(GameInfo.questType.rescue));
+    }
 
     public static void addQuest(KillQuest qu) {
         int index = getKillQuestCount();
@@ -92,6 +105,13 @@ public static class ActiveQuests {
         SaveData.setInt(countTag(GameInfo.questType.delivery), index + 1);
     }
     public static void addQuest(PickupQuest qu) {
+        int index = getPickupQuestCount();
+
+        var data = JsonUtility.ToJson(qu);
+        SaveData.setString(tag(index, GameInfo.questType.pickup), data);
+        SaveData.setInt(countTag(GameInfo.questType.pickup), index + 1);
+    }
+    public static void addQuest(RescueQuest qu) {
         int index = getPickupQuestCount();
 
         var data = JsonUtility.ToJson(qu);
@@ -156,6 +176,20 @@ public static class ActiveQuests {
         foreach(var i in temp)
             addQuest(i);
     }
+    public static void removeQuest(RescueQuest quest) {
+        if(quest == null)
+            return;
+        List<RescueQuest> temp = new List<RescueQuest>();
+        for(int i = 0; i < getRescueQuestCount(); i++) {
+            var qu = getRescueQuest(i);
+            if(qu != null && !qu.isEqualTo(quest))
+                temp.Add(qu);
+        }
+
+        clearRescueQuests();
+        foreach(var i in temp)
+            addQuest(i);
+    }
 
     public static void overrideQuest(int index, KillQuest qu) {
         var data = JsonUtility.ToJson(qu);
@@ -173,6 +207,10 @@ public static class ActiveQuests {
         var data = JsonUtility.ToJson(qu);
         SaveData.setString(tag(index, GameInfo.questType.pickup), data);
     }
+    public static void overrideQuest(int index, RescueQuest qu) {
+        var data = JsonUtility.ToJson(qu);
+        SaveData.setString(tag(index, GameInfo.questType.rescue), data);
+    }
 
     public static KillQuest getKillQuest(int index) {
         var data = SaveData.getString(tag(index, GameInfo.questType.kill));
@@ -189,6 +227,10 @@ public static class ActiveQuests {
     public static PickupQuest getPickupQuest(int index) {
         var data = SaveData.getString(tag(index, GameInfo.questType.pickup));
         return JsonUtility.FromJson<PickupQuest>(data);
+    }
+    public static RescueQuest getRescueQuest(int index) {
+        var data = SaveData.getString(tag(index, GameInfo.questType.rescue));
+        return JsonUtility.FromJson<RescueQuest>(data);
     }
 
     public static int getQuestCount() {
@@ -210,6 +252,9 @@ public static class ActiveQuests {
     }
     public static int getPickupQuestCount() {
         return SaveData.getInt(countTag(GameInfo.questType.pickup));
+    }
+    public static int getRescueQuestCount() {
+        return SaveData.getInt(countTag(GameInfo.questType.rescue));
     }
 
     public static bool hasQuest(KillQuest q) {
@@ -252,6 +297,16 @@ public static class ActiveQuests {
 
         return false;
     }
+    public static bool hasQuest(RescueQuest q) {
+        if(q == null)
+            return false;
+        for(int i = 0; i < getRescueQuestCount(); i++) {
+            if(getRescueQuest(i).isEqualTo(q))
+                return true;
+        }
+
+        return false;
+    }
 
     public static bool hasQuestWithInstanceID(int id) {
         for(int i = 0; i < getKillQuestCount(); i++) {
@@ -267,6 +322,10 @@ public static class ActiveQuests {
                 return true;
         }
         for(int i = 0; i < getPickupQuestCount(); i++) {
+            if(getPickupQuest(i).q_instanceID == id)
+                return true;
+        }
+        for(int i = 0; i < getRescueQuestCount(); i++) {
             if(getPickupQuest(i).q_instanceID == id)
                 return true;
         }
@@ -300,6 +359,13 @@ public static class ActiveQuests {
         }
         return null;
     }
+    public static RescueQuest getRescueQuestWithInstanceID(int id) {
+        for(int i = 0; i < getRescueQuestCount(); i++) {
+            if(getRescueQuest(i).q_instanceID == id)
+                return getRescueQuest(i);
+        }
+        return null;
+    }
 
     public static List<KillQuest> getAllKillQuests() {
         var temp = new List<KillQuest>();
@@ -325,6 +391,12 @@ public static class ActiveQuests {
             temp.Add(getPickupQuest(i));
         return temp;
     }
+    public static List<RescueQuest> getAllRescueQuests() {
+        var temp = new List<RescueQuest>();
+        for(int i = 0; i < getRescueQuestCount(); i++)
+            temp.Add(getRescueQuest(i));
+        return temp;
+    }
 
     public static int getMostRecentQuestInstanceID() {
         int temp = 0;
@@ -341,6 +413,10 @@ public static class ActiveQuests {
                 temp = i.q_instanceID;
         }
         foreach(var i in getAllPickupQuests()) {
+            if(i.q_instanceID > temp)
+                temp = i.q_instanceID;
+        }
+        foreach(var i in getAllRescueQuests()) {
             if(i.q_instanceID > temp)
                 temp = i.q_instanceID;
         }

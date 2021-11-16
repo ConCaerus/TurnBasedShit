@@ -8,7 +8,6 @@ using TMPro;
 
 
 public class ItemSelectionCanvas : UnitEquipmentSelectionCanvas {
-    [SerializeField] Image itemImage;
     [SerializeField] TextMeshProUGUI nameText;
 
     public Item getItemInSlot(int index) {
@@ -42,15 +41,15 @@ public class ItemSelectionCanvas : UnitEquipmentSelectionCanvas {
     public override void updateInfo() {
         //                          Item shit
         if(getItemInSlot(slot.getSelectedSlotIndex()) == null || getItemInSlot(slot.getSelectedSlotIndex()).isEmpty()) {
-            itemImage.sprite = null;
-            itemImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
+            shownSprite.sprite = null;
+            shownSprite.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
 
             nameText.text = "";
             return;
         }
         var shownItem = getItemInSlot(slot.getSelectedSlotIndex());
-        itemImage.sprite = FindObjectOfType<PresetLibrary>().getItemSprite(shownItem).sprite;
-        itemImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownItem.rarity);
+        shownSprite.sprite = FindObjectOfType<PresetLibrary>().getItemSprite(shownItem).sprite;
+        shownSprite.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownItem.rarity);
 
 
         //  stats

@@ -189,8 +189,8 @@ public class UnitSpriteHandler : MonoBehaviour {
 
         if(body.GetComponent<Animator>().GetInteger("state") != head.GetComponent<Animator>().GetInteger("state"))
             return false;
-        bool h = head.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && !head.GetComponent<Animator>().IsInTransition(0);
-        bool b = body.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && !body.GetComponent<Animator>().IsInTransition(0);
+        bool h = head.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime >= head.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.length;
+        bool b = body.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime >= body.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.length;
 
         return h && b;
     }

@@ -21,27 +21,28 @@ public static class Map {
 
     public static GameInfo.region getDiffForX(float x) {
         for(int i = 0; i < 6; i++) {
-            if(x < getRegionXStartPoint(i + 1))
+            if(x < getRegionXStartPoint(i))
                 return (GameInfo.region)(i);
         }
-        return (GameInfo.region)(-1);
+        if(x > 250f)
+            return GameInfo.region.hell;
+        else
+            return GameInfo.region.grassland;   //forgive me
     }
     public static float getRegionXLength(int regionIndex) {
         float totalLength = rightBound - leftBound;
         switch(regionIndex) {
-            case 0: return totalLength / 7f;
-            case 1: return totalLength / 7f;
-            case 2: return totalLength / 7f;
-            case 3: return totalLength / 7f;
-            case 4: return totalLength / 7f;
-            case 5: return totalLength / 7f;
-            case 6: return totalLength / 7f;
+            case 0: return totalLength / 5f;
+            case 1: return totalLength / 5f;
+            case 2: return totalLength / 5f;
+            case 3: return totalLength / 5f;
+            case 4: return totalLength / 5f;
             default: return 0.0f;
         }
     }
     public static float getRegionXStartPoint(int regionIndex) {
         float dist = leftBound;
-        for(int i = 0; i < regionIndex; i++) {
+        for(int i = 0; i <= regionIndex; i++) {
             dist += getRegionXLength(i);
         }
         return dist;
