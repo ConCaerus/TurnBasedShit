@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class MapFogTexture : MonoBehaviour {
     [SerializeField] SpriteMask fogMask;
@@ -9,21 +10,20 @@ public class MapFogTexture : MonoBehaviour {
     float seeingDist = 4.0f;
     float stretchFactor = 0.1f;
 
+    List<fogPointInfo> clearingPoints = new List<fogPointInfo>();
+    Coroutine clearer = null;
+
     Vector2 lastUpdatedPos;
+
+
+    struct fogPointInfo {
+        public Vector2Int pos;
+        public float distPercentage;
+    }
 
     private void Start() {
         fow = Map.getFogTexture();
-
-        if(!Map.hasSavedFogTexture()) {
-            for(int x = 0; x < fow.width; x++) {
-                for(int y = 0; y < fow.height; y++) {
-                    fow.SetPixel(x, y, Color.white);
-                }
-            }
-        }
-        updateTex();
-
-
+        StartCoroutine(FindObjectOfType<TransitionCanvas>().runAfterLoading(startingClear));
 
         //  set the sprite of the frog mask
         var r = new Rect(0, 0, fow.width, fow.height);
@@ -47,44 +47,72 @@ public class MapFogTexture : MonoBehaviour {
     }
 
 
+    public void startingClear() {
+        clearFogAroundPos(transform.position, 10.0f, true);
+    }
+
+
+    private void Update() {
+        if(Input.GetKeyDown(KeyCode.Space))
+            clearFogAroundPos(Camera.main.transform.position, 10.0f, true);
+    }
+
 
     private void FixedUpdate() {
         if(Vector2.Distance(lastUpdatedPos, transform.position) > 1.0f) {
-            updateTex();
+            clearFogAroundPos(transform.position, seeingDist, false);
             lastUpdatedPos = transform.position;
         }
     }
 
 
-    void updateTex() {
-        var highlightDist = seeingDist + 2.0f;
+    public void clearFogAroundPos(Vector2 pos, float area, bool clearingArea) {
+        var highlightDist = area * 1.5f;
+
+        //  sets the pos to a good position to map to the texture
+        if(clearingArea) 
+            pos = getWorldPosForTexPoint(getTexPosForWorldPoint(pos));
+
         Vector2Int feild = new Vector2Int((int)highlightDist + 1, (int)highlightDist + 1);
-        var startingPoint = getTexPosForWorldPoint(transform.position) - feild;
-        var endingPoint = getTexPosForWorldPoint(transform.position) + feild;
+        var startingPoint = getTexPosForWorldPoint(pos) - feild;
+        var endingPoint = getTexPosForWorldPoint(pos) + feild;
 
         startingPoint.x = Mathf.Clamp(startingPoint.x, 0, fow.width - 1);
         startingPoint.y = Mathf.Clamp(startingPoint.y, 0, fow.height - 1);
         endingPoint.x = Mathf.Clamp(endingPoint.x, 0, fow.width - 1);
         endingPoint.y = Mathf.Clamp(endingPoint.y, 0, fow.height - 1);
 
+        List<fogPointInfo> clearingAreaPoints = new List<fogPointInfo>();
 
         for(int x = startingPoint.x - 1; x < endingPoint.x + 1; x++) {
             for(int y = startingPoint.y - 1; y < endingPoint.y + 1; y++) {
-                if(fow.GetPixel(x, y) == Color.clear)
+                if(fow.GetPixel(x, y).a == 0.0f)
                     continue;
                 var p = getWorldPosForTexPoint(new Vector2Int(x, y));
                 if(x < fow.width - 1 && y < fow.height - 1) {
                     p += getWorldPosForTexPoint(new Vector2Int(x + 1, y + 1));
                     p /= 2.0f;
                 }
-                if(Vector2.Distance(transform.position, p) < seeingDist)
-                    StartCoroutine(animateFogClearing(x, y));
+                if(Vector2.Distance(pos, p) < area) {
+                    var info = new fogPointInfo();
+                    info.pos = new Vector2Int(x, y);
+                    info.distPercentage = Vector2.Distance(p, pos) / area;
+                    if(!clearingArea)
+                        clearingPoints.Add(info);
+                    else
+                        clearingAreaPoints.Add(info);
+                }
 
-                else if(Vector2.Distance(transform.position, p) < highlightDist && fow.GetPixel(x, y) == Color.white) {
+                else if(Vector2.Distance(pos, p) < highlightDist && fow.GetPixel(x, y) == Color.white) {
                     fow.SetPixel(x, y, new Color(0.0f, 0.0f, 0.0f, 0.1f));
                 }
             }
         }
+
+        if(clearer == null && !clearingArea)
+            clearer = StartCoroutine(animateFogClearing());
+        if(clearingArea)
+            StartCoroutine(animateFogAreaClearing(clearingAreaPoints, highlightDist));
 
         fow.Apply(false);
     }
@@ -168,20 +196,91 @@ public class MapFogTexture : MonoBehaviour {
         return (float)clearedCount / pixels.Length;
     }
 
-    IEnumerator animateFogClearing(int x, int y) {
-        while(fow.GetPixel(x, y) != Color.clear) {
-            var c = fow.GetPixel(x, y);
-            float negate = 0.005f;
-            fow.SetPixel(x, y, new Color(c.r - negate, c.g - negate, c.b - negate, c.a - negate));
+    IEnumerator animateFogClearing() {
+        while(clearingPoints.Count > 0) {
+            for(int i = clearingPoints.Count - 1; i >= 0; i--) {
+                var p = clearingPoints[i];
+
+                if(fow.GetPixel(p.pos.x, p.pos.y).a == 0.0f) {
+                    clearingPoints.RemoveAt(i);
+                    continue;
+                }
+
+                var c = fow.GetPixel(p.pos.x, p.pos.y);
+                float negate = 0.5f * Time.deltaTime;
+                fow.SetPixel(p.pos.x, p.pos.y, new Color(c.r, c.g, c.b, c.a - negate));
+            }
+            fow.Apply(false);
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        clearer = null;
+    }
+
+    IEnumerator animateFogAreaClearing(List<fogPointInfo> clearingAreaPoints, float highlightAmt) {
+        List<int> runningIndexes = new List<int>();
+        List<int> highlightingIndexes = new List<int>();
+
+        while(clearingAreaPoints.Count > 0) {
+            //  disappearing
+            for(int i = runningIndexes.Count - 1; i >= 0; i--) {
+                var p = clearingAreaPoints[runningIndexes[i]];
+
+                if(fow.GetPixel(p.pos.x, p.pos.y).a == 0.0f) {
+                    runningIndexes.RemoveAt(i);
+                    continue;
+                }
+
+                var c = fow.GetPixel(p.pos.x, p.pos.y);
+                float negate = 5.0f * Time.deltaTime * (50.0f * (p.distPercentage + 1.0f));
+                fow.SetPixel(p.pos.x, p.pos.y, new Color(c.r, c.g, c.b, c.a - negate));
+            }
+
+            //  highlighting
+            if(highlightingIndexes.Count > 0) {
+                for(int i = highlightingIndexes.Count - 1; i >= 0; i--) {
+                    var p = clearingAreaPoints[highlightingIndexes[i]];
+
+                    fow.SetPixel(p.pos.x, p.pos.y, new Color(0.0f, 0.0f, 0.0f, 0.1f));
+                    highlightingIndexes.RemoveAt(i);
+                }
+            }
+
 
             fow.Apply(false);
+
+            //  updating lists
+            if(clearingAreaPoints.Count > 0) {
+                runningIndexes = new List<int>();
+                float nextIndex = Mathf.Infinity;
+
+                for(int i = clearingAreaPoints.Count - 1; i >= 0; i--) {
+                    if(fow.GetPixel(clearingAreaPoints[i].pos.x, clearingAreaPoints[i].pos.y).a == 0.0f) {
+                        clearingAreaPoints.RemoveAt(i);
+                        continue;
+                    }
+
+                    if(clearingAreaPoints[i].distPercentage < nextIndex) {
+                        nextIndex = clearingAreaPoints[i].distPercentage;
+                    }
+                }
+
+                float highlightIndex = nextIndex + highlightAmt;
+                for(int i = 0; i < clearingAreaPoints.Count; i++) {
+                    if(clearingAreaPoints[i].distPercentage <= nextIndex)
+                        runningIndexes.Add(i);
+                    else if(clearingAreaPoints[i].distPercentage <= highlightIndex)
+                        highlightingIndexes.Add(i);
+                }
+            }
 
             yield return new WaitForEndOfFrame();
         }
     }
 
     IEnumerator moveFog(float dist, bool movingRight = true) {
-        float speed = .01f;
+        float speed = .001f;
 
         Vector2 target = new Vector2(dist, 0.0f);
         if(!movingRight)

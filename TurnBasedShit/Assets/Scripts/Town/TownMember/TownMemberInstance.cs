@@ -7,109 +7,50 @@ using TMPro;
 public class TownMemberInstance : MonoBehaviour {
     public TownMember reference;
 
-    [SerializeField] GameObject dialog, acceptButton, declineButton;
     [SerializeField] Sprite exMark, quMark;
     [SerializeField] Color markColor;
     GameObject mark;
     float questIconSpeed = 1.0f;
 
-    [SerializeField] TextMeshProUGUI dialogText;
+    public NPCPreset npcPreset = null;
 
-    Coroutine dialogHider = null;
     public bool interacting = false;
-
-    float dialogHeight = 2.73f, dialogArrowHeight = -0.75f;
-    float dialogMoveSpeed = 2.5f;
+    public bool isNpcPreset = false;
 
     private void Start() {
-        GetComponentInChildren<UnitSpriteHandler>().setEverything(reference.m_sprite, null, null, reference.m_sprite.layerOffset);
+        if(npcPreset != null)
+            reference = npcPreset.member;
+        GetComponentInChildren<UnitSpriteHandler>().setEverything(reference.sprite, null, FindObjectOfType<PresetLibrary>().getArmor(reference.armor), reference.sprite.layerOffset);
+        GetComponentInChildren<DialogBox>().runWhenDoneAndAccepted = acceptQuest;
+        GetComponentInChildren<DialogBox>().setName(reference.name);
+        GetComponentInChildren<DialogBox>().setDialog(reference.dialog);
+
 
         if(reference.hasQuest) {
             mark = createMark(quMark);
             updateMark();
             StartCoroutine(waitToAnim(mark.gameObject));
         }
-
-        dialog.SetActive(false);
     }
 
 
     private void Update() {
         if(interacting && inRangeOfPlayer()) {
-            if(!dialog.activeInHierarchy) {
-                showDialog();
+            if(!GetComponentInChildren<DialogBox>().showing) {
+                GetComponentInChildren<DialogBox>().advanceDialog();
 
                 //  hide other member's dialogs
                 foreach(var i in FindObjectsOfType<TownMemberInstance>()) {
                     if(i != this)
-                        i.stopShowingDialog();
+                        i.GetComponentInChildren<DialogBox>().showDialog();
                 }
             }
-            updateDialogBox();
-        }
-        else if(interacting && !inRangeOfPlayer()) {
-            interacting = false;
-            FindObjectOfType<TownCameraMovement>().zoomOut();
-        }
-        if(!interacting && dialog.activeInHierarchy && dialogHider == null) {
-            stopShowingDialog();
         }
     }
 
 
     bool inRangeOfPlayer() {
         return Mathf.Abs(transform.position.x - FindObjectOfType<LocationMovement>().transform.position.x) < 5.0f;
-    }
-    void updateDialogBox() {
-        var dialogPos = new Vector2((FindObjectOfType<LocationMovement>().transform.position.x - transform.position.x) / 4.0f, dialogHeight);
-        var dialogArrowX = transform.position.x;
-
-        dialog.transform.localPosition = Vector3.Lerp(dialog.transform.localPosition, dialogPos, dialogMoveSpeed * Time.deltaTime);
-        dialog.transform.GetChild(1).transform.position = Vector3.Lerp(dialog.transform.GetChild(1).transform.position, new Vector3(dialogArrowX, dialog.transform.GetChild(1).transform.position.y, 0.0f), dialogMoveSpeed * 2.0f * Time.deltaTime);
-        dialog.transform.GetChild(1).transform.localPosition = new Vector3(dialog.transform.GetChild(1).transform.localPosition.x, dialogArrowHeight, 0.0f);
-
-        if(reference.hasQuest) {
-            if(!reference.isQuestActive()) {
-                if(reference.m_questType == GameInfo.questType.bossFight)
-                    dialogText.text = reference.m_bossQuest.bossUnit.u_name;
-                else if(reference.m_questType == GameInfo.questType.kill)
-                    dialogText.text = "Kill";
-                else if(reference.m_questType == GameInfo.questType.delivery)
-                    dialogText.text = "Delivery";
-                else if(reference.m_questType == GameInfo.questType.pickup)
-                    dialogText.text = "Pickup";
-                acceptButton.SetActive(true);
-                declineButton.SetActive(true);
-            }
-            else {
-                dialogText.text = "Quest already accepted";
-                acceptButton.SetActive(false);
-                declineButton.SetActive(false);
-            }
-        }
-        else {
-            acceptButton.SetActive(false);
-            declineButton.SetActive(false);
-        }
-    }
-
-    void showDialog() {
-        dialog.SetActive(true);
-        dialog.transform.DOScale(2.0f, 0.15f);
-    }
-
-    IEnumerator hideDialog() {
-        dialog.transform.DOScale(0.0f, 0.25f);
-
-        yield return new WaitForSeconds(0.25f);
-
-        dialog.SetActive(false);
-        dialogHider = null;
-    }
-
-    public void stopShowingDialog() {
-        interacting = false;
-        dialogHider = StartCoroutine(hideDialog());
     }
 
 
@@ -154,26 +95,24 @@ public class TownMemberInstance : MonoBehaviour {
 
     //  dialog buttons
     public void acceptQuest() {
+        GetComponentInChildren<DialogBox>().hideDialog(1);
         if(!reference.isQuestActive()) {
-            if(reference.m_bossQuest != null) {
-                ActiveQuests.addQuest(reference.m_bossQuest);
+            if(reference.bossQust != null) {
+                ActiveQuests.addQuest(reference.bossQust);
             }
-            else if(reference.m_killQuest != null) {
-                ActiveQuests.addQuest(reference.m_killQuest);
+            else if(reference.killQuest != null) {
+                ActiveQuests.addQuest(reference.killQuest);
             }
-            else if(reference.m_deliveryQuest != null) {
-                ActiveQuests.addQuest(reference.m_deliveryQuest);
+            else if(reference.deliveryQuest != null) {
+                ActiveQuests.addQuest(reference.deliveryQuest);
             }
-            else if(reference.m_pickupQuest != null) {
-                ActiveQuests.addQuest(reference.m_pickupQuest);
+            else if(reference.pickupQuest != null) {
+                ActiveQuests.addQuest(reference.pickupQuest);
             }
         }
         updateMark();
-        stopShowingDialog();
-        FindObjectOfType<TownCameraMovement>().zoomOut();
     }
     public void declineQuest() {
-        stopShowingDialog();
-        FindObjectOfType<TownCameraMovement>().zoomOut();
+        GetComponentInChildren<DialogBox>().hideDialog(0);
     }
 }

@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class PresetLibrary : MonoBehaviour {
     //  Units
-    [SerializeField] GameObject playerUnit;
+    [SerializeField] GameObject playerUnit, townMemberUnit;
     [SerializeField] GameObject[] enemies;
     [SerializeField] GameObject[] bosses;
+    [SerializeField] NPCPreset[] townMemberNPCs;
     [SerializeField] UnitTraitPreset[] unitTraits;
 
     //  unit customs
@@ -192,6 +193,20 @@ public class PresetLibrary : MonoBehaviour {
                 return i;
         }
         return -1;
+    }
+
+    public GameObject getRandomTownMemberNPC() {
+        var temp = townMemberUnit;
+        var npc = townMemberNPCs[Random.Range(0, townMemberNPCs.Length)];
+        temp.GetComponentInChildren<DialogBox>().setDialog(npc.dialog);
+        var we = getWeapon(npc.weapon.preset.name);
+        var ar = getArmor(npc.armor.preset.name);
+
+        npc.member.weapon.setEqualTo(we, true);
+        npc.member.armor.setEqualTo(ar, true);
+
+        temp.GetComponent<TownMemberInstance>().reference.setEqualsTo(npc.member, false);
+        return temp;
     }
 
     public UnitTrait getRandomGoodUnitTrait() {
@@ -616,11 +631,11 @@ public class PresetLibrary : MonoBehaviour {
 
         return loc;
     }
-    public BossLocation createRandomBossLocation() {
+    public BossLocation createBossLocation() {
         var boss = getRandomBoss();
         return new BossLocation(Map.getRandPos(), boss, boss.GetComponent<BossUnitInstance>().enemyDiff, this);
     }
-    public PickupLocation createRandomPickupLocation() {
+    public PickupLocation createPickupLocation() {
         int type = Random.Range(0, 4);
         if(type == 0)
             return new PickupLocation(Map.getRandPos(), getRandomWeapon(), this, GameInfo.getCurrentRegion());
@@ -631,25 +646,28 @@ public class PresetLibrary : MonoBehaviour {
         else
             return new PickupLocation(Map.getRandPos(), getRandomItem(), this, GameInfo.getCurrentRegion());
     }
-    public RescueLocation createRandomRescueLocation() {
+    public RescueLocation createRescueLocation() {
         return new RescueLocation(Map.getRandPos(), this);
     }
-    public UpgradeLocation createRandomUpgradeLocation() {
+    public UpgradeLocation createUpgradeLocation() {
         return new UpgradeLocation(Map.getRandPos(), Random.Range(0, 2));
     }
     public NestLocation createRandomNestLocation() {
         return new NestLocation(Map.getRandPos(), Random.Range(1, 4), this, GameInfo.getRandomDiff());
     }
-    public FishingLocation createRandomFishingLocation() {
+    public FishingLocation createFishingLocation() {
         return new FishingLocation(Map.getRandPos(), GameInfo.getRandomDiff());
+    }
+    public EyeLocation createEyeLocation() {
+        return new EyeLocation(Map.getRandPos());
     }
 
 
     public BossFightQuest createRandomBossFightQuest(bool setID) {
-        return new BossFightQuest(createRandomBossLocation(), setID);
+        return new BossFightQuest(createBossLocation(), setID);
     }
     public PickupQuest createRandomPickupQuest(bool setID) {
-        return new PickupQuest(createRandomPickupLocation(), setID);
+        return new PickupQuest(createPickupLocation(), setID);
     }
     public KillQuest createRandomKillQuest(bool setID) {
         return new KillQuest(Random.Range(5, 36), getRandomEnemy().GetComponent<EnemyUnitInstance>().enemyType, setID);   //  change this number too

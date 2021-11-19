@@ -87,6 +87,6 @@ public class ItemSelectionCanvas : UnitEquipmentSelectionCanvas {
     }
 
     public override int getState() {
-        return 3;
+        return 2;
     }
 }

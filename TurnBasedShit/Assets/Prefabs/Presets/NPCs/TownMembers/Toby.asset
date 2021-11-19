@@ -1,0 +1,707 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fee704fe5ab1034795cbb4a31d41007, type: 3}
+  m_Name: Toby
+  m_EditorClassIdentifier: 
+  member:
+    hasQuest: 0
+    sprite:
+      headIndex: 0
+      faceIndex: 0
+      bodyIndex: 0
+      layerOffset: 0
+      color: {r: 0.4811321, g: 0.33891064, b: 0.33891064, a: 1}
+    questType: 0
+    bossQust:
+      q_instanceID: 0
+      bossUnit:
+        u_name: 
+        u_expCap: 25
+        u_exp: 0
+        u_level: 0
+        u_skillExpCap: 100
+        u_bluntExp: 0
+        u_edgedExp: 0
+        u_summonedExp: 0
+        u_sprite:
+          headIndex: 0
+          faceIndex: 0
+          bodyIndex: 0
+          layerOffset: 0
+          color: {r: 1, g: 1, b: 1, a: 1}
+        u_baseMaxHealth: 0
+        u_health: 100
+        u_speed: 0
+        u_power: 0
+        u_defence: 0
+        u_critChance: 0
+        u_bleedCount: 0
+        u_instanceID: -1
+        equippedWeapon:
+          instanceID: -1
+          name: 
+          type: 0
+          rarity: 0
+          coinCost: 0
+          canBeFished: 0
+          fishedData:
+            hookedPos: {x: 0, y: 0}
+            hookedRot: 0
+            diffRegion: 0
+            chanceToCatch: 0
+          flavor: Choco
+          wornAmount: 3
+          attributes: 
+          sUsage: 0
+          sUsageAmount: 0
+          aType: 0
+          power: 0
+          speedMod: 0
+          sprite:
+            sprite: {fileID: 0}
+            equippedX: 0
+            equippedY: 0
+            equippedRot: 0
+            equippedXSize: 0
+            equippedYSize: 0
+        equippedArmor:
+          instanceID: -1
+          name: 
+          type: 0
+          rarity: 0
+          coinCost: 0
+          canBeFished: 0
+          fishedData:
+            hookedPos: {x: 0, y: 0}
+            hookedRot: 0
+            diffRegion: 0
+            chanceToCatch: 0
+          flavor: Choco
+          wornAmount: 3
+          attributes: 
+          defence: 0
+          speedMod: 0
+          sprite:
+            sprite: {fileID: 0}
+            equippedSprite: {fileID: 0}
+            equippedShoulder: {fileID: 0}
+            equippedHat: {fileID: 0}
+            xPos0: 0
+            yPos0: 0
+            xSize0: 0
+            ySize0: 0
+            xPos1: 0
+            yPos1: 0
+            xSize1: 0
+            ySize1: 0
+            xPos2: 0
+            yPos2: 0
+            xSize2: 0
+            ySize2: 0
+            xShoulderPos0: 0
+            yShoulderPos0: 0
+            xShoulderSize0: 0
+            yShoulderSize0: 0
+            shoulderRot: 0
+            xShoulderPos1: 0
+            yShoulderPos1: 0
+            xShoulderSize1: 0
+            yShoulderSize1: 0
+            xShoulderPos2: 0
+            yShoulderPos2: 0
+            xShoulderSize2: 0
+            yShoulderSize2: 0
+            hatInfrontOfHead: 1
+            xHatPos0: 0
+            yHatPos0: 0
+            xHatSize0: 0
+            yHatSize0: 0
+            hatRot: 0
+            xHatPos1: 0
+            yHatPos1: 0
+            xHatSize1: 0
+            yHatSize1: 0
+            xHatPos2: 0
+            yHatPos2: 0
+            xHatSize2: 0
+            yHatSize2: 0
+        equippedItem:
+          instanceID: -1
+          name: 
+          type: 0
+          rarity: 0
+          coinCost: 0
+          canBeFished: 0
+          fishedData:
+            hookedPos: {x: 0, y: 0}
+            hookedRot: 0
+            diffRegion: 0
+            chanceToCatch: 0
+          flavor: Choco
+          tEffects: []
+          pEffects: []
+          sprite:
+            sprite: {fileID: 0}
+        u_traits: []
+        u_deathInfo:
+          nameOfKiller: 
+          causeOfDeath: 0
+          enemyType: 0
+      location:
+        pos: {x: 0, y: 0}
+        type: 0
+        combatLocation:
+          waves: []
+          difficulty: 0
+          coinReward: 0
+          weapons: []
+          armor: []
+          consumables: []
+          items: []
+          rescuedUnits: []
+        bossUnit:
+          u_name: 
+          u_expCap: 25
+          u_exp: 0
+          u_level: 0
+          u_skillExpCap: 100
+          u_bluntExp: 0
+          u_edgedExp: 0
+          u_summonedExp: 0
+          u_sprite:
+            headIndex: 0
+            faceIndex: 0
+            bodyIndex: 0
+            layerOffset: 0
+            color: {r: 1, g: 1, b: 1, a: 1}
+          u_baseMaxHealth: 0
+          u_health: 100
+          u_speed: 0
+          u_power: 0
+          u_defence: 0
+          u_critChance: 0
+          u_bleedCount: 0
+          u_instanceID: -1
+          equippedWeapon:
+            instanceID: -1
+            name: 
+            type: 0
+            rarity: 0
+            coinCost: 0
+            canBeFished: 0
+            fishedData:
+              hookedPos: {x: 0, y: 0}
+              hookedRot: 0
+              diffRegion: 0
+              chanceToCatch: 0
+            flavor: Choco
+            wornAmount: 3
+            attributes: 
+            sUsage: 0
+            sUsageAmount: 0
+            aType: 0
+            power: 0
+            speedMod: 0
+            sprite:
+              sprite: {fileID: 0}
+              equippedX: 0
+              equippedY: 0
+              equippedRot: 0
+              equippedXSize: 0
+              equippedYSize: 0
+          equippedArmor:
+            instanceID: -1
+            name: 
+            type: 0
+            rarity: 0
+            coinCost: 0
+            canBeFished: 0
+            fishedData:
+              hookedPos: {x: 0, y: 0}
+              hookedRot: 0
+              diffRegion: 0
+              chanceToCatch: 0
+            flavor: Choco
+            wornAmount: 3
+            attributes: 
+            defence: 0
+            speedMod: 0
+            sprite:
+              sprite: {fileID: 0}
+              equippedSprite: {fileID: 0}
+              equippedShoulder: {fileID: 0}
+              equippedHat: {fileID: 0}
+              xPos0: 0
+              yPos0: 0
+              xSize0: 0
+              ySize0: 0
+              xPos1: 0
+              yPos1: 0
+              xSize1: 0
+              ySize1: 0
+              xPos2: 0
+              yPos2: 0
+              xSize2: 0
+              ySize2: 0
+              xShoulderPos0: 0
+              yShoulderPos0: 0
+              xShoulderSize0: 0
+              yShoulderSize0: 0
+              shoulderRot: 0
+              xShoulderPos1: 0
+              yShoulderPos1: 0
+              xShoulderSize1: 0
+              yShoulderSize1: 0
+              xShoulderPos2: 0
+              yShoulderPos2: 0
+              xShoulderSize2: 0
+              yShoulderSize2: 0
+              hatInfrontOfHead: 1
+              xHatPos0: 0
+              yHatPos0: 0
+              xHatSize0: 0
+              yHatSize0: 0
+              hatRot: 0
+              xHatPos1: 0
+              yHatPos1: 0
+              xHatSize1: 0
+              yHatSize1: 0
+              xHatPos2: 0
+              yHatPos2: 0
+              xHatSize2: 0
+              yHatSize2: 0
+          equippedItem:
+            instanceID: -1
+            name: 
+            type: 0
+            rarity: 0
+            coinCost: 0
+            canBeFished: 0
+            fishedData:
+              hookedPos: {x: 0, y: 0}
+              hookedRot: 0
+              diffRegion: 0
+              chanceToCatch: 0
+            flavor: Choco
+            tEffects: []
+            pEffects: []
+            sprite:
+              sprite: {fileID: 0}
+          u_traits: []
+          u_deathInfo:
+            nameOfKiller: 
+            causeOfDeath: 0
+            enemyType: 0
+    deliveryQuest:
+      q_instanceID: 0
+      deliveryLocation:
+        pos: {x: 0, y: 0}
+        type: 0
+        combatLocation:
+          waves: []
+          difficulty: 0
+          coinReward: 0
+          weapons: []
+          armor: []
+          consumables: []
+          items: []
+          rescuedUnits: []
+        town:
+          t_name: 
+          t_instanceID: 0
+          interactedBuildingIndex: 0
+          townMemberCount: 0
+          visited: 0
+        region: 0
+      type: 0
+      weaponsToDeliver: []
+      armorToDeliver: []
+      consumablesToDeliver: []
+      itemsToDeliver: []
+      unitsToDeliver: []
+    killQuest:
+      q_instanceID: 0
+      howManyToKill: 0
+      killCount: 0
+      enemyType: 0
+    pickupQuest:
+      q_instanceID: 0
+      pType: 0
+      location:
+        pos: {x: 0, y: 0}
+        type: 0
+        combatLocation:
+          waves: []
+          difficulty: 0
+          coinReward: 0
+          weapons: []
+          armor: []
+          consumables: []
+          items: []
+          rescuedUnits: []
+        pickupWeapon:
+          instanceID: -1
+          name: 
+          type: 0
+          rarity: 0
+          coinCost: 0
+          canBeFished: 0
+          fishedData:
+            hookedPos: {x: 0, y: 0}
+            hookedRot: 0
+            diffRegion: 0
+            chanceToCatch: 0
+          flavor: Choco
+          wornAmount: 3
+          attributes: 
+          sUsage: 0
+          sUsageAmount: 0
+          aType: 0
+          power: 0
+          speedMod: 0
+          sprite:
+            sprite: {fileID: 0}
+            equippedX: 0
+            equippedY: 0
+            equippedRot: 0
+            equippedXSize: 0
+            equippedYSize: 0
+        pickupArmor:
+          instanceID: -1
+          name: 
+          type: 0
+          rarity: 0
+          coinCost: 0
+          canBeFished: 0
+          fishedData:
+            hookedPos: {x: 0, y: 0}
+            hookedRot: 0
+            diffRegion: 0
+            chanceToCatch: 0
+          flavor: Choco
+          wornAmount: 3
+          attributes: 
+          defence: 0
+          speedMod: 0
+          sprite:
+            sprite: {fileID: 0}
+            equippedSprite: {fileID: 0}
+            equippedShoulder: {fileID: 0}
+            equippedHat: {fileID: 0}
+            xPos0: 0
+            yPos0: 0
+            xSize0: 0
+            ySize0: 0
+            xPos1: 0
+            yPos1: 0
+            xSize1: 0
+            ySize1: 0
+            xPos2: 0
+            yPos2: 0
+            xSize2: 0
+            ySize2: 0
+            xShoulderPos0: 0
+            yShoulderPos0: 0
+            xShoulderSize0: 0
+            yShoulderSize0: 0
+            shoulderRot: 0
+            xShoulderPos1: 0
+            yShoulderPos1: 0
+            xShoulderSize1: 0
+            yShoulderSize1: 0
+            xShoulderPos2: 0
+            yShoulderPos2: 0
+            xShoulderSize2: 0
+            yShoulderSize2: 0
+            hatInfrontOfHead: 1
+            xHatPos0: 0
+            yHatPos0: 0
+            xHatSize0: 0
+            yHatSize0: 0
+            hatRot: 0
+            xHatPos1: 0
+            yHatPos1: 0
+            xHatSize1: 0
+            yHatSize1: 0
+            xHatPos2: 0
+            yHatPos2: 0
+            xHatSize2: 0
+            yHatSize2: 0
+        pickupConsumable:
+          instanceID: -1
+          name: 
+          type: 0
+          rarity: 0
+          coinCost: 0
+          canBeFished: 0
+          fishedData:
+            hookedPos: {x: 0, y: 0}
+            hookedRot: 0
+            diffRegion: 0
+            chanceToCatch: 0
+          flavor: Choco
+          maxStackCount: 1
+          sprite:
+            sprite: {fileID: 0}
+          effect: 0
+          effectAmount: 0
+        pickupItem:
+          instanceID: -1
+          name: 
+          type: 0
+          rarity: 0
+          coinCost: 0
+          canBeFished: 0
+          fishedData:
+            hookedPos: {x: 0, y: 0}
+            hookedRot: 0
+            diffRegion: 0
+            chanceToCatch: 0
+          flavor: Choco
+          tEffects: []
+          pEffects: []
+          sprite:
+            sprite: {fileID: 0}
+        pType: 0
+      pickupWeapon:
+        instanceID: -1
+        name: 
+        type: 0
+        rarity: 0
+        coinCost: 0
+        canBeFished: 0
+        fishedData:
+          hookedPos: {x: 0, y: 0}
+          hookedRot: 0
+          diffRegion: 0
+          chanceToCatch: 0
+        flavor: Choco
+        wornAmount: 3
+        attributes: 
+        sUsage: 0
+        sUsageAmount: 0
+        aType: 0
+        power: 0
+        speedMod: 0
+        sprite:
+          sprite: {fileID: 0}
+          equippedX: 0
+          equippedY: 0
+          equippedRot: 0
+          equippedXSize: 0
+          equippedYSize: 0
+      pickupArmor:
+        instanceID: -1
+        name: 
+        type: 0
+        rarity: 0
+        coinCost: 0
+        canBeFished: 0
+        fishedData:
+          hookedPos: {x: 0, y: 0}
+          hookedRot: 0
+          diffRegion: 0
+          chanceToCatch: 0
+        flavor: Choco
+        wornAmount: 3
+        attributes: 
+        defence: 0
+        speedMod: 0
+        sprite:
+          sprite: {fileID: 0}
+          equippedSprite: {fileID: 0}
+          equippedShoulder: {fileID: 0}
+          equippedHat: {fileID: 0}
+          xPos0: 0
+          yPos0: 0
+          xSize0: 0
+          ySize0: 0
+          xPos1: 0
+          yPos1: 0
+          xSize1: 0
+          ySize1: 0
+          xPos2: 0
+          yPos2: 0
+          xSize2: 0
+          ySize2: 0
+          xShoulderPos0: 0
+          yShoulderPos0: 0
+          xShoulderSize0: 0
+          yShoulderSize0: 0
+          shoulderRot: 0
+          xShoulderPos1: 0
+          yShoulderPos1: 0
+          xShoulderSize1: 0
+          yShoulderSize1: 0
+          xShoulderPos2: 0
+          yShoulderPos2: 0
+          xShoulderSize2: 0
+          yShoulderSize2: 0
+          hatInfrontOfHead: 1
+          xHatPos0: 0
+          yHatPos0: 0
+          xHatSize0: 0
+          yHatSize0: 0
+          hatRot: 0
+          xHatPos1: 0
+          yHatPos1: 0
+          xHatSize1: 0
+          yHatSize1: 0
+          xHatPos2: 0
+          yHatPos2: 0
+          xHatSize2: 0
+          yHatSize2: 0
+      pickupConsumable:
+        instanceID: -1
+        name: 
+        type: 0
+        rarity: 0
+        coinCost: 0
+        canBeFished: 0
+        fishedData:
+          hookedPos: {x: 0, y: 0}
+          hookedRot: 0
+          diffRegion: 0
+          chanceToCatch: 0
+        flavor: Choco
+        maxStackCount: 1
+        sprite:
+          sprite: {fileID: 0}
+        effect: 0
+        effectAmount: 0
+      pickupItem:
+        instanceID: -1
+        name: 
+        type: 0
+        rarity: 0
+        coinCost: 0
+        canBeFished: 0
+        fishedData:
+          hookedPos: {x: 0, y: 0}
+          hookedRot: 0
+          diffRegion: 0
+          chanceToCatch: 0
+        flavor: Choco
+        tEffects: []
+        pEffects: []
+        sprite:
+          sprite: {fileID: 0}
+    dialog:
+      top:
+        mainText: 
+        firstResponse: 
+        secondResponse: 
+      branches: []
+    home:
+      t_name: 
+      t_instanceID: 0
+      interactedBuildingIndex: 0
+      townMemberCount: 0
+      visited: 0
+    weapon:
+      instanceID: 63
+      name: Fishing Rod
+      type: 0
+      rarity: 0
+      coinCost: 4
+      canBeFished: 0
+      fishedData:
+        hookedPos: {x: 0, y: 0}
+        hookedRot: 0
+        diffRegion: 0
+        chanceToCatch: 0
+      flavor: Choco
+      wornAmount: 3
+      attributes: 
+      sUsage: 0
+      sUsageAmount: 0
+      aType: 0
+      power: 2
+      speedMod: -2
+      sprite:
+        sprite: {fileID: 0}
+        equippedX: 0
+        equippedY: 0
+        equippedRot: 0
+        equippedXSize: 0
+        equippedYSize: 0
+    armor:
+      instanceID: 94
+      name: Simple Shirt
+      type: 1
+      rarity: 0
+      coinCost: 1
+      canBeFished: 0
+      fishedData:
+        hookedPos: {x: 0, y: 0}
+        hookedRot: 0
+        diffRegion: 0
+        chanceToCatch: 0
+      flavor: Choco
+      wornAmount: 3
+      attributes: 
+      defence: 1
+      speedMod: 1
+      sprite:
+        sprite: {fileID: 0}
+        equippedSprite: {fileID: 0}
+        equippedShoulder: {fileID: 0}
+        equippedHat: {fileID: 0}
+        xPos0: 0
+        yPos0: 0
+        xSize0: 0
+        ySize0: 0
+        xPos1: 0
+        yPos1: 0
+        xSize1: 0
+        ySize1: 0
+        xPos2: 0
+        yPos2: 0
+        xSize2: 0
+        ySize2: 0
+        xShoulderPos0: 0
+        yShoulderPos0: 0
+        xShoulderSize0: 0
+        yShoulderSize0: 0
+        shoulderRot: 0
+        xShoulderPos1: 0
+        yShoulderPos1: 0
+        xShoulderSize1: 0
+        yShoulderSize1: 0
+        xShoulderPos2: 0
+        yShoulderPos2: 0
+        xShoulderSize2: 0
+        yShoulderSize2: 0
+        hatInfrontOfHead: 1
+        xHatPos0: 0
+        yHatPos0: 0
+        xHatSize0: 0
+        yHatSize0: 0
+        hatRot: 0
+        xHatPos1: 0
+        yHatPos1: 0
+        xHatSize1: 0
+        yHatSize1: 0
+        xHatPos2: 0
+        yHatPos2: 0
+        xHatSize2: 0
+        yHatSize2: 0
+    name: Toby
+    m_instanceID: 0
+  weapon: {fileID: 11400000, guid: 11c18f48af77fd44a943a6607b23fe88, type: 2}
+  armor: {fileID: 11400000, guid: e83b8e3612930c145ae0cd437c975fa6, type: 2}
+  dialog:
+    top:
+      mainText: 
+      firstResponse: 
+      secondResponse: 
+    branches: []

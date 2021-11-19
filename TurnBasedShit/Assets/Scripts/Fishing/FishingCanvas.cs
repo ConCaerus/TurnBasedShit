@@ -108,7 +108,7 @@ public class FishingCanvas : MonoBehaviour {
         //  modify target by scroll val
         float scroll = Input.mouseScrollDelta.y;
         if(Mathf.Abs(scroll) > 0.001f)
-            reelTargetSlider.value = Mathf.Clamp(reelTargetSlider.value + scroll / 20.0f, reelSlider.minValue, reelSlider.maxValue);
+            reelTargetSlider.value = Mathf.Clamp(reelTargetSlider.value + scroll / 15.0f, reelTargetSlider.minValue, reelTargetSlider.maxValue);
         reelTarget = reelTargetSlider.value;
 
         reelSlider.value = Mathf.Lerp(reelSlider.value, reelTarget + reelOffset, 0.75f * Time.deltaTime);
@@ -175,15 +175,33 @@ public class FishingCanvas : MonoBehaviour {
 
 
     public Collectable calcCaughtFish() {
-        var l = FindObjectOfType<PresetLibrary>().getFishableCollectables();
-        var temp = new List<Collectable>();
+        var list = FindObjectOfType<PresetLibrary>().getFishableCollectables(GameInfo.getCurrentRegion());
+        int count = list.Count;
+        float defaultChancePerUnit = 1.0f / count;
+        float total = 0.0f;
 
-        foreach(var i in l) {
-            for(int j = 0; j < (int)i.fishedData.chanceToCatch + 1; j++) {
-                temp.Add(i);
-            }
+        //  randomize the list
+        int n = count;
+        while(n > 1) {
+            n--;
+            int k = Random.Range(0, n + 1);
+            var value = list[k];
+            list[k] = list[n];
+            list[n] = value;
         }
 
-        return temp[Random.Range(0, temp.Count)];
+        for(int i = 0; i < count; i++) {
+            total += GameVariables.getChanceToCatchFish(list[i].fishedData.chanceToCatch) * 100.0f;
+        }
+
+        float rand = Random.Range(0.0f, total);
+        for(int i = 0; i < count; i++) {
+            var chance = GameVariables.getChanceToCatchFish(list[i].fishedData.chanceToCatch) * 100.0f;
+            if(rand < chance)
+                return list[i];
+            rand -= chance;
+        }
+
+        return null;
     }
 }

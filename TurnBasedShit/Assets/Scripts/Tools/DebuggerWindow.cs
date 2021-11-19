@@ -116,7 +116,7 @@ public class DebuggerWindow : EditorWindow {
         if(GUILayout.Button("Clear Locations"))
             MapLocationHolder.clear();
         if(GUILayout.Button("+Upgrade"))
-            MapLocationHolder.addLocation(FindObjectOfType<PresetLibrary>().createRandomUpgradeLocation());
+            MapLocationHolder.addLocation(FindObjectOfType<PresetLibrary>().createUpgradeLocation());
 
         GUILayout.EndHorizontal();
         GUILayout.BeginHorizontal();

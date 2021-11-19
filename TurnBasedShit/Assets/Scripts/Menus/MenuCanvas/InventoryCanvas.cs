@@ -84,6 +84,7 @@ public class InventoryCanvas : MonoBehaviour {
             shownUnit = Party.getMemberStats(0);
         unitSlot.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnitHeadSprite(shownUnit.u_sprite.headIndex);
         unitSlot.transform.GetChild(0).GetComponent<Image>().color = shownUnit.u_sprite.color;
+        unitSlot.GetComponent<Image>().color = shownUnit.u_sprite.color * 2.0f;
         unitSlot.transform.GetChild(0).GetComponent<Image>().SetNativeSize();
         unitSlot.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnitFace(shownUnit.u_sprite.faceIndex);
         unitSlot.transform.GetChild(0).GetChild(0).GetComponent<Image>().SetNativeSize();
@@ -219,9 +220,9 @@ public class InventoryCanvas : MonoBehaviour {
         else if(state == 2)
             return Inventory.getItem(slot.getSelectedSlotIndex());
         else if(state == 3)
-            return FindObjectOfType<PresetLibrary>().getUsableFromSprite(mainSlot.transform.GetChild(0).GetComponent<Image>().sprite);
+            return Inventory.getFirstMatchingUsable(FindObjectOfType<PresetLibrary>().getUsableFromSprite(mainSlot.transform.GetChild(0).GetComponent<Image>().sprite));
         else if(state == 4)
-            return FindObjectOfType<PresetLibrary>().getUnusableFromSprite(mainSlot.transform.GetChild(0).GetComponent<Image>().sprite);
+            return Inventory.getFirstMatchingUnusable(FindObjectOfType<PresetLibrary>().getUnusableFromSprite(mainSlot.transform.GetChild(0).GetComponent<Image>().sprite));
 
         return null;
     }
@@ -270,8 +271,10 @@ public class InventoryCanvas : MonoBehaviour {
             swapArmor((Armor)obj);
         else if(obj.type == Collectable.collectableType.item)
             swapItem((Item)obj);
-        else if(obj.type == Collectable.collectableType.usable && ((Usable)obj).applyStatsEffect(shownUnit))
+        else if(obj.type == Collectable.collectableType.usable && ((Usable)obj).applyStatsEffect(shownUnit, FindObjectOfType<PartyObject>())) {
             Inventory.removeUsable((Usable)obj);
+            shownUnit = Party.getMemberStats(Party.getUnitIndex(shownUnit));
+        }
 
         populateSlots();
     }

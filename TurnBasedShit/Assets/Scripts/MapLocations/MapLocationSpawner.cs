@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class MapLocationSpawner : MonoBehaviour {
-    public GameObject bossLocationPreset, rescueLocationPreset, townLocationPreset, upgradeLocationPreset, pickupLocationPreset, fishingLocationPreset;
+    public GameObject bossLocationPreset, rescueLocationPreset, townLocationPreset, upgradeLocationPreset, pickupLocationPreset, fishingLocationPreset, eyeLocationPreset;
 
     public List<List<GameObject>> currentIcons = new List<List<GameObject>>();
 
@@ -97,8 +97,31 @@ public class MapLocationSpawner : MonoBehaviour {
 
             currentIcons[(int)Map.getDiffForX(MapLocationHolder.getFishingLocation(i).pos.x)].Add(obj);
         }
+
+        //  eyes
+        for(int i = 0; i < MapLocationHolder.getEyeCount(); i++) {
+            //  positioning and scaling
+            var obj = Instantiate(eyeLocationPreset.gameObject);
+            obj.transform.position = MapLocationHolder.getEyeLocation(i).pos;
+            obj.transform.SetParent(transform.GetChild(0));
+            obj.transform.localScale = Vector3.one / 2.0f;
+
+            currentIcons[(int)Map.getDiffForX(MapLocationHolder.getEyeLocation(i).pos.x)].Add(obj);
+        }
     }
 
+    public void removeIconAtPos(Vector2 pos) {
+        foreach(var i in currentIcons) {
+            foreach(var j in i) {
+                if((Vector2)j.transform.position == pos) {
+                    var temp = j.gameObject;
+                    i.Remove(j);
+                    Destroy(temp.gameObject);
+                    return;
+                }
+            }
+        }
+    }
 
     GameObject checkIconsProximity() {
         GameObject selected = null;

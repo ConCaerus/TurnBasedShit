@@ -23,9 +23,9 @@ public class TownPeopleSpawner : MonoBehaviour {
             var obj = Instantiate(FindObjectOfType<PresetLibrary>().getTownMemberObj(false).gameObject);
             obj.transform.position = new Vector2(x, memberYPos);
             var temp = reference.getMember(i);
-            temp.m_sprite.layerOffset = -(i + 1) * 10;
+            temp.sprite.layerOffset = -(i + 1) * 10;
             obj.GetComponentInChildren<TownMemberInstance>().reference.setEqualsTo(temp, true);
-
+            
             memberObjects.Add(obj.gameObject);
         }
     }

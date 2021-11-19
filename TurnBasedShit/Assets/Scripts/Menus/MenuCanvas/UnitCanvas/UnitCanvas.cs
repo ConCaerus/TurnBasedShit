@@ -11,6 +11,7 @@ public class UnitCanvas : MonoBehaviour {
     public Image faceImage, headImage, bodyImage, rArmImage, lArmImage, weaponImage, armorImage, itemImage;
     public Button leaderButton;
     public GameObject edgedSlider, bluntSlider, summonSlider;
+    public List<GameObject> lockImages = new List<GameObject>();
 
     public float equippmentTransitionTime = 0.01f;
     public float timeBtwTransition = 0.05f;
@@ -43,6 +44,7 @@ public class UnitCanvas : MonoBehaviour {
             shownUnit = Party.getMemberStats(0);
             SaveData.setInt(indexTag, 0);
         }
+        updateLockedState();
         updateUnitWindow();
     }
 
@@ -211,6 +213,20 @@ public class UnitCanvas : MonoBehaviour {
         shownUnit.u_sprite.color = new Color(rSlider.value, gSlider.value, bSlider.value);
         saveShownUnit();
         updateUnitWindow();
+    }
+
+    void updateLockedState() {
+        if(FindObjectOfType<PartyObject>() != null) {
+            foreach(var i in lockImages)
+                i.SetActive(true);
+            FindObjectOfType<WeaponSelectionCanvas>().enabled = false;
+            FindObjectOfType<ArmorSelectionCanvas>().enabled = false;
+            FindObjectOfType<ItemSelectionCanvas>().enabled = false;
+        }
+        else {
+            foreach(var i in lockImages)
+                i.SetActive(false);
+        }
     }
 
 

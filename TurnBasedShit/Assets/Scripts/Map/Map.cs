@@ -77,7 +77,16 @@ public static class Map {
         }
     }
 
+    public static void createFogTexture() {
+        var temp = new Texture2D((int)width(), (int)height());
+        for(int x = 0; x < temp.width; x++) {
+            for(int y = 0; y < temp.height; y++) {
+                temp.SetPixel(x, y, Color.white);
+            }
+        }
 
+        saveFogTexture(temp);
+    }
     public static void clearFogTexture() {
         SaveData.deleteKey(saveTag);
     }
@@ -85,13 +94,10 @@ public static class Map {
         FowData data = new FowData(map.GetRawTextureData());
         SaveData.setString(saveTag, JsonUtility.ToJson(data));
     }
-    public static bool hasSavedFogTexture() {
-        return !string.IsNullOrEmpty(SaveData.getString(saveTag));
-    }
     public static Texture2D getFogTexture() {
-        var temp = new Texture2D((int)width(), (int)height());
         if(string.IsNullOrEmpty(SaveData.getString(saveTag)))
-            return temp;
+            return null;
+        var temp = new Texture2D((int)width(), (int)height());
         var thing = JsonUtility.FromJson<FowData>(SaveData.getString(saveTag));
         temp.LoadRawTextureData(thing.data);
         return temp;

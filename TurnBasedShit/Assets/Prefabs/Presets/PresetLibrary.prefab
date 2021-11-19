@@ -45,12 +45,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerUnit: {fileID: 2150725456124683392, guid: 0f7e8ba4920db974598a9f8b50a5495f,
     type: 3}
+  townMemberUnit: {fileID: 6919520623604152240, guid: 09ad29a4757f3fe4a89886d11a33db52,
+    type: 3}
   enemies:
   - {fileID: 4044643730084277563, guid: 06a83c28e83849548833f1ce2dcab8ef, type: 3}
   - {fileID: 5375930182506040063, guid: f9f648916ceeed045950282259f73b5d, type: 3}
   - {fileID: 7791763188156419859, guid: 77c940c7c461eab42a68fac2c238194f, type: 3}
   bosses:
   - {fileID: 4044643730084277563, guid: b3f1952a01d71034c8de53cf61b84c60, type: 3}
+  townMemberNPCs:
+  - {fileID: 11400000, guid: 0a92c2a38f6b1704c8269e0375091194, type: 2}
   unitTraits:
   - {fileID: 11400000, guid: a9cda2bcdb5e2a544a1aa7da91c2d545, type: 2}
   - {fileID: 11400000, guid: 5e86da285b788e84f8dd41ad927418d5, type: 2}
@@ -109,6 +113,7 @@ MonoBehaviour:
   usables:
   - {fileID: 11400000, guid: b8620bd6f554fa140a2994562098ac50, type: 2}
   - {fileID: 11400000, guid: eaaa276422f32644e8a7c22ea54d6abd, type: 2}
+  - {fileID: 11400000, guid: 2779b19122dd94f4b89aab3c443e5778, type: 2}
   unusables:
   - {fileID: 11400000, guid: 8917ac8b945ac7d4a8481703ac85911b, type: 2}
   - {fileID: 11400000, guid: b62f79c5752d92f46ac520bfdc6d14ac, type: 2}

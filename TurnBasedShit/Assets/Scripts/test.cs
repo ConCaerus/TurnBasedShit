@@ -5,22 +5,16 @@ using UnityEngine.UI;
 
 public class test : MonoBehaviour {
 
+    DialogInfo dialog = null;
+    DialogBox box;
+
     private void Start() {
-        Inventory.clearUsables();
-        for(int i = 0; i < 12; i++) {
-            var thing = FindObjectOfType<PresetLibrary>().getRandomUsable();
-            Inventory.addUsable(thing);
-            Debug.Log(thing);
-        }
-    }
+        box = FindObjectOfType<DialogBox>();
+        box.setName("Tobster");
 
-    private void Update() {
-        if(Input.GetKeyDown(KeyCode.V)) {
-            for(int i = 0; i < Inventory.getUsableCount(); i++)
-                Debug.Log(Inventory.getUsable(i).name);
-        }
+        dialog = DialogLibrary.getTobyDialog();
 
-        else if(Input.GetKeyDown(KeyCode.Space))
-            Inventory.removeUsable(0);
+        box.setDialog(dialog);
+        box.showDialog();
     }
 }

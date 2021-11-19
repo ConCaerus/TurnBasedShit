@@ -71,6 +71,7 @@ public static class SaveData {
         Debug.Log("Town Shit: " + Time.realtimeSinceStartup.ToString("0.00"));
 
         //  MapLocations
+        Map.createFogTexture();
         MapLocationHolder.populateMapLocations(lib);
         Debug.Log("Town Shit: " + Time.realtimeSinceStartup.ToString("0.00"));
     }

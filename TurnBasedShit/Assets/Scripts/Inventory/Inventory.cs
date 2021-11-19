@@ -111,7 +111,7 @@ public static class Inventory {
         if(a == null || a.isEmpty())
             return;
         int index = getArmorCount();
-
+   
         var data = JsonUtility.ToJson(a);
         SaveData.setString(objectTag(index, typeof(Armor)), data);
         SaveData.setInt(objectCountTag(typeof(Armor)), index + 1);
@@ -190,7 +190,6 @@ public static class Inventory {
             if(invArmor != null && !invArmor.isEmpty() && !invArmor.isTheSameInstanceAs(a))
                 temp.Add(invArmor);
         }
-
         clearArmor();
         foreach(var i in temp)
             addArmor(i);
@@ -486,6 +485,13 @@ public static class Inventory {
         }
         return count;
     }
+    public static Usable getFirstMatchingUsable(Usable u) {
+        for(int i = 0; i < getUsableCount(); i++) {
+            if(getUsable(i).isTheSameTypeAs(u))
+                return getUsable(i);
+        }
+        return null;
+    }
     public static int getNumberOfMatchingUsables(Usable con) {
         int count = 0;
         for(int i = 0; i < getUsableCount(); i++) {
@@ -502,6 +508,13 @@ public static class Inventory {
             }
         }
         return count;
+    }
+    public static Unusable getFirstMatchingUnusable(Unusable u) {
+        for(int i = 0; i < getUnusableCount(); i++) {
+            if(getUnusable(i).isTheSameTypeAs(u))
+                return getUnusable(i);
+        }
+        return null;
     }
     public static int getNumberOfMatchingUnusables(Unusable con) {
         int count = 0;

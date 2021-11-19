@@ -10,6 +10,7 @@ public static class MapLocationHolder {
     static string nestTag(int i) { return "NestLocation" + i.ToString(); }
     static string bossTag(int i) { return "BossLocation" + i.ToString(); }
     static string fishTag(int i) { return "FishingLocation" + i.ToString(); }
+    static string eyeTag(int i) { return "EyeLocation" + i.ToString(); }
 
     static string townCountTag = "TownLocationCount";
     static string pickupCountTag = "PickupLocationCount";
@@ -18,25 +19,31 @@ public static class MapLocationHolder {
     static string nestCountTag = "NestLocationCount";
     static string bossCountTag = "BossLocationCount";
     static string fishCountTag = "FishingLocationCount";
+    static string eyeCountTag = "EyeLocationCount";
 
     public static void populateMapLocations(PresetLibrary lib) {
         //  these are the only ones that need to be populated on start
         int upgradeCount = Random.Range(10, 26);
         //int nestCount = Random.Range(7, 16);
         int fishCount = Random.Range(10, 31);
+        int eyeCount = Random.Range(10, 51);
 
         for(int i = 0; i < upgradeCount; i++) {
-            var u = lib.createRandomUpgradeLocation();
+            var u = lib.createUpgradeLocation();
             addLocation(u);
         }
         /*
         for(int i = 0; i < nestCount; i++) {
-            var n = lib.createRandomNestLocation();
+            var n = lib.createNestLocation();
             addLocation(n);
         }*/
         for(int i = 0; i < fishCount; i++) {
-            var f = lib.createRandomFishingLocation();
+            var f = lib.createFishingLocation();
             addLocation(f);
+        }
+        for(int i = 0; i < eyeCount; i++) {
+            var e = lib.createEyeLocation();
+            addLocation(e);
         }
     }
 
@@ -48,6 +55,7 @@ public static class MapLocationHolder {
         clearNestLocations();
         clearBossLocations();
         clearFishingLocations();
+        clearEyeLocations();
     }
     public static void clearTownLocations() {
         for(int i = 0; i < getTownCount() + 10; i++) {
@@ -99,6 +107,13 @@ public static class MapLocationHolder {
 
         SaveData.deleteKey(fishCountTag);
     }
+    public static void clearEyeLocations() {
+        for(int i = 0; i < getEyeCount(); i++) {
+            SaveData.deleteKey(eyeTag(i));
+        }
+
+        SaveData.deleteKey(eyeCountTag);
+    }
 
     public static void addLocation(TownLocation loc) {
         var data = JsonUtility.ToJson(loc);
@@ -142,6 +157,12 @@ public static class MapLocationHolder {
 
         SaveData.setInt(fishCountTag, getFishingCount() + 1);
     }
+    public static void addLocation(EyeLocation loc) {
+        var data = JsonUtility.ToJson(loc);
+        SaveData.setString(eyeTag(getEyeCount()), data);
+
+        SaveData.setInt(eyeCountTag, getEyeCount() + 1);
+    }
 
     public static void removeLocation(MapLocation loc) {
         switch(loc.type) {
@@ -162,6 +183,9 @@ public static class MapLocationHolder {
                 break;
             case MapLocation.locationType.boss:
                 removeBossLocation((BossLocation)loc);
+                break;
+            case MapLocation.locationType.eye:
+                removeEyeLocation((EyeLocation)loc);
                 break;
         }
     }
@@ -249,6 +273,18 @@ public static class MapLocationHolder {
         foreach(var i in temp)
             addLocation(i);
     }
+    public static void removeEyeLocation(EyeLocation loc) {
+        List<EyeLocation> temp = new List<EyeLocation>();
+        for(int i = 0; i < getEyeCount(); i++) {
+            EyeLocation b = getEyeLocation(i);
+            if(b != null && !b.isEqualTo(loc))
+                temp.Add(b);
+        }
+
+        clearEyeLocations();
+        foreach(var i in temp)
+            addLocation(i);
+    }
 
     public static void overrideTownLocation(TownLocation loc) {
         for(int i = 0; i < getTownCount(); i++) {
@@ -281,6 +317,9 @@ public static class MapLocationHolder {
     }
     public static int getFishingCount() {
         return SaveData.getInt(fishCountTag);
+    }
+    public static int getEyeCount() {
+        return SaveData.getInt(eyeCountTag);
     }
 
     public static TownLocation getTownLocation(int index) {
@@ -351,6 +390,14 @@ public static class MapLocationHolder {
     public static FishingLocation getFishingLocation(int index) {
         var data = SaveData.getString(fishTag(index));
         var temp = JsonUtility.FromJson<FishingLocation>(data);
+
+        if(temp != null)
+            return temp;
+        return null;
+    }
+    public static EyeLocation getEyeLocation(int index) {
+        var data = SaveData.getString(eyeTag(index));
+        var temp = JsonUtility.FromJson<EyeLocation>(data);
 
         if(temp != null)
             return temp;
@@ -432,6 +479,13 @@ public static class MapLocationHolder {
         }
         return null;
     }
+    public static EyeLocation getEyeLocationAtPos(Vector2 p) {
+        for(int i = 0; i < getEyeCount(); i++) {
+            if(getEyeLocation(i).pos == p)
+                return getEyeLocation(i);
+        }
+        return null;
+    }
 
 
     public static int getIndex(TownLocation loc) {
@@ -483,6 +537,13 @@ public static class MapLocationHolder {
         }
         return -1;
     }
+    public static int getIndex(EyeLocation loc) {
+        for(int i = 0; i < getEyeCount(); i++) {
+            if(getEyeLocation(i).isEqualTo(loc))
+                return i;
+        }
+        return -1;
+    }
     public static int getIndex(MapLocation loc) {
         switch(loc.type) {
             case MapLocation.locationType.town:
@@ -505,6 +566,9 @@ public static class MapLocationHolder {
 
             case MapLocation.locationType.fishing:
                 return getIndex((FishingLocation)loc);
+
+            case MapLocation.locationType.eye:
+                return getIndex((EyeLocation)loc);
         }
 
         return -1;
@@ -516,7 +580,7 @@ public static class MapLocationHolder {
             includes = new List<MapLocation.locationType>() { 
                 MapLocation.locationType.town, MapLocation.locationType.pickup, 
                 MapLocation.locationType.upgrade, MapLocation.locationType.rescue, 
-                MapLocation.locationType.nest, MapLocation.locationType.boss, MapLocation.locationType.fishing
+                MapLocation.locationType.nest, MapLocation.locationType.boss, MapLocation.locationType.fishing, MapLocation.locationType.eye
             };
         }
         var temp = new List<MapLocation>();
@@ -556,6 +620,11 @@ public static class MapLocationHolder {
                 case MapLocation.locationType.fishing:
                     for(int f = 0; f < getFishingCount(); f++)
                         temp.Add(getFishingLocation(f));
+                    break;
+
+                case MapLocation.locationType.eye:
+                    for(int f = 0; f < getEyeCount(); f++)
+                        temp.Add(getEyeLocation(f));
                     break;
             }
         }

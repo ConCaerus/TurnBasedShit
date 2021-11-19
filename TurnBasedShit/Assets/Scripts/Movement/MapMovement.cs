@@ -102,11 +102,14 @@ public class MapMovement : InteractiveMovement {
 
     public override void interact() {
         if(MapLocationHolder.locationCloseToPos(transform.position, distToInt)) {
+            var loc = MapLocationHolder.getClostestLocation(transform.position);
             GameInfo.setCurrentMapPos(MapLocationHolder.getClostestLocation(transform.position).pos);
             FindObjectOfType<MapFogTexture>().saveTexture();
-            Debug.Log(MapLocationHolder.getClostestLocation(transform.position).type);
-            FindObjectOfType<MapFogTexture>().saveTexture();
-            MapLocationHolder.getClostestLocation(transform.position).enterLocation(FindObjectOfType<TransitionCanvas>());
+
+            if(loc.type == MapLocation.locationType.eye)
+                ((EyeLocation)loc).activate(FindObjectOfType<MapFogTexture>(), FindObjectOfType<MapLocationSpawner>());
+            else
+                MapLocationHolder.getClostestLocation(transform.position).enterLocation(FindObjectOfType<TransitionCanvas>());
         }
     }
 

@@ -61,10 +61,18 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
     public void animateMouseOverSlot() {
         transform.parent.DOScale(0.55f, 0.15f);
         shownSprite.transform.DOScale(0.85f, 0.15f);
+
+        GameObject l = FindObjectOfType<UnitCanvas>().lockImages[getState()];
+
+        l.transform.DOScale(0.45f, .15f);
     }
     public void animateMouseExitSlot() {
         transform.parent.DOScale(0.5f, 0.25f);
         shownSprite.transform.DOScale(0.75f, 0.25f);
+
+        GameObject l = FindObjectOfType<UnitCanvas>().lockImages[getState()];
+
+        l.transform.DOScale(0.35f, .25f);
     }
 
     IEnumerator show() {

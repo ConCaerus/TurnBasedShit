@@ -17,7 +17,10 @@ public class Usable : Collectable {
     public float effectAmount;
 
     //  returns true if the effect was applied
-    public bool applyStatsEffect(UnitStats stats) {
+    public bool applyStatsEffect(UnitStats stats, PartyObject po) {
+        if(po != null)
+            stats = po.getInstantiatedMember(stats).GetComponent<UnitClass>().stats;
+
         switch(effect) {
             case effectType.heal:
                 if(stats.u_health == stats.getModifiedMaxHealth())
@@ -32,10 +35,13 @@ public class Usable : Collectable {
                 break;
         }
 
+        if(po != null)
+            po.resaveInstantiatedUnit(stats);
         Party.overrideUnit(stats);
+
         return true;
     }
-    
+
     public UnitStats applyEffect(GameObject thing) {
         var uc = thing.GetComponent<UnitClass>();
         switch(effect) {

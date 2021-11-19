@@ -53,7 +53,7 @@ public static class GameVariables {
             case GameInfo.fishCatchRate.easy:
                 return .75f;
             default:
-                return 0.0f;
+                return 1.0f;
         }
     }
 

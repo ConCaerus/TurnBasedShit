@@ -5,57 +5,65 @@ using UnityEngine;
 [System.Serializable]
 public class TownMember {
     public bool hasQuest = false;
-    public UnitSpriteInfo m_sprite = new UnitSpriteInfo();
+    public UnitSpriteInfo sprite = new UnitSpriteInfo();
 
     //  quests
-    public GameInfo.questType m_questType;
-    public BossFightQuest m_bossQuest = null;
-    public DeliveryQuest m_deliveryQuest = null;
-    public KillQuest m_killQuest = null;
-    public PickupQuest m_pickupQuest = null;
+    public GameInfo.questType questType;
+    public BossFightQuest bossQust = null;
+    public DeliveryQuest deliveryQuest = null;
+    public KillQuest killQuest = null;
+    public PickupQuest pickupQuest = null;
+
+    public DialogInfo dialog = new DialogInfo();
 
     public Town home;
 
+    public Weapon weapon;
+    public Armor armor;
+
+    public string name;
     public int m_instanceID = -1;
 
     public TownMember(PresetLibrary lib, bool setID, bool autoHasQuest = false) {
         if(setID)
             m_instanceID = GameInfo.getNextTownMemberInstanceID();
 
-        m_bossQuest = null;
-        m_deliveryQuest = null;
-        m_killQuest = null;
-        m_pickupQuest = null;
+        bossQust = null;
+        deliveryQuest = null;
+        killQuest = null;
+        pickupQuest = null;
 
         hasQuest = GameVariables.shouldMemberHaveQuest() || autoHasQuest || true;
         if(hasQuest) {
             var q = GameInfo.getRandomQuestType();
 
-            m_questType = q;
+            questType = q;
 
             switch(q) {
                 case GameInfo.questType.bossFight:
-                    m_bossQuest = lib.createRandomBossFightQuest(true);
+                    bossQust = lib.createRandomBossFightQuest(true);
                     break;
 
                 case GameInfo.questType.delivery:
-                    m_deliveryQuest = lib.createRandomDeliveryQuest(true);
+                    deliveryQuest = lib.createRandomDeliveryQuest(true);
                     break;
 
                 case GameInfo.questType.kill:
-                    m_killQuest = lib.createRandomKillQuest(true);
+                    killQuest = lib.createRandomKillQuest(true);
                     break;
 
                 case GameInfo.questType.pickup:
-                    m_pickupQuest = lib.createRandomPickupQuest(true);
+                    pickupQuest = lib.createRandomPickupQuest(true);
                     break;
             }
         }
 
-        m_sprite.color = getRandomColor();
-        m_sprite.headIndex = Random.Range(0, lib.getHeadCount());
-        m_sprite.faceIndex = Random.Range(0, lib.getFaceCount());
-        m_sprite.bodyIndex = Random.Range(0, lib.getBodyCount());
+        name = NameLibrary.getRandomUsablePlayerName();
+
+        sprite.color = getRandomColor();
+        sprite.headIndex = Random.Range(0, lib.getHeadCount());
+        sprite.faceIndex = Random.Range(0, lib.getFaceCount());
+        sprite.bodyIndex = Random.Range(0, lib.getBodyCount());
     }
 
 
@@ -67,26 +75,26 @@ public class TownMember {
         if(other == null)
             return;
         hasQuest = other.hasQuest;
-        m_sprite.setEqualTo(other.m_sprite);
+        sprite.setEqualTo(other.sprite);
 
-        m_bossQuest = null;
-        m_deliveryQuest = null;
-        m_killQuest = null;
-        m_pickupQuest = null;
+        bossQust = null;
+        deliveryQuest = null;
+        killQuest = null;
+        pickupQuest = null;
 
         if(other.hasQuest) {
-            m_questType = other.m_questType;
-            if(other.m_questType == GameInfo.questType.bossFight) {
-                m_bossQuest = other.m_bossQuest;
+            questType = other.questType;
+            if(other.questType == GameInfo.questType.bossFight) {
+                bossQust = other.bossQust;
             }
-            else if(other.m_questType == GameInfo.questType.delivery) {
-                m_deliveryQuest = other.m_deliveryQuest;
+            else if(other.questType == GameInfo.questType.delivery) {
+                deliveryQuest = other.deliveryQuest;
             }
-            else if(other.m_questType == GameInfo.questType.kill) {
-                m_killQuest = other.m_killQuest;
+            else if(other.questType == GameInfo.questType.kill) {
+                killQuest = other.killQuest;
             }
-            else if(other.m_questType == GameInfo.questType.pickup) {
-                m_pickupQuest = other.m_pickupQuest;
+            else if(other.questType == GameInfo.questType.pickup) {
+                pickupQuest = other.pickupQuest;
             }
         }
 
@@ -98,14 +106,14 @@ public class TownMember {
 
 
     public bool isQuestActive() {
-        if(m_questType == GameInfo.questType.bossFight)
-            return ActiveQuests.hasQuest(m_bossQuest);
-        if(m_questType == GameInfo.questType.kill)
-            return ActiveQuests.hasQuest(m_killQuest);
-        if(m_questType == GameInfo.questType.delivery)
-            return ActiveQuests.hasQuest(m_deliveryQuest);
-        if(m_questType == GameInfo.questType.pickup)
-            return ActiveQuests.hasQuest(m_pickupQuest);
+        if(questType == GameInfo.questType.bossFight)
+            return ActiveQuests.hasQuest(bossQust);
+        if(questType == GameInfo.questType.kill)
+            return ActiveQuests.hasQuest(killQuest);
+        if(questType == GameInfo.questType.delivery)
+            return ActiveQuests.hasQuest(deliveryQuest);
+        if(questType == GameInfo.questType.pickup)
+            return ActiveQuests.hasQuest(pickupQuest);
         return false;
     }
 }
