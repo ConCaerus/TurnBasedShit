@@ -281,9 +281,9 @@ public class InventoryCanvas : MonoBehaviour {
 
     void swapWeapon(Weapon w) {
         var uWeapon = new Weapon();
-        uWeapon.setEqualTo(shownUnit.equippedWeapon, true);
-        shownUnit.equippedWeapon = new Weapon();
-        shownUnit.equippedWeapon.setEqualTo(w, true);
+        uWeapon.setEqualTo(shownUnit.weapon, true);
+        shownUnit.weapon = new Weapon();
+        shownUnit.weapon.setEqualTo(w, true);
         Inventory.removeWeapon(w);
 
         if(uWeapon != null && !uWeapon.isEmpty())
@@ -293,9 +293,9 @@ public class InventoryCanvas : MonoBehaviour {
     }
     void swapArmor(Armor a) {
         var uArmor = new Armor();
-        uArmor.setEqualTo(shownUnit.equippedArmor, true);
-        shownUnit.equippedArmor = new Armor();
-        shownUnit.equippedArmor.setEqualTo(a, true);
+        uArmor.setEqualTo(shownUnit.armor, true);
+        shownUnit.armor = new Armor();
+        shownUnit.armor.setEqualTo(a, true);
         Inventory.removeArmor(a);
 
         if(uArmor != null && !uArmor.isEmpty())
@@ -305,9 +305,9 @@ public class InventoryCanvas : MonoBehaviour {
     }
     void swapItem(Item i) {
         var uItem = new Item();
-        uItem.setEqualTo(shownUnit.equippedItem, true);
-        shownUnit.equippedItem = new Item();
-        shownUnit.equippedItem.setEqualTo(i, true);
+        uItem.setEqualTo(shownUnit.item, true);
+        shownUnit.item = new Item();
+        shownUnit.item.setEqualTo(i, true);
         Inventory.removeItem(i);
 
         if(uItem != null && !uItem.isEmpty())

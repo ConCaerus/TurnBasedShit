@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fee704fe5ab1034795cbb4a31d41007, type: 3}
   m_Name: Toby
   m_EditorClassIdentifier: 
-  member:
+  preset:
     hasQuest: 0
     sprite:
       headIndex: 0
       faceIndex: 0
       bodyIndex: 0
       layerOffset: 0
-      color: {r: 0.4811321, g: 0.33891064, b: 0.33891064, a: 1}
+      color: {r: 0.5377358, g: 0.30776072, b: 0.30776072, a: 1}
     questType: 0
     bossQust:
       q_instanceID: 0
@@ -320,6 +320,7 @@ MonoBehaviour:
           t_instanceID: 0
           interactedBuildingIndex: 0
           townMemberCount: 0
+          townNPCCount: 0
           visited: 0
         region: 0
       type: 0
@@ -596,23 +597,22 @@ MonoBehaviour:
         sprite:
           sprite: {fileID: 0}
     dialog:
-      top:
-        mainText: 
-        firstResponse: 
-        secondResponse: 
-      branches: []
+      mainText: 
+      firstOption: 
+      secondOption: 
     home:
       t_name: 
       t_instanceID: 0
       interactedBuildingIndex: 0
       townMemberCount: 0
+      townNPCCount: 0
       visited: 0
     weapon:
-      instanceID: 63
-      name: Fishing Rod
+      instanceID: -1
+      name: 
       type: 0
       rarity: 0
-      coinCost: 4
+      coinCost: 0
       canBeFished: 0
       fishedData:
         hookedPos: {x: 0, y: 0}
@@ -625,8 +625,8 @@ MonoBehaviour:
       sUsage: 0
       sUsageAmount: 0
       aType: 0
-      power: 2
-      speedMod: -2
+      power: 0
+      speedMod: 0
       sprite:
         sprite: {fileID: 0}
         equippedX: 0
@@ -635,11 +635,11 @@ MonoBehaviour:
         equippedXSize: 0
         equippedYSize: 0
     armor:
-      instanceID: 94
-      name: Simple Shirt
-      type: 1
+      instanceID: -1
+      name: 
+      type: 0
       rarity: 0
-      coinCost: 1
+      coinCost: 0
       canBeFished: 0
       fishedData:
         hookedPos: {x: 0, y: 0}
@@ -649,8 +649,8 @@ MonoBehaviour:
       flavor: Choco
       wornAmount: 3
       attributes: 
-      defence: 1
-      speedMod: 1
+      defence: 0
+      speedMod: 0
       sprite:
         sprite: {fileID: 0}
         equippedSprite: {fileID: 0}
@@ -697,11 +697,6 @@ MonoBehaviour:
         yHatSize2: 0
     name: Toby
     m_instanceID: 0
+    isNPC: 1
   weapon: {fileID: 11400000, guid: 11c18f48af77fd44a943a6607b23fe88, type: 2}
   armor: {fileID: 11400000, guid: e83b8e3612930c145ae0cd437c975fa6, type: 2}
-  dialog:
-    top:
-      mainText: 
-      firstResponse: 
-      secondResponse: 
-    branches: []

@@ -7,7 +7,7 @@ public class PresetLibrary : MonoBehaviour {
     [SerializeField] GameObject playerUnit, townMemberUnit;
     [SerializeField] GameObject[] enemies;
     [SerializeField] GameObject[] bosses;
-    [SerializeField] NPCPreset[] townMemberNPCs;
+    [SerializeField] NPCPreset[] townNPCs;
     [SerializeField] UnitTraitPreset[] unitTraits;
 
     //  unit customs
@@ -52,11 +52,11 @@ public class PresetLibrary : MonoBehaviour {
             var stats = createRandomPlayerUnitStats(true);
 
             if(i < startingWeapons.Length && startingWeapons[i] != null && !startingWeapons[i].preset.isEmpty())
-                stats.equippedWeapon = startingWeapons[i].preset;
+                stats.weapon = startingWeapons[i].preset;
             if(i < startingArmor.Length && startingArmor[i] != null && !startingArmor[i].preset.isEmpty())
-                stats.equippedArmor = startingArmor[i].preset;
+                stats.armor = startingArmor[i].preset;
             if(i < startingItems.Length && startingItems[i] != null && !startingItems[i].preset.isEmpty())
-                stats.equippedItem = startingItems[i].preset;
+                stats.item = startingItems[i].preset;
 
             Party.addUnit(stats);
         }
@@ -195,17 +195,24 @@ public class PresetLibrary : MonoBehaviour {
         return -1;
     }
 
-    public GameObject getRandomTownMemberNPC() {
-        var temp = townMemberUnit;
-        var npc = townMemberNPCs[Random.Range(0, townMemberNPCs.Length)];
-        temp.GetComponentInChildren<DialogBox>().setDialog(npc.dialog);
-        var we = getWeapon(npc.weapon.preset.name);
-        var ar = getArmor(npc.armor.preset.name);
+    public TownMember getRandomTownNPC() {
+        var temp = new TownMember(this, true);
+        var npc = townNPCs[Random.Range(0, townNPCs.Length)];
+        temp.setEqualsTo(npc.preset, false);
 
-        npc.member.weapon.setEqualTo(we, true);
-        npc.member.armor.setEqualTo(ar, true);
+        var we = getWeapon(npc.weapon.name);
+        var ar = getArmor(npc.armor.name);
 
-        temp.GetComponent<TownMemberInstance>().reference.setEqualsTo(npc.member, false);
+        if(we != null && !we.isEmpty()) {
+            temp.weapon = new Weapon();
+            temp.weapon.setEqualTo(we, true);
+        }
+        if(ar != null && !ar.isEmpty()) {
+            temp.armor = new Armor();
+            temp.armor.setEqualTo(ar, true);
+        }
+
+        temp.isNPC = true;
         return temp;
     }
 

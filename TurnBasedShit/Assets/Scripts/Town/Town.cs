@@ -10,6 +10,7 @@ public class Town {
 
     public int interactedBuildingIndex = -1;
     public int townMemberCount = 0;
+    public int townNPCCount = 0;
 
     public bool visited = false;
 
@@ -223,6 +224,9 @@ public class Town {
     string memberTag(int index) {
         return "Town Member Tag" + t_instanceID.ToString() + " " + index.ToString();
     }
+    string npcTag(int index) {
+        return "Town NPC Tag" + t_instanceID.ToString() + " " + index.ToString();
+    }
 
     public void clearMembers() {
         for(int i = 0; i < townMemberCount; i++) {
@@ -236,6 +240,11 @@ public class Town {
             var data = JsonUtility.ToJson(mem);
             SaveData.setString(memberTag(i), data);
         }
+        for(int i = 0; i < townNPCCount; i++) {
+            var npc = lib.getRandomTownNPC();
+            var data = JsonUtility.ToJson(npc);
+            SaveData.setString(memberTag(i), data);
+        }
     }
     public TownMember getMember(int index) {
         var data = SaveData.getString(memberTag(index));
@@ -243,7 +252,7 @@ public class Town {
     }
     public List<TownMember> getMembersWithQuests() {
         var temp = new List<TownMember>();
-        for(int i = 0; i < townMemberCount; i++) {
+        for(int i = 0; i < townMemberCount + townNPCCount; i++) {
             var mem = getMember(i);
             if(mem.hasQuest)
                 temp.Add(mem);
@@ -268,6 +277,16 @@ public class Town {
                 temp.Add(i);
         }
 
+        return temp;
+    }
+    public List<TownMember> getNPCs() {
+        var temp = new List<TownMember>();
+
+        for(int i = 0; i < townMemberCount + townNPCCount; i++) {
+            var mem = getMember(i);
+            if(mem.isNPC)
+                temp.Add(mem);
+        }
         return temp;
     }
 
@@ -374,6 +393,8 @@ public class Town {
 
         //  member shit
         townMemberCount = GameVariables.createTownMemberCount(index);
+        townNPCCount = GameVariables.createTownNPCCount(townMemberCount) + 1;
+        townMemberCount -= townNPCCount;
         addMembers(lib);
     }
 

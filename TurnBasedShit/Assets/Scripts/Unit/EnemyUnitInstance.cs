@@ -113,8 +113,8 @@ public class EnemyUnitInstance : UnitClass {
             moddedChance += t.getChanceToBeAttackedMod() * 100.0f;
 
 
-        if(stats.equippedItem != null && !stats.equippedItem.isEmpty()) //  item shit
-            moddedChance += stats.equippedItem.getPassiveMod(Item.passiveEffectTypes.modChanceToBeAttacked) * defaultChancePerUnit;
+        if(stats.item != null && !stats.item.isEmpty()) //  item shit
+            moddedChance += stats.item.getPassiveMod(Item.passiveEffectTypes.modChanceToBeAttacked) * defaultChancePerUnit;
 
         return moddedChance;
     }

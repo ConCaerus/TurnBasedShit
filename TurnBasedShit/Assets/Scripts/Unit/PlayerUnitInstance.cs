@@ -62,24 +62,24 @@ public class PlayerUnitInstance : UnitClass {
 
     void useWeaponSpecialUse() {
         //  wants to heal but no target
-        if(stats.equippedWeapon.sUsage == Weapon.specialUsage.healing && attackingTarget == null)
+        if(stats.weapon.sUsage == Weapon.specialUsage.healing && attackingTarget == null)
             return;
-        if(stats.equippedWeapon.sUsage == Weapon.specialUsage.healing && attackingTarget != null) {
-            stats.equippedWeapon.applySpecailUsage(stats, attackingTarget.GetComponent<UnitClass>());
+        if(stats.weapon.sUsage == Weapon.specialUsage.healing && attackingTarget != null) {
+            stats.weapon.applySpecailUsage(stats, attackingTarget.GetComponent<UnitClass>());
             FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
         }
 
         //  summon
-        if(stats.equippedWeapon.sUsage == Weapon.specialUsage.summoning && roomToSummon()) {
-            var obj = Instantiate(FindObjectOfType<PresetLibrary>().getSummonForWeapon(stats.equippedWeapon).gameObject);
+        if(stats.weapon.sUsage == Weapon.specialUsage.summoning && roomToSummon()) {
+            var obj = Instantiate(FindObjectOfType<PresetLibrary>().getSummonForWeapon(stats.weapon).gameObject);
             obj.GetComponent<SummonedUnitInstance>().summoner = stats;
             FindObjectOfType<SummonSpotSpawner>().getCombatSpotAtIndexForUnit(gameObject, getSummonCount() - 1).GetComponentInChildren<CombatSpot>().unit = obj.gameObject;
             obj.transform.position = FindObjectOfType<SummonSpotSpawner>().getCombatSpotAtIndexForUnit(gameObject, getSummonCount() - 1).transform.GetChild(0).transform.position + new Vector3(0.0f, obj.GetComponent<UnitClass>().spotOffset);
             obj.GetComponent<UnitClass>().setup();
 
             //  apply item modifiers to summon
-            if(stats.equippedItem != null && !stats.equippedItem.isEmpty()) {
-                obj.GetComponent<UnitClass>().tempPowerMod += stats.equippedItem.getPassiveMod(Item.passiveEffectTypes.modSummonDamageGiven);
+            if(stats.item != null && !stats.item.isEmpty()) {
+                obj.GetComponent<UnitClass>().tempPowerMod += stats.item.getPassiveMod(Item.passiveEffectTypes.modSummonDamageGiven);
             }
 
             FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
@@ -108,12 +108,12 @@ public class PlayerUnitInstance : UnitClass {
 
     //  returns true if the level increased
     public bool addWeaponTypeExpOnKill(float ex) {
-        if(stats.equippedWeapon.aType == Weapon.attackType.blunt) {
+        if(stats.weapon.aType == Weapon.attackType.blunt) {
             int temp = stats.getBluntLevel();
             stats.u_bluntExp += ex;
             return temp != stats.getBluntLevel();
         }
-        else if(stats.equippedWeapon.aType == Weapon.attackType.edged) {
+        else if(stats.weapon.aType == Weapon.attackType.edged) {
             int temp = stats.getEdgedLevel();
             stats.u_edgedExp += ex;
             return temp != stats.getEdgedLevel();
@@ -122,7 +122,7 @@ public class PlayerUnitInstance : UnitClass {
     }
 
     public void updateSprites() {
-        GetComponentInChildren<UnitSpriteHandler>().setEverything(stats.u_sprite, stats.equippedWeapon, stats.equippedArmor);
+        GetComponentInChildren<UnitSpriteHandler>().updateVisuals();
         foreach(var i in FindObjectsOfType<CombatSpot>()) {
             if(i.unit == gameObject) {
                 i.setColor();
@@ -132,7 +132,7 @@ public class PlayerUnitInstance : UnitClass {
         }
 
         //  if not summoning, kill all summoned shit
-        if(stats.equippedWeapon == null || stats.equippedWeapon.isEmpty() || stats.equippedWeapon.sUsage != Weapon.specialUsage.summoning) {
+        if(stats.weapon == null || stats.weapon.isEmpty() || stats.weapon.sUsage != Weapon.specialUsage.summoning) {
             foreach(var i in FindObjectsOfType<SummonedUnitInstance>()) {
                 if(i.summoner.isTheSameInstanceAs(stats))
                     i.die(DeathInfo.killCause.murdered);

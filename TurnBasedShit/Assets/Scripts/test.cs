@@ -12,7 +12,11 @@ public class test : MonoBehaviour {
         box = FindObjectOfType<DialogBox>();
         box.setName("Tobster");
 
-        dialog = DialogLibrary.getTobyDialog();
+        dialog = new DialogInfo("Hey [name], wanna go fucking " + FindObjectOfType<TextCreator>().createQuestText("Fishing") + " with me?");
+        dialog.firstOption = "Yes";
+        dialog.secondOption = "No";
+        dialog.firstResponseDialog = dialog;
+        dialog.secondResponseDialog = dialog;
 
         box.setDialog(dialog);
         box.showDialog();

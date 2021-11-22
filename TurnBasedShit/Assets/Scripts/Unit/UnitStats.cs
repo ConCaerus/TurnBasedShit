@@ -30,9 +30,9 @@ public class UnitStats {
 
     public int u_instanceID = -1;
 
-    public Weapon equippedWeapon;
-    public Armor equippedArmor;
-    public Item equippedItem;
+    public Weapon weapon;
+    public Armor armor;
+    public Item item;
 
     public List<UnitTrait> u_traits = new List<UnitTrait>();
 
@@ -56,9 +56,9 @@ public class UnitStats {
 
         u_sprite.setEqualTo(other.u_sprite);
 
-        equippedWeapon.setEqualTo(other.equippedWeapon, true);
-        equippedArmor.setEqualTo(other.equippedArmor, true);
-        equippedItem.setEqualTo(other.equippedItem, true);
+        weapon.setEqualTo(other.weapon, true);
+        armor.setEqualTo(other.armor, true);
+        item.setEqualTo(other.item, true);
 
         foreach(var i in other.u_traits)
             u_traits.Add(i);
@@ -114,16 +114,16 @@ public class UnitStats {
 
     //  Attack amount
     public float getBasePower() {
-        float weaponPower = equippedWeapon.power * (((float)equippedWeapon.wornAmount + 7.0f) / 10.0f);
+        float weaponPower = weapon.power * (((float)weapon.wornAmount + 7.0f) / 10.0f);
         return u_power + weaponPower;
     }
     float getLevelDamageMult() {
         float baseMult = 1.25f;
-        if(equippedWeapon == null || equippedWeapon.isEmpty())
+        if(weapon == null || weapon.isEmpty())
             return 1.0f;
-        if(equippedWeapon.aType == Weapon.attackType.blunt && getBluntLevel() > 0)
+        if(weapon.aType == Weapon.attackType.blunt && getBluntLevel() > 0)
             return baseMult * (getBluntLevel() / 2.0f);
-        if(equippedWeapon.aType == Weapon.attackType.edged && getEdgedLevel() > 0)
+        if(weapon.aType == Weapon.attackType.edged && getEdgedLevel() > 0)
             return baseMult * (getEdgedLevel() / 2.0f);
         return 1.0f;
     }
@@ -132,13 +132,13 @@ public class UnitStats {
         float baseDmg = getBasePower();
 
         //  Weapon
-        if(equippedWeapon != null && !equippedWeapon.isEmpty()) {   //  adds 10% of dmg for every power tolken in the weapon
-            dmg += (0.1f * dmg) * equippedWeapon.getPowerAttCount();
+        if(weapon != null && !weapon.isEmpty()) {   //  adds 10% of dmg for every power tolken in the weapon
+            dmg += (0.1f * dmg) * weapon.getPowerAttCount();
         }
 
         //  Armor
-        if(equippedArmor != null && !equippedArmor.isEmpty()) { //  adds 10% of dmg for every power tolken in the armor
-            dmg += (0.1f * dmg) * equippedArmor.getPowerAttCount();
+        if(armor != null && !armor.isEmpty()) { //  adds 10% of dmg for every power tolken in the armor
+            dmg += (0.1f * dmg) * armor.getPowerAttCount();
         }
 
         //  Traits modify damage
@@ -150,13 +150,13 @@ public class UnitStats {
         dmg *= getLevelDamageMult();
 
         //  Items modify damage
-        if(equippedItem != null && !equippedItem.isEmpty()) {   //  adds whatever the item's power mod is times the base damage
-            dmg += equippedItem.getPassiveMod(Item.passiveEffectTypes.modPower) * baseDmg;
+        if(item != null && !item.isEmpty()) {   //  adds whatever the item's power mod is times the base damage
+            dmg += item.getPassiveMod(Item.passiveEffectTypes.modPower) * baseDmg;
 
-            if(equippedWeapon.aType == Weapon.attackType.edged)
-                dmg += equippedItem.getPassiveMod(Item.passiveEffectTypes.modEdgedDamageGiven) * baseDmg;
-            else if(equippedWeapon.aType == Weapon.attackType.blunt)
-                dmg += equippedItem.getPassiveMod(Item.passiveEffectTypes.modBluntDamageGiven) * baseDmg;
+            if(weapon.aType == Weapon.attackType.edged)
+                dmg += item.getPassiveMod(Item.passiveEffectTypes.modEdgedDamageGiven) * baseDmg;
+            else if(weapon.aType == Weapon.attackType.blunt)
+                dmg += item.getPassiveMod(Item.passiveEffectTypes.modBluntDamageGiven) * baseDmg;
         }
 
         //  equipment pair modify damage
@@ -178,7 +178,7 @@ public class UnitStats {
 
     //  Defence amount
     public float getBaseDefence() {
-        float armorDefence = equippedArmor.defence * (((float)equippedArmor.wornAmount + 7.0f) / 10.0f);
+        float armorDefence = armor.defence * (((float)armor.wornAmount + 7.0f) / 10.0f);
         return Mathf.Clamp(u_defence + armorDefence, 0.0f, 100.0f);
     }
     public float getDefenceMult(bool defending, PresetLibrary lib) {    //  this value is multiplied by the damage taken
@@ -192,12 +192,12 @@ public class UnitStats {
         }
 
         //  have item reduce damage
-        if(equippedItem != null && !equippedItem.isEmpty())
-            temp -= equippedItem.getPassiveMod(Item.passiveEffectTypes.modDefence);
+        if(item != null && !item.isEmpty())
+            temp -= item.getPassiveMod(Item.passiveEffectTypes.modDefence);
 
         //  Have Armor reduce damage
-        if(equippedArmor != null && !equippedArmor.isEmpty()) { //  takes off 10% of damage for every tolken of turtle
-            temp -= equippedArmor.getTurtleAttCount() * 0.1f;
+        if(armor != null && !armor.isEmpty()) { //  takes off 10% of damage for every tolken of turtle
+            temp -= armor.getTurtleAttCount() * 0.1f;
         }
 
         //  have pair reduce damage
@@ -225,12 +225,12 @@ public class UnitStats {
     }
     public float getModifiedSpeed(float tempSpeedMod) {
         float temp = u_speed * tempSpeedMod;
-        if(equippedWeapon != null && !equippedWeapon.isEmpty())
-            temp += equippedWeapon.speedMod;
-        if(equippedArmor != null && !equippedArmor.isEmpty())
-            temp += equippedArmor.speedMod;
-        if(equippedItem != null && !equippedItem.isEmpty())
-            temp += equippedItem.getPassiveMod(Item.passiveEffectTypes.modSpeed);
+        if(weapon != null && !weapon.isEmpty())
+            temp += weapon.speedMod;
+        if(armor != null && !armor.isEmpty())
+            temp += armor.speedMod;
+        if(item != null && !item.isEmpty())
+            temp += item.getPassiveMod(Item.passiveEffectTypes.modSpeed);
         foreach(var i in u_traits)
             temp += i.getSpeedMod();
 
@@ -287,16 +287,16 @@ public class UnitStats {
 
     public void die(DeathInfo.killCause cause, GameObject killer = null) {
         //  add equipped things back into the inventory
-        if(equippedWeapon != null && !equippedWeapon.isEmpty())
-            Inventory.addWeapon(equippedWeapon);
-        if(equippedArmor != null && !equippedArmor.isEmpty())
-            Inventory.addArmor(equippedArmor);
-        if(equippedItem != null && !equippedItem.isEmpty())
-            Inventory.addItem(equippedItem);
+        if(weapon != null && !weapon.isEmpty())
+            Inventory.addWeapon(weapon);
+        if(armor != null && !armor.isEmpty())
+            Inventory.addArmor(armor);
+        if(item != null && !item.isEmpty())
+            Inventory.addItem(item);
 
-        equippedWeapon = null;
-        equippedArmor = null;
-        equippedItem = null;
+        weapon = null;
+        armor = null;
+        item = null;
 
         //  remove from party
         Party.removeUnit(this);

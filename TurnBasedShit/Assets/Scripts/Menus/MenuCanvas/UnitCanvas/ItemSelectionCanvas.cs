@@ -11,19 +11,19 @@ public class ItemSelectionCanvas : UnitEquipmentSelectionCanvas {
     [SerializeField] TextMeshProUGUI nameText;
 
     public Item getItemInSlot(int index) {
-        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem == null || FindObjectOfType<UnitCanvas>().shownUnit.equippedItem.isEmpty())
+        if(FindObjectOfType<UnitCanvas>().shownUnit.item == null || FindObjectOfType<UnitCanvas>().shownUnit.item.isEmpty())
             return Inventory.getItem(index);
         else if(index > 0)
             return Inventory.getItem(index - 1);
-        return FindObjectOfType<UnitCanvas>().shownUnit.equippedItem;
+        return FindObjectOfType<UnitCanvas>().shownUnit.item;
     }
 
 
     public override void populateSlots() {
         int slotIndex = 0;
-        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedItem.isEmpty()) {
-            var obj = slot.createSlot(slotIndex, FindObjectOfType<UnitCanvas>().shownUnit.u_sprite.color, InfoTextCreator.createForCollectable(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem));
-            obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem).sprite;
+        if(FindObjectOfType<UnitCanvas>().shownUnit.item != null && !FindObjectOfType<UnitCanvas>().shownUnit.item.isEmpty()) {
+            var obj = slot.createSlot(slotIndex, FindObjectOfType<UnitCanvas>().shownUnit.u_sprite.color, InfoTextCreator.createForCollectable(FindObjectOfType<UnitCanvas>().shownUnit.item));
+            obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(FindObjectOfType<UnitCanvas>().shownUnit.item).sprite;
             slotIndex++;
         }
 
@@ -57,9 +57,9 @@ public class ItemSelectionCanvas : UnitEquipmentSelectionCanvas {
     }
 
     public override void rotateEquipment() {
-        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedItem.isEmpty()) {
+        if(FindObjectOfType<UnitCanvas>().shownUnit.item != null && !FindObjectOfType<UnitCanvas>().shownUnit.item.isEmpty()) {
             var slottedItem = getItemInSlot(slot.getSelectedSlotIndex());
-            Inventory.addItem(FindObjectOfType<UnitCanvas>().shownUnit.equippedItem);
+            Inventory.addItem(FindObjectOfType<UnitCanvas>().shownUnit.item);
             FindObjectOfType<UnitCanvas>().setUnitItem(slottedItem);
             Inventory.removeItem(slottedItem);
         }
@@ -78,7 +78,7 @@ public class ItemSelectionCanvas : UnitEquipmentSelectionCanvas {
         if(shown) {
             updateInfo();
         }
-        var unitItem = FindObjectOfType<UnitCanvas>().shownUnit.equippedItem;
+        var unitItem = FindObjectOfType<UnitCanvas>().shownUnit.item;
         if(unitItem == null || unitItem.isEmpty())
             return;
 

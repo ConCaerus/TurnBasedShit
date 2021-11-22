@@ -23,6 +23,7 @@ public class TownMember {
 
     public string name;
     public int m_instanceID = -1;
+    public bool isNPC = false;
 
     public TownMember(PresetLibrary lib, bool setID, bool autoHasQuest = false) {
         if(setID)

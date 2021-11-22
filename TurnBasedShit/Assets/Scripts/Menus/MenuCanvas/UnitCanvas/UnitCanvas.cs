@@ -141,36 +141,36 @@ public class UnitCanvas : MonoBehaviour {
         var armorInfo = armorImage.transform.parent.GetComponent<InfoBearer>();
         var itemInfo = itemImage.transform.parent.GetComponent<InfoBearer>();
 
-        weaponInfo.setInfo(InfoTextCreator.createForCollectable(shownUnit.equippedWeapon));
-        armorInfo.setInfo(InfoTextCreator.createForCollectable(shownUnit.equippedArmor));
-        itemInfo.setInfo(InfoTextCreator.createForCollectable(shownUnit.equippedItem));
+        weaponInfo.setInfo(InfoTextCreator.createForCollectable(shownUnit.weapon));
+        armorInfo.setInfo(InfoTextCreator.createForCollectable(shownUnit.armor));
+        itemInfo.setInfo(InfoTextCreator.createForCollectable(shownUnit.item));
 
         weaponImage.enabled = true;
         armorImage.enabled = true;
         itemImage.enabled = true;
-        if(shownUnit.equippedWeapon != null && !shownUnit.equippedWeapon.isEmpty()) {
-            weaponImage.sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(shownUnit.equippedWeapon).sprite;
-            weaponImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownUnit.equippedWeapon.rarity);
+        if(shownUnit.weapon != null && !shownUnit.weapon.isEmpty()) {
+            weaponImage.sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(shownUnit.weapon).sprite;
+            weaponImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownUnit.weapon.rarity);
         }
         else {
             weaponImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
             weaponImage.enabled = false;
         }
-        if(shownUnit.equippedArmor != null && !shownUnit.equippedArmor.isEmpty()) {
-            armorImage.sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(shownUnit.equippedArmor).sprite;
-            armorImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownUnit.equippedArmor.rarity);
+        if(shownUnit.armor != null && !shownUnit.armor.isEmpty()) {
+            armorImage.sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(shownUnit.armor).sprite;
+            armorImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownUnit.armor.rarity);
         }
         else {
             armorImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
             armorImage.enabled = false;
         }
-        if(shownUnit.equippedItem != null && !shownUnit.equippedItem.isEmpty()) {
-            itemImage.sprite = FindObjectOfType<PresetLibrary>().getItemSprite(shownUnit.equippedItem).sprite;
-            if(shownUnit.equippedItem.isTheSameTypeAs(FindObjectOfType<PresetLibrary>().getItem("Dummy")))
+        if(shownUnit.item != null && !shownUnit.item.isEmpty()) {
+            itemImage.sprite = FindObjectOfType<PresetLibrary>().getItemSprite(shownUnit.item).sprite;
+            if(shownUnit.item.isTheSameTypeAs(FindObjectOfType<PresetLibrary>().getItem("Dummy")))
                 itemImage.color = shownUnit.u_sprite.color;
             else
                 itemImage.color = Color.white;
-            itemImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownUnit.equippedItem.rarity);
+            itemImage.transform.parent.GetChild(0).GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(shownUnit.item.rarity);
         }
         else {
             itemImage.transform.parent.GetChild(0).GetComponent<Image>().color = Color.gray;
@@ -232,37 +232,37 @@ public class UnitCanvas : MonoBehaviour {
 
     public void setUnitWeapon(Weapon w) {
         if(w == null || w.isEmpty()) {
-            shownUnit.equippedWeapon = null;
+            shownUnit.weapon = null;
             saveShownUnit();
             updateUnitWindow();
             return;
         }
-        shownUnit.equippedWeapon = new Weapon();
-        shownUnit.equippedWeapon.setEqualTo(w, true);
+        shownUnit.weapon = new Weapon();
+        shownUnit.weapon.setEqualTo(w, true);
         saveShownUnit();
         updateUnitWindow();
     }
     public void setUnitArmor(Armor a) {
         if(a == null || a.isEmpty()) {
-            shownUnit.equippedArmor = null;
+            shownUnit.armor = null;
             saveShownUnit();
             updateUnitWindow();
             return;
         }
-        shownUnit.equippedArmor = new Armor();
-        shownUnit.equippedArmor.setEqualTo(a, true);
+        shownUnit.armor = new Armor();
+        shownUnit.armor.setEqualTo(a, true);
         saveShownUnit();
         updateUnitWindow();
     }
     public void setUnitItem(Item i) {
         if(i == null || i.isEmpty()) {
-            shownUnit.equippedItem = null;
+            shownUnit.item = null;
             saveShownUnit();
             updateUnitWindow();
             return;
         }
-        shownUnit.equippedItem = new Item();
-        shownUnit.equippedItem.setEqualTo(i, true);
+        shownUnit.item = new Item();
+        shownUnit.item.setEqualTo(i, true);
         saveShownUnit();
         updateUnitWindow();
     }

@@ -3,94 +3,117 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class UnitSpriteHandler : MonoBehaviour {
-    public GameObject head, face, body;
+    public GameObject head, face, body, rArm, lArm, weapon, armor, rShoulder, lShoulder, hat;
     bool showingFace = true, hatInfrontOfHead = true;
-    int faceIndex = -1, headIndex, bodyIndex = -1;
+    UnitStats reference;
     int animState = 0;
-    int orderOffset = 0;
     Color col;
+
+    public bool showWeapon = true;
 
     Coroutine idler = null;
 
-    public void setEverything(UnitStats stats) {
-        setEverything(stats.u_sprite, stats.equippedWeapon, stats.equippedArmor, stats.u_sprite.layerOffset);
+    public void setReference(UnitStats stats, bool shouldShowWeapon) {
+        reference = stats;
+        showWeapon = shouldShowWeapon;
+        updateVisuals();
     }
-    public void setEverything(int h, int f, int b, Color c, Weapon w, Armor a, int layerOffset = 0) {
-        setHead(h, a);
-        setFace(f, a);
-        setBody(b, w, a);
-        setColor(c);
-        setLayerOffset(layerOffset);
+    public void setReference(UnitSpriteInfo info, Weapon we, Armor ar, bool shouldShowWeapon) {
+        reference = new UnitStats();
+        reference.u_sprite.setEqualTo(info);
+        
+        if(we != null && !we.isEmpty()) {
+            reference.weapon = new Weapon();
+            reference.weapon.setEqualTo(we, false);
+        }
+
+        if(ar != null && !ar.isEmpty()) {
+            reference.armor = new Armor();
+            reference.armor.setEqualTo(ar, false);
+        }
+
+        showWeapon = shouldShowWeapon;
+        updateVisuals();
+    }
+
+
+    public void updateVisuals() {
+        setHead();
+        setFace();
+        setBody();
+        setColor();
         offsetLayer();
 
         if(FindObjectOfType<PartyObject>() != null)
             FindObjectOfType<PartyObject>().repositionUnit(FindObjectOfType<PartyObject>().getInstantiatedMember(GetComponentInParent<UnitClass>().stats));
     }
-    public void setEverythingButWeapon(UnitStats stats, int layerOffset = 0) {
-        setEverything(stats.u_sprite, null, stats.equippedArmor, layerOffset);
-    }
-    public void setEverything(UnitSpriteInfo info, Weapon w, Armor a, int layerOffset = 0) {
-        setEverything(info.headIndex, info.faceIndex, info.bodyIndex, info.color, w, a, layerOffset);
-        setColor(info.color);
-    }
-    public void setHead(int index, Armor a) {
-        if(index == -1)
-            index = Random.Range(0, FindObjectOfType<PresetLibrary>().getHeadCount());
-        if(head != null)
-            Destroy(head.gameObject);
-        GameObject obj = FindObjectOfType<PresetLibrary>().getUnitHead(index);
 
-        head = Instantiate(obj, body.transform).transform.GetChild(0).gameObject;
-        face = head.transform.GetChild(0).gameObject;
+    public void setHead() {
+        var hParent = FindObjectOfType<PresetLibrary>().getUnitHead(reference.u_sprite.headIndex);
+        var h = hParent.transform.GetChild(0).gameObject;
 
-        setFace(faceIndex, a);
-        setColor(col);
-        headIndex = index;
+        head.GetComponent<SpriteRenderer>().sprite = h.GetComponent<SpriteRenderer>().sprite;
+        head.transform.parent.localPosition = hParent.transform.localPosition;
+        head.transform.parent.localScale = hParent.transform.localScale;
+        head.transform.parent.localRotation = hParent.transform.localRotation;
+        for(int i = 0; i < hParent.GetComponentsInChildren<Transform>().Length; i++) {
+            head.transform.parent.GetComponentsInChildren<Transform>()[i].localPosition = hParent.GetComponentsInChildren<Transform>()[i].localPosition;
+            head.transform.parent.GetComponentsInChildren<Transform>()[i].localScale = hParent.GetComponentsInChildren<Transform>()[i].localScale;
+            head.transform.parent.GetComponentsInChildren<Transform>()[i].localRotation = hParent.GetComponentsInChildren<Transform>()[i].localRotation;
+        }
+
+        setFace();
+        setArmor();
+        setColor();
         offsetLayer();
     }
-    public void setFace(int index, Armor a) {
-        if(index == -1)
-            index = Random.Range(0, FindObjectOfType<PresetLibrary>().getFaceCount());
+    public void setFace() {
         face.SetActive(showingFace);
-        face.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getUnitFace(index);
-        faceIndex = index;
-        setArmor(a);
+        face.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getUnitFace(reference.u_sprite.faceIndex);
+        setArmor();
         offsetLayer();
     }
-    public void setBody(int index, Weapon w, Armor a) {
-        if(index == -1)
-            index = Random.Range(0, FindObjectOfType<PresetLibrary>().getBodyCount());
-        Destroy(body.gameObject);
-        body = Instantiate(FindObjectOfType<PresetLibrary>().getUnitBody(index), transform);
-        setColor(col);
-        setHead(headIndex, a);
+    public void setBody() {
+        var b = FindObjectOfType<PresetLibrary>().getUnitBody(reference.u_sprite.bodyIndex);
 
-        bodyIndex = index;
+        body.GetComponent<SpriteRenderer>().sprite = b.GetComponent<SpriteRenderer>().sprite;
+        body.transform.localPosition = b.transform.localPosition;
+        body.transform.localScale = b.transform.localScale;
+        body.transform.localRotation = b.transform.localRotation;
+        for(int i = 0; i < b.GetComponentsInChildren<Transform>().Length; i++) {
+            body.GetComponentsInChildren<Transform>()[i].transform.localPosition = b.GetComponentsInChildren<Transform>()[i].transform.localPosition;
+            body.GetComponentsInChildren<Transform>()[i].transform.localScale = b.GetComponentsInChildren<Transform>()[i].transform.localScale;
+            body.GetComponentsInChildren<Transform>()[i].transform.localRotation = b.GetComponentsInChildren<Transform>()[i].transform.localRotation;
 
-        setWeapon(w);
-        setArmor(a);
+            if(body.GetComponentsInChildren<Transform>()[i].GetComponent<SpriteRenderer>() != null)
+                body.GetComponentsInChildren<Transform>()[i].GetComponent<SpriteRenderer>().sprite = b.GetComponentsInChildren<Transform>()[i].GetComponent<SpriteRenderer>().sprite;
+        }
+        setColor();
+        setHead();
+
+        setWeapon();
+        setArmor();
         offsetLayer();
     }
 
     public void showFace() {
         showingFace = true;
-        if(faceIndex == -1)
-            return;
 
         face.SetActive(true);
-        face.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getUnitFace(faceIndex);
+        face.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getUnitFace(reference.u_sprite.faceIndex);
     }
     public void hideFace() {
         showingFace = false;
-        if(faceIndex == -1 || face == null)
-            return;
+
         face.SetActive(false);
     }
     public bool isFaceShown() {
         return showingFace;
     }
 
-    public void setColor(Color c) {
+    //  add a tint parameter
+    public void setColor() {
+        var c = reference.u_sprite.color;
         //  body
         body.GetComponent<SpriteRenderer>().color = c;
 
@@ -100,33 +123,33 @@ public class UnitSpriteHandler : MonoBehaviour {
 
         //  head
         head.GetComponent<SpriteRenderer>().color = c;
-        col = c;
     }
     public Color getColor() {
         return col;
     }
 
-    public void setWeapon(Weapon w) {
+    public void setWeapon() {
         var weapon = body.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(0).gameObject;
 
-        if(w == null || w.isEmpty()) {
+        if(reference.weapon == null || reference.weapon.isEmpty() || !showWeapon) {
             weapon.GetComponent<SpriteRenderer>().sprite = null;
             weapon.GetComponent<SpriteRenderer>().color = Color.white;
             return;
         }
 
-        weapon.transform.localPosition = new Vector2(FindObjectOfType<PresetLibrary>().getWeaponSprite(w).equippedX, FindObjectOfType<PresetLibrary>().getWeaponSprite(w).equippedY);
-        weapon.transform.localScale = new Vector3(FindObjectOfType<PresetLibrary>().getWeaponSprite(w).equippedXSize, FindObjectOfType<PresetLibrary>().getWeaponSprite(w).equippedYSize, 0.0f);
-        weapon.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, FindObjectOfType<PresetLibrary>().getWeaponSprite(w).equippedRot);
-        weapon.GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(w).sprite;
+        var sp = FindObjectOfType<PresetLibrary>().getWeaponSprite(reference.weapon);
+        weapon.transform.localPosition = new Vector2(sp.equippedX, sp.equippedY);
+        weapon.transform.localScale = new Vector3(sp.equippedXSize, sp.equippedYSize, 0.0f);
+        weapon.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, sp.equippedRot);
+        weapon.GetComponent<SpriteRenderer>().sprite = sp.sprite;
     }
-    public void setArmor(Armor a) {
+    public void setArmor() {
         var armor = body.transform.GetChild(2).gameObject;
         var rightShoulder = body.transform.GetChild(0).GetChild(0).GetChild(1).gameObject;
         var leftShoulder = body.transform.GetChild(1).GetChild(0).GetChild(0).gameObject;
         var hat = head.transform.GetChild(1).gameObject;
 
-        if(a == null || a.isEmpty()) {
+        if(reference.armor == null || reference.armor.isEmpty()) {
             armor.GetComponent<SpriteRenderer>().sprite = null;
             rightShoulder.GetComponent<SpriteRenderer>().sprite = null;
             leftShoulder.GetComponent<SpriteRenderer>().sprite = null;
@@ -134,31 +157,31 @@ public class UnitSpriteHandler : MonoBehaviour {
             return;
         }
 
-        var aSprite = FindObjectOfType<PresetLibrary>().getArmorSprite(a);
+        var aSprite = FindObjectOfType<PresetLibrary>().getArmorSprite(reference.armor);
 
         if(aSprite.equippedSprite != null) {
             armor.GetComponent<SpriteRenderer>().sprite = aSprite.equippedSprite;
-            armor.transform.localPosition = aSprite.getRelevantPos(bodyIndex);
-            armor.transform.localScale = aSprite.getRelevantSize(bodyIndex);
+            armor.transform.localPosition = aSprite.getRelevantPos(reference.u_sprite.bodyIndex);
+            armor.transform.localScale = aSprite.getRelevantSize(reference.u_sprite.bodyIndex);
         }
 
         if(aSprite.equippedShoulder != null) {
             rightShoulder.GetComponent<SpriteRenderer>().sprite = aSprite.equippedShoulder;
-            rightShoulder.transform.localPosition = aSprite.getRelevantShoulderPos(bodyIndex);
-            rightShoulder.transform.localScale = aSprite.getRelevantShoulderSize(bodyIndex);
+            rightShoulder.transform.localPosition = aSprite.getRelevantShoulderPos(reference.u_sprite.bodyIndex);
+            rightShoulder.transform.localScale = aSprite.getRelevantShoulderSize(reference.u_sprite.bodyIndex);
             rightShoulder.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, aSprite.shoulderRot);
 
             leftShoulder.GetComponent<SpriteRenderer>().sprite = aSprite.equippedShoulder;
-            leftShoulder.transform.localPosition = aSprite.getRelevantShoulderPos(bodyIndex);
-            leftShoulder.transform.localScale = aSprite.getRelevantShoulderSize(bodyIndex);
+            leftShoulder.transform.localPosition = aSprite.getRelevantShoulderPos(reference.u_sprite.bodyIndex);
+            leftShoulder.transform.localScale = aSprite.getRelevantShoulderSize(reference.u_sprite.bodyIndex);
             leftShoulder.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, aSprite.shoulderRot);
         }
 
         if(aSprite.equippedHat != null) {
             hatInfrontOfHead = aSprite.hatInfrontOfHead;
             hat.GetComponent<SpriteRenderer>().sprite = aSprite.equippedHat;
-            hat.transform.localPosition = aSprite.getRelevantHatPos(headIndex);
-            hat.transform.localScale = aSprite.getRelevantHatSize(headIndex);
+            hat.transform.localPosition = aSprite.getRelevantHatPos(reference.u_sprite.headIndex);
+            hat.transform.localScale = aSprite.getRelevantHatSize(reference.u_sprite.headIndex);
             hat.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, aSprite.hatRot);
         }
     }
@@ -203,12 +226,8 @@ public class UnitSpriteHandler : MonoBehaviour {
     }
 
 
-    public void setLayerOffset(int offset) {
-        orderOffset = offset;
-    }
-
     void offsetLayer() {
-        int normOffset = FindObjectOfType<PresetLibrary>().getRandomUnitBody().GetComponent<SpriteRenderer>().sortingOrder + orderOffset;
+        int normOffset = FindObjectOfType<PresetLibrary>().getRandomUnitBody().GetComponent<SpriteRenderer>().sortingOrder + reference.u_sprite.layerOffset;
         //  body
         body.GetComponent<SpriteRenderer>().sortingOrder = normOffset;
 
@@ -217,13 +236,13 @@ public class UnitSpriteHandler : MonoBehaviour {
         body.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = normOffset + 4;
 
         //  arm armor
-        body.transform.GetChild(0).GetChild(0).GetChild(1).gameObject.GetComponent<SpriteRenderer>().sortingOrder = normOffset - 1;
-        body.transform.GetChild(1).GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = normOffset + 5;
+        rShoulder.GetComponent<SpriteRenderer>().sortingOrder = normOffset - 1;
+        lShoulder.GetComponent<SpriteRenderer>().sortingOrder = normOffset + 5;
 
 
         //  weapon / armor
-        body.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = normOffset - 3;
-        body.transform.GetChild(2).GetComponent<SpriteRenderer>().sortingOrder = normOffset + 1;
+        weapon.GetComponent<SpriteRenderer>().sortingOrder = normOffset - 3;
+        armor.GetComponent<SpriteRenderer>().sortingOrder = normOffset + 1;
 
 
         //  head / face

@@ -4,19 +4,39 @@ using UnityEngine;
 
 public static class DialogLibrary {
 
+    public static DialogInfo getDialogForTownMember(TownMember mem) {
+        if(mem.isNPC)
+            return getDialogForNPC(mem);
+        if(mem.hasQuest)
+            return getGenericDialogForQuest(mem.questType);
+        return null;
+    }
 
-    public static DialogInfo getDialog() {
-        var temp = new DialogInfo("Fuck Bithces?", "Hell Yeah Brobther!", "Not today, sorry");
-        var f = new DialogInfo("HELL YEAH BROBTHER!!!", "Next");
-        var s = new DialogInfo("Coward", "Next");
+    public static DialogInfo getDialogForNPC(TownMember npc) {
+        if(npc.name == "Toby")
+            return getTobyDialog();
+        return null;
+    }
 
-        temp.firstResponseDialog = f;
-        temp.secondResponseDialog = s;
+    public static DialogInfo getGenericDialogForQuest(GameInfo.questType type) {
+        switch(type) {
+            case GameInfo.questType.kill:
+                return new DialogInfo("Kill", "Ok", "No");
 
-        f.firstResponseDialog = temp;
-        s.firstResponseDialog = temp;
+            case GameInfo.questType.rescue:
+                return new DialogInfo("Rescue", "Ok", "No");
 
-        return temp;
+            case GameInfo.questType.pickup:
+                return new DialogInfo("Pickup", "Ok", "No");
+
+            case GameInfo.questType.delivery:
+                return new DialogInfo("Deliver", "Ok", "No");
+
+            case GameInfo.questType.bossFight:
+                return new DialogInfo("Boss", "Ok", "No");
+        }
+
+        return null;
     }
 
 

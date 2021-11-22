@@ -88,9 +88,9 @@ public class TurnOrderSorter : MonoBehaviour {
         //  removes current unit from list
         if(playingUnit != null) {
             //  trigger items
-            if(playingUnit.GetComponent<UnitClass>().stats.equippedItem != null && !playingUnit.GetComponent<UnitClass>().stats.equippedItem.isEmpty()) {
-                playingUnit.GetComponent<UnitClass>().stats.equippedItem.triggerUseTime(playingUnit.GetComponent<UnitClass>(), Item.useTimes.afterTurn);
-                playingUnit.GetComponent<UnitClass>().stats.equippedItem.triggerUseTime(playingUnit.GetComponent<UnitClass>(), Item.useTimes.afterEachTurn);
+            if(playingUnit.GetComponent<UnitClass>().stats.item != null && !playingUnit.GetComponent<UnitClass>().stats.item.isEmpty()) {
+                playingUnit.GetComponent<UnitClass>().stats.item.triggerUseTime(playingUnit.GetComponent<UnitClass>(), Item.useTimes.afterTurn);
+                playingUnit.GetComponent<UnitClass>().stats.item.triggerUseTime(playingUnit.GetComponent<UnitClass>(), Item.useTimes.afterEachTurn);
             }
 
             //  resets unit after turn, and removes it from the list of playing units
@@ -117,8 +117,8 @@ public class TurnOrderSorter : MonoBehaviour {
 
             //  trigger items
             foreach(var i in unitsInPlay) {
-                if(i.GetComponent<UnitClass>().stats.equippedItem != null && !i.GetComponent<UnitClass>().stats.equippedItem.isEmpty()) {
-                    i.GetComponent<UnitClass>().stats.equippedItem.triggerUseTime(i.GetComponent<UnitClass>(), Item.useTimes.afterRound);
+                if(i.GetComponent<UnitClass>().stats.item != null && !i.GetComponent<UnitClass>().stats.item.isEmpty()) {
+                    i.GetComponent<UnitClass>().stats.item.triggerUseTime(i.GetComponent<UnitClass>(), Item.useTimes.afterRound);
                 }
             }
             return null;
@@ -145,9 +145,9 @@ public class TurnOrderSorter : MonoBehaviour {
         FindObjectOfType<CombatCameraController>().resetLookingAtObj();
 
         //  triggers
-        if(playingUnit.GetComponent<UnitClass>().stats.equippedItem != null && !playingUnit.GetComponent<UnitClass>().stats.equippedItem.isEmpty()) {
-            playingUnit.GetComponent<UnitClass>().stats.equippedItem.triggerUseTime(playingUnit.GetComponent<UnitClass>(), Item.useTimes.beforeTurn);
-            playingUnit.GetComponent<UnitClass>().stats.equippedItem.triggerUseTime(playingUnit.GetComponent<UnitClass>(), Item.useTimes.beforeEachTurn);
+        if(playingUnit.GetComponent<UnitClass>().stats.item != null && !playingUnit.GetComponent<UnitClass>().stats.item.isEmpty()) {
+            playingUnit.GetComponent<UnitClass>().stats.item.triggerUseTime(playingUnit.GetComponent<UnitClass>(), Item.useTimes.beforeTurn);
+            playingUnit.GetComponent<UnitClass>().stats.item.triggerUseTime(playingUnit.GetComponent<UnitClass>(), Item.useTimes.beforeEachTurn);
         }
 
         FindObjectOfType<BattleOptionsCanvas>().battleState = 0;

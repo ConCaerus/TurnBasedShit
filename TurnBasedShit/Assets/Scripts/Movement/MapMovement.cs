@@ -42,7 +42,7 @@ public class MapMovement : InteractiveMovement {
 
 
             var temp = Instantiate(sideUnitPreset.gameObject, transform.parent);
-            temp.GetComponentInChildren<UnitSpriteHandler>().setEverything(Party.getMemberStats(i));
+            temp.GetComponentInChildren<UnitSpriteHandler>().setReference(Party.getMemberStats(i), true);
             temp.GetComponent<MapSideUnitMovement>().moveSpeed = moveSpeed / 1.25f;
             temp.transform.localScale = new Vector3(0.25f, 0.25f, 1.0f);
             temp.transform.position = last + offset;
@@ -74,7 +74,7 @@ public class MapMovement : InteractiveMovement {
 
     public void setSideUnitVisuals() {
         for(int i = 0; i < sideUnits.Count; i++) {
-            sideUnits[i].GetComponentInChildren<UnitSpriteHandler>().setEverything(Party.getMemberStats(sideUnitIndexes[i]));
+            sideUnits[i].GetComponentInChildren<UnitSpriteHandler>().setReference(Party.getMemberStats(sideUnitIndexes[i]), true);
         }
     }
 

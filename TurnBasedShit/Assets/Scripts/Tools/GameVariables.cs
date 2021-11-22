@@ -83,6 +83,9 @@ public static class GameVariables {
 
         return count;
     }
+    public static int createTownNPCCount(int memberCount) {
+        return Mathf.FloorToInt(memberCount * Random.Range(0.0f, 1.1f));
+    }
 
 
     //  Building chances

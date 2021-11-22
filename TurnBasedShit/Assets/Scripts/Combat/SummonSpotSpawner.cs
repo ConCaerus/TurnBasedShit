@@ -32,7 +32,7 @@ public class SummonSpotSpawner : MonoBehaviour {
                 continue;
             }
             var unit = i.transform.parent.GetComponent<CombatSpot>().unit.GetComponent<UnitClass>();
-            if(unit == null || unit.stats.equippedWeapon == null || unit.stats.equippedWeapon.isEmpty() || unit.stats.equippedWeapon.sUsage != Weapon.specialUsage.summoning || i.transform.parent.childCount != unit.stats.getSummonedLevel())
+            if(unit == null || unit.stats.weapon == null || unit.stats.weapon.isEmpty() || unit.stats.weapon.sUsage != Weapon.specialUsage.summoning || i.transform.parent.childCount != unit.stats.getSummonedLevel())
                 hideSpot(i.gameObject);
             else
                 temp.Add(i.gameObject);
@@ -47,7 +47,7 @@ public class SummonSpotSpawner : MonoBehaviour {
             if(!i.isPlayerSpot() || i.unit == null)
                 continue;
             var stats = i.unit.GetComponent<UnitClass>().stats;
-            if(stats.equippedWeapon != null && !stats.equippedWeapon.isEmpty() && stats.equippedWeapon.sUsage == Weapon.specialUsage.summoning)
+            if(stats.weapon != null && !stats.weapon.isEmpty() && stats.weapon.sUsage == Weapon.specialUsage.summoning)
                 spots.Add(i);
         }
 

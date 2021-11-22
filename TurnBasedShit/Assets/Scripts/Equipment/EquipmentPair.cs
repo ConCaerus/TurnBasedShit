@@ -12,21 +12,21 @@ public class EquipmentPair : ScriptableObject {
 
     public bool checkIfApplys(UnitStats stats) {
         //  returns false if stats has nothing equipped
-        if((stats.equippedWeapon == null || stats.equippedWeapon.isEmpty()) && (stats.equippedArmor == null || stats.equippedArmor.isEmpty()) && (stats.equippedItem == null || stats.equippedArmor.isEmpty()))
+        if((stats.weapon == null || stats.weapon.isEmpty()) && (stats.armor == null || stats.armor.isEmpty()) && (stats.item == null || stats.armor.isEmpty()))
             return false;
         //  check if doesn't have while stats has
-        if(pairedWeapons.Length == 0 && stats.equippedWeapon != null && !stats.equippedWeapon.isEmpty())
+        if(pairedWeapons.Length == 0 && stats.weapon != null && !stats.weapon.isEmpty())
             return false;
-        if(pairedArmors.Length == 0 && stats.equippedArmor != null && !stats.equippedArmor.isEmpty())
+        if(pairedArmors.Length == 0 && stats.armor != null && !stats.armor.isEmpty())
             return false;
-        if(pairedItems.Length == 0 && stats.equippedItem != null && !stats.equippedItem.isEmpty())
+        if(pairedItems.Length == 0 && stats.item != null && !stats.item.isEmpty())
             return false;
 
         //  checks if any missmatches
         bool temp = false;
         if(pairedWeapons.Length > 0) {
             foreach(var i in pairedWeapons) {
-                if(i.preset.isTheSameTypeAs(stats.equippedWeapon)) {
+                if(i.preset.isTheSameTypeAs(stats.weapon)) {
                     temp = true;
                     break;
                 }
@@ -38,7 +38,7 @@ public class EquipmentPair : ScriptableObject {
         if(pairedArmors.Length > 0) {
             temp = false;
             foreach(var i in pairedArmors) {
-                if(i.preset.isTheSameTypeAs(stats.equippedArmor)) {
+                if(i.preset.isTheSameTypeAs(stats.armor)) {
                     temp = true;
                     break;
                 }
@@ -50,7 +50,7 @@ public class EquipmentPair : ScriptableObject {
         if(pairedItems.Length > 0) {
             temp = false;
             foreach(var i in pairedItems) {
-                if(i.preset.isTheSameTypeAs(stats.equippedItem)) {
+                if(i.preset.isTheSameTypeAs(stats.item)) {
                     temp = true;
                     break;
                 }

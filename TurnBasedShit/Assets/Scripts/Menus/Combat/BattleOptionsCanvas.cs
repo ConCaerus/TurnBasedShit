@@ -74,13 +74,13 @@ public class BattleOptionsCanvas : MonoBehaviour {
             chargeButton.GetComponent<InfoBearer>().setInfo("Charge");
         }
 
-        if(unit.stats.equippedWeapon != null && !unit.stats.equippedWeapon.isEmpty() && unit.stats.equippedWeapon.sUsage != Weapon.specialUsage.none) {
+        if(unit.stats.weapon != null && !unit.stats.weapon.isEmpty() && unit.stats.weapon.sUsage != Weapon.specialUsage.none) {
             specialButton.GetComponent<Button>().interactable = true;
             specialButton.GetComponentInChildren<Light2D>().enabled = true;
 
-            if(unit.stats.equippedWeapon.sUsage == Weapon.specialUsage.healing)
+            if(unit.stats.weapon.sUsage == Weapon.specialUsage.healing)
                 specialButton.GetComponent<InfoBearer>().setInfo("Heal");
-            else if(unit.stats.equippedWeapon.sUsage == Weapon.specialUsage.summoning)
+            else if(unit.stats.weapon.sUsage == Weapon.specialUsage.summoning)
                 specialButton.GetComponent<InfoBearer>().setInfo("Summon");
         }
         else {
@@ -235,7 +235,7 @@ public class BattleOptionsCanvas : MonoBehaviour {
     public void special() {
         if(FindObjectOfType<MenuCanvas>().isOpen())
             return;
-        if(FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().stats.equippedWeapon == null || FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().stats.equippedWeapon.isEmpty())
+        if(FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().stats.weapon == null || FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().stats.weapon.isEmpty())
             return;
         if(battleState != 3)
             battleState = 3;

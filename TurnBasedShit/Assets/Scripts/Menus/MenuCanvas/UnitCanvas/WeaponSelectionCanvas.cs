@@ -10,19 +10,19 @@ public class WeaponSelectionCanvas : UnitEquipmentSelectionCanvas {
     [SerializeField] TextMeshProUGUI nameText, powText, spdText, firstAttributeText, secondAttributeText;
 
     public Weapon getWeaponInSlot(int index) {
-        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon == null || FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon.isEmpty())
+        if(FindObjectOfType<UnitCanvas>().shownUnit.weapon == null || FindObjectOfType<UnitCanvas>().shownUnit.weapon.isEmpty())
             return Inventory.getWeapon(index);
         else if(index > 0)
             return Inventory.getWeapon(index - 1);
-        return FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon;
+        return FindObjectOfType<UnitCanvas>().shownUnit.weapon;
     }
 
 
     public override void populateSlots() {
         int slotIndex = 0;
-        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon.isEmpty()) {
-            var obj = slot.createSlot(slotIndex, FindObjectOfType<UnitCanvas>().shownUnit.u_sprite.color, InfoTextCreator.createForCollectable(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon));
-            obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon).sprite;
+        if(FindObjectOfType<UnitCanvas>().shownUnit.weapon != null && !FindObjectOfType<UnitCanvas>().shownUnit.weapon.isEmpty()) {
+            var obj = slot.createSlot(slotIndex, FindObjectOfType<UnitCanvas>().shownUnit.u_sprite.color, InfoTextCreator.createForCollectable(FindObjectOfType<UnitCanvas>().shownUnit.weapon));
+            obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(FindObjectOfType<UnitCanvas>().shownUnit.weapon).sprite;
             slotIndex++;
         }
 
@@ -100,9 +100,9 @@ public class WeaponSelectionCanvas : UnitEquipmentSelectionCanvas {
     }
 
     public override void rotateEquipment() {
-        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon.isEmpty()) {
+        if(FindObjectOfType<UnitCanvas>().shownUnit.weapon != null && !FindObjectOfType<UnitCanvas>().shownUnit.weapon.isEmpty()) {
             var slottedWeapon = getWeaponInSlot(slot.getSelectedSlotIndex());
-            Inventory.addWeapon(FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon);
+            Inventory.addWeapon(FindObjectOfType<UnitCanvas>().shownUnit.weapon);
             FindObjectOfType<UnitCanvas>().setUnitWeapon(slottedWeapon);
             Inventory.removeWeapon(slottedWeapon);
         }
@@ -121,7 +121,7 @@ public class WeaponSelectionCanvas : UnitEquipmentSelectionCanvas {
         if(shown) {
             updateInfo();
         }
-        var unitWeapon = FindObjectOfType<UnitCanvas>().shownUnit.equippedWeapon;
+        var unitWeapon = FindObjectOfType<UnitCanvas>().shownUnit.weapon;
         if(unitWeapon == null || unitWeapon.isEmpty())
             return;
 

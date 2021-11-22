@@ -678,7 +678,7 @@ PrefabInstance:
     - target: {fileID: 5154497430958951733, guid: c07f610e3bb9f314683273b1cabc818b,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000030517578
+      value: 0.00005340576
       objectReference: {fileID: 0}
     - target: {fileID: 5392861719256583515, guid: c07f610e3bb9f314683273b1cabc818b,
         type: 3}
@@ -837,6 +837,7 @@ GameObject:
   m_Component:
   - component: {fileID: 457790763}
   - component: {fileID: 457790764}
+  - component: {fileID: 457790765}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -870,6 +871,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce86d05d11c384547aee69de68ce8c2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &457790765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 457790762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c215f8948cd7c7478de65af13545718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colors: []
+  questColor: {r: 0.764151, g: 0.37967244, b: 0.37967244, a: 1}
 --- !u!1001 &475435266
 PrefabInstance:
   m_ObjectHideFlags: 0

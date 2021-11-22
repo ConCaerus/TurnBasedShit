@@ -106,8 +106,7 @@ public class DialogBox : MonoBehaviour {
             FindObjectOfType<TownCameraMovement>().zoomIn();
         }
         //  sets the main text
-        mainText.text = info.mainText;
-
+        FindObjectOfType<TextCreator>().animateText(info.mainText, mainText);
 
         //  sets the response texts
         if(string.IsNullOrEmpty(info.firstOption))

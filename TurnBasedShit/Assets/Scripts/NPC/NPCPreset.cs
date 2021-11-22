@@ -5,9 +5,7 @@ using UnityEngine.Events;
 
 [CreateAssetMenu(fileName = "NPCPreset", menuName = "Presets/NPCPreset")]
 public class NPCPreset : ScriptableObject {
-    public TownMember member;
+    public TownMember preset;
     public WeaponPreset weapon;
     public ArmorPreset armor;
-
-    public DialogInfo dialog;
 }

@@ -12,18 +12,17 @@ public class TownMemberInstance : MonoBehaviour {
     GameObject mark;
     float questIconSpeed = 1.0f;
 
-    public NPCPreset npcPreset = null;
+    public TownMember npcReference = null;
 
     public bool interacting = false;
-    public bool isNpcPreset = false;
 
     private void Start() {
-        if(npcPreset != null)
-            reference = npcPreset.member;
-        GetComponentInChildren<UnitSpriteHandler>().setEverything(reference.sprite, null, FindObjectOfType<PresetLibrary>().getArmor(reference.armor), reference.sprite.layerOffset);
+        if(npcReference != null)
+            reference = npcReference;
+        GetComponentInChildren<UnitSpriteHandler>().setReference(reference.sprite, reference.weapon, reference.armor, true);
         GetComponentInChildren<DialogBox>().runWhenDoneAndAccepted = acceptQuest;
         GetComponentInChildren<DialogBox>().setName(reference.name);
-        GetComponentInChildren<DialogBox>().setDialog(reference.dialog);
+        GetComponentInChildren<DialogBox>().setDialog(DialogLibrary.getDialogForTownMember(reference));
 
 
         if(reference.hasQuest) {
@@ -37,7 +36,7 @@ public class TownMemberInstance : MonoBehaviour {
     private void Update() {
         if(interacting && inRangeOfPlayer()) {
             if(!GetComponentInChildren<DialogBox>().showing) {
-                GetComponentInChildren<DialogBox>().advanceDialog();
+                GetComponentInChildren<DialogBox>().showDialog();
 
                 //  hide other member's dialogs
                 foreach(var i in FindObjectsOfType<TownMemberInstance>()) {

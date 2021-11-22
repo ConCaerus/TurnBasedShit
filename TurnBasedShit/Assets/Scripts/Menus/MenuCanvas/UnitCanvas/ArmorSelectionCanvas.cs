@@ -10,19 +10,19 @@ public class ArmorSelectionCanvas : UnitEquipmentSelectionCanvas {
     [SerializeField] TextMeshProUGUI nameText, defText, spdText, firstAttributeText, secondAttributeText;
 
     public Armor getArmorInSlot(int index) {
-        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor == null || FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor.isEmpty())
+        if(FindObjectOfType<UnitCanvas>().shownUnit.armor == null || FindObjectOfType<UnitCanvas>().shownUnit.armor.isEmpty())
             return Inventory.getArmor(index);
         else if(index > 0)
             return Inventory.getArmor(index - 1);
-        return FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor;
+        return FindObjectOfType<UnitCanvas>().shownUnit.armor;
     }
 
 
     public override void populateSlots() {
         int slotIndex = 0;
-        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor.isEmpty()) {
-            var obj = slot.createSlot(slotIndex, FindObjectOfType<UnitCanvas>().shownUnit.u_sprite.color, InfoTextCreator.createForCollectable(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor));
-            obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor).sprite;
+        if(FindObjectOfType<UnitCanvas>().shownUnit.armor != null && !FindObjectOfType<UnitCanvas>().shownUnit.armor.isEmpty()) {
+            var obj = slot.createSlot(slotIndex, FindObjectOfType<UnitCanvas>().shownUnit.u_sprite.color, InfoTextCreator.createForCollectable(FindObjectOfType<UnitCanvas>().shownUnit.armor));
+            obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(FindObjectOfType<UnitCanvas>().shownUnit.armor).sprite;
             slotIndex++;
         }
 
@@ -100,9 +100,9 @@ public class ArmorSelectionCanvas : UnitEquipmentSelectionCanvas {
     }
 
     public override void rotateEquipment() {
-        if(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor != null && !FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor.isEmpty()) {
+        if(FindObjectOfType<UnitCanvas>().shownUnit.armor != null && !FindObjectOfType<UnitCanvas>().shownUnit.armor.isEmpty()) {
             var slottedArmor = getArmorInSlot(slot.getSelectedSlotIndex());
-            Inventory.addArmor(FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor);
+            Inventory.addArmor(FindObjectOfType<UnitCanvas>().shownUnit.armor);
             FindObjectOfType<UnitCanvas>().setUnitArmor(slottedArmor);
             Inventory.removeArmor(slottedArmor);
         }
@@ -122,7 +122,7 @@ public class ArmorSelectionCanvas : UnitEquipmentSelectionCanvas {
         if(shown) {
             updateInfo();
         }
-        var unitArmor = FindObjectOfType<UnitCanvas>().shownUnit.equippedArmor;
+        var unitArmor = FindObjectOfType<UnitCanvas>().shownUnit.armor;
         if(unitArmor == null || unitArmor.isEmpty())
             return;
 

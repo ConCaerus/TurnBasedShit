@@ -37,7 +37,7 @@ public class PartyObject : MonoBehaviour {
 
 
             //  sets sprite
-            obj.GetComponentInChildren<UnitSpriteHandler>().setEverything(obj.GetComponent<UnitClass>().stats.u_sprite, obj.GetComponent<UnitClass>().stats.equippedWeapon, obj.GetComponent<UnitClass>().stats.equippedArmor);
+            obj.GetComponentInChildren<UnitSpriteHandler>().setReference(Party.getMemberStats(i), true);
 
             Party.overrideUnit(obj.GetComponent<UnitClass>().stats);
         }
@@ -109,9 +109,9 @@ public static class Party {
             var data = SaveData.getString(memberTag(i));
             var stats = JsonUtility.FromJson<UnitStats>(data);
 
-            stats.equippedWeapon = null;
-            stats.equippedArmor = null;
-            stats.equippedItem = null;
+            stats.weapon = null;
+            stats.armor = null;
+            stats.item = null;
             overrideUnit(stats);
         }
     }

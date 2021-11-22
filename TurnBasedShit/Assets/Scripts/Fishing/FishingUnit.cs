@@ -9,6 +9,7 @@ public class FishingUnit : MonoBehaviour {
 
 
     private void Start() {
+        GetComponent<UnitSpriteHandler>().setReference(Party.getLeaderStats(), false);
         setVisuals();
     }
 
@@ -21,7 +22,7 @@ public class FishingUnit : MonoBehaviour {
 
 
     public void setVisuals() {
-        GetComponent<UnitSpriteHandler>().setEverythingButWeapon(Party.getLeaderStats());
+        GetComponent<UnitSpriteHandler>().updateVisuals();
         GetComponent<UnitSpriteHandler>().setAnimState(4, true);
 
         StartCoroutine(addRod());

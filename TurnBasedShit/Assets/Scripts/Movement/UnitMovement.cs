@@ -21,18 +21,18 @@ public abstract class UnitMovement : MonoBehaviour {
 
     private void Awake() {
         DOTween.Init();
-        unit.GetComponentInChildren<UnitSpriteHandler>().showFace();
-        setVisuals();
         canMove = true;
     }
 
 
+    private void Start() {
+        unit.GetComponent<UnitSpriteHandler>().setReference(Party.getLeaderStats(), true);
+        unit.GetComponentInChildren<UnitSpriteHandler>().showFace();
+        setVisuals();
+    }
+
     public void setVisuals() {
-        var reference = Party.getLeaderStats();
-        if(!showWeapon())
-            unit.GetComponent<UnitSpriteHandler>().setEverything(reference.u_sprite, null, reference.equippedArmor);
-        else
-            unit.GetComponent<UnitSpriteHandler>().setEverything(reference);
+        unit.GetComponent<UnitSpriteHandler>().updateVisuals();
     }
 
     public abstract bool showWeapon();
