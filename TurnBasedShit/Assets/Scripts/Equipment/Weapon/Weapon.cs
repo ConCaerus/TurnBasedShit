@@ -83,7 +83,7 @@ public class Weapon : Collectable {
     }
 
     public override void setEqualTo(Collectable col, bool takeID) {
-        if(col.type != collectableType.weapon || col.isEmpty())
+        if(col == null || col.type != collectableType.weapon || col.isEmpty())
             return;
         var other = (Weapon)col;
         if(other == null || other.isEmpty())

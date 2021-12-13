@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class DeliveryQuest {
+public class DeliveryQuest : Quest {
     public enum deliveryType {
         weapon, armor, consumable, item, unit
     }
-    public int q_instanceID = -1;
-
 
     public TownLocation deliveryLocation;
 
@@ -23,7 +21,7 @@ public class DeliveryQuest {
 
     public DeliveryQuest(TownLocation t, List<Weapon> w, bool setID) {
         if(setID)
-            q_instanceID = GameInfo.getNextQuestInstanceID();
+            instanceID = GameInfo.getNextQuestInstanceID();
 
         deliveryLocation = t;
 
@@ -34,7 +32,7 @@ public class DeliveryQuest {
     }
     public DeliveryQuest(TownLocation t, List<Armor> a, bool setID) {
         if(setID)
-            q_instanceID = GameInfo.getNextQuestInstanceID();
+            instanceID = GameInfo.getNextQuestInstanceID();
 
         deliveryLocation = t;
 
@@ -45,7 +43,7 @@ public class DeliveryQuest {
     }
     public DeliveryQuest(TownLocation t, List<Usable> c, bool setID) {
         if(setID)
-            q_instanceID = GameInfo.getNextQuestInstanceID();
+            instanceID = GameInfo.getNextQuestInstanceID();
 
         deliveryLocation = t;
 
@@ -56,7 +54,7 @@ public class DeliveryQuest {
     }
     public DeliveryQuest(TownLocation t, List<Item> it, bool setID) {
         if(setID)
-            q_instanceID = GameInfo.getNextQuestInstanceID();
+            instanceID = GameInfo.getNextQuestInstanceID();
 
         deliveryLocation = t;
 
@@ -67,7 +65,7 @@ public class DeliveryQuest {
     }
     public DeliveryQuest(TownLocation t, List<UnitStats> u, bool setID) {
         if(setID)
-            q_instanceID = GameInfo.getNextQuestInstanceID();
+            instanceID = GameInfo.getNextQuestInstanceID();
 
         deliveryLocation = t;
 
@@ -84,16 +82,7 @@ public class DeliveryQuest {
     }
 
 
-    public bool isEqualTo(DeliveryQuest other) {
-        return q_instanceID == other.q_instanceID;
-    }
-
-    public bool isInstanced() {
-        return q_instanceID > -1;
-    }
-
-
-    public GameInfo.questType getType() {
-        return GameInfo.questType.delivery;
+    public override questType getType() {
+        return questType.delivery;
     }
 }

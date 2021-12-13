@@ -13,8 +13,10 @@ public class EnemyUnitInstance : UnitClass {
     public int chanceToDropArmor;
     public ItemPreset itemDrop;
     public int chanceToDropItem;
-    public UsablePreset consumableDrop;
-    public int chanceToDropConsumable;
+    public UsablePreset usableDrop;
+    public int chanceToDropUsable;
+    public UnusablePreset unusableDrop;
+    public int chanceToDropUnusable;
 
 
     public type enemyType;
@@ -143,7 +145,7 @@ public class EnemyUnitInstance : UnitClass {
             return;
         if(GameVariables.chanceOutOfHundred(chanceToDropWeapon + bonusChance)) {
             var loc = GameInfo.getCombatDetails();
-            loc.weapons.Add(weaponDrop.preset);
+            loc.collectables.Add(weaponDrop.preset);
             GameInfo.setCombatDetails(loc);
         }
     }
@@ -152,7 +154,7 @@ public class EnemyUnitInstance : UnitClass {
             return;
         if(GameVariables.chanceOutOfHundred(chanceToDropArmor + bonusChance)) {
             var loc = GameInfo.getCombatDetails();
-            loc.armor.Add(armorDrop.preset);
+            loc.collectables.Add(armorDrop.preset);
             GameInfo.setCombatDetails(loc);
         }
     }
@@ -161,16 +163,25 @@ public class EnemyUnitInstance : UnitClass {
             return;
         if(GameVariables.chanceOutOfHundred(chanceToDropItem + bonusChance)) {
             var loc = GameInfo.getCombatDetails();
-            loc.items.Add(itemDrop.preset);
+            loc.collectables.Add(itemDrop.preset);
             GameInfo.setCombatDetails(loc);
         }
     }
-    public void chanceConsumableDrop(int bonusChance) {
-        if(consumableDrop == null)
+    public void chanceUsableDrop(int bonusChance) {
+        if(usableDrop == null)
             return;
-        if(GameVariables.chanceOutOfHundred(chanceToDropConsumable + bonusChance)) {
+        if(GameVariables.chanceOutOfHundred(chanceToDropUsable + bonusChance)) {
             var loc = GameInfo.getCombatDetails();
-            loc.consumables.Add((Usable)consumableDrop.preset);
+            loc.collectables.Add(usableDrop.preset);
+            GameInfo.setCombatDetails(loc);
+        }
+    }
+    public void chanceUnusableDrop(int bonusChance) {
+        if(unusableDrop == null)
+            return;
+        if(GameVariables.chanceOutOfHundred(chanceToDropUnusable + bonusChance)) {
+            var loc = GameInfo.getCombatDetails();
+            loc.collectables.Add(unusableDrop.preset);
             GameInfo.setCombatDetails(loc);
         }
     }

@@ -21,9 +21,11 @@ MonoBehaviour:
     canBeFished: 1
     fishedData:
       hookedPos: {x: 0.05, y: -3.08}
+      scale: 2
       hookedRot: 180
       diffRegion: 0
       chanceToCatch: 3
+    flavor: Choco
     sprite:
       sprite: {fileID: 21300000, guid: 4b244ce214fcf4641a35dfe813110462, type: 3}
     maxStackCount: 10

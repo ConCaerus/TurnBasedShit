@@ -73,8 +73,8 @@ public class PlayerUnitInstance : UnitClass {
         if(stats.weapon.sUsage == Weapon.specialUsage.summoning && roomToSummon()) {
             var obj = Instantiate(FindObjectOfType<PresetLibrary>().getSummonForWeapon(stats.weapon).gameObject);
             obj.GetComponent<SummonedUnitInstance>().summoner = stats;
-            FindObjectOfType<SummonSpotSpawner>().getCombatSpotAtIndexForUnit(gameObject, getSummonCount() - 1).GetComponentInChildren<CombatSpot>().unit = obj.gameObject;
-            obj.transform.position = FindObjectOfType<SummonSpotSpawner>().getCombatSpotAtIndexForUnit(gameObject, getSummonCount() - 1).transform.GetChild(0).transform.position + new Vector3(0.0f, obj.GetComponent<UnitClass>().spotOffset);
+            FindObjectOfType<SummonSpotSpawner>().getCombatSpotAtIndexForUnit(gameObject, getSummonCount() - 1).GetComponent<CombatSpot>().unit = obj.gameObject;
+            obj.transform.position = FindObjectOfType<SummonSpotSpawner>().getCombatSpotAtIndexForUnit(gameObject, getSummonCount() - 1).transform.position + new Vector3(0.0f, obj.GetComponent<UnitClass>().spotOffset);
             obj.GetComponent<UnitClass>().setup();
 
             //  apply item modifiers to summon

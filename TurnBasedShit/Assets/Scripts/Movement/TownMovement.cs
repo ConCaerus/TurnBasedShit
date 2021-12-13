@@ -25,7 +25,7 @@ public class TownMovement : LocationMovement {
         //  int with person
         var p = FindObjectOfType<TownPeopleSpawner>().getMemberWithinInteractRange(transform.position.x, interactDist);
         if(p != null) {
-            FindObjectOfType<TownCameraMovement>().zoomIn(2.0f);
+            FindObjectOfType<TownCameraMovement>().zoomIn(new Vector2(0.0f, 2.0f));
             p.GetComponentInChildren<TownMemberInstance>().interacting = true;
             return;
         }
@@ -34,14 +34,14 @@ public class TownMovement : LocationMovement {
         //  int with building
         var b = FindObjectOfType<BuildingSpawner>().getBuildingWithinInteractRange(transform.position.x);
         if(b != null) {
-            FindObjectOfType<TownCameraMovement>().zoomIn(2.0f);
+            FindObjectOfType<TownCameraMovement>().zoomIn(new Vector2(0.0f, 2.0f));
             StartCoroutine(enterBuilding(b.GetComponent<BuildingInstance>()));
             return;
         }
 
         //  int with end of town
         if(Mathf.Abs(FindObjectOfType<BuildingSpawner>().endingX - transform.position.x) < interactDist) {
-            FindObjectOfType<TownCameraMovement>().zoomIn(2.0f);
+            FindObjectOfType<TownCameraMovement>().zoomIn(new Vector2(0.0f, 2.0f));
             StartCoroutine(exitTown());
         }
     }
@@ -50,6 +50,10 @@ public class TownMovement : LocationMovement {
         foreach(var i in FindObjectsOfType<TownMemberInstance>()) {
             if(i.interacting) {
                 FindObjectOfType<TownCameraMovement>().zoomOut();
+                foreach(var d in FindObjectsOfType<DialogBox>()) {
+                    if(d.showing)
+                        d.hideDialog(0);
+                }
                 i.interacting = false;
             }
         }

@@ -17,13 +17,6 @@ public class SummonSpotSpawner : MonoBehaviour {
         StartCoroutine(FindObjectOfType<TransitionCanvas>().runAfterLoading(delegate { updateSpots(); }));
     }
 
-    private void Update() {
-        if(lastKnownUnitCount != FindObjectsOfType<UnitClass>().Length) {
-            updateSpots();
-            lastKnownUnitCount = FindObjectsOfType<UnitClass>().Length;
-        }
-    }
-
     public void updateSpots() {
         var temp = new List<GameObject>();
         foreach(var i in spawnedSpots) {
@@ -54,7 +47,7 @@ public class SummonSpotSpawner : MonoBehaviour {
         foreach(var i in spots) {
             var stats = i.unit.GetComponent<UnitClass>().stats;
 
-            if(i.transform.childCount == stats.getSummonedLevel())
+            if(i.transform.childCount - 1 == stats.getSummonedLevel())
                 continue;
 
             float rot = 360.0f / stats.getSummonedLevel();
@@ -76,7 +69,7 @@ public class SummonSpotSpawner : MonoBehaviour {
     public GameObject getCombatSpotAtIndexForUnit(GameObject unit, int index) {
         foreach(var i in FindObjectsOfType<CombatSpot>()) {
             if(i.unit == unit) {
-                return i.transform.GetChild(index).gameObject;
+                return i.transform.GetChild(1).GetChild(index).gameObject;
             }
         }
         return null;
@@ -95,6 +88,7 @@ public class SummonSpotSpawner : MonoBehaviour {
     }
 
     void hideSpot(GameObject obj) {
+        Debug.Log("here");
         float speed = 0.25f;
         obj.transform.GetChild(0).transform.DOLocalMove(new Vector3(0.0f, 0.0f), speed);
         obj.transform.GetChild(0).transform.DOScale(0.0f, speed);

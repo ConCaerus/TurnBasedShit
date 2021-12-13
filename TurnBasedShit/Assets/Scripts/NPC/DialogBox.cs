@@ -60,7 +60,6 @@ public class DialogBox : MonoBehaviour {
     }
 
     public void hideDialog(int choiceAnswered) {
-        transform.DOComplete();
         transform.DOScale(new Vector3(0.0f, 0.0f), .25f);
         if(FindObjectOfType<TownCameraMovement>() != null) {
             FindObjectOfType<TownCameraMovement>().zoomOut();
@@ -71,12 +70,17 @@ public class DialogBox : MonoBehaviour {
             runWhenDoneAndAccepted();
     }
     public void showDialog() {
-        transform.DOComplete();
         transform.DOScale(new Vector3(1.0f, 1.0f), .15f);
         if(FindObjectOfType<TownCameraMovement>() != null) {
-            FindObjectOfType<TownCameraMovement>().zoomIn(2.0f);
+            FindObjectOfType<TownCameraMovement>().zoomIn(new Vector2(0.0f, 1.0f));
         }
         showing = true;
+
+        //  hides all other dialog
+        foreach(var i in FindObjectsOfType<DialogBox>()) {
+            if(i.showing && i != this)
+                i.hideDialog(0);
+        }
 
         advanceDialog(0);
     }
@@ -103,7 +107,7 @@ public class DialogBox : MonoBehaviour {
         animate();
 
         if(FindObjectOfType<TownCameraMovement>() != null) {
-            FindObjectOfType<TownCameraMovement>().zoomIn();
+            FindObjectOfType<TownCameraMovement>().zoomIn(new Vector2(0.0f, 1.0f));
         }
         //  sets the main text
         FindObjectOfType<TextCreator>().animateText(info.mainText, mainText);

@@ -38,6 +38,12 @@ public class UnitSpriteHandler : MonoBehaviour {
 
 
     public void updateVisuals() {
+        StartCoroutine(waitToUpdate());
+    }
+
+    IEnumerator waitToUpdate() {
+        yield return new WaitForEndOfFrame();
+
         setHead();
         setFace();
         setBody();
@@ -50,12 +56,11 @@ public class UnitSpriteHandler : MonoBehaviour {
 
     public void setHead() {
         var hParent = FindObjectOfType<PresetLibrary>().getUnitHead(reference.u_sprite.headIndex);
-        var h = hParent.transform.GetChild(0).gameObject;
 
-        head.GetComponent<SpriteRenderer>().sprite = h.GetComponent<SpriteRenderer>().sprite;
-        head.transform.parent.localPosition = hParent.transform.localPosition;
-        head.transform.parent.localScale = hParent.transform.localScale;
-        head.transform.parent.localRotation = hParent.transform.localRotation;
+        head.GetComponent<SpriteRenderer>().sprite = hParent.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite;
+        head.transform.parent.parent.localPosition = hParent.transform.localPosition;
+        head.transform.parent.parent.localScale = hParent.transform.localScale;
+        head.transform.parent.parent.localRotation = hParent.transform.localRotation;
         for(int i = 0; i < hParent.GetComponentsInChildren<Transform>().Length; i++) {
             head.transform.parent.GetComponentsInChildren<Transform>()[i].localPosition = hParent.GetComponentsInChildren<Transform>()[i].localPosition;
             head.transform.parent.GetComponentsInChildren<Transform>()[i].localScale = hParent.GetComponentsInChildren<Transform>()[i].localScale;

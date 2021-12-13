@@ -93,6 +93,7 @@ MonoBehaviour:
     u_expCap: 25
     u_exp: 0
     u_level: 0
+    u_skillExpCap: 100
     u_bluntExp: 0
     u_edgedExp: 0
     u_summonedExp: 0
@@ -100,6 +101,7 @@ MonoBehaviour:
       headIndex: 2
       faceIndex: 2
       bodyIndex: 0
+      layerOffset: 0
       color: {r: 0.6390952, g: 0.18760765, b: 0.0914644, a: 1}
     u_baseMaxHealth: 100
     u_health: 100
@@ -109,36 +111,53 @@ MonoBehaviour:
     u_critChance: 0
     u_bleedCount: 0
     u_instanceID: -1
-    equippedWeapon:
-      w_instanceID: -1
-      w_name: 
-      w_rarity: 0
-      w_element: 0
-      w_wornAmount: 0
-      w_attributes: 
-      w_specialUsage: 0
-      w_specialUsageAmount: 0
-      w_attackType: 0
-      w_power: 0
-      w_speedMod: 0
-      w_coinCost: 0
-      w_sprite:
+    weapon:
+      instanceID: -1
+      name: 
+      type: 0
+      rarity: 0
+      coinCost: 0
+      canBeFished: 0
+      fishedData:
+        hookedPos: {x: 0, y: 0}
+        scale: 0
+        hookedRot: 0
+        diffRegion: 0
+        chanceToCatch: 0
+      flavor: Choco
+      wornAmount: 3
+      attributes: 
+      sUsage: 0
+      sUsageAmount: 0
+      aType: 0
+      power: 0
+      speedMod: 0
+      sprite:
         sprite: {fileID: 0}
         equippedX: 0
         equippedY: 0
         equippedRot: 0
         equippedXSize: 0
         equippedYSize: 0
-    equippedArmor:
-      a_instanceID: -1
-      a_name: 
-      a_rarity: 0
-      a_wornAmount: 0
-      a_attributes: 
-      a_defence: 0
-      a_speedMod: 0
-      a_coinCost: 0
-      a_sprite:
+    armor:
+      instanceID: -1
+      name: 
+      type: 0
+      rarity: 0
+      coinCost: 0
+      canBeFished: 0
+      fishedData:
+        hookedPos: {x: 0, y: 0}
+        scale: 0
+        hookedRot: 0
+        diffRegion: 0
+        chanceToCatch: 0
+      flavor: Choco
+      wornAmount: 3
+      attributes: 
+      defence: 0
+      speedMod: 0
+      sprite:
         sprite: {fileID: 0}
         equippedSprite: {fileID: 0}
         equippedShoulder: {fileID: 0}
@@ -182,14 +201,23 @@ MonoBehaviour:
         yHatPos2: 0
         xHatSize2: 0
         yHatSize2: 0
-    equippedItem:
-      i_instanceID: -1
-      i_name: 
-      i_rarity: 0
-      i_timedEffects: []
-      i_passiveEffects: []
-      i_coinCost: 0
-      i_sprite:
+    item:
+      instanceID: -1
+      name: 
+      type: 0
+      rarity: 0
+      coinCost: 0
+      canBeFished: 0
+      fishedData:
+        hookedPos: {x: 0, y: 0}
+        scale: 0
+        hookedRot: 0
+        diffRegion: 0
+        chanceToCatch: 0
+      flavor: Choco
+      tEffects: []
+      pEffects: []
+      sprite:
         sprite: {fileID: 0}
     u_traits:
     - t_name: Thin Skinned
@@ -236,8 +264,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b50cf52fd2f3020489dae1d0b81e3fc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infos:
-  - PlayingUnit
+  info: <b><u>Information
   hideWhenMenuOpen: 1
 --- !u!1001 &954274707321897296
 PrefabInstance:
@@ -306,54 +333,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Unit
       objectReference: {fileID: 0}
-    - target: {fileID: 1499956658857944862, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-        type: 3}
-      propertyPath: body
-      value: 
-      objectReference: {fileID: 212883705496870977}
-    - target: {fileID: 1499956658857944862, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-        type: 3}
-      propertyPath: face
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1499956658857944862, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-        type: 3}
-      propertyPath: head
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1499956658857944862, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-        type: 3}
-      propertyPath: lArm
-      value: 
-      objectReference: {fileID: 6720565979185711774}
-    - target: {fileID: 1499956658857944862, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-        type: 3}
-      propertyPath: rArm
-      value: 
-      objectReference: {fileID: 5767771702097730489}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e, type: 3}
 --- !u!4 &212883705554629492 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1137743091860681252, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-    type: 3}
-  m_PrefabInstance: {fileID: 954274707321897296}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &212883705496870977 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1137743092205740305, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-    type: 3}
-  m_PrefabInstance: {fileID: 954274707321897296}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &5767771702097730489 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6716412990190131945, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-    type: 3}
-  m_PrefabInstance: {fileID: 954274707321897296}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &6720565979185711774 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5799084827323878350, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
     type: 3}
   m_PrefabInstance: {fileID: 954274707321897296}
   m_PrefabAsset: {fileID: 0}

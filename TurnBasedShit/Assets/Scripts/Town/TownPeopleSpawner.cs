@@ -17,14 +17,14 @@ public class TownPeopleSpawner : MonoBehaviour {
 
 
     void spawnMembers() {
-        for(int i = 0; i < reference.townMemberCount; i++) {
+        for(int i = 0; i < reference.getTotalResidentCount(); i++) {
             float x = FindObjectOfType<BuildingSpawner>().getXThatIsntInfrontOfADoor();
             
-            var obj = Instantiate(FindObjectOfType<PresetLibrary>().getTownMemberObj(false).gameObject);
+            var obj = Instantiate(FindObjectOfType<PresetLibrary>().getTownMemberObj().gameObject);
             obj.transform.position = new Vector2(x, memberYPos);
             var temp = reference.getMember(i);
             temp.sprite.layerOffset = -(i + 1) * 10;
-            obj.GetComponentInChildren<TownMemberInstance>().reference.setEqualsTo(temp, true);
+            obj.GetComponent<TownMemberInstance>().reference = temp;
             
             memberObjects.Add(obj.gameObject);
         }

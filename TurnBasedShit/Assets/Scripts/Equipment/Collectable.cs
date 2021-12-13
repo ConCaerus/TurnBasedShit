@@ -54,6 +54,7 @@ public abstract class Collectable {
 [System.Serializable]
 public class FishedLootData {
     public Vector2 hookedPos;
+    public float scale;
     public float hookedRot;
     public GameInfo.region diffRegion;
     public GameInfo.fishCatchRate chanceToCatch;

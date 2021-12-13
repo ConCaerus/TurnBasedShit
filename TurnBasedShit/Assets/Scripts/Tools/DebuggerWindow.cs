@@ -105,8 +105,6 @@ public class DebuggerWindow : EditorWindow {
         //  MapLocations
         GUILayout.Label("Map", EditorStyles.boldLabel);
         GUILayout.BeginHorizontal();
-        if(GUILayout.Button("Create Save Data"))
-            SaveData.createSaveDataForCurrentSave(FindObjectOfType<PresetLibrary>());
         if(GUILayout.Button("Clear Towns"))
             MapLocationHolder.clearTownLocations();
 
@@ -129,6 +127,8 @@ public class DebuggerWindow : EditorWindow {
         //  Save Data
         GUILayout.Label("Save Data", EditorStyles.boldLabel);
         GUILayout.BeginHorizontal();
+        if(GUILayout.Button("Create Save Data"))
+            SaveData.createSaveDataForCurrentSave(FindObjectOfType<PresetLibrary>());
         if(GUILayout.Button("Clear Save"))
             SaveData.deleteCurrentSave();
         if(GUILayout.Button("Clear Everything"))

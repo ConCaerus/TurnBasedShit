@@ -4,10 +4,12 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class FishingLocation : MapLocation {
+    public Unusable fish;
 
-    public FishingLocation(Vector2 p, GameInfo.region diff) {
+    public FishingLocation(Vector2 p, Unusable f) {
         pos = p;
         type = locationType.fishing;
+        fish = f;
     }
 
 

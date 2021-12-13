@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5967991836329400845}
   - component: {fileID: 5967991836329400844}
+  - component: {fileID: 8420525511255629480}
   m_Layer: 0
-  m_Name: PresetLibrary
+  m_Name: Library
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -165,3 +166,16 @@ MonoBehaviour:
   - {r: 0.65882355, g: 0.5686275, b: 0.76470596, a: 1}
   - {r: 0.91372555, g: 0.4784314, b: 0.3254902, a: 1}
   - {r: 0.9450981, g: 0.94117653, b: 0.5647059, a: 1}
+--- !u!114 &8420525511255629480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5967991836329400846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd6c712a3145bc745820eadcc63f19bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tobysFishable: {fileID: 11400000, guid: 8917ac8b945ac7d4a8481703ac85911b, type: 2}

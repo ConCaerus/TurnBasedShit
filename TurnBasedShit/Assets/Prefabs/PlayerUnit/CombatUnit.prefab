@@ -111,7 +111,7 @@ MonoBehaviour:
     u_critChance: 0
     u_bleedCount: 0
     u_instanceID: -1
-    equippedWeapon:
+    weapon:
       instanceID: -1
       name: 
       type: 0
@@ -120,9 +120,11 @@ MonoBehaviour:
       canBeFished: 0
       fishedData:
         hookedPos: {x: 0, y: 0}
+        scale: 0
         hookedRot: 0
         diffRegion: 0
         chanceToCatch: 0
+      flavor: Choco
       wornAmount: 3
       attributes: 
       sUsage: 0
@@ -137,7 +139,7 @@ MonoBehaviour:
         equippedRot: 0
         equippedXSize: 0
         equippedYSize: 0
-    equippedArmor:
+    armor:
       instanceID: -1
       name: 
       type: 0
@@ -146,9 +148,11 @@ MonoBehaviour:
       canBeFished: 0
       fishedData:
         hookedPos: {x: 0, y: 0}
+        scale: 0
         hookedRot: 0
         diffRegion: 0
         chanceToCatch: 0
+      flavor: Choco
       wornAmount: 3
       attributes: 
       defence: 0
@@ -197,7 +201,7 @@ MonoBehaviour:
         yHatPos2: 0
         xHatSize2: 0
         yHatSize2: 0
-    equippedItem:
+    item:
       instanceID: -1
       name: 
       type: 0
@@ -206,9 +210,11 @@ MonoBehaviour:
       canBeFished: 0
       fishedData:
         hookedPos: {x: 0, y: 0}
+        scale: 0
         hookedRot: 0
         diffRegion: 0
         chanceToCatch: 0
+      flavor: Choco
       tEffects: []
       pEffects: []
       sprite:
@@ -327,54 +333,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Unit
       objectReference: {fileID: 0}
-    - target: {fileID: 1499956658857944862, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-        type: 3}
-      propertyPath: body
-      value: 
-      objectReference: {fileID: 212883705496870977}
-    - target: {fileID: 1499956658857944862, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-        type: 3}
-      propertyPath: face
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1499956658857944862, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-        type: 3}
-      propertyPath: head
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1499956658857944862, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-        type: 3}
-      propertyPath: lArm
-      value: 
-      objectReference: {fileID: 6720565979185711774}
-    - target: {fileID: 1499956658857944862, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-        type: 3}
-      propertyPath: rArm
-      value: 
-      objectReference: {fileID: 5767771702097730489}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e, type: 3}
 --- !u!4 &212883705554629492 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1137743091860681252, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-    type: 3}
-  m_PrefabInstance: {fileID: 954274707321897296}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &212883705496870977 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1137743092205740305, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-    type: 3}
-  m_PrefabInstance: {fileID: 954274707321897296}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &5767771702097730489 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6716412990190131945, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-    type: 3}
-  m_PrefabInstance: {fileID: 954274707321897296}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &6720565979185711774 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5799084827323878350, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
     type: 3}
   m_PrefabInstance: {fileID: 954274707321897296}
   m_PrefabAsset: {fileID: 0}

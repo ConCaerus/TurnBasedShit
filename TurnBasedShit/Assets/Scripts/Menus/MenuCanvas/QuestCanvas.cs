@@ -19,10 +19,10 @@ public class QuestCanvas : MonoBehaviour {
 
 
     class questSlotInfo {
-        public GameInfo.questType type;
+        public Quest.questType type;
         public int questInstanceID;
 
-        public questSlotInfo(GameInfo.questType t, int id) {
+        public questSlotInfo(Quest.questType t, int id) {
             type = t;
             questInstanceID = id;
         }
@@ -58,9 +58,9 @@ public class QuestCanvas : MonoBehaviour {
             while((b.Count > 0 || k.Count > 0 || d.Count > 0 || p.Count > 0) && index <= stopPoint) {
                 bool found = false;
                 foreach(var i in b) {
-                    if(i.q_instanceID == index) {
+                    if(i.instanceID == index) {
                         slot.createSlot(slotIndex, bossColor);
-                        infos.Add(new questSlotInfo(GameInfo.questType.bossFight, i.q_instanceID));
+                        infos.Add(new questSlotInfo(Quest.questType.bossFight, i.instanceID));
                         slotIndex++;
                         found = true;
                         b.Remove(i);
@@ -73,9 +73,9 @@ public class QuestCanvas : MonoBehaviour {
                     continue;
                 }
                 foreach(var i in k) {
-                    if(i.q_instanceID == index) {
+                    if(i.instanceID == index) {
                         slot.createSlot(slotIndex, killColor);
-                        infos.Add(new questSlotInfo(GameInfo.questType.kill, i.q_instanceID));
+                        infos.Add(new questSlotInfo(Quest.questType.kill, i.instanceID));
                         slotIndex++;
                         found = true;
                         k.Remove(i);
@@ -88,9 +88,9 @@ public class QuestCanvas : MonoBehaviour {
                     continue;
                 }
                 foreach(var i in d) {
-                    if(i.q_instanceID == index) {
+                    if(i.instanceID == index) {
                         slot.createSlot(slotIndex, delColor);
-                        infos.Add(new questSlotInfo(GameInfo.questType.delivery, i.q_instanceID));
+                        infos.Add(new questSlotInfo(Quest.questType.delivery, i.instanceID));
                         slotIndex++;
                         found = true;
                         d.Remove(i);
@@ -103,9 +103,9 @@ public class QuestCanvas : MonoBehaviour {
                     continue;
                 }
                 foreach(var i in p) {
-                    if(i.q_instanceID == index) {
+                    if(i.instanceID == index) {
                         slot.createSlot(slotIndex, pickColor);
-                        infos.Add(new questSlotInfo(GameInfo.questType.pickup, i.q_instanceID));
+                        infos.Add(new questSlotInfo(Quest.questType.pickup, i.instanceID));
                         slotIndex++;
                         found = true;
                         p.Remove(i);
@@ -119,22 +119,22 @@ public class QuestCanvas : MonoBehaviour {
         else {
             foreach(var i in b) {
                 slot.createSlot(slotIndex, bossColor);
-                infos.Add(new questSlotInfo(GameInfo.questType.bossFight, i.q_instanceID));
+                infos.Add(new questSlotInfo(Quest.questType.bossFight, i.instanceID));
                 slotIndex++;
             }
             foreach(var i in k) {
                 slot.createSlot(slotIndex, killColor);
-                infos.Add(new questSlotInfo(GameInfo.questType.kill, i.q_instanceID));
+                infos.Add(new questSlotInfo(Quest.questType.kill, i.instanceID));
                 slotIndex++;
             }
             foreach(var i in d) {
                 slot.createSlot(slotIndex, delColor);
-                infos.Add(new questSlotInfo(GameInfo.questType.delivery, i.q_instanceID));
+                infos.Add(new questSlotInfo(Quest.questType.delivery, i.instanceID));
                 slotIndex++;
             }
             foreach(var i in p) {
                 slot.createSlot(slotIndex, pickColor);
-                infos.Add(new questSlotInfo(GameInfo.questType.pickup, i.q_instanceID));
+                infos.Add(new questSlotInfo(Quest.questType.pickup, i.instanceID));
                 slotIndex++;
             }
         }
@@ -149,25 +149,25 @@ public class QuestCanvas : MonoBehaviour {
         var currentInfo = infos[slot.getSelectedSlotIndex()];
 
         switch(currentInfo.type) {
-            case GameInfo.questType.bossFight:
+            case Quest.questType.bossFight:
                 nameText.text = "Boss: " + currentInfo.questInstanceID.ToString();
                 BossFightQuest b = ActiveQuests.getBossFightQuestWithInstanceID(currentInfo.questInstanceID);
                 infoText.text = "   Kill " + b.bossUnit.u_name;
                 break;
 
-            case GameInfo.questType.kill:
+            case Quest.questType.kill:
                 nameText.text = "Kill: " + currentInfo.questInstanceID.ToString();
                 KillQuest k = ActiveQuests.getKillQuestWithInstanceID(currentInfo.questInstanceID);
                 infoText.text = "   Kill " + k.howManyToKill.ToString() + " " + k.enemyType.ToString() + "s";
                 break;
 
-            case GameInfo.questType.delivery:
+            case Quest.questType.delivery:
                 nameText.text = "Delivery: " + currentInfo.questInstanceID.ToString();
                 DeliveryQuest d = ActiveQuests.getDeliveryQuestWithInstanceID(currentInfo.questInstanceID);
                 infoText.text = "   Deliver " + d.type.ToString() + " to " + d.deliveryLocation.town.t_name;
                 break;
 
-            case GameInfo.questType.pickup:
+            case Quest.questType.pickup:
                 nameText.text = "Pickup: " + currentInfo.questInstanceID.ToString();
                 PickupQuest p = ActiveQuests.getPickupQuestWithInstanceID(currentInfo.questInstanceID);
                 infoText.text = "   Pickup a " + p.pType.ToString();
@@ -187,19 +187,19 @@ public class QuestCanvas : MonoBehaviour {
         var currentInfo = infos[slot.getSelectedSlotIndex()];
 
         switch(currentInfo.type) {
-            case GameInfo.questType.bossFight:
+            case Quest.questType.bossFight:
                 ActiveQuests.removeQuest(ActiveQuests.getBossFightQuestWithInstanceID(currentInfo.questInstanceID));
                 break;
 
-            case GameInfo.questType.kill:
+            case Quest.questType.kill:
                 ActiveQuests.removeQuest(ActiveQuests.getKillQuestWithInstanceID(currentInfo.questInstanceID));
                 break;
 
-            case GameInfo.questType.delivery:
+            case Quest.questType.delivery:
                 ActiveQuests.removeQuest(ActiveQuests.getDeliveryQuestWithInstanceID(currentInfo.questInstanceID));
                 break;
 
-            case GameInfo.questType.pickup:
+            case Quest.questType.pickup:
                 ActiveQuests.removeQuest(ActiveQuests.getPickupQuestWithInstanceID(currentInfo.questInstanceID));
                 break;
         }

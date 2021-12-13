@@ -10,61 +10,28 @@ public class PickupLocation : MapLocation {
     }
 
 
-    public Weapon pickupWeapon = null;
-    public Armor pickupArmor = null;
-    public Usable pickupConsumable = null;
-    public Item pickupItem = null;
-
-    //public PickupQuest attachedQuest = null;
+    public Collectable col;
 
 
     public pickupType pType = (pickupType)(-1);
 
-    //  weapon
-    public PickupLocation(Vector2 p, Weapon w, PresetLibrary lib, GameInfo.region diff) {
+
+    public PickupLocation(Vector2 p, Collectable c, PresetLibrary lib) {
         pos = p;
         type = locationType.pickup;
         pType = pickupType.weapon;
 
+        var diff = Map.getDiffForX(p.x);
         combatLocation = lib.createCombatLocation(diff);
-        combatLocation.weapons.Add(w);
 
-        pickupWeapon = w;
-    }
-
-    //  armor
-    public PickupLocation(Vector2 p, Armor a, PresetLibrary lib, GameInfo.region diff) {
-        pos = p;
-        type = locationType.pickup;
-        pType = pickupType.armor;
-
-        combatLocation = lib.createCombatLocation(diff);
-        combatLocation.armor.Add(a);
-
-        pickupArmor = a;
-    }
-
-    //  consumable
-    public PickupLocation(Vector2 p, Usable con, int count, PresetLibrary lib, GameInfo.region diff) {
-        pos = p;
-        pType = pickupType.consumable;
-
-        combatLocation = lib.createCombatLocation(diff);
-        for(int i = 0; i < count; i++)
-            combatLocation.consumables.Add(con);
-
-        pickupConsumable = con;
-    }
-
-    //  item
-    public PickupLocation(Vector2 p, Item it, PresetLibrary lib, GameInfo.region diff) {
-        pos = p;
-        pType = pickupType.item;
-
-        combatLocation = lib.createCombatLocation(diff);
-        combatLocation.items.Add(it);
-
-        pickupItem = it;
+        col = c;
+        combatLocation.collectables.Add(col);
+        //  adds more if the type is usable
+        if(c.type == Collectable.collectableType.usable) {
+            int count = Random.Range(0, 11);
+            for(int i = 0; i < count; i++)
+                combatLocation.collectables.Add(col);
+        }
     }
 
 
@@ -81,10 +48,6 @@ public class PickupLocation : MapLocation {
 
         PickupLocation o = (PickupLocation)other;
 
-        return pos == other.pos &&
-            pickupWeapon.isTheSameInstanceAs(o.pickupWeapon) &&
-            pickupArmor.isTheSameInstanceAs(o.pickupArmor) &&
-            pickupConsumable.isTheSameInstanceAs(o.pickupConsumable) &&
-            pickupItem.isTheSameInstanceAs(o.pickupItem);           
+        return pos == other.pos && col.isTheSameInstanceAs(o.col);   
     }
 }

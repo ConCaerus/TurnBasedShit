@@ -10,10 +10,8 @@ public class CombatLocation {
 
     public int coinReward = 0;
 
-    public List<Weapon> weapons = new List<Weapon>();
-    public List<Armor> armor = new List<Armor>();
-    public List<Usable> consumables = new List<Usable>();
-    public List<Item> items = new List<Item>();
+
+    public List<Collectable> collectables = new List<Collectable>();
     public List<UnitStats> rescuedUnits = new List<UnitStats>();
 
     public CombatLocation(GameInfo.region diff, PresetLibrary lib, int numberOfWaves = 2, int minNumberOfEnemies = 2, int maxNumberOfEnemies = 4) {
@@ -44,14 +42,8 @@ public class CombatLocation {
     public void addSpoils() {
         Inventory.addCoins(coinReward);
 
-        foreach(var i in weapons)
-            Inventory.addWeapon(i);
-        foreach(var i in armor)
-            Inventory.addArmor(i);
-        foreach(var i in consumables)
-            Inventory.addUsable(i);
-        foreach(var i in items)
-            Inventory.addItem(i);
+        foreach(var i in collectables)
+            Inventory.addCollectable(i);
         foreach(var i in rescuedUnits)
             Party.addUnit(i);
     }

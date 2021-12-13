@@ -12,17 +12,14 @@ public class TownMemberInstance : MonoBehaviour {
     GameObject mark;
     float questIconSpeed = 1.0f;
 
-    public TownMember npcReference = null;
-
     public bool interacting = false;
 
     private void Start() {
-        if(npcReference != null)
-            reference = npcReference;
         GetComponentInChildren<UnitSpriteHandler>().setReference(reference.sprite, reference.weapon, reference.armor, true);
         GetComponentInChildren<DialogBox>().runWhenDoneAndAccepted = acceptQuest;
         GetComponentInChildren<DialogBox>().setName(reference.name);
         GetComponentInChildren<DialogBox>().setDialog(DialogLibrary.getDialogForTownMember(reference));
+        gameObject.name = reference.name;
 
 
         if(reference.hasQuest) {
@@ -37,13 +34,11 @@ public class TownMemberInstance : MonoBehaviour {
         if(interacting && inRangeOfPlayer()) {
             if(!GetComponentInChildren<DialogBox>().showing) {
                 GetComponentInChildren<DialogBox>().showDialog();
-
-                //  hide other member's dialogs
-                foreach(var i in FindObjectsOfType<TownMemberInstance>()) {
-                    if(i != this)
-                        i.GetComponentInChildren<DialogBox>().showDialog();
-                }
             }
+        }
+        else if(interacting && !inRangeOfPlayer()) {
+            GetComponentInChildren<DialogBox>().hideDialog(1);
+            interacting = false;
         }
     }
 
@@ -94,24 +89,14 @@ public class TownMemberInstance : MonoBehaviour {
 
     //  dialog buttons
     public void acceptQuest() {
-        GetComponentInChildren<DialogBox>().hideDialog(1);
         if(!reference.isQuestActive()) {
-            if(reference.bossQust != null) {
-                ActiveQuests.addQuest(reference.bossQust);
-            }
-            else if(reference.killQuest != null) {
-                ActiveQuests.addQuest(reference.killQuest);
-            }
-            else if(reference.deliveryQuest != null) {
-                ActiveQuests.addQuest(reference.deliveryQuest);
-            }
-            else if(reference.pickupQuest != null) {
-                ActiveQuests.addQuest(reference.pickupQuest);
-            }
+            ActiveQuests.addQuest(reference.quest);
         }
         updateMark();
+        interacting = false;
     }
     public void declineQuest() {
         GetComponentInChildren<DialogBox>().hideDialog(0);
+        interacting = false;
     }
 }

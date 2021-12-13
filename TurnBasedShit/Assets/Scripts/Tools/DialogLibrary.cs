@@ -8,7 +8,7 @@ public static class DialogLibrary {
         if(mem.isNPC)
             return getDialogForNPC(mem);
         if(mem.hasQuest)
-            return getGenericDialogForQuest(mem.questType);
+            return getGenericDialogForQuest(mem.quest.getType());
         return null;
     }
 
@@ -18,21 +18,21 @@ public static class DialogLibrary {
         return null;
     }
 
-    public static DialogInfo getGenericDialogForQuest(GameInfo.questType type) {
+    public static DialogInfo getGenericDialogForQuest(Quest.questType type) {
         switch(type) {
-            case GameInfo.questType.kill:
+            case Quest.questType.kill:
                 return new DialogInfo("Kill", "Ok", "No");
 
-            case GameInfo.questType.rescue:
+            case Quest.questType.rescue:
                 return new DialogInfo("Rescue", "Ok", "No");
 
-            case GameInfo.questType.pickup:
+            case Quest.questType.pickup:
                 return new DialogInfo("Pickup", "Ok", "No");
 
-            case GameInfo.questType.delivery:
+            case Quest.questType.delivery:
                 return new DialogInfo("Deliver", "Ok", "No");
 
-            case GameInfo.questType.bossFight:
+            case Quest.questType.bossFight:
                 return new DialogInfo("Boss", "Ok", "No");
         }
 

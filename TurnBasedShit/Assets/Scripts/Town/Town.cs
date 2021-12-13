@@ -6,6 +6,8 @@ using UnityEngine;
 public class Town {
     public string t_name = "No Name";
 
+    public GameInfo.region region;
+
     public int t_instanceID = -1;
 
     public int interactedBuildingIndex = -1;
@@ -235,16 +237,26 @@ public class Town {
     }
     public void addMembers(PresetLibrary lib) {
         clearMembers();
-        for(int i = 0; i < townMemberCount; i++) {
-            var mem = lib.createRandomTownMember();
+        int index = 0;
+        for(int i = 0; i < townMemberCount; i++, index++) {
+            var mem = lib.createRandomTownMember(this);
             var data = JsonUtility.ToJson(mem);
-            SaveData.setString(memberTag(i), data);
+            SaveData.setString(memberTag(index), data);
         }
-        for(int i = 0; i < townNPCCount; i++) {
-            var npc = lib.getRandomTownNPC();
+        for(int i = 0; i < townNPCCount; i++, index++) {
+            var npc = lib.getRandomTownNPC(this);
             var data = JsonUtility.ToJson(npc);
-            SaveData.setString(memberTag(i), data);
+            SaveData.setString(memberTag(index), data);
         }
+    }
+    public void addNewMember(TownMember mem) {
+        var data = JsonUtility.ToJson(mem);
+        SaveData.setString(memberTag(getTotalResidentCount()), data);
+
+        if(mem.isNPC)
+            townNPCCount++;
+        else
+            townMemberCount++;
     }
     public TownMember getMember(int index) {
         var data = SaveData.getString(memberTag(index));
@@ -290,6 +302,10 @@ public class Town {
         return temp;
     }
 
+    public int getTotalResidentCount() {
+        return townMemberCount + townNPCCount;
+    }
+
     public bool hasBuilding(Building.type t) {
         switch(t) {
             case Building.type.Church:
@@ -317,6 +333,7 @@ public class Town {
             t_instanceID = GameInfo.getNextTownInstanceID();
 
         t_name = NameLibrary.getRandomUsableTownName();
+        region = diff;
 
         clearBuildings();
         int index = 0;
@@ -393,8 +410,8 @@ public class Town {
 
         //  member shit
         townMemberCount = GameVariables.createTownMemberCount(index);
-        townNPCCount = GameVariables.createTownNPCCount(townMemberCount) + 1;
-        townMemberCount -= townNPCCount;
+        townNPCCount = GameVariables.createTownNPCCount(townMemberCount);
+        townNPCCount = 1;
         addMembers(lib);
     }
 

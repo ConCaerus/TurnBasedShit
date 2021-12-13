@@ -280,7 +280,8 @@ public abstract class UnitClass : MonoBehaviour {
             GetComponent<EnemyUnitInstance>().chanceWeaponDrop(chanceMod);
             GetComponent<EnemyUnitInstance>().chanceArmorDrop(chanceMod);
             GetComponent<EnemyUnitInstance>().chanceItemDrop(chanceMod);
-            GetComponent<EnemyUnitInstance>().chanceConsumableDrop(chanceMod);
+            GetComponent<EnemyUnitInstance>().chanceUsableDrop(chanceMod);
+            GetComponent<EnemyUnitInstance>().chanceUnusableDrop(chanceMod);
 
             //  increases acc quest counter
             for(int i = 0; i < ActiveQuests.getKillQuestCount(); i++) {

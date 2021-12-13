@@ -84,7 +84,14 @@ public static class GameVariables {
         return count;
     }
     public static int createTownNPCCount(int memberCount) {
-        return Mathf.FloorToInt(memberCount * Random.Range(0.0f, 1.1f));
+        var rand = Random.Range(0, 101);
+        if(rand < 25)
+            return 3;
+        if(rand < 50)
+            return 2;
+        if(rand < 75)
+            return 1;
+        return 0;
     }
 
 

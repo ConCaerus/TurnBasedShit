@@ -19,8 +19,10 @@ public class CombatSpot : MonoBehaviour {
     public void setColor() {
         if(unit == null)
             GetComponent<SpriteRenderer>().DOColor(Color.gray, speed);
-        else if(unit != null && unit.GetComponentInChildren<UnitSpriteHandler>() != null)
-            GetComponent<SpriteRenderer>().DOColor(unit.GetComponentInChildren<UnitSpriteHandler>().getColor() + Color.white / 2.0f, speed);
+        else if(unit != null && unit.GetComponentInChildren<UnitSpriteHandler>() != null) {
+            var col = unit.GetComponentInChildren<UnitSpriteHandler>().getColor() + Color.white / 2.0f;
+            GetComponent<SpriteRenderer>().DOColor(new Color(col.r, col.g, col.b, 1.0f), speed);
+        }
         else if(unit != null)
             GetComponent<SpriteRenderer>().DOColor(Color.white, speed);
     }

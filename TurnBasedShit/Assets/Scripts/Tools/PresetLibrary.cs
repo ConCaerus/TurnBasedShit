@@ -195,24 +195,11 @@ public class PresetLibrary : MonoBehaviour {
         return -1;
     }
 
-    public TownMember getRandomTownNPC() {
-        var temp = new TownMember(this, true);
+    public TownMember getRandomTownNPC(Town loc) {
         var npc = townNPCs[Random.Range(0, townNPCs.Length)];
-        temp.setEqualsTo(npc.preset, false);
+        var temp = new TownMember(this, npc, loc, true);
+        temp.quest = FindObjectOfType<NPCQuestLibrary>().getQuestForNPC(temp);
 
-        var we = getWeapon(npc.weapon.name);
-        var ar = getArmor(npc.armor.name);
-
-        if(we != null && !we.isEmpty()) {
-            temp.weapon = new Weapon();
-            temp.weapon.setEqualTo(we, true);
-        }
-        if(ar != null && !ar.isEmpty()) {
-            temp.armor = new Armor();
-            temp.armor.setEqualTo(ar, true);
-        }
-
-        temp.isNPC = true;
         return temp;
     }
 
@@ -575,6 +562,24 @@ public class PresetLibrary : MonoBehaviour {
         return getItem(items[Random.Range(0, items.Length)].preset);
     }
 
+    public Collectable getRandomCollectable(GameInfo.region diff = (GameInfo.region)(-1)) {
+        if(diff == (GameInfo.region)(-1))
+            diff = GameInfo.getRandomDiff();
+
+        int type = Random.Range(0, 5);
+        if(type == 0)
+            return getRandomWeapon(diff);
+        else if(type == 1)
+            return getRandomArmor(diff);
+        else if(type == 2)
+            return getRandomItem(diff);
+        else if(type == 3)
+            return getRandomUsable(diff);
+        else if(type == 4)
+            return getRandomUnusable(diff);
+        return null;
+    }
+
     public EquipmentPair getRelevantPair(UnitStats stats) {
         foreach(var i in equipmentPairs) {
             if(i.checkIfApplys(stats))
@@ -594,13 +599,11 @@ public class PresetLibrary : MonoBehaviour {
     }
 
     //  Map
-    public TownMember createRandomTownMember(bool autoHasQuest = false) {
-        return new TownMember(this, true, autoHasQuest);
+    public TownMember createRandomTownMember(Town loc, bool autoHasQuest = false) {
+        return new TownMember(this, loc, true, autoHasQuest);
     }
-    public GameObject getTownMemberObj(bool createNewStats, bool autoHasQuest = false) {
+    public GameObject getTownMemberObj() {
         var member = townMember;
-        if(createNewStats)
-            member.GetComponentInChildren<TownMemberInstance>().reference.setEqualsTo(createRandomTownMember(), true);
         return member;
     }
 
@@ -643,15 +646,8 @@ public class PresetLibrary : MonoBehaviour {
         return new BossLocation(Map.getRandPos(), boss, boss.GetComponent<BossUnitInstance>().enemyDiff, this);
     }
     public PickupLocation createPickupLocation() {
-        int type = Random.Range(0, 4);
-        if(type == 0)
-            return new PickupLocation(Map.getRandPos(), getRandomWeapon(), this, GameInfo.getCurrentRegion());
-        else if(type == 1)
-            return new PickupLocation(Map.getRandPos(), getRandomArmor(), this, GameInfo.getCurrentRegion());
-        else if(type == 2)
-            return new PickupLocation(Map.getRandPos(), getRandomUsable(), Random.Range(1, 16), this, GameInfo.getCurrentRegion());
-        else
-            return new PickupLocation(Map.getRandPos(), getRandomItem(), this, GameInfo.getCurrentRegion());
+        var pos = Map.getRandPos();
+        return new PickupLocation(pos, getRandomCollectable(Map.getDiffForX(pos.x)), this);
     }
     public RescueLocation createRescueLocation() {
         return new RescueLocation(Map.getRandPos(), this);
@@ -660,13 +656,34 @@ public class PresetLibrary : MonoBehaviour {
         return new UpgradeLocation(Map.getRandPos(), Random.Range(0, 2));
     }
     public NestLocation createRandomNestLocation() {
-        return new NestLocation(Map.getRandPos(), Random.Range(1, 4), this, GameInfo.getRandomDiff());
+        var pos = Map.getRandPos();
+        return new NestLocation(pos, Random.Range(1, 4), this);
     }
     public FishingLocation createFishingLocation() {
-        return new FishingLocation(Map.getRandPos(), GameInfo.getRandomDiff());
+        var pos = Map.getRandPos();
+        var diff = Map.getDiffForX(pos.x);
+        return new FishingLocation(pos, getRandomFishInRegion(diff));
     }
     public EyeLocation createEyeLocation() {
         return new EyeLocation(Map.getRandPos());
+    }
+
+    public Unusable getRandomFishInRegion(GameInfo.region diff = (GameInfo.region)(-1)) {
+        if(diff == (GameInfo.region)(-1))
+            diff = GameInfo.getRandomDiff();
+        List<Unusable> fishies = new List<Unusable>();
+        List<Unusable> backup = new List<Unusable>();
+        foreach(var i in unusables) {
+            if(i.preset.canBeFished && i.preset.rarity == diff) {
+                fishies.Add(i.preset);
+            }
+            if(i.preset.canBeFished)
+                backup.Add(i.preset);
+        }
+
+        if(fishies.Count > 0)
+            return fishies[Random.Range(0, fishies.Count)];
+        return backup[Random.Range(0, backup.Count)];
     }
 
 

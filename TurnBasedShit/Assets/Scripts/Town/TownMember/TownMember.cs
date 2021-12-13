@@ -7,12 +7,7 @@ public class TownMember {
     public bool hasQuest = false;
     public UnitSpriteInfo sprite = new UnitSpriteInfo();
 
-    //  quests
-    public GameInfo.questType questType;
-    public BossFightQuest bossQust = null;
-    public DeliveryQuest deliveryQuest = null;
-    public KillQuest killQuest = null;
-    public PickupQuest pickupQuest = null;
+    public Quest quest;
 
     public DialogInfo dialog = new DialogInfo();
 
@@ -25,36 +20,51 @@ public class TownMember {
     public int m_instanceID = -1;
     public bool isNPC = false;
 
-    public TownMember(PresetLibrary lib, bool setID, bool autoHasQuest = false) {
+    public TownMember(PresetLibrary lib, Town t, bool setID, bool autoHasQuest = false) {
         if(setID)
             m_instanceID = GameInfo.getNextTownMemberInstanceID();
+        isNPC = false;
 
-        bossQust = null;
-        deliveryQuest = null;
-        killQuest = null;
-        pickupQuest = null;
+        quest = null;
+
+        weapon = new Weapon();
+        var wTemp = lib.getRandomWeapon(t.region);
+        if(wTemp == null || wTemp.isEmpty())
+            weapon = null;
+        else
+            weapon.setEqualTo(wTemp, true);
+
+        armor = new Armor();
+        var aTemp = lib.getRandomArmor(t.region);
+        if(aTemp == null || aTemp.isEmpty())
+            armor = null;
+        else
+            armor.setEqualTo(aTemp, true);
+
+        home = t;
 
         hasQuest = GameVariables.shouldMemberHaveQuest() || autoHasQuest || true;
         if(hasQuest) {
             var q = GameInfo.getRandomQuestType();
 
-            questType = q;
-
             switch(q) {
-                case GameInfo.questType.bossFight:
-                    bossQust = lib.createRandomBossFightQuest(true);
+                case Quest.questType.bossFight:
+                    quest = lib.createRandomBossFightQuest(true);
                     break;
 
-                case GameInfo.questType.delivery:
-                    deliveryQuest = lib.createRandomDeliveryQuest(true);
+                case Quest.questType.delivery:
+                    quest = lib.createRandomDeliveryQuest(true);
                     break;
 
-                case GameInfo.questType.kill:
-                    killQuest = lib.createRandomKillQuest(true);
+                case Quest.questType.kill:
+                    quest = lib.createRandomKillQuest(true);
                     break;
 
-                case GameInfo.questType.pickup:
-                    pickupQuest = lib.createRandomPickupQuest(true);
+                case Quest.questType.pickup:
+                    quest = lib.createRandomPickupQuest(true);
+                    break;
+
+                case Quest.questType.fishing:
                     break;
             }
         }
@@ -65,6 +75,25 @@ public class TownMember {
         sprite.headIndex = Random.Range(0, lib.getHeadCount());
         sprite.faceIndex = Random.Range(0, lib.getFaceCount());
         sprite.bodyIndex = Random.Range(0, lib.getBodyCount());
+    }
+
+    public TownMember(PresetLibrary lib, NPCPreset preset, Town t, bool setID) {
+        setEqualsTo(preset.preset, false);
+
+
+        if(preset.weapon != null) {
+            weapon = new Weapon();
+            weapon.setEqualTo(lib.getWeapon(preset.weapon.preset.name), true);
+        }
+        if(preset.armor != null) {
+            armor = new Armor();
+            armor.setEqualTo(lib.getArmor(preset.armor.preset.name), true);
+        }
+
+        home = t;
+
+        if(setID)
+            m_instanceID = GameInfo.getNextTownMemberInstanceID();
     }
 
 
@@ -78,25 +107,32 @@ public class TownMember {
         hasQuest = other.hasQuest;
         sprite.setEqualTo(other.sprite);
 
-        bossQust = null;
-        deliveryQuest = null;
-        killQuest = null;
-        pickupQuest = null;
+        quest = null;
+
+        isNPC = other.isNPC;
+
+        //  equipment
+        if(other.weapon == null || other.weapon.isEmpty())
+            weapon = null;
+        else {
+            weapon = new Weapon();
+            weapon.setEqualTo(other.weapon, true);
+        }
+
+        if(other.armor == null || other.armor.isEmpty())
+            armor = null;
+        else {
+            armor = new Armor();
+            armor.setEqualTo(other.armor, true);
+        }
+
+
+        dialog = other.dialog;
+        name = other.name;
+
 
         if(other.hasQuest) {
-            questType = other.questType;
-            if(other.questType == GameInfo.questType.bossFight) {
-                bossQust = other.bossQust;
-            }
-            else if(other.questType == GameInfo.questType.delivery) {
-                deliveryQuest = other.deliveryQuest;
-            }
-            else if(other.questType == GameInfo.questType.kill) {
-                killQuest = other.killQuest;
-            }
-            else if(other.questType == GameInfo.questType.pickup) {
-                pickupQuest = other.pickupQuest;
-            }
+            quest = other.quest;
         }
 
         home = other.home;
@@ -107,14 +143,7 @@ public class TownMember {
 
 
     public bool isQuestActive() {
-        if(questType == GameInfo.questType.bossFight)
-            return ActiveQuests.hasQuest(bossQust);
-        if(questType == GameInfo.questType.kill)
-            return ActiveQuests.hasQuest(killQuest);
-        if(questType == GameInfo.questType.delivery)
-            return ActiveQuests.hasQuest(deliveryQuest);
-        if(questType == GameInfo.questType.pickup)
-            return ActiveQuests.hasQuest(pickupQuest);
+        return ActiveQuests.hasQuest(quest);
         return false;
     }
 }

@@ -44,6 +44,7 @@ public class Bobber : MonoBehaviour {
     public void showSpoils(Collectable fish) {
         transform.GetChild(2).GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getGenericSpriteForCollectable(fish);
         transform.GetChild(2).rotation = Quaternion.Euler(0.0f, 0.0f, fish.fishedData.hookedRot);
+        transform.GetChild(2).transform.localScale = new Vector2(fish.fishedData.scale, fish.fishedData.scale);
         transform.GetChild(2).transform.localPosition = fish.fishedData.hookedPos;
         StartCoroutine(showSpoilsAnim());
     }

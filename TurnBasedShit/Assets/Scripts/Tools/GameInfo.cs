@@ -16,9 +16,6 @@ public static class GameInfo {
     public enum wornState {
         old, used, normal, perfect
     }
-    public enum questType {
-        bossFight, pickup, delivery, kill, rescue
-    }
     public enum fishCatchRate {
         almostImpossible, rare, normal, easy,
     }
@@ -163,8 +160,8 @@ public static class GameInfo {
     public static wornState getRandomWornState() {
         return (wornState)Random.Range(0, 5);
     }
-    public static questType getRandomQuestType() {
-        return (questType)Random.Range(0, 4);
+    public static Quest.questType getRandomQuestType() {
+        return (Quest.questType)Random.Range(0, 4);
     }
     public static region getRandomDiff() {
         return (region)Random.Range(0, 7);

@@ -22,16 +22,13 @@ public abstract class UnitMovement : MonoBehaviour {
     private void Awake() {
         DOTween.Init();
         canMove = true;
-    }
-
-
-    private void Start() {
         unit.GetComponent<UnitSpriteHandler>().setReference(Party.getLeaderStats(), true);
         unit.GetComponentInChildren<UnitSpriteHandler>().showFace();
         setVisuals();
     }
 
     public void setVisuals() {
+        unit.GetComponent<UnitSpriteHandler>().setReference(Party.getLeaderStats(), true);
         unit.GetComponent<UnitSpriteHandler>().updateVisuals();
     }
 
