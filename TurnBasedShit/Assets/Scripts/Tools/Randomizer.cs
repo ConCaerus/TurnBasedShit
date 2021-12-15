@@ -13,6 +13,7 @@ public static class Randomizer {
         u.u_speed = Random.Range(1.0f, 3.5f);
         u.u_defence = Random.Range(1.0f, 3.5f);
         u.u_critChance = Random.Range(0.015f, 0.15f);
+        u.u_missChance = Random.Range(1, 11);
         u.u_sprite.randomize(lib);
 
         int tCount = Random.Range(0, 4);

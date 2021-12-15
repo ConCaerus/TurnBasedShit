@@ -25,6 +25,7 @@ public class UnitStats {
     public float u_defence = 0.0f;
 
     public float u_critChance = 0.0f;
+    public int u_missChance = 1; // this number out of one hundred
 
     public int u_bleedCount = 0;
 
@@ -51,6 +52,8 @@ public class UnitStats {
         u_baseMaxHealth = other.u_baseMaxHealth;
         u_speed = other.u_speed;
         u_power = other.u_power;
+        u_critChance = other.u_critChance;
+        u_missChance = other.u_missChance;
 
         u_bleedCount = other.u_bleedCount;
 

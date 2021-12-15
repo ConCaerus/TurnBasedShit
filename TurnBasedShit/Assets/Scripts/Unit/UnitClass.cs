@@ -178,6 +178,10 @@ public abstract class UnitClass : MonoBehaviour {
         if(stats.item != null && !stats.item.isEmpty())
             stats.item.triggerUseTime(this, Item.useTimes.beforeAttacking);
 
+        //  chance miss
+        if(GameVariables.chanceOutOfHundred(stats.u_missChance))
+            return;
+
         //  triggers
         stats.weapon.applyAttributes(gameObject, defender);
 
