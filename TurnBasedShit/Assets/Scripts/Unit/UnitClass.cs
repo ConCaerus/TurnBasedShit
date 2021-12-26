@@ -329,6 +329,12 @@ public abstract class UnitClass : MonoBehaviour {
         transform.DOScale(normalSize, 0.15f);
     }
     IEnumerator attackingAnim(GameObject defender) {
+        //  play animation
+        setAttackingAnim();
+
+        //  windup
+        yield return new WaitForSeconds(0.25f);
+
         //  move to target
         if(isPlayerUnit)
             transform.DOMove(defender.transform.position - new Vector3(1.25f, 0.0f, 0.0f), 0.25f);
@@ -341,9 +347,6 @@ public abstract class UnitClass : MonoBehaviour {
         int bluntLvlBefore = stats.getBluntLevel();
         int edgedLvlBefore = stats.getEdgedLevel();
         int lvlBefore = stats.u_level;
-
-        //  play animation and hold position
-        setAttackingAnim();
 
         //  actually deal damage to defender
         var dmg = stats.getDamageGiven(FindObjectOfType<PresetLibrary>()) * tempPowerMod;

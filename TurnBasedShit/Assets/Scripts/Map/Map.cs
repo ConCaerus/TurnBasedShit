@@ -3,57 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class Map {
-    public static float leftBound = -25.0f, rightBound = 250.0f;
-    public static float botBound = -25.0f, topBound = 25.0f;
-    public static float width() {
-        return rightBound - leftBound;
+    public static int width = 75, height = 50;
+    public static float leftBound() {
+        return -width / 2.0f;
     }
-    public static float height() {
-        return topBound - botBound;
+    public static float rightBound() {
+        return width / 2.0f;
+    }
+    public static float topBound() {
+        return height / 2.0f;
+    }
+    public static float botBound() {
+        return -height / 2.0f;
     }
 
 
-    const string saveTag = "Map Fog Texture Map";
+    static string saveTag(GameInfo.region reg) {
+        switch(reg) {
+            case GameInfo.region.grassland: return "Grasslands Map Fog Texture Map";
+            case GameInfo.region.forest: return "Forest Map Fog Texture Map";
+            case GameInfo.region.swamp: return "Swamp Map Fog Texture Map";
+            case GameInfo.region.mountains: return "Mountains Map Fog Texture Map";
+            case GameInfo.region.hell: return "Hell Map Fog Texture Map";
+        }
+        return "";
+    }
 
     public static Vector2 getRandPos() {
-        return new Vector2(Random.Range(leftBound, rightBound), Random.Range(botBound, topBound));
-    }
-
-    public static GameInfo.region getDiffForX(float x) {
-        for(int i = 0; i < 6; i++) {
-            if(x < getRegionXStartPoint(i))
-                return (GameInfo.region)(i);
-        }
-        if(x > 250f)
-            return GameInfo.region.hell;
-        else
-            return GameInfo.region.grassland;   //forgive me
-    }
-    public static float getRegionXLength(int regionIndex) {
-        float totalLength = rightBound - leftBound;
-        switch(regionIndex) {
-            case 0: return totalLength / 5f;
-            case 1: return totalLength / 5f;
-            case 2: return totalLength / 5f;
-            case 3: return totalLength / 5f;
-            case 4: return totalLength / 5f;
-            default: return 0.0f;
-        }
-    }
-    public static float getRegionXStartPoint(int regionIndex) {
-        float dist = leftBound;
-        for(int i = 0; i <= regionIndex; i++) {
-            dist += getRegionXLength(i);
-        }
-        return dist;
-    }
-    public static float getRegionMidXPoint(int regionIndex) {
-        return getRegionXStartPoint(regionIndex) + (getRegionXLength(regionIndex) / 2.0f);
-    }
-    public static Vector2 getRandomPosInRegion(int regionIndex) {
-        var randY = getRandPos().y;
-        var randX = getRegionMidXPoint(regionIndex) + Random.Range(-(getRegionXLength(regionIndex) / 2.0f), getRegionXLength(regionIndex) / 2.0f);
-        return new Vector2(randX, randY);
+        return new Vector2(Random.Range(leftBound(), rightBound()), Random.Range(botBound(), topBound()));
     }
 
     public static void populateTowns(PresetLibrary lib) {
@@ -65,40 +42,46 @@ public static class Map {
 
         for(int i = 0; i < grassCount + forestCount + swampCount + mountainsCount + hell; i++) {
             if(i < grassCount)
-                MapLocationHolder.addLocation(new TownLocation(getRandomPosInRegion(0), GameInfo.region.grassland, lib));
+                MapLocationHolder.addLocation(new TownLocation(getRandPos(), GameInfo.region.grassland, lib));
             else if(i < forestCount)
-                MapLocationHolder.addLocation(new TownLocation(getRandomPosInRegion(1), GameInfo.region.forest, lib));
+                MapLocationHolder.addLocation(new TownLocation(getRandPos(), GameInfo.region.forest, lib));
             else if(i < swampCount)
-                MapLocationHolder.addLocation(new TownLocation(getRandomPosInRegion(2), GameInfo.region.swamp, lib));
+                MapLocationHolder.addLocation(new TownLocation(getRandPos(), GameInfo.region.swamp, lib));
             else if(i < mountainsCount)
-                MapLocationHolder.addLocation(new TownLocation(getRandomPosInRegion(3), GameInfo.region.mountains, lib));
+                MapLocationHolder.addLocation(new TownLocation(getRandPos(), GameInfo.region.mountains, lib));
             else if(i < hell)
-                MapLocationHolder.addLocation(new TownLocation(getRandomPosInRegion(4), GameInfo.region.hell, lib));
+                MapLocationHolder.addLocation(new TownLocation(getRandPos(), GameInfo.region.hell, lib));
         }
     }
 
     public static void createFogTexture() {
-        var temp = new Texture2D((int)width(), (int)height());
+        var temp = new Texture2D(width, height);
         for(int x = 0; x < temp.width; x++) {
             for(int y = 0; y < temp.height; y++) {
                 temp.SetPixel(x, y, Color.white);
             }
         }
 
-        saveFogTexture(temp);
+        saveFogTexture(temp, GameInfo.region.grassland);
+        saveFogTexture(temp, GameInfo.region.forest);
+        saveFogTexture(temp, GameInfo.region.swamp);
+        saveFogTexture(temp, GameInfo.region.mountains);
+        saveFogTexture(temp, GameInfo.region.hell);
     }
     public static void clearFogTexture() {
-        SaveData.deleteKey(saveTag);
+        for(int i = 0; i < 5; i++) {
+            SaveData.deleteKey(saveTag((GameInfo.region)i));
+        }
     }
-    public static void saveFogTexture(Texture2D map) {
+    public static void saveFogTexture(Texture2D map, GameInfo.region reg) {
         FowData data = new FowData(map.GetRawTextureData());
-        SaveData.setString(saveTag, JsonUtility.ToJson(data));
+        SaveData.setString(saveTag(reg), JsonUtility.ToJson(data));
     }
-    public static Texture2D getFogTexture() {
-        if(string.IsNullOrEmpty(SaveData.getString(saveTag)))
+    public static Texture2D getFogTexture(GameInfo.region reg) {
+        if(string.IsNullOrEmpty(SaveData.getString(saveTag(reg))))
             return null;
-        var temp = new Texture2D((int)width(), (int)height());
-        var thing = JsonUtility.FromJson<FowData>(SaveData.getString(saveTag));
+        var temp = new Texture2D(width, height);
+        var thing = JsonUtility.FromJson<FowData>(SaveData.getString(saveTag(reg)));
         temp.LoadRawTextureData(thing.data);
         return temp;
     }

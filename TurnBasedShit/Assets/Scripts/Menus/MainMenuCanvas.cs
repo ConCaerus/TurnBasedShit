@@ -45,18 +45,18 @@ public class MainMenuCanvas : MonoBehaviour {
 
         if(createNewSave) {
             SaveData.deleteCurrentSave();
-            SaveData.createSaveDataForCurrentSave(FindObjectOfType<PresetLibrary>());
+            SaveData.createSaveDataForCurrentSave(FindObjectOfType<PresetLibrary>(), FindObjectOfType<TransitionCanvas>());
         }
 
         switch(GameInfo.currentGameState) {
             case GameInfo.state.combat:
-                SceneManager.LoadScene("Combat");
+                SceneManager.LoadSceneAsync("Combat");
                 break;
             case GameInfo.state.map:
-                SceneManager.LoadScene("Map");
+                SceneManager.LoadSceneAsync("Map");
                 break;
             case GameInfo.state.town:
-                SceneManager.LoadScene("Town");
+                SceneManager.LoadSceneAsync("Town");
                 break;
         }
     }

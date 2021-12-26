@@ -7,9 +7,9 @@ public class MapSideUnitMovement : UnitMovement {
 
     private void Update() {
         if(isMoving)
-            GetComponentInChildren<UnitSpriteHandler>().setAnimState(3);
+            GetComponentInChildren<UnitSpriteHandler>().setWalkingAnim(true);
         else
-            GetComponentInChildren<UnitSpriteHandler>().setAnimState(0);
+            GetComponentInChildren<UnitSpriteHandler>().setWalkingAnim(false);
     }
 
     public void moveToPoint(Vector2 point) {

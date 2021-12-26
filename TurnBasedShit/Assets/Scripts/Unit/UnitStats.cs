@@ -173,7 +173,7 @@ public class UnitStats {
     }
     public float getCritMult() {
         //  crit mod
-        if(Random.Range(0, 101) <= (u_critChance * 100.0f))
+        if(Random.Range(0.0f, 100.0f) <= u_critChance)
             return Random.Range(1.75f, 2.25f);
 
         return 1.0f;

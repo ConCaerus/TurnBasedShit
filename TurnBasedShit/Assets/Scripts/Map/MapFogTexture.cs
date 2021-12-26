@@ -8,10 +8,11 @@ public class MapFogTexture : MonoBehaviour {
     [SerializeField] GameObject fogBackground;
     public Texture2D fow { get; private set; }
     float seeingDist = 4.0f;
-    float stretchFactor = 0.1f;
 
     List<fogPointInfo> clearingPoints = new List<fogPointInfo>();
     Coroutine clearer = null;
+
+    GameInfo.region reg;
 
     Vector2 lastUpdatedPos;
 
@@ -22,8 +23,10 @@ public class MapFogTexture : MonoBehaviour {
     }
 
     private void Start() {
-        fow = Map.getFogTexture();
+        fow = Map.getFogTexture(GameInfo.getCurrentRegion());
+        reg = GameInfo.getCurrentRegion();
         StartCoroutine(FindObjectOfType<TransitionCanvas>().runAfterLoading(startingClear));
+        Debug.Log(GameInfo.getCurrentRegion());
 
         //  set the sprite of the frog mask
         var r = new Rect(0, 0, fow.width, fow.height);
@@ -34,13 +37,12 @@ public class MapFogTexture : MonoBehaviour {
         fogBackground.gameObject.SetActive(true);
 
         //  reset the position of the frog mask because changing the sprite also shifts it's position
-        fogMask.transform.position = new Vector3(Map.leftBound, Map.botBound);
+        fogMask.transform.position = new Vector3(-Map.width / 2.0f, -Map.height / 2.0f);
         fogMask.transform.localScale = new Vector3(100.0f, 100.0f);
 
 
         setFogBackgroundSprite();
-        fogBackground.transform.localScale = new Vector3(fogBackground.transform.localScale.x + stretchFactor, fogBackground.transform.localScale.y);
-        StartCoroutine(moveFog(stretchFactor / 2.0f));
+        fogBackground.transform.localScale = new Vector3(fogBackground.transform.localScale.x, fogBackground.transform.localScale.y);
         lastUpdatedPos = transform.position;
 
         fow.Apply(false);
@@ -48,13 +50,7 @@ public class MapFogTexture : MonoBehaviour {
 
 
     public void startingClear() {
-        clearFogAroundPos(transform.position, 10.0f, true);
-    }
-
-
-    private void Update() {
-        if(Input.GetKeyDown(KeyCode.Space))
-            clearFogAroundPos(Camera.main.transform.position, 10.0f, true);
+        clearFogAroundPos(transform.position, seeingDist * 2.0f, true);
     }
 
 
@@ -117,7 +113,7 @@ public class MapFogTexture : MonoBehaviour {
         fow.Apply(false);
     }
     public void saveTexture() {
-        Map.saveFogTexture(fow);
+        Map.saveFogTexture(fow, reg);
     }
 
     public void setFogBackgroundSprite() {
@@ -127,11 +123,11 @@ public class MapFogTexture : MonoBehaviour {
         var tex = new Texture2D(fow.width * res, fow.height * res);
         tex.anisoLevel = 16;
         float mag = 0.05f / res;
-
+        float noiseStretchFactor = 0.5f;
 
         for(int x = 0; x < tex.width; x++) {
             for(int y = 0; y < tex.height; y++) {
-                var value = Mathf.PerlinNoise((x * mag + randOffset.x) / (stretchFactor * 2.0f), y * mag + randOffset.y);
+                var value = Mathf.PerlinNoise((x * mag + randOffset.x) / noiseStretchFactor, y * mag + randOffset.y);
 
                 float min = .75f, max = .9f;
 
@@ -163,19 +159,19 @@ public class MapFogTexture : MonoBehaviour {
         float texXPercentage = ((float)texPoint.x / (float)fow.width);
         float texYPercentage = ((float)texPoint.y / (float)fow.height);
 
-        temp.x = Map.width() * texXPercentage;
-        temp.y = Map.height() * texYPercentage;
+        temp.x = Map.width * texXPercentage;
+        temp.y = Map.height * texYPercentage;
 
-        temp.x += Map.leftBound;
-        temp.y += Map.botBound;
+        temp.x += Map.leftBound();
+        temp.y += Map.botBound();
 
         return temp;
     }
     public Vector2Int getTexPosForWorldPoint(Vector2 pos) {
         var temp = new Vector2Int(0, 0);
 
-        float wXPerc = (pos.x - Map.leftBound) / Map.width();
-        float wYPerc = (pos.y - Map.botBound) / Map.height();
+        float wXPerc = (pos.x - Map.leftBound()) / (Map.width);
+        float wYPerc = (pos.y - Map.botBound()) / (Map.height);
 
         temp.x = Mathf.FloorToInt((fow.width * wXPerc) + 0.5f);
         temp.y = Mathf.FloorToInt((fow.height * wYPerc) + 0.5f);
@@ -194,6 +190,10 @@ public class MapFogTexture : MonoBehaviour {
         }
 
         return (float)clearedCount / pixels.Length;
+    }
+    public bool isPositionCleared(Vector2 pos) {
+        var cord = getTexPosForWorldPoint(pos);
+        return fow.GetPixel(cord.x, cord.y) != Color.white;
     }
 
     IEnumerator animateFogClearing() {
@@ -277,24 +277,5 @@ public class MapFogTexture : MonoBehaviour {
 
             yield return new WaitForEndOfFrame();
         }
-    }
-
-    IEnumerator moveFog(float dist, bool movingRight = true) {
-        float speed = .001f;
-
-        Vector2 target = new Vector2(dist, 0.0f);
-        if(!movingRight)
-            target *= -1.0f;
-
-        fogBackground.transform.localPosition = Vector2.MoveTowards(fogBackground.transform.localPosition, target, speed * Time.deltaTime);
-
-        yield return new WaitForEndOfFrame();
-
-        if((Vector2)fogBackground.transform.localPosition == target) {
-            yield return new WaitForSeconds(0.1f);
-            StartCoroutine(moveFog(dist, !movingRight));
-        }
-        else
-            StartCoroutine(moveFog(dist, movingRight));
     }
 }

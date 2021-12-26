@@ -23,7 +23,7 @@ public class FishingUnit : MonoBehaviour {
 
     public void setVisuals() {
         GetComponent<UnitSpriteHandler>().updateVisuals();
-        GetComponent<UnitSpriteHandler>().setAnimState(4, true);
+        GetComponent<UnitSpriteHandler>().setFishingAnim(true);
 
         StartCoroutine(addRod());
     }

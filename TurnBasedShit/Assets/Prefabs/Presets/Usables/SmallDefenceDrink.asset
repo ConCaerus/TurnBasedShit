@@ -10,16 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9ed77edf2a173b04382e91384cda120b, type: 3}
-  m_Name: HealthVial
+  m_Name: SmallDefenceDrink
   m_EditorClassIdentifier: 
   preset:
     instanceID: -1
-    name: Health Vial
+    name: Small Defense Drink
     type: 3
-    rarity: 1
+    rarity: 0
     coinCost: 1
-    maxStackCount: 12
+    canBeFished: 0
+    fishedData:
+      hookedPos: {x: 0, y: 0}
+      scale: 0
+      hookedRot: 0
+      diffRegion: 0
+      chanceToCatch: 0
+    flavor: Choco
+    maxStackCount: 20
     sprite:
-      sprite: {fileID: 21300000, guid: 04175319a8fe55f4a9ec8aaef0870502, type: 3}
-    effect: 0
-    effectAmount: 10
+      sprite: {fileID: 21300000, guid: 8cc72f2ba730eff4db435ff452daddb6, type: 3}
+    effect: 4
+    effectAmount: 0.05

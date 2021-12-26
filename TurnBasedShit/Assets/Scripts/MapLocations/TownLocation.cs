@@ -7,17 +7,15 @@ using UnityEngine.SceneManagement;
 public class TownLocation : MapLocation {
     public Town town;
 
-    public GameInfo.region region = (GameInfo.region)(-1);
-
-    public TownLocation(Vector2 p, GameInfo.region diff, PresetLibrary lib, Town t = null) {
+    public TownLocation(Vector2 p, GameInfo.region reg, PresetLibrary lib, Town t = null) {
         type = locationType.town;
         pos = p;
 
-        region = diff;
+        region = reg;
 
         //  create a random town
         if(t == null) {
-            t = new Town(diff, lib, true);
+            t = new Town(reg, lib, true);
         }
 
         town = t;

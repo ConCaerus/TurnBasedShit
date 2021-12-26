@@ -49,19 +49,19 @@ public class TownMember {
 
             switch(q) {
                 case Quest.questType.bossFight:
-                    quest = lib.createRandomBossFightQuest(true);
+                    quest = lib.createRandomBossFightQuest(true, home.region);
                     break;
 
                 case Quest.questType.delivery:
-                    quest = lib.createRandomDeliveryQuest(true);
+                    quest = lib.createRandomDeliveryQuest(true, home.region);
                     break;
 
                 case Quest.questType.kill:
-                    quest = lib.createRandomKillQuest(true);
+                    quest = lib.createRandomKillQuest(true, home.region);
                     break;
 
                 case Quest.questType.pickup:
-                    quest = lib.createRandomPickupQuest(true);
+                    quest = lib.createRandomPickupQuest(true, home.region);
                     break;
 
                 case Quest.questType.fishing:

@@ -16,13 +16,12 @@ public class PickupLocation : MapLocation {
     public pickupType pType = (pickupType)(-1);
 
 
-    public PickupLocation(Vector2 p, Collectable c, PresetLibrary lib) {
+    public PickupLocation(Vector2 p, Collectable c, GameInfo.region reg, PresetLibrary lib) {
         pos = p;
         type = locationType.pickup;
         pType = pickupType.weapon;
 
-        var diff = Map.getDiffForX(p.x);
-        combatLocation = lib.createCombatLocation(diff);
+        combatLocation = lib.createCombatLocation(reg);
 
         col = c;
         combatLocation.collectables.Add(col);

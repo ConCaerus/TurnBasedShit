@@ -58,22 +58,28 @@ public static class SaveData {
     }
 
 
-    public static void createSaveDataForCurrentSave(PresetLibrary lib) {
-        createSaveDataForSave(lib);
+    public static void createSaveDataForCurrentSave(PresetLibrary lib, TransitionCanvas tc) {
+        createSaveDataForSave(lib, tc);
     }
-    public static void createSaveDataForSave(PresetLibrary lib) {
+    public static void createSaveDataForSave(PresetLibrary lib, TransitionCanvas tc) {
         //  Party
         lib.addStartingUnits();
         Debug.Log("Added starting units: " + Time.realtimeSinceStartup.ToString("0.00"));
+
+        tc.loadCircle.GetComponent<CircularSlider>().setValue(.3f);
 
         //  Towns
         Map.populateTowns(lib);
         Debug.Log("Town Shit: " + Time.realtimeSinceStartup.ToString("0.00"));
 
+        tc.loadCircle.GetComponent<CircularSlider>().setValue(.6f);
+
         //  MapLocations
         Map.createFogTexture();
         MapLocationHolder.populateMapLocations(lib);
-        Debug.Log("Town Shit: " + Time.realtimeSinceStartup.ToString("0.00"));
+        Debug.Log("Location Shit: " + Time.realtimeSinceStartup.ToString("0.00"));
+
+        tc.loadCircle.GetComponent<CircularSlider>().setValue(1f);
     }
 
     public static void deleteCurrentSave() {

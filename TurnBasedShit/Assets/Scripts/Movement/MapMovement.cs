@@ -22,13 +22,6 @@ public class MapMovement : InteractiveMovement {
 
 
     private void LateUpdate() {
-        if(Map.getDiffForX(transform.position.x) != currentDiff && FindObjectOfType<RegionNotificationCanvas>().canAnimate()) {
-            currentDiff = Map.getDiffForX(transform.position.x);
-            GameInfo.setCurrentMapPos(transform.position);
-            FindObjectOfType<MapFogTexture>().saveTexture();
-            FindObjectOfType<RegionNotificationCanvas>().startShowing();
-        }
-
         moveSideUnits();
     }
 
@@ -80,8 +73,8 @@ public class MapMovement : InteractiveMovement {
 
 
     public override bool outOfBounds() {
-        bool x = transform.position.x > Map.rightBound || transform.position.x < Map.leftBound;
-        bool y = transform.position.y > Map.topBound || transform.position.y < Map.botBound;
+        bool x = transform.position.x > Map.rightBound() || transform.position.x < Map.leftBound();
+        bool y = transform.position.y > Map.topBound() || transform.position.y < Map.botBound();
 
         return x || y;
     }

@@ -37,10 +37,10 @@ public class TownMemberMovement : MonoBehaviour {
         if(FindObjectOfType<TransitionCanvas>().loaded && canMove) {
             if(canMove) {
                 move();
-                unit.GetComponent<UnitSpriteHandler>().setAnimState(3);
+                unit.GetComponent<UnitSpriteHandler>().setWalkingAnim(true);
             }
             else {
-                unit.GetComponent<UnitSpriteHandler>().setAnimState(0);
+                unit.GetComponent<UnitSpriteHandler>().setWalkingAnim(false);
             }
         }
     }

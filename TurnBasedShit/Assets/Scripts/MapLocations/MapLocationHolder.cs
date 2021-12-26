@@ -11,6 +11,7 @@ public static class MapLocationHolder {
     static string bossTag(int i) { return "BossLocation" + i.ToString(); }
     static string fishTag(int i) { return "FishingLocation" + i.ToString(); }
     static string eyeTag(int i) { return "EyeLocation" + i.ToString(); }
+    static string bridgeTag(int i) { return "BridgeLocation" + i.ToString(); }
 
     static string townCountTag = "TownLocationCount";
     static string pickupCountTag = "PickupLocationCount";
@@ -20,6 +21,7 @@ public static class MapLocationHolder {
     static string bossCountTag = "BossLocationCount";
     static string fishCountTag = "FishingLocationCount";
     static string eyeCountTag = "EyeLocationCount";
+    static string bridgeCountTag = "BridgeLocationCount";
 
     public static void populateMapLocations(PresetLibrary lib) {
         //  these are the only ones that need to be populated on start
@@ -29,7 +31,7 @@ public static class MapLocationHolder {
         int eyeCount = Random.Range(10, 51);
 
         for(int i = 0; i < upgradeCount; i++) {
-            var u = lib.createUpgradeLocation();
+            var u = lib.createUpgradeLocation(GameInfo.getRandomReg());
             addLocation(u);
         }
         /*
@@ -38,12 +40,26 @@ public static class MapLocationHolder {
             addLocation(n);
         }*/
         for(int i = 0; i < fishCount; i++) {
-            var f = lib.createFishingLocation();
+            var f = lib.createFishingLocation(GameInfo.getRandomReg());
             addLocation(f);
         }
         for(int i = 0; i < eyeCount; i++) {
-            var e = lib.createEyeLocation();
+            var e = lib.createEyeLocation(GameInfo.getRandomReg());
             addLocation(e);
+        }
+
+        //  bridges
+        float lastY = Map.getRandPos().y;
+        for(int i = 0; i < 5; i++) {
+            if(i > 0)   //  doesn't add a privious bridge to grasslands
+                addLocation(lib.createBridgeLocation(lastY, false, (GameInfo.region)i));
+            else
+                GameInfo.setCurrentMapPos(new Vector2(Map.leftBound(), lastY));
+
+            if(i < 4) { //  doesn't add a next bridge for hell
+                lastY = Map.getRandPos().y;
+                addLocation(lib.createBridgeLocation(lastY, true, (GameInfo.region)i));
+            }
         }
     }
 
@@ -56,6 +72,7 @@ public static class MapLocationHolder {
         clearBossLocations();
         clearFishingLocations();
         clearEyeLocations();
+        clearBridgeLocations();
     }
     public static void clearTownLocations() {
         for(int i = 0; i < getTownCount() + 10; i++) {
@@ -114,6 +131,13 @@ public static class MapLocationHolder {
 
         SaveData.deleteKey(eyeCountTag);
     }
+    public static void clearBridgeLocations() {
+        for(int i = 0; i < getBridgeCount(); i++) {
+            SaveData.deleteKey(bridgeTag(i));
+        }
+
+        SaveData.deleteKey(bridgeCountTag);
+    }
 
     public static void addLocation(TownLocation loc) {
         var data = JsonUtility.ToJson(loc);
@@ -163,6 +187,12 @@ public static class MapLocationHolder {
 
         SaveData.setInt(eyeCountTag, getEyeCount() + 1);
     }
+    public static void addLocation(BridgeLocation loc) {
+        var data = JsonUtility.ToJson(loc);
+        SaveData.setString(bridgeTag(getBridgeCount()), data);
+
+        SaveData.setInt(bridgeCountTag, getBridgeCount() + 1);
+    }
 
     public static void removeLocation(MapLocation loc) {
         switch(loc.type) {
@@ -186,6 +216,9 @@ public static class MapLocationHolder {
                 break;
             case MapLocation.locationType.eye:
                 removeEyeLocation((EyeLocation)loc);
+                break;
+            case MapLocation.locationType.bridge:
+                removeBridgeLocation((BridgeLocation)loc);
                 break;
         }
     }
@@ -285,6 +318,18 @@ public static class MapLocationHolder {
         foreach(var i in temp)
             addLocation(i);
     }
+    public static void removeBridgeLocation(BridgeLocation loc) {
+        List<BridgeLocation> temp = new List<BridgeLocation>();
+        for(int i = 0; i < getBridgeCount(); i++) {
+            BridgeLocation b = getBridgeLocation(i);
+            if(b != null && !b.isEqualTo(loc))
+                temp.Add(b);
+        }
+
+        clearBridgeLocations();
+        foreach(var i in temp)
+            addLocation(i);
+    }
 
     public static void overrideTownLocation(TownLocation loc) {
         for(int i = 0; i < getTownCount(); i++) {
@@ -320,6 +365,9 @@ public static class MapLocationHolder {
     }
     public static int getEyeCount() {
         return SaveData.getInt(eyeCountTag);
+    }
+    public static int getBridgeCount() {
+        return SaveData.getInt(bridgeCountTag);
     }
 
     public static TownLocation getTownLocation(int index) {
@@ -398,6 +446,14 @@ public static class MapLocationHolder {
     public static EyeLocation getEyeLocation(int index) {
         var data = SaveData.getString(eyeTag(index));
         var temp = JsonUtility.FromJson<EyeLocation>(data);
+
+        if(temp != null)
+            return temp;
+        return null;
+    }
+    public static BridgeLocation getBridgeLocation(int index) {
+        var data = SaveData.getString(bridgeTag(index));
+        var temp = JsonUtility.FromJson<BridgeLocation>(data);
 
         if(temp != null)
             return temp;
@@ -486,6 +542,13 @@ public static class MapLocationHolder {
         }
         return null;
     }
+    public static BridgeLocation getBridgeLocationAtPos(Vector2 p) {
+        for(int i = 0; i < getBridgeCount(); i++) {
+            if(getBridgeLocation(i).pos == p)
+                return getBridgeLocation(i);
+        }
+        return null;
+    }
 
 
     public static int getIndex(TownLocation loc) {
@@ -544,6 +607,13 @@ public static class MapLocationHolder {
         }
         return -1;
     }
+    public static int getIndex(BridgeLocation loc) {
+        for(int i = 0; i < getBridgeCount(); i++) {
+            if(getBridgeLocation(i).isEqualTo(loc))
+                return i;
+        }
+        return -1;
+    }
     public static int getIndex(MapLocation loc) {
         switch(loc.type) {
             case MapLocation.locationType.town:
@@ -569,6 +639,9 @@ public static class MapLocationHolder {
 
             case MapLocation.locationType.eye:
                 return getIndex((EyeLocation)loc);
+
+            case MapLocation.locationType.bridge:
+                return getIndex((BridgeLocation)loc);
         }
 
         return -1;
@@ -577,10 +650,10 @@ public static class MapLocationHolder {
 
     public static List<MapLocation> getLocations(List<MapLocation.locationType> includes = null) {
         if(includes == null) {
-            includes = new List<MapLocation.locationType>() { 
-                MapLocation.locationType.town, MapLocation.locationType.pickup, 
-                MapLocation.locationType.upgrade, MapLocation.locationType.rescue, 
-                MapLocation.locationType.nest, MapLocation.locationType.boss, MapLocation.locationType.fishing, MapLocation.locationType.eye
+            includes = new List<MapLocation.locationType>() {
+                MapLocation.locationType.town, MapLocation.locationType.pickup,
+                MapLocation.locationType.upgrade, MapLocation.locationType.rescue,
+                MapLocation.locationType.nest, MapLocation.locationType.boss, MapLocation.locationType.fishing, MapLocation.locationType.eye, MapLocation.locationType.bridge
             };
         }
         var temp = new List<MapLocation>();
@@ -625,6 +698,11 @@ public static class MapLocationHolder {
                 case MapLocation.locationType.eye:
                     for(int f = 0; f < getEyeCount(); f++)
                         temp.Add(getEyeLocation(f));
+                    break;
+
+                case MapLocation.locationType.bridge:
+                    for(int f = 0; f < getBridgeCount(); f++)
+                        temp.Add(getBridgeLocation(f));
                     break;
             }
         }

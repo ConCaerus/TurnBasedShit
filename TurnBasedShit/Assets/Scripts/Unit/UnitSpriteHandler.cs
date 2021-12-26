@@ -13,6 +13,7 @@ public class UnitSpriteHandler : MonoBehaviour {
 
     Coroutine idler = null;
 
+
     public void setReference(UnitStats stats, bool shouldShowWeapon) {
         reference = stats;
         showWeapon = shouldShowWeapon;
@@ -196,31 +197,28 @@ public class UnitSpriteHandler : MonoBehaviour {
     }
 
 
-    public void setAnimState(int i, bool loop = false) {
-        body.GetComponent<Animator>().SetInteger("state", i);
-        head.GetComponent<Animator>().SetInteger("state", i);
-        animState = i;
-
-        if(idler != null)
-            StopCoroutine(idler);
-        if(i > 0 && !loop) {
-            idler = StartCoroutine(returnToIdle());
-        }
+    public void triggerAttackAnim() {
+        body.GetComponent<Animator>().SetTrigger("attack");
+        head.GetComponent<Animator>().SetTrigger("attack");
     }
-    public int getAnimState() {
-        return animState;
+    public void triggerDefendAnim() {
+        body.GetComponent<Animator>().SetTrigger("defend");
+        head.GetComponent<Animator>().SetTrigger("defend");
     }
-    public bool isAnimDone() {
-        if(body.GetComponent<Animator>().GetInteger("state") == 0 || head.GetComponent<Animator>().GetInteger("state") == 0) {
-            return false;
-        }
+    public void setWalkingAnim(bool b) {
+        body.GetComponent<Animator>().SetBool("walking", b);
+        head.GetComponent<Animator>().SetBool("walking", b);
+    }
+    public void setFishingAnim(bool b) {
+        body.GetComponent<Animator>().SetBool("fishing", b);
+        head.GetComponent<Animator>().SetBool("fishing", b);
+    }
 
-        if(body.GetComponent<Animator>().GetInteger("state") != head.GetComponent<Animator>().GetInteger("state"))
-            return false;
-        bool h = head.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime >= head.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.length;
-        bool b = body.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime >= body.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.length;
+    public bool isAnimIdle() {
+        var b = body.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0);
+        var h = head.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0);
 
-        return h && b;
+        return b[0].clip.name == "BodyIdle" && h[0].clip.name == "HeadIdleAnim";
     }
 
     public void setAnimSpeed(float sp) {
@@ -263,18 +261,5 @@ public class UnitSpriteHandler : MonoBehaviour {
     public float getHeight() {
         float thing = body.GetComponent<SpriteRenderer>().bounds.size.y / 1.0f;
         return thing;
-    }
-
-
-
-    IEnumerator returnToIdle() {
-        yield return new WaitForEndOfFrame();
-
-        if(isAnimDone()) {
-            setAnimState(0);
-            idler = null;
-        }
-        else
-            idler = StartCoroutine(returnToIdle());
     }
 }

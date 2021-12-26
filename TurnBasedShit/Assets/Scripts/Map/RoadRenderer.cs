@@ -38,9 +38,6 @@ public class RoadRenderer : MonoBehaviour {
         partyObject.transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
         StartCoroutine(FindObjectOfType<TransitionCanvas>().runAfterLoading(growPartyObj));
         loadAndRenderSavedPoints();
-        foreach(var i in getAllRoadPoints()) {
-            FindObjectOfType<MapEnvironmentSpawner>().instantlyClearTreesFromArea(i);
-        }
         canMove = true;
     }
 
@@ -83,9 +80,6 @@ public class RoadRenderer : MonoBehaviour {
         if(Input.GetKeyDown(KeyCode.Alpha0)) {
             MapAnchorPositionSaver.clearPositions();
             loadAndRenderSavedPoints();
-            foreach(var i in getAllRoadPoints()) {
-                FindObjectOfType<MapEnvironmentSpawner>().instantlyClearTreesFromArea(i);
-            }
         }
     }
 
@@ -133,8 +127,8 @@ public class RoadRenderer : MonoBehaviour {
     void createNewRoad() {
         MapAnchorPositionSaver.clearPositions();
 
-        Vector2 startingPoint = new Vector2(Map.leftBound, (Map.topBound + Map.botBound) / 2.0f);
-        Vector2 endingPoint = new Vector2(Map.rightBound, Map.getRandPos().y);
+        Vector2 startingPoint = new Vector2(Map.leftBound(), 0.0f);
+        Vector2 endingPoint = new Vector2(Map.rightBound(), Map.getRandPos().y);
 
         roadSegments.Clear();
         createSegmentsBtwPoints(startingPoint, endingPoint);
@@ -305,10 +299,6 @@ public class RoadRenderer : MonoBehaviour {
             var temp = customSegment;
             roadSegmentObjects.Add(temp);
             roadPointObjects.Add(customPoint.gameObject);
-
-            foreach(var i in getAllRoadPoints()) {
-                StartCoroutine(FindObjectOfType<MapEnvironmentSpawner>().clearTreesFromArea(i));
-            }
         }
         else
             Destroy(customSegment.gameObject);

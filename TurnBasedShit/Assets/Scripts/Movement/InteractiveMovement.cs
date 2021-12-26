@@ -31,11 +31,11 @@ public abstract class InteractiveMovement : UnitMovement {
         if(shouldMove() && canMove && FindObjectOfType<TransitionCanvas>().loaded) {
             isMoving = true;
             move();
-            unit.GetComponent<UnitSpriteHandler>().setAnimState(3);
+            unit.GetComponent<UnitSpriteHandler>().setWalkingAnim(true);
         }
         else {
             isMoving = false;
-            unit.GetComponent<UnitSpriteHandler>().setAnimState(0);
+            unit.GetComponent<UnitSpriteHandler>().setWalkingAnim(false);
         }
 
         if(!movingDown && !shouldMove() && canMoveAlongY()) {

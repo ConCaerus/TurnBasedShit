@@ -44,10 +44,11 @@ public class UnitCombatHighlighter : MonoBehaviour {
                 i.GetComponent<Animator>().speed = 1.0f;
         }
         foreach(var i in highlightedUnits) {
-            if(i != null && i.GetComponentInChildren<UnitSpriteHandler>() != null && i.GetComponentInChildren<UnitSpriteHandler>().getAnimState() == 0)
+            if(i != null && i.GetComponentInChildren<UnitSpriteHandler>() != null && i.GetComponentInChildren<UnitSpriteHandler>().isAnimIdle())
                 i.GetComponentInChildren<UnitSpriteHandler>().setAnimSpeed(2.5f);
+            /*
             if(i != null && i.GetComponent<Animator>() != null && i.GetComponent<Animator>().GetInteger("state") == 0)
-                i.GetComponent<Animator>().speed = 2.5f;
+                i.GetComponent<Animator>().speed = 2.5f; */
         }
     }
 

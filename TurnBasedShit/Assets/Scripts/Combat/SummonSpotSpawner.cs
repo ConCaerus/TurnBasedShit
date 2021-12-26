@@ -88,7 +88,6 @@ public class SummonSpotSpawner : MonoBehaviour {
     }
 
     void hideSpot(GameObject obj) {
-        Debug.Log("here");
         float speed = 0.25f;
         obj.transform.GetChild(0).transform.DOLocalMove(new Vector3(0.0f, 0.0f), speed);
         obj.transform.GetChild(0).transform.DOScale(0.0f, speed);

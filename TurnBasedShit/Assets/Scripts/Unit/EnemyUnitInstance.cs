@@ -36,7 +36,7 @@ public class EnemyUnitInstance : UnitClass {
     public override void setAttackingAnim() {
         if(GetComponent<Animator>() != null) {
             GetComponent<Animator>().speed = 1.0f;
-            GetComponent<Animator>().SetInteger("state", 2);
+            GetComponent<Animator>().SetTrigger("attack");
             if(idler != null)
                 StopCoroutine(idler);
             idler = StartCoroutine(returnToIdle());
@@ -45,7 +45,7 @@ public class EnemyUnitInstance : UnitClass {
     public override void setDefendingAnim() {
         if(GetComponent<Animator>() != null) {
             GetComponent<Animator>().speed = 1.0f;
-            GetComponent<Animator>().SetInteger("state", 1);
+            GetComponent<Animator>().SetTrigger("defend");
             if(idler != null)
                 StopCoroutine(idler);
             idler = StartCoroutine(returnToIdle());

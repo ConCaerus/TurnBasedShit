@@ -18,8 +18,11 @@ public class Usable : Collectable {
 
     //  returns true if the effect was applied
     public bool applyStatsEffect(UnitStats stats, PartyObject po) {
-        if(po != null)
-            stats = po.getInstantiatedMember(stats).GetComponent<UnitClass>().stats;
+        UnitClass obj = null;
+        if(po != null) {
+            obj = po.getInstantiatedMember(stats).GetComponent<UnitClass>();
+            stats = obj.stats;
+        }
 
         switch(effect) {
             case effectType.heal:
@@ -33,6 +36,25 @@ public class Usable : Collectable {
                     return false;
                 stats.u_bleedCount = 0;
                 break;
+
+            case effectType.powerBuff:
+                if(po == null)
+                    break;
+                obj.tempPowerMod += effectAmount;
+                Debug.Log(effectAmount);
+                break;
+
+            case effectType.defenceBuff:
+                if(po == null)
+                    break;
+                obj.tempDefenceMod += effectAmount;
+                break;
+
+            case effectType.speedBuff:
+                if(po == null)
+                    break;
+                obj.tempSpeedMod += effectAmount;
+                break;
         }
 
         if(po != null)
@@ -40,34 +62,6 @@ public class Usable : Collectable {
         Party.overrideUnit(stats);
 
         return true;
-    }
-
-    public UnitStats applyEffect(GameObject thing) {
-        var uc = thing.GetComponent<UnitClass>();
-        switch(effect) {
-            case effectType.heal:
-                uc.addHealth(effectAmount);
-                break;
-
-            case effectType.cureBleed:
-                uc.stats.u_bleedCount = 0;
-                break;
-
-            case effectType.powerBuff:
-                uc.tempPowerMod += effectAmount;
-                break;
-
-            case effectType.defenceBuff:
-                uc.tempDefenceMod += effectAmount;
-                break;
-
-            case effectType.speedBuff:
-                uc.tempSpeedMod += effectAmount;
-                break;
-        }
-
-        Party.overrideUnit(uc.stats);
-        return uc.stats;
     }
 
     public override void setEqualTo(Collectable col, bool takeInstanceID) {

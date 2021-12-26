@@ -9,13 +9,14 @@ public abstract class MapLocation {
 
     [Serializable]
     public enum locationType {
-        empty, town, pickup, upgrade, rescue, nest, boss, fishing, eye
+        empty, town, pickup, upgrade, rescue, nest, boss, fishing, eye, bridge
     }
 
 
 
     public Vector2 pos;
     public locationType type = locationType.empty;
+    public GameInfo.region region;
 
     public CombatLocation combatLocation = null;
 

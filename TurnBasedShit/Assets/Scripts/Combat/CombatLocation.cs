@@ -6,7 +6,7 @@ using UnityEngine;
 public class CombatLocation {
     [SerializeField] public List<Wave> waves = new List<Wave>(1);
 
-    public GameInfo.region difficulty;
+    public GameInfo.region reg;
 
     public int coinReward = 0;
 

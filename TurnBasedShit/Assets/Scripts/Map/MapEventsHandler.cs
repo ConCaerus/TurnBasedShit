@@ -11,12 +11,14 @@ public class MapEventsHandler : MonoBehaviour {
 
     public void triggerEncounter() {
         //  creates a combat location
-        var cl = FindObjectOfType<PresetLibrary>().createCombatLocation(Map.getDiffForX(FindObjectOfType<MapMovement>().transform.position.x));
+        var cl = FindObjectOfType<PresetLibrary>().createCombatLocation(GameInfo.getCurrentRegion());
         cl = Randomizer.randomizeCombatLocation(cl);
         GameInfo.setCombatDetails(cl);
 
         //  flair
         FindObjectOfType<MapMovement>().canMove = false;
+        foreach(var i in FindObjectsOfType<MapEnemyMovement>())
+            i.enabled = false;
         FindObjectOfType<EnounterCanvas>().showEnemyEncounterAlert();
     }
 

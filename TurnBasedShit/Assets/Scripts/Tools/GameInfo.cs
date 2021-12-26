@@ -26,6 +26,7 @@ public static class GameInfo {
     //  current combat location that the player is in
     public const string combatDetails = "CombatLocation";
 
+    public const string currentRegion = "Current Region";
     public const string currentMapLocation = "Current Map Location";
     public const string currentMapPosX = "Current Map Position x";
     public const string currentMapPosY = "Current Map Position y";
@@ -139,8 +140,11 @@ public static class GameInfo {
         return new Vector2(SaveData.getFloat(currentMapPosX), SaveData.getFloat(currentMapPosY));
     }
 
+    public static void setCurrentRegion(region reg) {
+        SaveData.setInt(currentRegion, (int)reg);
+    }
     public static region getCurrentRegion() {
-        return Map.getDiffForX(getCurrentMapPos().x);
+        return (region)SaveData.getInt(currentRegion);
     }
 
 
@@ -163,8 +167,8 @@ public static class GameInfo {
     public static Quest.questType getRandomQuestType() {
         return (Quest.questType)Random.Range(0, 4);
     }
-    public static region getRandomDiff() {
-        return (region)Random.Range(0, 7);
+    public static region getRandomReg() {
+        return (region)Random.Range(0, 5);
     }
 
     public static int getNextUnitInstanceID() {

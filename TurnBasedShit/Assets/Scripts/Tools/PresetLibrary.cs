@@ -143,7 +143,7 @@ public class PresetLibrary : MonoBehaviour {
                 boss = useables[Random.Range(0, useables.Count)];
         }
 
-        else if(diff == (GameInfo.region)(-1) || boss == null) {
+        if(diff == (GameInfo.region)(-1) || boss == null) {
             //  not useable enemies, return random enemy from all enemies
             boss = bosses[Random.Range(0, bosses.Length)];
         }
@@ -564,7 +564,7 @@ public class PresetLibrary : MonoBehaviour {
 
     public Collectable getRandomCollectable(GameInfo.region diff = (GameInfo.region)(-1)) {
         if(diff == (GameInfo.region)(-1))
-            diff = GameInfo.getRandomDiff();
+            diff = GameInfo.getRandomReg();
 
         int type = Random.Range(0, 5);
         if(type == 0)
@@ -631,46 +631,48 @@ public class PresetLibrary : MonoBehaviour {
     }
 
     //  special locations
-    public CombatLocation createCombatLocation(GameInfo.region lvl) {
+    public CombatLocation createCombatLocation(GameInfo.region reg) {
         int waveCount = Random.Range(1, 4);
-        var loc = new CombatLocation(lvl, this, waveCount);
-        loc.difficulty = lvl;
+        var loc = new CombatLocation(reg, this, waveCount);
+        loc.reg = reg;
 
-        loc.coinReward = 2 * ((int)lvl + 1) * waveCount; // default value
+        loc.coinReward = 2 * ((int)reg + 1) * waveCount; // default value
         loc.coinReward += (int)Random.Range(loc.coinReward * -0.1f, loc.coinReward * 0.1f);   //  randomizes it
 
         return loc;
     }
-    public BossLocation createBossLocation() {
-        var boss = getRandomBoss();
-        return new BossLocation(Map.getRandPos(), boss, boss.GetComponent<BossUnitInstance>().enemyDiff, this);
+    public BossLocation createBossLocation(GameInfo.region reg) {
+        var boss = getRandomBoss(reg);
+        return new BossLocation(Map.getRandPos(), boss, reg, this);
     }
-    public PickupLocation createPickupLocation() {
+    public PickupLocation createPickupLocation(GameInfo.region reg) {
         var pos = Map.getRandPos();
-        return new PickupLocation(pos, getRandomCollectable(Map.getDiffForX(pos.x)), this);
+        return new PickupLocation(pos, getRandomCollectable(reg), reg, this); 
     }
-    public RescueLocation createRescueLocation() {
-        return new RescueLocation(Map.getRandPos(), this);
+    public RescueLocation createRescueLocation(GameInfo.region reg) {
+        return new RescueLocation(Map.getRandPos(), GameInfo.getRandomReg(), this);
     }
-    public UpgradeLocation createUpgradeLocation() {
-        return new UpgradeLocation(Map.getRandPos(), Random.Range(0, 2));
+    public UpgradeLocation createUpgradeLocation(GameInfo.region reg) {
+        return new UpgradeLocation(Map.getRandPos(), reg, Random.Range(0, 2));
     }
-    public NestLocation createRandomNestLocation() {
+    public NestLocation createRandomNestLocation(GameInfo.region reg) {
         var pos = Map.getRandPos();
-        return new NestLocation(pos, Random.Range(1, 4), this);
+        return new NestLocation(pos, Random.Range(1, 4), reg, this);
     }
-    public FishingLocation createFishingLocation() {
+    public FishingLocation createFishingLocation(GameInfo.region reg) {
         var pos = Map.getRandPos();
-        var diff = Map.getDiffForX(pos.x);
-        return new FishingLocation(pos, getRandomFishInRegion(diff));
+        return new FishingLocation(pos, getRandomFishInRegion(reg));
     }
-    public EyeLocation createEyeLocation() {
-        return new EyeLocation(Map.getRandPos());
+    public EyeLocation createEyeLocation(GameInfo.region reg) {
+        return new EyeLocation(Map.getRandPos(), reg);
+    }
+    public BridgeLocation createBridgeLocation(float yPos, bool advancing, GameInfo.region reg) {
+        return new BridgeLocation(yPos, advancing, reg);
     }
 
     public Unusable getRandomFishInRegion(GameInfo.region diff = (GameInfo.region)(-1)) {
         if(diff == (GameInfo.region)(-1))
-            diff = GameInfo.getRandomDiff();
+            diff = GameInfo.getRandomReg();
         List<Unusable> fishies = new List<Unusable>();
         List<Unusable> backup = new List<Unusable>();
         foreach(var i in unusables) {
@@ -687,21 +689,21 @@ public class PresetLibrary : MonoBehaviour {
     }
 
 
-    public BossFightQuest createRandomBossFightQuest(bool setID) {
-        return new BossFightQuest(createBossLocation(), setID);
+    public BossFightQuest createRandomBossFightQuest(bool setID, GameInfo.region reg) {
+        return new BossFightQuest(createBossLocation(reg), setID);
     }
-    public PickupQuest createRandomPickupQuest(bool setID) {
-        return new PickupQuest(createPickupLocation(), setID);
+    public PickupQuest createRandomPickupQuest(bool setID, GameInfo.region reg) {
+        return new PickupQuest(createPickupLocation(reg), setID);
     }
-    public KillQuest createRandomKillQuest(bool setID) {
-        return new KillQuest(Random.Range(5, 36), getRandomEnemy().GetComponent<EnemyUnitInstance>().enemyType, setID);   //  change this number too
+    public KillQuest createRandomKillQuest(bool setID, GameInfo.region reg) {
+        return new KillQuest(Random.Range(5, 36), getRandomEnemy(reg).GetComponent<EnemyUnitInstance>().enemyType, setID);   //  change this number too
     }
-    public DeliveryQuest createRandomDeliveryQuest(bool setID) {
+    public DeliveryQuest createRandomDeliveryQuest(bool setID, GameInfo.region reg) {
         int townInd = 0;
         //  no towns
         if(MapLocationHolder.getTownCount() == 0) {
             Vector2 pos = Map.getRandPos();
-            MapLocationHolder.addLocation(new TownLocation(pos, Map.getDiffForX(pos.x), this));
+            MapLocationHolder.addLocation(new TownLocation(pos, reg, this));
         }
         else {
             townInd = Random.Range(0, MapLocationHolder.getTownCount());

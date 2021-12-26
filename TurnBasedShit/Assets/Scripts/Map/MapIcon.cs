@@ -17,7 +17,8 @@ public class MapIcon : MonoBehaviour {
     }
 
     private void OnMouseEnter() {
-        animate();
+        if(FindObjectOfType<MapFogTexture>().isPositionCleared(transform.position))
+            animate();
     }
 
     private void OnMouseExit() {

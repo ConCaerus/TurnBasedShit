@@ -93,13 +93,13 @@ public class DebuggerWindow : EditorWindow {
         GUILayout.EndHorizontal();
         GUILayout.BeginHorizontal();
         if(GUILayout.Button("+Boss"))
-            ActiveQuests.addQuest(FindObjectOfType<PresetLibrary>().createRandomBossFightQuest(true));
+            ActiveQuests.addQuest(FindObjectOfType<PresetLibrary>().createRandomBossFightQuest(true, GameInfo.getCurrentRegion()));
         if(GUILayout.Button("+Delivery"))
-            ActiveQuests.addQuest(FindObjectOfType<PresetLibrary>().createRandomDeliveryQuest(true));
+            ActiveQuests.addQuest(FindObjectOfType<PresetLibrary>().createRandomDeliveryQuest(true, GameInfo.getCurrentRegion()));
         if(GUILayout.Button("+Kill"))
-            ActiveQuests.addQuest(FindObjectOfType<PresetLibrary>().createRandomKillQuest(true));
+            ActiveQuests.addQuest(FindObjectOfType<PresetLibrary>().createRandomKillQuest(true, GameInfo.getCurrentRegion()));
         if(GUILayout.Button("+Pickup"))
-            ActiveQuests.addQuest(FindObjectOfType<PresetLibrary>().createRandomPickupQuest(true));
+            ActiveQuests.addQuest(FindObjectOfType<PresetLibrary>().createRandomPickupQuest(true, GameInfo.getCurrentRegion()));
         GUILayout.EndHorizontal();
 
         //  MapLocations
@@ -114,7 +114,7 @@ public class DebuggerWindow : EditorWindow {
         if(GUILayout.Button("Clear Locations"))
             MapLocationHolder.clear();
         if(GUILayout.Button("+Upgrade"))
-            MapLocationHolder.addLocation(FindObjectOfType<PresetLibrary>().createUpgradeLocation());
+            MapLocationHolder.addLocation(FindObjectOfType<PresetLibrary>().createUpgradeLocation(GameInfo.getCurrentRegion()));
 
         GUILayout.EndHorizontal();
         GUILayout.BeginHorizontal();
@@ -128,7 +128,7 @@ public class DebuggerWindow : EditorWindow {
         GUILayout.Label("Save Data", EditorStyles.boldLabel);
         GUILayout.BeginHorizontal();
         if(GUILayout.Button("Create Save Data"))
-            SaveData.createSaveDataForCurrentSave(FindObjectOfType<PresetLibrary>());
+            SaveData.createSaveDataForCurrentSave(FindObjectOfType<PresetLibrary>(), FindObjectOfType<TransitionCanvas>());
         if(GUILayout.Button("Clear Save"))
             SaveData.deleteCurrentSave();
         if(GUILayout.Button("Clear Everything"))

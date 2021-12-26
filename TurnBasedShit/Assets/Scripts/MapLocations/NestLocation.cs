@@ -5,13 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class NestLocation : MapLocation {
 
-    public NestLocation(Vector2 p, int waveNumber, PresetLibrary lib) {
+    public NestLocation(Vector2 p, int waveNumber, GameInfo.region reg, PresetLibrary lib) {
         pos = p;
         type = locationType.nest;
 
-        var diff = Map.getDiffForX(p.x);
-        combatLocation = lib.createCombatLocation(diff);
-        combatLocation.createWaves(diff, lib, waveNumber);
+        combatLocation = lib.createCombatLocation(reg);
+        combatLocation.createWaves(reg, lib, waveNumber);
     }
 
 

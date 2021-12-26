@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class TransitionCanvas : MonoBehaviour {
     [SerializeField] GameObject background;
+    public GameObject loadCircle;
 
     float transitionTime = 0.5f;
 
@@ -37,27 +38,47 @@ public class TransitionCanvas : MonoBehaviour {
 
         loaded = false;
         background.SetActive(true);
+        loadCircle.SetActive(true);
         background.transform.localPosition = new Vector3(0.0f, -1000.0f, 0.0f);
-        background.transform.DOLocalMove(new Vector3(0.0f, 0.0f, 0.0f), transitionTime);
+        background.transform.DOLocalMoveY(0.0f, transitionTime);
+
+
+        loadCircle.transform.localPosition = new Vector3(0.0f, -1000.0f, 0.0f);
+        loadCircle.transform.localScale = new Vector3(0.0f, 0.0f);
+        loadCircle.transform.DOLocalMoveY(0.0f, transitionTime);
+        loadCircle.transform.DOScale(1.0f, transitionTime);
     }
 
     IEnumerator hideBackgroundObject() {
         yield return new WaitForEndOfFrame();
 
         background.SetActive(true);
+        loadCircle.SetActive(true);
         background.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
-        background.transform.DOLocalMove(new Vector3(0.0f, -1000.0f, 0.0f), transitionTime);
+        background.transform.DOLocalMoveY(-1000.0f, transitionTime);
+        loadCircle.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
+        loadCircle.transform.DOLocalMoveY(-1000.0f, transitionTime);
+        loadCircle.transform.DOScale(0.0f, transitionTime);
 
         yield return new WaitForSeconds(transitionTime);
         background.SetActive(false);
+        loadCircle.SetActive(false);
         loaded = true;
     }
 
-    IEnumerator loadSceneAfterBackgroundShown(string name) {
+    IEnumerator loadSceneAfterBackgroundShown(string name, bool autoProgress = true) {
         showBackground();
+
+        loadCircle.GetComponent<CircularSlider>().setValue(0.0f);
         yield return new WaitForSeconds(transitionTime);
 
-        SceneManager.LoadScene(name);
+        var operation = SceneManager.LoadSceneAsync(name);
+        while(!operation.isDone && autoProgress) {
+            var prog = Mathf.Clamp01(operation.progress / .9f);
+            loadCircle.GetComponent<CircularSlider>().setValue(prog);
+
+            yield return null;
+        }
     }
     IEnumerator runFuncAfterBackgroundShown(func funcToRun) {
         showBackground();
@@ -77,8 +98,8 @@ public class TransitionCanvas : MonoBehaviour {
             StartCoroutine(runAfterLoading(funcToRun));
     }
 
-    public void loadSceneWithTransition(string name) {
-        StartCoroutine(loadSceneAfterBackgroundShown(name));
+    public void loadSceneWithTransition(string name, bool autoProgress = true) {
+        StartCoroutine(loadSceneAfterBackgroundShown(name, autoProgress));
     }
 
     public void loadSceneWithFunction(func funcToRun) {

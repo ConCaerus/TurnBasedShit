@@ -22,13 +22,13 @@ public class PlayerUnitInstance : UnitClass {
     public override void setAttackingAnim() {
         if(GetComponentInChildren<UnitSpriteHandler>() != null) {
             GetComponentInChildren<UnitSpriteHandler>().setAnimSpeed(1.0f);
-            GetComponentInChildren<UnitSpriteHandler>().setAnimState(2);
+            GetComponentInChildren<UnitSpriteHandler>().triggerAttackAnim();
         }
     }
     public override void setDefendingAnim() {
         if(GetComponentInChildren<UnitSpriteHandler>() != null) {
             GetComponentInChildren<UnitSpriteHandler>().setAnimSpeed(1.0f);
-            GetComponentInChildren<UnitSpriteHandler>().setAnimState(1);
+            GetComponentInChildren<UnitSpriteHandler>().triggerDefendAnim();
         }
     }
 
