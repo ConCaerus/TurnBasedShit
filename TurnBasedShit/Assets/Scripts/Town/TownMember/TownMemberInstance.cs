@@ -16,9 +16,13 @@ public class TownMemberInstance : MonoBehaviour {
 
     private void Start() {
         GetComponentInChildren<UnitSpriteHandler>().setReference(reference.sprite, reference.weapon, reference.armor, true);
-        GetComponentInChildren<DialogBox>().runWhenDoneAndAccepted = acceptQuest;
-        GetComponentInChildren<DialogBox>().setName(reference.name);
-        GetComponentInChildren<DialogBox>().setDialog(DialogLibrary.getDialogForTownMember(reference));
+        if(reference.hasQuest) {
+            GetComponentInChildren<DialogBox>().runWhenDoneAndAccepted = acceptQuest;
+            GetComponentInChildren<DialogBox>().setName(reference.name);
+            Debug.Log(reference.isNPC + " " + reference.name);
+            Debug.Log(reference.getQuest());
+            GetComponentInChildren<DialogBox>().setDialog(DialogLibrary.getDialogForTownMember(reference));
+        }
         gameObject.name = reference.name;
 
 
@@ -90,7 +94,7 @@ public class TownMemberInstance : MonoBehaviour {
     //  dialog buttons
     public void acceptQuest() {
         if(!reference.isQuestActive()) {
-            ActiveQuests.addQuest(reference.quest);
+            ActiveQuests.addQuest(reference.getQuest());
         }
         updateMark();
         interacting = false;

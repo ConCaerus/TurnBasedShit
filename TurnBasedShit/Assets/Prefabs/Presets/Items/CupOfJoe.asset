@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c50175b1ce807ce4d84b5e99f5ff832c, type: 3}
+  m_Name: CupOfJoe
+  m_EditorClassIdentifier: 
+  preset:
+    instanceID: -1
+    name: Cup of Joe
+    type: 2
+    rarity: 3
+    coinCost: 25
+    canBeFished: 0
+    maxStackCount: 1
+    fishedData:
+      hookedPos: {x: 0, y: 0}
+      scale: 0
+      hookedRot: 0
+      chanceToCatch: 0
+    flavor: A nice french vanilla blend.
+    tEffects: []
+    pEffects:
+    - effect: 8
+      effectAmount: 1
+    sprite:
+      sprite: {fileID: 21300000, guid: 6d82308c2ed1d20439da8d20f5a1cf48, type: 3}

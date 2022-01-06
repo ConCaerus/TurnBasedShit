@@ -7,22 +7,28 @@ public class MapMovement : InteractiveMovement {
     List<int> sideUnitIndexes = new List<int>();
     List<GameObject> sideUnits = new List<GameObject>();
 
+    Vector2 lastAteAtPos;
+    float distToEat = 10.0f;
+
     GameInfo.region currentDiff;
 
-    float distToInt = 1f;
+    public GameObject closestIcon = null;
 
 
     private void Start() {
         transform.position = GameInfo.getCurrentMapPos();
         currentDiff = GameInfo.getCurrentRegion();
         GameInfo.currentGameState = GameInfo.state.map;
-        hideInteractText();
         createSideUnitObjects();
+        lastAteAtPos = transform.position;
     }
+
+
 
 
     private void LateUpdate() {
         moveSideUnits();
+        eatFood();
     }
 
 
@@ -65,6 +71,25 @@ public class MapMovement : InteractiveMovement {
         }
     }
 
+    public void eatFood() {
+        if(Vector2.Distance(transform.position, lastAteAtPos) > distToEat) {
+            lastAteAtPos = transform.position;
+            for(int p = 0; p < Party.getMemberCount(); p++) {
+                var food = Inventory.eatFood();
+                if(food == null || food.isEmpty()) {
+                    for(int i = 0; i < Party.getMemberCount(); i++) {
+                        var stats = Party.getMemberStats(i);
+                        stats.addHealth(-2f);
+                        Party.overrideUnit(stats);
+                    }
+                    return;
+                }
+                else
+                    FindObjectOfType<MapCollectCanvas>().showCanvas(false, food);
+            }
+        }
+    }
+
     public void setSideUnitVisuals() {
         for(int i = 0; i < sideUnits.Count; i++) {
             sideUnits[i].GetComponentInChildren<UnitSpriteHandler>().setReference(Party.getMemberStats(sideUnitIndexes[i]), true);
@@ -94,16 +119,18 @@ public class MapMovement : InteractiveMovement {
     }
 
     public override void interact() {
-        if(MapLocationHolder.locationCloseToPos(transform.position, distToInt)) {
-            var loc = MapLocationHolder.getClostestLocation(transform.position);
-            GameInfo.setCurrentMapPos(MapLocationHolder.getClostestLocation(transform.position).pos);
-            FindObjectOfType<MapFogTexture>().saveTexture();
+        if(closestIcon == null)
+            return;
+        var loc = MapLocationHolder.getLocationAtPos(closestIcon.transform.position, GameInfo.getCurrentRegion());
+        if(loc == null)
+            return;
+        GameInfo.setCurrentMapPos(closestIcon.transform.position);
+        FindObjectOfType<MapFogTexture>().saveTexture();
 
-            if(loc.type == MapLocation.locationType.eye)
-                ((EyeLocation)loc).activate(FindObjectOfType<MapFogTexture>(), FindObjectOfType<MapLocationSpawner>());
-            else
-                MapLocationHolder.getClostestLocation(transform.position).enterLocation(FindObjectOfType<TransitionCanvas>());
-        }
+        if(loc.type == MapLocation.locationType.eye)
+            ((EyeLocation)loc).activate(FindObjectOfType<MapFogTexture>(), FindObjectOfType<MapLocationSpawner>());
+        else
+            loc.enterLocation(FindObjectOfType<TransitionCanvas>());
     }
 
     public override void deinteract() {

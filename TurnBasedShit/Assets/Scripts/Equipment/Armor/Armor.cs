@@ -59,11 +59,11 @@ public class Armor : Collectable {
     }
 
     public override void setEqualTo(Collectable col, bool takeID) {
-        if(col.type != collectableType.armor || col == null || col.isEmpty())
+        if(col.type != collectableType.armor || col == null)
             return;
 
         var other = (Armor)col;
-        if(other == null || other.isEmpty())
+        if(other == null)
             return;
 
         matchParentValues(col, takeID);

@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class FishingLocation : MapLocation {
-    public Unusable fish;
+    public Collectable fish;
 
-    public FishingLocation(Vector2 p, Unusable f) {
+    public FishingLocation(Vector2 p, Collectable f) {
         pos = p;
         type = locationType.fishing;
         fish = f;

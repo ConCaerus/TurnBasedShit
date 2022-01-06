@@ -82,7 +82,7 @@ public class DeliveryQuest : Quest {
     }
 
 
-    public override questType getType() {
+    public override questType getQuestType() {
         return questType.delivery;
     }
 }

@@ -31,6 +31,9 @@ public static class GameInfo {
     public const string currentMapPosX = "Current Map Position x";
     public const string currentMapPosY = "Current Map Position y";
 
+    public const string nextCombatLocationID = "Next Combat Location ID";
+    public const string nextObjectHolderID = "Next Object Holder ID";
+
     public const string nextUnitID = "Next Unit ID";
 
     public const string nextWeaponID = "Next Weapon ID";
@@ -169,6 +172,17 @@ public static class GameInfo {
     }
     public static region getRandomReg() {
         return (region)Random.Range(0, 5);
+    }
+
+    public static int getNextCombatLocationInstanceID() {
+        int index = SaveData.getInt(nextCombatLocationID);
+        SaveData.setInt(nextCombatLocationID, index + 1);
+        return index;
+    }
+    public static int getNextObjectHolderInstanceID() {
+        int index = SaveData.getInt(nextObjectHolderID);
+        SaveData.setInt(nextObjectHolderID, index + 1);
+        return index;
     }
 
     public static int getNextUnitInstanceID() {

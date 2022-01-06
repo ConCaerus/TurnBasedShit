@@ -5,8 +5,6 @@ using DG.Tweening;
 using UnityEngine.UI;
 
 public class TurnOrderCanvas : MonoBehaviour {
-    [SerializeField] GameObject slotPreset;
-
     List<GameObject> slots = new List<GameObject>();
     GameObject selectedSlot = null;
 

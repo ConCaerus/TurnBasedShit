@@ -14,7 +14,7 @@ public class RescueQuest : Quest {
         location = rescue;
     }
 
-    public override questType getType() {
+    public override questType getQuestType() {
         return questType.rescue;
     }
 }

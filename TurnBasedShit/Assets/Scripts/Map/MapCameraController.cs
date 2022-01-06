@@ -48,7 +48,7 @@ public class MapCameraController : MonoBehaviour {
             move(scroll * 0.75f);
 
             //  scaling of images
-            foreach(var i in FindObjectOfType<MapLocationSpawner>().currentIcons) {
+            foreach(var i in FindObjectOfType<MapLocationSpawner>().getCurrentObjects()) {
                 float scaleAmount = Mathf.Clamp(0.25f * (Camera.main.orthographicSize - 5.0f) / 4.0f, minIconSize, maxIconSize);
                 i.transform.localScale = new Vector3(scaleAmount, scaleAmount, 0.0f);
             }

@@ -10,11 +10,11 @@ public class Usable : Collectable {
     }
 
 
-    public int maxStackCount = 1;
     [SerializeField] UsableSpriteHolder sprite;
 
     public effectType effect;
     public float effectAmount;
+    public int foodBiteCount = 0;
 
     //  returns true if the effect was applied
     public bool applyStatsEffect(UnitStats stats, PartyObject po) {
@@ -41,7 +41,6 @@ public class Usable : Collectable {
                 if(po == null)
                     break;
                 obj.tempPowerMod += effectAmount;
-                Debug.Log(effectAmount);
                 break;
 
             case effectType.defenceBuff:
@@ -65,17 +64,17 @@ public class Usable : Collectable {
     }
 
     public override void setEqualTo(Collectable col, bool takeInstanceID) {
-        if(col.type != collectableType.usable || col.isEmpty())
+        if(col.type != collectableType.usable)
             return;
 
         var other = (Usable)col;
-        if(other == null || other.isEmpty())
+        if(other == null)
             return;
         matchParentValues(col, takeInstanceID);
-        maxStackCount = other.maxStackCount;
         effect = other.effect;
         effectAmount = other.effectAmount;
         sprite = other.sprite;
+        foodBiteCount = other.foodBiteCount;
     }
 
 

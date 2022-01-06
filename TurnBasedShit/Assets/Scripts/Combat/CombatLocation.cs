@@ -4,15 +4,14 @@ using UnityEngine;
 
 [System.Serializable]
 public class CombatLocation {
+    public int instanceID = -1;
     [SerializeField] public List<Wave> waves = new List<Wave>(1);
 
+
+    public int coins = 0;
+    public ObjectHolder spoils = new ObjectHolder();
+
     public GameInfo.region reg;
-
-    public int coinReward = 0;
-
-
-    public List<Collectable> collectables = new List<Collectable>();
-    public List<UnitStats> rescuedUnits = new List<UnitStats>();
 
     public CombatLocation(GameInfo.region diff, PresetLibrary lib, int numberOfWaves = 2, int minNumberOfEnemies = 2, int maxNumberOfEnemies = 4) {
         createWaves(diff, lib, numberOfWaves, minNumberOfEnemies, maxNumberOfEnemies);
@@ -39,12 +38,22 @@ public class CombatLocation {
         waves.Add(wave);
     }
 
-    public void addSpoils() {
-        Inventory.addCoins(coinReward);
+    
 
-        foreach(var i in collectables)
+    public void receiveSpoils() {
+        Inventory.addCoins(coins);
+
+        foreach(var i in spoils.getObjects<Weapon>())
             Inventory.addCollectable(i);
-        foreach(var i in rescuedUnits)
+        foreach(var i in spoils.getObjects<Armor>())
+            Inventory.addCollectable(i);
+        foreach(var i in spoils.getObjects<Item>())
+            Inventory.addCollectable(i);
+        foreach(var i in spoils.getObjects<Usable>())
+            Inventory.addCollectable(i);
+        foreach(var i in spoils.getObjects<Unusable>())
+            Inventory.addCollectable(i);
+        foreach(var i in spoils.getObjects<UnitStats>())
             Party.addUnit(i);
     }
 }

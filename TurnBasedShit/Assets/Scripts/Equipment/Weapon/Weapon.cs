@@ -22,11 +22,11 @@ public class Weapon : Collectable {
     public specialUsage sUsage = specialUsage.none;
     public float sUsageAmount = 0.0f;
 
-    public attackType aType;
-    public float power;
-    public float speedMod;
+    public attackType aType = (attackType)(-1);
+    public float power = 0.0f;
+    public float speedMod = 0.0f;
 
-    [SerializeField] WeaponSpriteHolder sprite;
+    [SerializeField] WeaponSpriteHolder sprite = new WeaponSpriteHolder();
 
 
 
@@ -75,20 +75,10 @@ public class Weapon : Collectable {
         return count;
     }
 
-
-    public WeaponPreset weaponToPreset() {
-        WeaponPreset preset = (WeaponPreset)ScriptableObject.CreateInstance("WeaponPreset");
-        preset.preset = this;
-        return preset;
-    }
-
     public override void setEqualTo(Collectable col, bool takeID) {
-        if(col == null || col.type != collectableType.weapon || col.isEmpty())
+        if(col == null || col.type != collectableType.weapon)   //  don't check if isEmpty
             return;
         var other = (Weapon)col;
-        if(other == null || other.isEmpty())
-            return;
-
         if(other == null)
             return;
         matchParentValues(col, takeID);

@@ -15,13 +15,13 @@ public abstract class UnitClass : MonoBehaviour {
     public bool charging = false;
     public bool isMouseOverUnit = false;
 
-    public float tempPowerMod = 1.0f;
-    public float tempDefenceMod = 0.0f;
-    public float tempSpeedMod = 1.0f;
+    public float tempPowerMod = 0.0f;   //  adds
+    public float tempDefenceMod = 0.0f; //  adds
+    public float tempSpeedMod = 0.0f;   //  adds 
 
     public float spotOffset = 0.0f;
 
-    Vector2 normalSize, normalPos;
+    protected Vector2 normalSize, normalPos;
     public Coroutine attackAnim, defendAnim;
 
 
@@ -64,9 +64,6 @@ public abstract class UnitClass : MonoBehaviour {
     }
 
     public void setup() {
-        tempPowerMod = 1.0f;
-        tempDefenceMod = 0.0f;
-        tempSpeedMod = 1.0f;
         if(isPlayerUnit && GetComponentInChildren<UnitSpriteHandler>() != null) {
             GetComponentInChildren<UnitSpriteHandler>().setReference(stats, true);
         }
@@ -82,18 +79,18 @@ public abstract class UnitClass : MonoBehaviour {
         foreach(var i in FindObjectsOfType<CombatSpot>()) {
             if(i.unit == gameObject) {
                 transform.parent = i.transform;
-                float size = ((i.transform.localScale.x - .15f) + .35f) / 2.0f;
                 normalSize = new Vector3(1.0f, 1.0f);
-                normalPos = new Vector3(0.0f, spotOffset + .35f - size);
+                normalPos = new Vector3(0.0f, spotOffset);
                 break;
             }
         }
 
-        transform.DOLocalMove(normalPos, 0.01f);
-        transform.DOScale(normalSize, 0.01f);
+        transform.localPosition = normalPos;
+        transform.localScale = normalSize;
 
-        if(isPlayerUnit)
+        if(isPlayerUnit) {
             FindObjectOfType<PartyObject>().resaveInstantiatedUnit(stats);
+        }
     }
 
 
@@ -155,7 +152,6 @@ public abstract class UnitClass : MonoBehaviour {
         foreach(var i in stats.u_traits) {
             if(!stunned && i.shouldStunSelf()) {
                 stunned = true;
-                Debug.Log("here");
             }
         }
 
@@ -178,10 +174,6 @@ public abstract class UnitClass : MonoBehaviour {
         if(stats.item != null && !stats.item.isEmpty())
             stats.item.triggerUseTime(this, Item.useTimes.beforeAttacking);
 
-        //  chance miss
-        if(GameVariables.chanceOutOfHundred(stats.u_missChance))
-            return;
-
         //  triggers
         stats.weapon.applyAttributes(gameObject, defender);
 
@@ -202,7 +194,7 @@ public abstract class UnitClass : MonoBehaviour {
             if(GetComponent<EnemyUnitInstance>().weakTo == attacker.GetComponent<UnitClass>().stats.weapon.aType)
                 dmg *= 1.25f;
         }
-        dmg *= (stats.getDefenceMult(defending, FindObjectOfType<PresetLibrary>()) - tempDefenceMod);
+        dmg *= (stats.getDefenceMult(defending, FindObjectOfType<PresetLibrary>(), tempDefenceMod));
 
         float crit = attacker.GetComponent<UnitClass>().stats.getCritMult();
         dmg *= crit;
@@ -288,9 +280,12 @@ public abstract class UnitClass : MonoBehaviour {
             GetComponent<EnemyUnitInstance>().chanceUnusableDrop(chanceMod);
 
             //  increases acc quest counter
-            for(int i = 0; i < ActiveQuests.getKillQuestCount(); i++) {
-                if(ActiveQuests.getKillQuest(i).enemyType == GetComponent<EnemyUnitInstance>().enemyType)
-                    ActiveQuests.getKillQuest(i).howManyToKill++;
+            for(int i = 0; i < ActiveQuests.getQuestHolder().getObjectCount<KillQuest>(); i++) {
+                var k = ActiveQuests.getQuestHolder().getObject<KillQuest>(i);
+                if(k.enemyType == GetComponent<EnemyUnitInstance>().enemyType) {
+                    k.howManyToKill--;
+                    ActiveQuests.overrideQuest(i, k);
+                }
             }
         }
 
@@ -319,6 +314,28 @@ public abstract class UnitClass : MonoBehaviour {
         transform.DOScale(normalSize * 1.5f, 0.15f);
 
         setDefendingAnim();
+        //  flair
+        var blood = Instantiate(bloodParticles, transform);
+        blood.transform.position = transform.position;
+        if(isPlayerUnit)
+            blood.transform.localRotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+        Destroy(blood, blood.GetComponent<ParticleSystem>().duration);
+
+        if(!isPlayerUnit) {
+            yield return new WaitForEndOfFrame();
+            for(int i = 0; i < transform.childCount; i++) {
+                if(transform.GetChild(i).gameObject.activeInHierarchy) {
+                    foreach(var s in transform.GetChild(i).gameObject.GetComponentsInChildren<SpriteRenderer>()) {
+                        s.color = hitColor;
+                        s.DOColor(Color.white, .35f);
+                    }
+                }
+            }
+        }
+        else {
+            GetComponentInChildren<UnitSpriteHandler>().setATempColor(hitColor);
+            GetComponentInChildren<UnitSpriteHandler>().tweenColorToNormal(.35f);
+        }
 
         yield return new WaitForSeconds(0.1f);
 
@@ -347,13 +364,19 @@ public abstract class UnitClass : MonoBehaviour {
         int bluntLvlBefore = stats.getBluntLevel();
         int edgedLvlBefore = stats.getEdgedLevel();
         int lvlBefore = stats.u_level;
+        bool miss = GameVariables.chanceOutOfHundred(stats.u_missChance);
 
-        //  actually deal damage to defender
-        var dmg = stats.getDamageGiven(FindObjectOfType<PresetLibrary>()) * tempPowerMod;
-        if(charging) {
-            dmg *= 2.0f;
+        if(!miss) {
+            //  actually deal damage to defender
+            var dmg = stats.getDamageGiven(FindObjectOfType<PresetLibrary>()) + tempPowerMod;
+            if(charging) {
+                dmg *= 2.0f;
+            }
+            defender.GetComponent<UnitClass>().defend(gameObject, dmg);
         }
-        defender.GetComponent<UnitClass>().defend(gameObject, dmg);
+        else {
+            FindObjectOfType<DamageTextCanvas>().showMissTextForUnit(gameObject);
+        }
         charging = false;
         yield return new WaitForSeconds(0.4f);
 

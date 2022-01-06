@@ -16,8 +16,16 @@ MonoBehaviour:
     instanceID: -1
     name: Shock Absorber
     type: 2
-    rarity: 5
+    rarity: 3
     coinCost: 35
+    canBeFished: 0
+    maxStackCount: 1
+    fishedData:
+      hookedPos: {x: 0, y: 0}
+      scale: 0
+      hookedRot: 0
+      chanceToCatch: 0
+    flavor: A must have for blunt weilders.
     tEffects: []
     pEffects:
     - effect: 6

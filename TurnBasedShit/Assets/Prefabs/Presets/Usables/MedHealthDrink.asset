@@ -19,15 +19,15 @@ MonoBehaviour:
     rarity: 2
     coinCost: 5
     canBeFished: 0
+    maxStackCount: 15
     fishedData:
       hookedPos: {x: 0, y: 0}
       scale: 0
       hookedRot: 0
-      diffRegion: 0
       chanceToCatch: 0
-    flavor: Choco
-    maxStackCount: 15
+    flavor: Vial of goodness.
     sprite:
       sprite: {fileID: 21300000, guid: cf56d74657ca6844a8ffcc32f406a24d, type: 3}
     effect: 0
     effectAmount: 15
+    foodBiteCount: 0

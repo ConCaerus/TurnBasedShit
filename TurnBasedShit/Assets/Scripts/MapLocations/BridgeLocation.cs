@@ -15,16 +15,13 @@ public class BridgeLocation : MapLocation {
 
 
     public override void enterLocation(TransitionCanvas tc) {
-        if(advancing) {
-            GameInfo.setCurrentRegion((GameInfo.region)((int)GameInfo.getCurrentRegion() + 1));
-            GameInfo.setCurrentMapPos(new Vector2(Map.leftBound(), pos.y));
-        }
-        else {
-            GameInfo.setCurrentRegion((GameInfo.region)((int)GameInfo.getCurrentRegion() - 1));
-            GameInfo.setCurrentMapPos(new Vector2(Map.rightBound(), pos.y));
+        GameInfo.setCurrentMapPos(pos);
+
+        if(!advancing) {
+            GameInfo.setCurrentRegion(GameInfo.getCurrentRegion() - 1);
         }
 
-        tc.loadSceneWithTransition("Map");
+        tc.loadSceneWithTransition("Bridge");
     }
 
     public override bool isEqualTo(MapLocation other) {

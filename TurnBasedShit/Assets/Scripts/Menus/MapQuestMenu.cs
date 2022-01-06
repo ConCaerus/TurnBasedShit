@@ -9,7 +9,7 @@ public class MapQuestMenu : MonoBehaviour {
 
     [SerializeField] SlotMenu slot;
 
-    [SerializeField] Color bossColor, delColor, pickColor;
+    [SerializeField] Color bossColor, delColor, pickColor, fishColor;
 
     Coroutine shower = null;
 
@@ -30,16 +30,20 @@ public class MapQuestMenu : MonoBehaviour {
 
     void createSlots() {
         int slotIndex = 0;
-        foreach(var i in ActiveQuests.getAllBossFightQuests()) {
+        foreach(var i in ActiveQuests.getQuestHolder().getObjects<BossFightQuest>()) {
             slot.createSlot(slotIndex, bossColor);
             slotIndex++;
         }
-        foreach(var i in ActiveQuests.getAllDeliveryQuests()) {
+        foreach(var i in ActiveQuests.getQuestHolder().getObjects<DeliveryQuest>()) {
             slot.createSlot(slotIndex, delColor);
             slotIndex++;
         }
-        foreach(var i in ActiveQuests.getAllPickupQuests()) {
+        foreach(var i in ActiveQuests.getQuestHolder().getObjects<PickupQuest>()) {
             slot.createSlot(slotIndex, pickColor);
+            slotIndex++;
+        }
+        foreach(var i in ActiveQuests.getQuestHolder().getObjects<FishingQuest>()) {
+            slot.createSlot(slotIndex, fishColor);
             slotIndex++;
         }
     }
@@ -56,24 +60,25 @@ public class MapQuestMenu : MonoBehaviour {
         if(slot.getSelectedSlotIndex() == -1)
             return transform.position;
         int slotIndex = 0;
-        foreach(var i in ActiveQuests.getAllBossFightQuests()) {
+        foreach(var i in ActiveQuests.getQuestHolder().getObjects<BossFightQuest>()) {
             if(slotIndex == slot.getSelectedSlotIndex()) {
                 return i.location.pos;
             }
             slotIndex++;
         }
-        foreach(var i in ActiveQuests.getAllDeliveryQuests()) {
+        foreach(var i in ActiveQuests.getQuestHolder().getObjects<DeliveryQuest>()) {
             if(slotIndex == slot.getSelectedSlotIndex()) {
                 return i.deliveryLocation.pos;
             }
             slotIndex++;
         }
-        foreach(var i in ActiveQuests.getAllPickupQuests()) {
+        foreach(var i in ActiveQuests.getQuestHolder().getObjects<PickupQuest>()) {
             if(slotIndex == slot.getSelectedSlotIndex()) {
                 return i.location.pos;
             }
             slotIndex++;
         }
+        //  fishing quests don't have a location
 
         return transform.position;
     }

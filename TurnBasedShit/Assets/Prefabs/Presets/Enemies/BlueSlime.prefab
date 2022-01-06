@@ -2065,7 +2065,7 @@ Transform:
   m_GameObject: {fileID: 4044643730084277563}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.35, y: 0.35, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5516919332982651714}
   - {fileID: 5403837001138382899}
@@ -2144,12 +2144,13 @@ MonoBehaviour:
   tempPowerMod: 1
   tempDefenceMod: 0
   tempSpeedMod: 1
-  spotOffset: 0.25
+  spotOffset: 0.549
   stats:
     u_name: Slime in a Box
     u_expCap: 25
     u_exp: 0
     u_level: 3
+    u_skillExpCap: 100
     u_bluntExp: 0
     u_edgedExp: 0
     u_summonedExp: 0
@@ -2165,25 +2166,28 @@ MonoBehaviour:
     u_power: 10
     u_defence: 1
     u_critChance: 0.02
+    u_missChance: 1
     u_bleedCount: 0
     u_instanceID: -1
-    equippedWeapon:
+    weapon:
       instanceID: -1
       name: 
-      type: 0
-      rarity: 0
+      type: -1
+      rarity: -1
       coinCost: 0
       canBeFished: 0
+      maxStackCount: 1
       fishedData:
         hookedPos: {x: 0, y: 0}
+        scale: 0
         hookedRot: 0
-        diffRegion: 0
         chanceToCatch: 0
+      flavor: Choco
       wornAmount: 3
       attributes: 
       sUsage: 0
       sUsageAmount: 0
-      aType: 0
+      aType: -1
       power: 0
       speedMod: 0
       sprite:
@@ -2193,18 +2197,20 @@ MonoBehaviour:
         equippedRot: 0
         equippedXSize: 0
         equippedYSize: 0
-    equippedArmor:
+    armor:
       instanceID: -1
       name: 
-      type: 0
-      rarity: 0
+      type: -1
+      rarity: -1
       coinCost: 0
       canBeFished: 0
+      maxStackCount: 1
       fishedData:
         hookedPos: {x: 0, y: 0}
+        scale: 0
         hookedRot: 0
-        diffRegion: 0
         chanceToCatch: 0
+      flavor: Choco
       wornAmount: 3
       attributes: 
       defence: 0
@@ -2253,18 +2259,20 @@ MonoBehaviour:
         yHatPos2: 0
         xHatSize2: 0
         yHatSize2: 0
-    equippedItem:
+    item:
       instanceID: -1
       name: 
-      type: 0
-      rarity: 0
+      type: -1
+      rarity: -1
       coinCost: 0
       canBeFished: 0
+      maxStackCount: 1
       fishedData:
         hookedPos: {x: 0, y: 0}
+        scale: 0
         hookedRot: 0
-        diffRegion: 0
         chanceToCatch: 0
+      flavor: Choco
       tEffects: []
       pEffects: []
       sprite:
@@ -2274,18 +2282,20 @@ MonoBehaviour:
       nameOfKiller: 
       causeOfDeath: 0
       enemyType: 0
-  enemyDiff: 3
-  weakTo: 1
+  enemyDiff: 2
+  weakTo: 0
+  idle: {fileID: 7400000, guid: d9f14ae735a686b4e9409ddd6e412aae, type: 2}
   weaponDrop: {fileID: 11400000, guid: d32f4a622502dbb428e49ff079f92df3, type: 2}
   chanceToDropWeapon: 50
   armorDrop: {fileID: 0}
   chanceToDropArmor: 0
   itemDrop: {fileID: 0}
   chanceToDropItem: 0
-  consumableDrop: {fileID: 0}
-  chanceToDropConsumable: 0
+  usableDrop: {fileID: 0}
+  chanceToDropUsable: 0
+  unusableDrop: {fileID: 0}
+  chanceToDropUnusable: 0
   enemyType: 0
-  profileIndex: 1
 --- !u!114 &7335987756038453860
 MonoBehaviour:
   m_ObjectHideFlags: 0

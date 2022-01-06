@@ -27,6 +27,7 @@ public class EnemyUnitSpawner : MonoBehaviour {
             //  sassigns a spot
             var rand = Random.Range(0, unusedSpawnPoses.Count);
             unusedSpawnPoses[rand].GetComponent<CombatSpot>().unit = obj.gameObject;
+            unusedSpawnPoses[rand].GetComponent<CombatSpot>().setColor();
 
             obj.GetComponent<UnitClass>().setup();
 

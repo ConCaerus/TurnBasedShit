@@ -7,6 +7,8 @@ public class TurnOrderSorter : MonoBehaviour {
 
     public GameObject playingUnit;
 
+    Coroutine turnWaiter = null;
+
 
     private void Start() {
         FindObjectOfType<MenuCanvas>().addNewRunOnClose(updatePlayerUnits);
@@ -17,6 +19,10 @@ public class TurnOrderSorter : MonoBehaviour {
         playingUnit = null;
 
         foreach(var i in FindObjectsOfType<UnitClass>()) {
+            if(i.stats.item != null && !i.stats.item.isEmpty()) {
+                for(int s = 0; s < i.stats.item.getPassiveMod(Item.passiveEffectTypes.extraTurn); s++)
+                    unitsInPlay.Add(i.gameObject);
+            }
             unitsInPlay.Add(i.gameObject);
         }
         setNextInTurnOrder();
@@ -48,6 +54,7 @@ public class TurnOrderSorter : MonoBehaviour {
         foreach(var i in unitsInPlay)
             pool.Add(i.gameObject);
 
+
         while(num > 0) {
             while(pool.Count > 0) {
                 var nextSpeed = pool[0].GetComponent<UnitClass>().getSpeed();
@@ -57,6 +64,17 @@ public class TurnOrderSorter : MonoBehaviour {
                     if(pool[i].GetComponent<UnitClass>().getSpeed() > nextSpeed) {
                         nextSpeed = pool[i].GetComponent<UnitClass>().getSpeed();
                         nextIndex = i;
+                    }
+                }
+
+                //  add extra turns for the unit
+                if(pool[nextIndex].GetComponent<UnitClass>().stats.item != null && !pool[nextIndex].GetComponent<UnitClass>().stats.item.isEmpty() && pool[nextIndex] != playingUnit) {
+                    for(int i = 0; i < pool[nextIndex].GetComponent<UnitClass>().stats.item.getPassiveMod(Item.passiveEffectTypes.extraTurn); i++) {
+                        sorted.Add(pool[nextIndex]);
+                        num--;
+
+                        if(num == 0)
+                            return sorted;
                     }
                 }
 
@@ -84,7 +102,17 @@ public class TurnOrderSorter : MonoBehaviour {
         setNextInTurnOrder();
     }
 
-    public GameObject setNextInTurnOrder() {
+    public void setNextInTurnOrder() {
+        if(turnWaiter != null)
+            return;
+        turnWaiter = StartCoroutine(waitForMenuToClose());
+    }
+
+    IEnumerator waitForMenuToClose() {
+        while(FindObjectOfType<MenuCanvas>().isOpen())
+            yield return new WaitForEndOfFrame();
+
+
         //  removes current unit from list
         if(playingUnit != null) {
             //  trigger items
@@ -121,7 +149,7 @@ public class TurnOrderSorter : MonoBehaviour {
                     i.GetComponent<UnitClass>().stats.item.triggerUseTime(i.GetComponent<UnitClass>(), Item.useTimes.afterRound);
                 }
             }
-            return null;
+            yield return 0;
         }
 
         //  sets next to unit with most speed
@@ -154,6 +182,6 @@ public class TurnOrderSorter : MonoBehaviour {
         FindObjectOfType<TurnOrderCanvas>().updateInfomation(true);
         FindObjectOfType<BattleOptionsCanvas>().updateButtonInteractability();
 
-        return playingUnit;
+        turnWaiter = null;
     }
 }

@@ -83,6 +83,12 @@ public class DamageTextCanvas : MonoBehaviour {
         obj.color = Color.white;
         StartCoroutine(animateText(obj.gameObject, unit.gameObject, false));
     }
+    public void showMissTextForUnit(GameObject unit) {
+        var obj = createTextObj(unit);
+        obj.text = "Miss";
+        obj.color = Color.white;
+        StartCoroutine(animateText(obj.gameObject, unit.gameObject, false));
+    }
 
 
     TextMeshProUGUI createTextObj(GameObject unit) {

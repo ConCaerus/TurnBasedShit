@@ -9,6 +9,7 @@ using UnityEngine.Experimental.Rendering.Universal;
 public class BattleOptionsCanvas : MonoBehaviour {
     [SerializeField] GameObject chooseTargetText;
     [SerializeField] GameObject attackButton, defendButton, chargeButton, specialButton;
+    [SerializeField] GameObject speedButton;
 
     public int battleState = 0;
     bool showing = false, showingChooseTargetText = false;
@@ -17,7 +18,8 @@ public class BattleOptionsCanvas : MonoBehaviour {
 
 
     private void Start() {
-        transform.GetChild(0).gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0.0f, -100.0f);
+        Time.timeScale = 1.0f;
+        transform.GetChild(0).gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0.0f, -55.0f);
         hideChooseTargetText();
         FindObjectOfType<MenuCanvas>().addNewRunOnOpen(stopAllButtonAnims);
         FindObjectOfType<MenuCanvas>().addNewRunOnClose(updateButtonInteractability);
@@ -112,7 +114,7 @@ public class BattleOptionsCanvas : MonoBehaviour {
     }
     void hideUI() {
         hideChooseTargetText();
-        transform.GetChild(0).gameObject.GetComponent<RectTransform>().DOAnchorPos(new Vector2(0.0f, -100.0f), showTime);
+        transform.GetChild(0).gameObject.GetComponent<RectTransform>().DOAnchorPos(new Vector2(0.0f, -55.0f), showTime);
         showing = false;
     }
     void hideChooseTargetText() {
@@ -242,5 +244,25 @@ public class BattleOptionsCanvas : MonoBehaviour {
         else
             battleState = 0;
         FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
+    }
+
+    public void nextSpeedState() {
+        switch(speedButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text) {
+            case ">":
+                Time.timeScale = 2.0f;
+                speedButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = ">>";
+                break;
+
+            case ">>":
+                Time.timeScale = 4.0f;
+                speedButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = ">>>";
+                break;
+
+            case ">>>":
+                Time.timeScale = 1.0f;
+                speedButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = ">";
+                break;
+
+        }
     }
 }

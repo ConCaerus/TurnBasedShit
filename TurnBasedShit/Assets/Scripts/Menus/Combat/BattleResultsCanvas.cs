@@ -6,134 +6,65 @@ using DG.Tweening;
 using TMPro;
 
 public class BattleResultsCanvas : MonoBehaviour {
-    [SerializeField] List<Image> weaponImages, armorImages, itemImages, usableImages, unusableImages;
     [SerializeField] TextMeshProUGUI coinsText;
+    [SerializeField] SlotMenu slot;
 
 
     public void showCombatLocationEquipment() {
-        foreach(var i in weaponImages)
-            i.transform.localScale = Vector3.zero;
-        foreach(var i in armorImages)
-            i.transform.localScale = Vector3.zero;
-        foreach(var i in itemImages)
-            i.transform.localScale = Vector3.zero;
-        foreach(var i in usableImages)
-            i.transform.localScale = Vector3.zero;
-        foreach(var i in unusableImages)
-            i.transform.localScale = Vector3.zero;
-
-        StartCoroutine(showAndAnimateSlots());
+        StartCoroutine(showSpoils());
     }
 
+    IEnumerator showSpoils() {
+        coinsText.text = "Coins Earned: " + GameInfo.getCombatDetails().coins.ToString() + "c";
+        List<Collectable> spoils = new List<Collectable>();
+        foreach(var i in GameInfo.getCombatDetails().spoils.getObjects<Weapon>())
+            spoils.Add(i);
+        foreach(var i in GameInfo.getCombatDetails().spoils.getObjects<Armor>())
+            spoils.Add(i);
+        foreach(var i in GameInfo.getCombatDetails().spoils.getObjects<Item>())
+            spoils.Add(i);
+        foreach(var i in GameInfo.getCombatDetails().spoils.getObjects<Usable>())
+            spoils.Add(i);
+        foreach(var i in GameInfo.getCombatDetails().spoils.getObjects<Unusable>())
+            spoils.Add(i);
 
-
-    IEnumerator showAndAnimateSlots() {
-        var weapons = new List<Weapon>();
-        var armor = new List<Armor>();
-        var usables = new List<Usable>();
-        var unusables = new List<Unusable>();
-        var items = new List<Item>();
-
-
-        foreach(var i in GameInfo.getCombatDetails().collectables) {
-            if(i.type == Collectable.collectableType.weapon)
-                weapons.Add((Weapon)i);
-            else if(i.type == Collectable.collectableType.armor)
-                armor.Add((Armor)i);
-            else if(i.type == Collectable.collectableType.usable)
-                usables.Add((Usable)i);
-            else if(i.type == Collectable.collectableType.unusable)
-                unusables.Add((Unusable)i);
-            else if(i.type == Collectable.collectableType.item)
-                items.Add((Item)i);
-        }
-
-
-        GameInfo.getCombatDetails().addSpoils();
-
-        coinsText.text = "Coins Earned: " + GameInfo.getCombatDetails().coinReward.ToString();
-
-        float waitTime = 0.25f;
-
-        for(int i = 0; i < weaponImages.Count; i++) {
-            yield return new WaitForSeconds(waitTime);
-            if(i < weapons.Count) {
-                weaponImages[i].transform.DOScale(1.0f, waitTime);
-                weaponImages[i].transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(weapons[i]).sprite;
+        List<int> skipIndexes = new List<int>();
+        for(int i = 0; i < spoils.Count; i++) {
+            bool skip = false;
+            foreach(var s in skipIndexes) {
+                if(i == s) {
+                    skip = true;
+                    break;
+                }
             }
-            else break;
-        }
 
-        for(int i = 0; i < armorImages.Count; i++) {
-            yield return new WaitForSeconds(waitTime);
-            if(i < armor.Count) {
-                armorImages[i].transform.DOScale(1.0f, waitTime);
-                armorImages[i].transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(armor[i]).sprite;
-            }
-            else break;
-        }
+            if(skip)
+                continue;
 
-        for(int i = 0; i < itemImages.Count; i++) {
-            yield return new WaitForSeconds(waitTime);
-            if(i < items.Count) {
-                itemImages[i].transform.DOScale(1.0f, waitTime);
-                itemImages[i].transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(items[i]).sprite;
-            }
-            else break;
-        }
+            yield return new WaitForSeconds(0.15f);
 
-        for(int i = 0; i < usableImages.Count; i++) {
-            yield return new WaitForSeconds(waitTime);
-            if(i < usables.Count) {
-                usableImages[i].transform.DOScale(1.0f, waitTime);
-                usableImages[i].transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUsableSprite(usables[i]).sprite;
+            var obj = slot.instantiateNewSlot(Color.white);
+            obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getGenericSpriteForCollectable(spoils[i]);
+            obj.GetComponent<InfoBearer>().setInfo(spoils[i].name);
+            if(spoils[i].maxStackCount == 1)
+                obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
+            else {
+                var count = 0;
 
-                //  remove all consumables of this type from the list
-                int count = 0;
-                List<Usable> removables = new List<Usable>();
-                foreach(var c in usables) {
-                    if(c.isTheSameTypeAs(usables[i])) {
+                for(int s = i + 1; s < spoils.Count; s++) {
+                    if(spoils[s].isTheSameTypeAs(spoils[i])) {
+                        skipIndexes.Add(s);
                         count++;
-                        removables.Add(c);
+                        if(count >= spoils[i].maxStackCount)
+                            break;
                     }
                 }
 
-                foreach(var c in removables)
-                    usables.Remove(c);
-
-                if(count > 1)
-                    usableImages[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = count.ToString();
+                if(count > 0)
+                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = (count + 1).ToString();
                 else
-                    usableImages[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
+                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
             }
-            else break;
-        }
-
-        for(int i = 0; i < unusableImages.Count; i++) {
-            yield return new WaitForSeconds(waitTime);
-            if(i < usables.Count) {
-                unusableImages[i].transform.DOScale(1.0f, waitTime);
-                unusableImages[i].transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnusableSprite(unusables[i]).sprite;
-
-                //  remove all consumables of this type from the list
-                int count = 0;
-                List<Unusable> removables = new List<Unusable>();
-                foreach(var c in unusables) {
-                    if(c.isTheSameTypeAs(unusables[i])) {
-                        count++;
-                        removables.Add(c);
-                    }
-                }
-
-                foreach(var c in removables)
-                    unusables.Remove(c);
-
-                if(count > 1)
-                    unusableImages[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = count.ToString();
-                else
-                    unusableImages[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
-            }
-            else break;
         }
     }
 

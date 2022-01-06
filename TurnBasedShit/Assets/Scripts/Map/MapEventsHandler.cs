@@ -9,10 +9,13 @@ public class MapEventsHandler : MonoBehaviour {
         DOTween.Init();
     }
 
-    public void triggerEncounter() {
+    public void triggerEncounter(bool special) {
         //  creates a combat location
-        var cl = FindObjectOfType<PresetLibrary>().createCombatLocation(GameInfo.getCurrentRegion());
-        cl = Randomizer.randomizeCombatLocation(cl);
+        CombatLocation cl;
+        if(!special)
+            cl = FindObjectOfType<PresetLibrary>().createCombatLocation(GameInfo.getCurrentRegion());
+        else
+            cl = FindObjectOfType<PresetLibrary>().createSpecialCombatLocation(GameInfo.getCurrentRegion());
         GameInfo.setCombatDetails(cl);
 
         //  flair

@@ -7,7 +7,8 @@ public class TownMember {
     public bool hasQuest = false;
     public UnitSpriteInfo sprite = new UnitSpriteInfo();
 
-    public Quest quest;
+    public Quest.questType questType = (Quest.questType)(-1);
+    public ObjectHolder questHolder;    //  only should hold one quest
 
     public DialogInfo dialog = new DialogInfo();
 
@@ -25,8 +26,6 @@ public class TownMember {
             m_instanceID = GameInfo.getNextTownMemberInstanceID();
         isNPC = false;
 
-        quest = null;
-
         weapon = new Weapon();
         var wTemp = lib.getRandomWeapon(t.region);
         if(wTemp == null || wTemp.isEmpty())
@@ -43,28 +42,40 @@ public class TownMember {
 
         home = t;
 
-        hasQuest = GameVariables.shouldMemberHaveQuest() || autoHasQuest || true;
+        hasQuest = GameVariables.shouldMemberHaveQuest() || autoHasQuest;
         if(hasQuest) {
+            questHolder = new ObjectHolder();
             var q = GameInfo.getRandomQuestType();
 
             switch(q) {
                 case Quest.questType.bossFight:
-                    quest = lib.createRandomBossFightQuest(true, home.region);
+                    questHolder.addObject<BossFightQuest>(lib.createRandomBossFightQuest(true, true, home.region));
+                    questType = Quest.questType.bossFight;
                     break;
 
                 case Quest.questType.delivery:
-                    quest = lib.createRandomDeliveryQuest(true, home.region);
+                    questHolder.addObject<DeliveryQuest>(lib.createRandomDeliveryQuest(true, home.region));
+                    questType = Quest.questType.delivery;
                     break;
 
                 case Quest.questType.kill:
-                    quest = lib.createRandomKillQuest(true, home.region);
+                    questHolder.addObject<KillQuest>(lib.createRandomKillQuest(true, home.region));
+                    questType = Quest.questType.kill;
                     break;
 
                 case Quest.questType.pickup:
-                    quest = lib.createRandomPickupQuest(true, home.region);
+                    questHolder.addObject<PickupQuest>(lib.createRandomPickupQuest(true, true, home.region));
+                    questType = Quest.questType.pickup;
+                    break;
+
+                case Quest.questType.rescue:
+                    questHolder.addObject<RescueQuest>(lib.createRandomRescueQuest(true, home.region));
+                    questType = Quest.questType.pickup;
                     break;
 
                 case Quest.questType.fishing:
+                    questHolder.addObject<FishingQuest>(lib.createRandomFishingQuest(true, true, home.region));
+                    questType = Quest.questType.fishing;
                     break;
             }
         }
@@ -107,8 +118,6 @@ public class TownMember {
         hasQuest = other.hasQuest;
         sprite.setEqualTo(other.sprite);
 
-        quest = null;
-
         isNPC = other.isNPC;
 
         //  equipment
@@ -132,7 +141,8 @@ public class TownMember {
 
 
         if(other.hasQuest) {
-            quest = other.quest;
+            questHolder = new ObjectHolder();
+            questHolder.addObject<Quest>(other.getQuest());
         }
 
         home = other.home;
@@ -142,8 +152,24 @@ public class TownMember {
     }
 
 
+    public Quest getQuest() {
+        switch(questType) {
+            case Quest.questType.bossFight: return questHolder.getObject<BossFightQuest>(0);
+            case Quest.questType.pickup: return questHolder.getObject<PickupQuest>(0);
+            case Quest.questType.delivery: return questHolder.getObject<DeliveryQuest>(0);
+            case Quest.questType.kill: return questHolder.getObject<KillQuest>(0);
+            case Quest.questType.rescue: return questHolder.getObject<RescueQuest>(0);
+            case Quest.questType.fishing: return questHolder.getObject<FishingQuest>(0);
+        }
+        return null;
+    }
+    public void setQuest(Quest other) {
+        questType = other.getQuestType();
+        questHolder = new ObjectHolder();
+        questHolder.addObject<Quest>(other);
+    }
+
     public bool isQuestActive() {
-        return ActiveQuests.hasQuest(quest);
-        return false;
+        return ActiveQuests.hasQuest(getQuest());
     }
 }

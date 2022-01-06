@@ -75,9 +75,13 @@ public static class SaveData {
         tc.loadCircle.GetComponent<CircularSlider>().setValue(.6f);
 
         //  MapLocations
+        GameInfo.setCurrentRegion(GameInfo.region.grassland);
         Map.createFogTexture();
         MapLocationHolder.populateMapLocations(lib);
         Debug.Log("Location Shit: " + Time.realtimeSinceStartup.ToString("0.00"));
+
+        //  Quests
+        ActiveQuests.clear(true);
 
         tc.loadCircle.GetComponent<CircularSlider>().setValue(1f);
     }

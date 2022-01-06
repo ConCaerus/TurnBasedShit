@@ -184,9 +184,9 @@ public class UnitStats {
         float armorDefence = armor.defence * (((float)armor.wornAmount + 7.0f) / 10.0f);
         return Mathf.Clamp(u_defence + armorDefence, 0.0f, 100.0f);
     }
-    public float getDefenceMult(bool defending, PresetLibrary lib) {    //  this value is multiplied by the damage taken
+    public float getDefenceMult(bool defending, PresetLibrary lib, float tempDefenceMod) {    //  this value is multiplied by the damage taken
         //  starts with 100% of damage taken
-        float temp = 1.0f;
+        float temp = 1.0f - (tempDefenceMod / 100.0f);
         temp -= getBaseDefence() / 100.0f;
 
         //  Trigger Traits
@@ -227,7 +227,7 @@ public class UnitStats {
         return temp;
     }
     public float getModifiedSpeed(float tempSpeedMod) {
-        float temp = u_speed * tempSpeedMod;
+        float temp = u_speed + tempSpeedMod;
         if(weapon != null && !weapon.isEmpty())
             temp += weapon.speedMod;
         if(armor != null && !armor.isEmpty())

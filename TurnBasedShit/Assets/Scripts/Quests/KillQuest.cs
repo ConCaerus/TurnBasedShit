@@ -17,7 +17,7 @@ public class KillQuest : Quest {
         enemyType = type;
     }
 
-    public override questType getType() {
+    public override questType getQuestType() {
         return questType.kill;
     }
 }

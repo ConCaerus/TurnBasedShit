@@ -19,14 +19,15 @@ MonoBehaviour:
     rarity: 0
     coinCost: 1
     canBeFished: 0
+    maxStackCount: 20
     fishedData:
       hookedPos: {x: 0, y: 0}
+      scale: 0
       hookedRot: 0
-      diffRegion: 0
       chanceToCatch: 0
-    flavor: Choco
-    maxStackCount: 20
+    flavor: Drop of goodness.
     sprite:
       sprite: {fileID: 21300000, guid: 8bd1961a7d8b06341bb58e8a8e9577cc, type: 3}
     effect: 0
     effectAmount: 5
+    foodBiteCount: 0

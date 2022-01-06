@@ -11,11 +11,12 @@ public abstract class Collectable {
 
     public int instanceID = -1;
 
-    public string name;
-    public collectableType type;
-    public GameInfo.region rarity;
-    public int coinCost;
+    public string name = "";
+    public collectableType type = (collectableType)(-1);
+    public GameInfo.region rarity = (GameInfo.region)(-1);
+    public int coinCost = 0;
     public bool canBeFished = false;
+    public int maxStackCount = 1;
     public FishedLootData fishedData = null;
 
     public string flavor = "Choco";
@@ -26,7 +27,7 @@ public abstract class Collectable {
         return other.instanceID == instanceID;
     }
     public bool isEmpty() {
-        return instanceID == -1 && string.IsNullOrEmpty(name);
+        return instanceID == -1 || string.IsNullOrEmpty(name);
     }
 
     public bool isTheSameTypeAs(Collectable other) {
@@ -42,6 +43,8 @@ public abstract class Collectable {
         coinCost = other.coinCost;
         canBeFished = other.canBeFished;
         fishedData = other.fishedData;
+        maxStackCount = other.maxStackCount;
+        flavor = other.flavor;
 
         if(takeInstanceID)
             instanceID = other.instanceID;
@@ -56,6 +59,5 @@ public class FishedLootData {
     public Vector2 hookedPos;
     public float scale;
     public float hookedRot;
-    public GameInfo.region diffRegion;
     public GameInfo.fishCatchRate chanceToCatch;
 }

@@ -32,7 +32,6 @@ public class InfoBearer : MonoBehaviour {
 
 
     public void setInfo(string st, bool hasUnderlinedBold = true) {
-
         if(hasUnderlinedBold)
             info = "<b><u>" + st;
         else

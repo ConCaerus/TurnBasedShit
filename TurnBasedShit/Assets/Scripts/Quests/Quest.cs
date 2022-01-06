@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public abstract class Quest : MonoBehaviour {
+public abstract class Quest {   //  Update object holder, quest canvas, mapQuestMenu
     public enum questType {
         bossFight, pickup, delivery, kill, rescue, fishing
     }
 
     public int instanceID = -1;
 
-    public bool isEqualTo(Quest other) {
+    public bool isTheSameInstanceAs(Quest other) {
         return instanceID == other.instanceID;
     }
 
@@ -19,5 +19,5 @@ public abstract class Quest : MonoBehaviour {
     }
 
 
-    public abstract questType getType();
+    public abstract questType getQuestType();
 }

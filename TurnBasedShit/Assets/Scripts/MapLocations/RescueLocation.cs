@@ -11,7 +11,7 @@ public class RescueLocation : MapLocation {
         type = locationType.rescue;
 
         combatLocation = lib.createCombatLocation(reg);
-        combatLocation.rescuedUnits.Add(stats);
+        combatLocation.spoils.addObject<UnitStats>(stats);
 
         unit = stats;
     }
@@ -22,7 +22,7 @@ public class RescueLocation : MapLocation {
         var stats = lib.createRandomPlayerUnitStats(true);
 
         combatLocation = lib.createCombatLocation(reg);
-        combatLocation.rescuedUnits.Add(stats);
+        combatLocation.spoils.addObject<UnitStats>(stats);
 
         unit = stats;
     }

@@ -3,6 +3,57 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class ActiveQuests {
+
+    const string questTag = "ActiveQuestHolderTag";
+
+    public static ObjectHolder getQuestHolder() {
+        var data = SaveData.getString(questTag);
+        return JsonUtility.FromJson<ObjectHolder>(data);
+    }
+    static void saveQuestHolder(ObjectHolder holder) {
+        var data = JsonUtility.ToJson(holder);
+        SaveData.setString(questTag, data);
+    }
+
+
+    public static void clear(bool clearInstanceQueue) {
+        saveQuestHolder(new ObjectHolder());
+
+        if(clearInstanceQueue)
+            GameInfo.clearQuestInstanceIDQueue();
+    }
+    public static void addQuest<Quest>(Quest qu) {
+        if(qu == null)
+            return;
+
+        var holder = getQuestHolder();
+        holder.addObject<Quest>(qu);
+        saveQuestHolder(holder);
+    }
+    public static void overrideQuest(int index, Quest qu) {
+        if(qu == null || index == -1)
+            return;
+        var holder = getQuestHolder();
+        holder.overrideObject<Quest>(index, qu);
+        saveQuestHolder(holder);
+    }
+    public static void removeQuest(Quest qu) {
+        if(qu == null)
+            return;
+        var holder = getQuestHolder();
+        holder.removeQuest(qu);
+        saveQuestHolder(holder);
+    }
+
+    public static bool hasQuest(Quest qu) {
+        foreach(var i in getQuestHolder().getQuests()) {
+            if(i.isTheSameInstanceAs(qu))
+                return true;
+        }
+        return false;
+    }
+
+    /*
     public static string countTag(Quest.questType type) {
         if(type == Quest.questType.kill)
             return "KillQuestCount";
@@ -18,6 +69,9 @@ public static class ActiveQuests {
 
         else if(type == Quest.questType.rescue)
             return "RescueQuestCount";
+
+        else if(type == Quest.questType.fishing)
+            return "FishingQuestCount";
 
         return null;
     }
@@ -38,6 +92,9 @@ public static class ActiveQuests {
         else if(type == Quest.questType.rescue)
             return "RescueQuest" + index.ToString();
 
+        else if(type == Quest.questType.fishing)
+            return "FishingQuest" + index.ToString();
+
         return null;
     }
 
@@ -48,6 +105,7 @@ public static class ActiveQuests {
         clearDeliveryQuests();
         clearPickupQuests();
         clearRescueQuests();
+        clearFishingQuests();
 
         if(clearInstanceQueue)
             GameInfo.clearQuestInstanceIDQueue();
@@ -82,9 +140,15 @@ public static class ActiveQuests {
         }
         SaveData.deleteKey(countTag(Quest.questType.rescue));
     }
+    public static void clearFishingQuests() {
+        for(int i = 0; i < getFishingQuestCount(); i++) {
+            SaveData.deleteKey(tag(i, Quest.questType.fishing));
+        }
+        SaveData.deleteKey(countTag(Quest.questType.fishing));
+    }
 
     public static void addQuest(Quest qu) {
-        switch(qu.getType()) {
+        switch(qu.getQuestType()) {
             case Quest.questType.bossFight: addQuest((BossFightQuest)qu); break;
             case Quest.questType.pickup: addQuest((PickupQuest)qu); break;
             case Quest.questType.delivery: addQuest((DeliveryQuest)qu); break;
@@ -122,6 +186,13 @@ public static class ActiveQuests {
         SaveData.setInt(countTag(Quest.questType.pickup), index + 1);
     }
     public static void addQuest(RescueQuest qu) {
+        int index = getRescueQuestCount();
+
+        var data = JsonUtility.ToJson(qu);
+        SaveData.setString(tag(index, Quest.questType.rescue), data);
+        SaveData.setInt(countTag(Quest.questType.rescue), index + 1);
+    }
+    public static void addQuest(FishingQuest qu) {
         int index = getPickupQuestCount();
 
         var data = JsonUtility.ToJson(qu);
@@ -136,7 +207,7 @@ public static class ActiveQuests {
         List<KillQuest> temp = new List<KillQuest>();
         for(int i = 0; i < getKillQuestCount(); i++) {
             var qu = getKillQuest(i);
-            if(qu != null && !qu.isEqualTo(quest))
+            if(qu != null && !qu.isTheSameInstanceAs(quest))
                 temp.Add(qu);
         }
 
@@ -150,7 +221,7 @@ public static class ActiveQuests {
         List<BossFightQuest> temp = new List<BossFightQuest>();
         for(int i = 0; i < getBossFightQuestCount(); i++) {
             var qu = getBossFightQuest(i);
-            if(qu != null && !qu.isEqualTo(quest))
+            if(qu != null && !qu.isTheSameInstanceAs(quest))
                 temp.Add(qu);
         }
 
@@ -164,7 +235,7 @@ public static class ActiveQuests {
         List<DeliveryQuest> temp = new List<DeliveryQuest>();
         for(int i = 0; i < getDeliveryQuestCount(); i++) {
             var qu = getDeliveryQuest(i);
-            if(qu != null && !qu.isEqualTo(quest))
+            if(qu != null && !qu.isTheSameInstanceAs(quest))
                 temp.Add(qu);
         }
 
@@ -178,7 +249,7 @@ public static class ActiveQuests {
         List<PickupQuest> temp = new List<PickupQuest>();
         for(int i = 0; i < getPickupQuestCount(); i++) {
             var qu = getPickupQuest(i);
-            if(qu != null && !qu.isEqualTo(quest))
+            if(qu != null && !qu.isTheSameInstanceAs(quest))
                 temp.Add(qu);
         }
 
@@ -192,7 +263,7 @@ public static class ActiveQuests {
         List<RescueQuest> temp = new List<RescueQuest>();
         for(int i = 0; i < getRescueQuestCount(); i++) {
             var qu = getRescueQuest(i);
-            if(qu != null && !qu.isEqualTo(quest))
+            if(qu != null && !qu.isTheSameInstanceAs(quest))
                 temp.Add(qu);
         }
 
@@ -268,7 +339,9 @@ public static class ActiveQuests {
     }
 
     public static bool hasQuest(Quest qu) {
-        switch(qu.getType()) {
+        if(qu == null)
+            return false;
+        switch(qu.getQuestType()) {
             case Quest.questType.bossFight: return hasQuest((BossFightQuest)qu);
             case Quest.questType.pickup: return hasQuest((PickupQuest)qu);
             case Quest.questType.delivery: return hasQuest((DeliveryQuest)qu);
@@ -282,7 +355,7 @@ public static class ActiveQuests {
         if(q == null)
             return false;
         for(int i = 0; i < getKillQuestCount(); i++) {
-            if(getKillQuest(i).isEqualTo(q))
+            if(getKillQuest(i).isTheSameInstanceAs(q))
                 return true;
         }
 
@@ -292,7 +365,7 @@ public static class ActiveQuests {
         if(q == null)
             return false;
         for(int i = 0; i < getBossFightQuestCount(); i++) {
-            if(getBossFightQuest(i).isEqualTo(q))
+            if(getBossFightQuest(i).isTheSameInstanceAs(q))
                 return true;
         }
 
@@ -302,7 +375,7 @@ public static class ActiveQuests {
         if(q == null)
             return false;
         for(int i = 0; i < getDeliveryQuestCount(); i++) {
-            if(getDeliveryQuest(i).isEqualTo(q))
+            if(getDeliveryQuest(i).isTheSameInstanceAs(q))
                 return true;
         }
 
@@ -312,7 +385,7 @@ public static class ActiveQuests {
         if(q == null)
             return false;
         for(int i = 0; i < getPickupQuestCount(); i++) {
-            if(getPickupQuest(i).isEqualTo(q))
+            if(getPickupQuest(i).isTheSameInstanceAs(q))
                 return true;
         }
 
@@ -322,7 +395,17 @@ public static class ActiveQuests {
         if(q == null)
             return false;
         for(int i = 0; i < getRescueQuestCount(); i++) {
-            if(getRescueQuest(i).isEqualTo(q))
+            if(getRescueQuest(i).isTheSameInstanceAs(q))
+                return true;
+        }
+
+        return false;
+    }
+    public static bool hasQuest(FishingQuest q) {
+        if(q == null)
+            return false;
+        for(int i = 0; i < getFishingQuestCount(); i++) {
+            if(getRescueQuest(i).isTheSameInstanceAs(q))
                 return true;
         }
 
@@ -443,5 +526,5 @@ public static class ActiveQuests {
         }
 
         return temp;
-    }
+    }*/
 }

@@ -24,12 +24,30 @@ public class PickupLocation : MapLocation {
         combatLocation = lib.createCombatLocation(reg);
 
         col = c;
-        combatLocation.collectables.Add(col);
+        if(col != null && !col.isEmpty()) {
+            switch(col.type) {
+                case Collectable.collectableType.weapon:
+                    combatLocation.spoils.addObject<Weapon>((Weapon)col);
+                    break;
+                case Collectable.collectableType.armor:
+                    combatLocation.spoils.addObject<Armor>((Armor)col);
+                    break;
+                case Collectable.collectableType.item:
+                    combatLocation.spoils.addObject<Item>((Item)col);
+                    break;
+                case Collectable.collectableType.usable:
+                    combatLocation.spoils.addObject<Usable>((Usable)col);
+                    break;
+                case Collectable.collectableType.unusable:
+                    combatLocation.spoils.addObject<Unusable>((Unusable)col);
+                    break;
+            }
+        }
         //  adds more if the type is usable
         if(c.type == Collectable.collectableType.usable) {
             int count = Random.Range(0, 11);
             for(int i = 0; i < count; i++)
-                combatLocation.collectables.Add(col);
+                combatLocation.spoils.addObject<Usable>((Usable)col);
         }
     }
 
@@ -42,11 +60,13 @@ public class PickupLocation : MapLocation {
     }
 
     public override bool isEqualTo(MapLocation other) {
-        if(other.type != locationType.pickup)
+        if(other == null || other.type != locationType.pickup)
             return false;
 
         PickupLocation o = (PickupLocation)other;
+        if(o.col == null || o.col.isEmpty())
+            return false;
 
-        return pos == other.pos && col.isTheSameInstanceAs(o.col);   
+        return pos == o.pos && col.isTheSameInstanceAs(o.col);
     }
 }

@@ -16,6 +16,9 @@ public class PlayerUnitInstance : UnitClass {
 
     private void Update() {
         attackingLogic();
+
+        if(Input.GetKeyDown(KeyCode.Space))
+            Debug.Log(FindObjectOfType<InfoCanvas>().isOpen());
     }
 
 
@@ -140,5 +143,7 @@ public class PlayerUnitInstance : UnitClass {
         }
 
         FindObjectOfType<SummonSpotSpawner>().updateSpots();
+        transform.localPosition = normalPos;
+        transform.localScale = normalSize;
     }
 }

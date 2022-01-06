@@ -5,6 +5,11 @@ using DG.Tweening;
 
 public class MapEnemyMovement : MonoBehaviour {
     [SerializeField] GameObject alertIcon;
+    [SerializeField] AudioClip alertSound;
+
+    [SerializeField] Color specialColor;
+    public bool isSpecial;
+
     Vector2 target;
     Vector2 patrolAreaMidPoint;
 
@@ -18,6 +23,12 @@ public class MapEnemyMovement : MonoBehaviour {
 
 
     private void Start() {
+        isSpecial = GameVariables.chanceEnemyBeingSpecial();
+        if(isSpecial) {
+            transform.GetChild(1).GetComponent<SpriteRenderer>().color = specialColor;
+            transform.GetChild(1).transform.GetChild(0).GetComponent<SpriteRenderer>().color = specialColor;
+            transform.GetChild(1).transform.GetChild(1).GetComponent<SpriteRenderer>().color = specialColor;
+        }
         patrolAreaMidPoint = transform.position;
         alertIcon.transform.localPosition = Vector3.zero;
         alertIcon.transform.localScale = Vector3.zero;
@@ -28,7 +39,7 @@ public class MapEnemyMovement : MonoBehaviour {
 
     private void Update() {
         if(Vector2.Distance(transform.position, FindObjectOfType<MapMovement>().transform.position) < distToAttack) {
-            FindObjectOfType<MapEventsHandler>().triggerEncounter();
+            FindObjectOfType<MapEventsHandler>().triggerEncounter(isSpecial);
         }
 
         if(transform.position.x > target.x && movingRight)
@@ -136,6 +147,7 @@ public class MapEnemyMovement : MonoBehaviour {
         alertIcon.transform.DOScale(new Vector3(2.0f, 1.5f), 0.15f);
         alertIcon.transform.DOLocalMoveY(1.5f, .15f);
         speed = 0.0f;
+        FindObjectOfType<AudioManager>().playSound(alertSound);
         yield return new WaitForSeconds(0.5f);
 
         alertIcon.transform.DOScale(new Vector3(0.0f, 0.0f), 0.25f);

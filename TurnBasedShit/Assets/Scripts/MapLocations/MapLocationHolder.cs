@@ -223,112 +223,103 @@ public static class MapLocationHolder {
         }
     }
     public static void removeTownLocation(TownLocation loc) {
-        List<TownLocation> temp = new List<TownLocation>();
-        for(int i = 0; i < getTownCount(); i++) {
-            TownLocation t = getTownLocation(i);
-            if(t != null && !t.isEqualTo(loc))
-                temp.Add(t);
+        if(loc == null)
+            return;
+
+        int startingIndex = getIndex(loc);
+        for(int i = startingIndex; i < getTownCount(); i++) {
+            overrideTownLocation(i, getTownLocation(i + 1));
         }
 
-        clearTownLocations();
-        foreach(var i in temp)
-            addLocation(i);
+        SaveData.setInt(townCountTag, getTownCount() - 1);
     }
     public static void removePickupLocation(PickupLocation loc) {
-        List<PickupLocation> temp = new List<PickupLocation>();
-        for(int i = 0; i < getPickupCount(); i++) {
-            PickupLocation p = getPickupLocation(i);
-            if(p != null && !p.isEqualTo(loc))
-                temp.Add(p);
+        if(loc == null)
+            return;
+
+        int startingIndex = getIndex(loc);
+        for(int i = startingIndex; i < getPickupCount(); i++) {
+            overridePickupLocation(i, getPickupLocation(i + 1));
         }
 
-        clearPickupLocations();
-        foreach(var i in temp)
-            addLocation(i);
+        SaveData.setInt(pickupCountTag, getPickupCount() - 1);
     }
     public static void removeUpgradeLocation(UpgradeLocation loc) {
-        List<UpgradeLocation> temp = new List<UpgradeLocation>();
-        for(int i = 0; i < getUpgradeCount(); i++) {
-            UpgradeLocation u = getUpgradeLocation(i);
-            if(u != null && !u.isEqualTo(loc))
-                temp.Add(u);
+        if(loc == null)
+            return;
+
+        int startingIndex = getIndex(loc);
+        for(int i = startingIndex; i < getUpgradeCount(); i++) {
+            overrideUpgradeLocation(i, getUpgradeLocation(i + 1));
         }
 
-        clearUpgradeLocations();
-        foreach(var i in temp)
-            addLocation(i);
+        SaveData.setInt(upgradeCountTag, getUpgradeCount() - 1);
     }
     public static void removeRescueLocation(RescueLocation loc) {
-        List<RescueLocation> temp = new List<RescueLocation>();
-        for(int i = 0; i < getRescueCount(); i++) {
-            RescueLocation r = getRescueLocation(i);
-            if(r != null && !r.isEqualTo(loc))
-                temp.Add(r);
+        if(loc == null)
+            return;
+
+        int startingIndex = getIndex(loc);
+        for(int i = startingIndex; i < getRescueCount(); i++) {
+            overrideRescueLocation(i, getRescueLocation(i + 1));
         }
 
-        clearRescueLocations();
-        foreach(var i in temp)
-            addLocation(i);
+        SaveData.setInt(rescueCountTag, getRescueCount() - 1);
     }
     public static void removeNestLocation(NestLocation loc) {
-        List<NestLocation> temp = new List<NestLocation>();
-        for(int i = 0; i < getNestCount(); i++) {
-            NestLocation n = getNestLocation(i);
-            if(n != null && !n.isEqualTo(loc))
-                temp.Add(n);
+        if(loc == null)
+            return;
+
+        int startingIndex = getIndex(loc);
+        for(int i = startingIndex; i < getNestCount(); i++) {
+            overrideNestLocation(i, getNestLocation(i + 1));
         }
 
-        clearNestLocations();
-        foreach(var i in temp)
-            addLocation(i);
+        SaveData.setInt(nestCountTag, getNestCount() - 1);
     }
     public static void removeBossLocation(BossLocation loc) {
-        List<BossLocation> temp = new List<BossLocation>();
-        for(int i = 0; i < getBossCount(); i++) {
-            BossLocation b = getBossLocation(i);
-            if(b != null && !b.isEqualTo(loc))
-                temp.Add(b);
+        if(loc == null)
+            return;
+
+        int startingIndex = getIndex(loc);
+        for(int i = startingIndex; i < getBossCount(); i++) {
+            overrideBossLocation(i, getBossLocation(i + 1));
         }
 
-        clearBossLocations();
-        foreach(var i in temp)
-            addLocation(i);
+        SaveData.setInt(bossCountTag, getBossCount() - 1);
     }
     public static void removeFishingLocation(FishingLocation loc) {
-        List<FishingLocation> temp = new List<FishingLocation>();
-        for(int i = 0; i < getFishingCount(); i++) {
-            FishingLocation b = getFishingLocation(i);
-            if(b != null && !b.isEqualTo(loc))
-                temp.Add(b);
+        if(loc == null)
+            return;
+
+        int startingIndex = getIndex(loc);
+        for(int i = startingIndex; i < getFishingCount(); i++) {
+            overrideFishingLocation(i, getFishingLocation(i + 1));
         }
 
-        clearFishingLocations();
-        foreach(var i in temp)
-            addLocation(i);
+        SaveData.setInt(fishCountTag, getFishingCount() - 1);
     }
     public static void removeEyeLocation(EyeLocation loc) {
-        List<EyeLocation> temp = new List<EyeLocation>();
-        for(int i = 0; i < getEyeCount(); i++) {
-            EyeLocation b = getEyeLocation(i);
-            if(b != null && !b.isEqualTo(loc))
-                temp.Add(b);
+        if(loc == null)
+            return;
+
+        int startingIndex = getIndex(loc);
+        for(int i = startingIndex; i < getEyeCount(); i++) {
+            overrideEyeLocation(i, getEyeLocation(i + 1));
         }
 
-        clearEyeLocations();
-        foreach(var i in temp)
-            addLocation(i);
+        SaveData.setInt(eyeCountTag, getEyeCount() - 1);
     }
     public static void removeBridgeLocation(BridgeLocation loc) {
-        List<BridgeLocation> temp = new List<BridgeLocation>();
-        for(int i = 0; i < getBridgeCount(); i++) {
-            BridgeLocation b = getBridgeLocation(i);
-            if(b != null && !b.isEqualTo(loc))
-                temp.Add(b);
+        if(loc == null)
+            return;
+
+        int startingIndex = getIndex(loc);
+        for(int i = startingIndex; i < getBridgeCount(); i++) {
+            overrideBridgeLocation(i, getBridgeLocation(i + 1));
         }
 
-        clearBridgeLocations();
-        foreach(var i in temp)
-            addLocation(i);
+        SaveData.setInt(bridgeCountTag, getBridgeCount() - 1);
     }
 
     public static void overrideTownLocation(TownLocation loc) {
@@ -339,6 +330,42 @@ public static class MapLocationHolder {
                 return;
             }
         }
+    }
+    public static void overrideTownLocation(int index, TownLocation loc) {
+        var data = JsonUtility.ToJson(loc);
+        SaveData.setString(townTag(index), data);
+    }
+    public static void overridePickupLocation(int index, PickupLocation loc) {
+        var data = JsonUtility.ToJson(loc);
+        SaveData.setString(pickupTag(index), data);
+    }
+    public static void overrideUpgradeLocation(int index, UpgradeLocation loc) {
+        var data = JsonUtility.ToJson(loc);
+        SaveData.setString(upgradeTag(index), data);
+    }
+    public static void overrideRescueLocation(int index, RescueLocation loc) {
+        var data = JsonUtility.ToJson(loc);
+        SaveData.setString(rescueTag(index), data);
+    }
+    public static void overrideNestLocation(int index, NestLocation loc) {
+        var data = JsonUtility.ToJson(loc);
+        SaveData.setString(nestTag(index), data);
+    }
+    public static void overrideBossLocation(int index, BossLocation loc) {
+        var data = JsonUtility.ToJson(loc);
+        SaveData.setString(bossTag(index), data);
+    }
+    public static void overrideFishingLocation(int index, FishingLocation loc) {
+        var data = JsonUtility.ToJson(loc);
+        SaveData.setString(fishTag(index), data);
+    }
+    public static void overrideEyeLocation(int index, EyeLocation loc) {
+        var data = JsonUtility.ToJson(loc);
+        SaveData.setString(eyeTag(index), data);
+    }
+    public static void overrideBridgeLocation(int index, BridgeLocation loc) {
+        var data = JsonUtility.ToJson(loc);
+        SaveData.setString(bridgeTag(index), data);
     }
 
 
@@ -460,8 +487,8 @@ public static class MapLocationHolder {
         return null;
     }
 
-    public static bool locationAtPosition(Vector2 p) {
-        foreach(var i in getLocations()) {
+    public static bool locationAtPosition(Vector2 p, GameInfo.region reg = (GameInfo.region)(-1)) {
+        foreach(var i in getLocations(null, reg)) {
             if(i.pos == p)
                 return true;
         }
@@ -474,10 +501,10 @@ public static class MapLocationHolder {
         }
         return false;
     }
-    public static MapLocation getClostestLocation(Vector2 p) {
+    public static MapLocation getClostestLocation(Vector2 p, GameInfo.region reg = (GameInfo.region)(-1)) {
         float closestDist = 1000.0f;
         MapLocation ml = null;
-        foreach(var i in getLocations()) {
+        foreach(var i in getLocations(null, reg)) {
             if(Vector2.Distance(i.pos, p) < closestDist) {
                 closestDist = Vector2.Distance(i.pos, p);
                 ml = i;
@@ -485,6 +512,14 @@ public static class MapLocationHolder {
         }
 
         return ml;
+    }
+    public static MapLocation getLocationAtPos(Vector2 p, GameInfo.region reg = (GameInfo.region)(-1)) {
+        foreach(var i in getLocations(null, reg)) {
+            if(i.pos == p)
+                return i;
+        }
+
+        return null;
     }
     public static TownLocation getTownLocationAtPosition(Vector2 p) {
         for(int i = 0; i < getTownCount(); i++) {
@@ -648,7 +683,7 @@ public static class MapLocationHolder {
     }
 
 
-    public static List<MapLocation> getLocations(List<MapLocation.locationType> includes = null) {
+    public static List<MapLocation> getLocations(List<MapLocation.locationType> includes = null, GameInfo.region reg = (GameInfo.region)(-1)) {
         if(includes == null) {
             includes = new List<MapLocation.locationType>() {
                 MapLocation.locationType.town, MapLocation.locationType.pickup,
@@ -657,52 +692,79 @@ public static class MapLocationHolder {
             };
         }
         var temp = new List<MapLocation>();
-        
+
         for(int i = 0; i < includes.Count; i++) {
             switch(includes[i]) {
                 case MapLocation.locationType.town:
-                    for(int t = 0; t < getTownCount(); t++) 
-                        temp.Add(getTownLocation(t));
+                    for(int t = 0; t < getTownCount(); t++) {
+                        var town = getTownLocation(t);
+                        if(reg == (GameInfo.region)(-1) || town.region == reg)
+                            temp.Add(getTownLocation(t));
+                    }
                     break;
 
                 case MapLocation.locationType.pickup:
-                    for(int p = 0; p < getPickupCount(); p++) 
-                        temp.Add(getPickupLocation(p));
+                    for(int p = 0; p < getPickupCount(); p++) {
+                        var pick = getPickupLocation(p);
+                        if(reg == (GameInfo.region)(-1) || pick.region == reg)
+                            temp.Add(getPickupLocation(p));
+                    }
                     break;
 
                 case MapLocation.locationType.upgrade:
-                    for(int u = 0; u < getUpgradeCount(); u++) 
-                        temp.Add(getUpgradeLocation(u));
+                    for(int u = 0; u < getUpgradeCount(); u++) {
+                        var up = getUpgradeLocation(u);
+                        if(reg == (GameInfo.region)(-1) || up.region == reg)
+                            temp.Add(getUpgradeLocation(u));
+                    }
                     break;
 
                 case MapLocation.locationType.rescue:
-                    for(int r = 0; r < getRescueCount(); r++) 
-                        temp.Add(getRescueLocation(r));
+                    for(int r = 0; r < getRescueCount(); r++) {
+                        var resc = getRescueLocation(r);
+                        if(reg == (GameInfo.region)(-1) || resc.region == reg)
+                            temp.Add(getRescueLocation(r));
+                    }
                     break;
 
                 case MapLocation.locationType.nest:
-                    for(int n = 0; n < getNestCount(); n++) 
-                        temp.Add(getNestLocation(n));
+                    for(int n = 0; n < getNestCount(); n++) {
+                        var nest = getNestLocation(n);
+                        if(reg == (GameInfo.region)(-1) || nest.region == reg)
+                            temp.Add(getNestLocation(n));
+                    }
                     break;
 
                 case MapLocation.locationType.boss:
-                    for(int b = 0; b < getBossCount(); b++) 
-                        temp.Add(getBossLocation(b));
+                    for(int b = 0; b < getBossCount(); b++) {
+                        var boss = getBossLocation(b);
+                        if(reg == (GameInfo.region)(-1) || boss.region == reg)
+                            temp.Add(getBossLocation(b));
+                    }
                     break;
 
                 case MapLocation.locationType.fishing:
-                    for(int f = 0; f < getFishingCount(); f++)
-                        temp.Add(getFishingLocation(f));
+                    for(int f = 0; f < getFishingCount(); f++) {
+                        var fish = getFishingLocation(f);
+                        if(reg == (GameInfo.region)(-1) || fish.region == reg)
+                            temp.Add(getFishingLocation(f));
+                    }
                     break;
 
                 case MapLocation.locationType.eye:
-                    for(int f = 0; f < getEyeCount(); f++)
-                        temp.Add(getEyeLocation(f));
+                    for(int f = 0; f < getEyeCount(); f++) {
+                        var eye = getEyeLocation(f);
+                        if(reg == (GameInfo.region)(-1) || eye.region == reg)
+                            temp.Add(getEyeLocation(f));
+                    }
                     break;
 
                 case MapLocation.locationType.bridge:
-                    for(int f = 0; f < getBridgeCount(); f++)
-                        temp.Add(getBridgeLocation(f));
+                    for(int f = 0; f < getBridgeCount(); f++) {
+                        var brid = getBridgeLocation(f);
+                        if(reg == (GameInfo.region)(-1) || brid.region == reg)
+                            temp.Add(getBridgeLocation(f));
+                    }
                     break;
             }
         }

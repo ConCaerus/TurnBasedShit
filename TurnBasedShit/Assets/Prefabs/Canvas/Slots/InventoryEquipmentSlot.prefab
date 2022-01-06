@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1116297080692499832}
   - component: {fileID: 3808846684646832836}
   - component: {fileID: 2986017692293940965}
+  - component: {fileID: 6790605998446265919}
   m_Layer: 5
   m_Name: InventoryEquipmentSlot
   m_TagString: Untagged
@@ -135,8 +136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b50cf52fd2f3020489dae1d0b81e3fc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infos:
-  - <b><u>Slot
+  info: <b><u>Information
   hideWhenMenuOpen: 0
 --- !u!61 &2986017692293940965
 BoxCollider2D:
@@ -164,6 +164,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 50.279602, y: 50.279236}
   m_EdgeRadius: 0
+--- !u!114 &6790605998446265919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2409199764669834413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 517f50c6d88aef14c81f16b305edcbc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sound: {fileID: 8300000, guid: 5fd13a94499375b47ade8a604f21d0fe, type: 3}
 --- !u!1 &2706841520891236764
 GameObject:
   m_ObjectHideFlags: 0

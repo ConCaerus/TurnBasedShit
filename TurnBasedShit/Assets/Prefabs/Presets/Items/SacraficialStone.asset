@@ -16,8 +16,16 @@ MonoBehaviour:
     instanceID: -1
     name: Sacraficial Stone
     type: 2
-    rarity: 6
+    rarity: 4
     coinCost: 50
+    canBeFished: 0
+    maxStackCount: 1
+    fishedData:
+      hookedPos: {x: 0, y: 0}
+      scale: 0
+      hookedRot: 0
+      chanceToCatch: 0
+    flavor: A sacrifice must be made.
     tEffects:
     - effect: 2
       time: 5

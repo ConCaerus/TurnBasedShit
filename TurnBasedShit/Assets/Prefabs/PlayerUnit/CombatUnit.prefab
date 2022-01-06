@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 2150725456124683392}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.35, y: 0.35, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 212883705554629492}
   m_Father: {fileID: 0}
@@ -87,7 +87,7 @@ MonoBehaviour:
   tempPowerMod: 1
   tempDefenceMod: 0
   tempSpeedMod: 1
-  spotOffset: 0.1
+  spotOffset: 0
   stats:
     u_name: 
     u_expCap: 25
@@ -109,6 +109,7 @@ MonoBehaviour:
     u_power: 1
     u_defence: 1
     u_critChance: 0
+    u_missChance: 1
     u_bleedCount: 0
     u_instanceID: -1
     weapon:
@@ -118,11 +119,11 @@ MonoBehaviour:
       rarity: 0
       coinCost: 0
       canBeFished: 0
+      maxStackCount: 1
       fishedData:
         hookedPos: {x: 0, y: 0}
         scale: 0
         hookedRot: 0
-        diffRegion: 0
         chanceToCatch: 0
       flavor: Choco
       wornAmount: 3
@@ -146,11 +147,11 @@ MonoBehaviour:
       rarity: 0
       coinCost: 0
       canBeFished: 0
+      maxStackCount: 1
       fishedData:
         hookedPos: {x: 0, y: 0}
         scale: 0
         hookedRot: 0
-        diffRegion: 0
         chanceToCatch: 0
       flavor: Choco
       wornAmount: 3
@@ -208,11 +209,11 @@ MonoBehaviour:
       rarity: 0
       coinCost: 0
       canBeFished: 0
+      maxStackCount: 1
       fishedData:
         hookedPos: {x: 0, y: 0}
         scale: 0
         hookedRot: 0
-        diffRegion: 0
         chanceToCatch: 0
       flavor: Choco
       tEffects: []
@@ -332,6 +333,27 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Unit
+      objectReference: {fileID: 0}
+    - target: {fileID: 1137743092205740304, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.14
+      objectReference: {fileID: 0}
+    - target: {fileID: 1137743092205740307, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 9079368865685173502, guid: 589fd9954d6285a4e89483743597ba5e,
+        type: 3}
+    - target: {fileID: 8833651223801544769, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8833651223801544769, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e, type: 3}

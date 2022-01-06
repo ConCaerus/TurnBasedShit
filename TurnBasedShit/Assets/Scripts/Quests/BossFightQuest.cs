@@ -18,7 +18,7 @@ public class BossFightQuest : Quest {
     }
 
 
-    public override questType getType() {
+    public override questType getQuestType() {
         return questType.bossFight;
     }
 }

@@ -70,7 +70,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 6950808913154063468, guid: 22b92df942269fb4391d3315c41edbb7,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -153,7 +153,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -3686825198962614999, guid: 22b92df942269fb4391d3315c41edbb7,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -318,6 +318,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   alertIcon: {fileID: 7372436939355617937}
+  alertSound: {fileID: 8300000, guid: 7b127a6b7e98d094fb024296f596d40b, type: 3}
+  specialColor: {r: 1, g: 0.44313726, b: 0, a: 1}
+  isSpecial: 0
 --- !u!1 &4704053947679081081
 GameObject:
   m_ObjectHideFlags: 0

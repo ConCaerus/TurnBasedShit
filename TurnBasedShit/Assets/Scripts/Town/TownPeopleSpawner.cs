@@ -31,7 +31,7 @@ public class TownPeopleSpawner : MonoBehaviour {
     }
 
 
-    public GameObject getMemberWithinInteractRange(float x, int distToInteract) {
+    public GameObject getMemberWithinInteractRange(float x, float distToInteract) {
         foreach(var i in memberObjects) {
             if(Mathf.Abs(x - i.transform.position.x) < distToInteract)
                 return i.gameObject;

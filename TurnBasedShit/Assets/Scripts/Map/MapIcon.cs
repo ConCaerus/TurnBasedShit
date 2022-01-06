@@ -9,7 +9,21 @@ public class MapIcon : MonoBehaviour {
 
     protected float enterSpeed = 0.15f, exitSpeed = 0.25f;
 
+    [SerializeField] bool animated = true;
+
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        FindObjectOfType<InteractionCanvas>().show(transform.position);
+        FindObjectOfType<MapMovement>().closestIcon = gameObject;
+    }
+    private void OnTriggerExit2D(Collider2D collision) {
+        FindObjectOfType<InteractionCanvas>().hide();
+        FindObjectOfType<MapMovement>().closestIcon = null;
+    }
+
     private void Start() {
+        if(!animated)
+            return;
         lightObj = GetComponentInChildren<UnityEngine.Experimental.Rendering.Universal.Light2D>(); 
         GetComponent<Animator>().ForceStateNormalizedTime(Random.Range(0.0f, 10.0f));
 
@@ -17,27 +31,39 @@ public class MapIcon : MonoBehaviour {
     }
 
     private void OnMouseEnter() {
+        if(!animated)
+            return;
         if(FindObjectOfType<MapFogTexture>().isPositionCleared(transform.position))
             animate();
     }
 
     private void OnMouseExit() {
+        if(!animated)
+            return;
         deanimate();
     }
 
-    public void lightUp(float val) {
+    void lightUp(float val) {
+        if(!animated)
+            return;
         DOTween.To(() => lightObj.pointLightOuterRadius, x => lightObj.pointLightOuterRadius = x, val, exitSpeed);
     }
-
-    public void lightDown() {
+    
+    void lightDown() {
+        if(!animated)
+            return;
         DOTween.To(() => lightObj.pointLightOuterRadius, x => lightObj.pointLightOuterRadius = x, 0.0f, exitSpeed);
     }
 
-    public void animate() {
+    void animate() {
+        if(!animated)
+            return;
         lightUp(.3f);
         GetComponent<Animator>().SetBool("mousedOver", true);
     }
-    public void deanimate() {
+    void deanimate() {
+        if(!animated)
+            return;
         lightDown();
         GetComponent<Animator>().SetBool("mousedOver", false);
     }

@@ -51,12 +51,21 @@ public class PresetLibrary : MonoBehaviour {
         for(int i = 0; i < startingUnitCount; i++) {
             var stats = createRandomPlayerUnitStats(true);
 
-            if(i < startingWeapons.Length && startingWeapons[i] != null && !startingWeapons[i].preset.isEmpty())
-                stats.weapon = startingWeapons[i].preset;
-            if(i < startingArmor.Length && startingArmor[i] != null && !startingArmor[i].preset.isEmpty())
-                stats.armor = startingArmor[i].preset;
-            if(i < startingItems.Length && startingItems[i] != null && !startingItems[i].preset.isEmpty())
-                stats.item = startingItems[i].preset;
+            if(i < startingWeapons.Length && startingWeapons[i] != null) {
+                stats.weapon = new Weapon();
+                stats.weapon.setEqualTo(startingWeapons[i].preset, false);
+                stats.weapon.instanceID = GameInfo.getNextWeaponInstanceID();
+            }
+            if(i < startingArmor.Length && startingArmor[i] != null) {
+                stats.armor = new Armor();
+                stats.armor.setEqualTo(startingArmor[i].preset, false);
+                stats.armor.instanceID = GameInfo.getNextArmorInstanceID();
+            }
+            if(i < startingItems.Length && startingItems[i] != null) {
+                stats.item = new Item();
+                stats.item.setEqualTo(startingItems[i].preset, false);
+                stats.item.instanceID = GameInfo.getNextItemInstanceID();
+            }
 
             Party.addUnit(stats);
         }
@@ -198,7 +207,7 @@ public class PresetLibrary : MonoBehaviour {
     public TownMember getRandomTownNPC(Town loc) {
         var npc = townNPCs[Random.Range(0, townNPCs.Length)];
         var temp = new TownMember(this, npc, loc, true);
-        temp.quest = FindObjectOfType<NPCQuestLibrary>().getQuestForNPC(temp);
+        temp.setQuest(FindObjectOfType<NPCQuestLibrary>().getQuestForNPC(temp));    //  has to do this cause I cant attach the quest to the npc obj
 
         return temp;
     }
@@ -313,6 +322,7 @@ public class PresetLibrary : MonoBehaviour {
             case EnemyUnitInstance.type.groundBird: return enemyProfiles[0];
             case EnemyUnitInstance.type.slime: return enemyProfiles[1];
             case EnemyUnitInstance.type.stumpSpider: return enemyProfiles[2];
+            case EnemyUnitInstance.type.rockCrawler: return enemyProfiles[3];
             default: return playerUnitProfile;
         }
     }
@@ -357,9 +367,9 @@ public class PresetLibrary : MonoBehaviour {
         return temp;
     }
     public Weapon getWeapon(string name) {
-        Weapon temp = new Weapon();
         foreach(var i in weapons) {
             if(i.preset.name == name) {
+                var temp = new Weapon();
                 temp.setEqualTo(i.preset, false);
                 temp.instanceID = GameInfo.getNextWeaponInstanceID();
                 return temp;
@@ -485,7 +495,7 @@ public class PresetLibrary : MonoBehaviour {
         foreach(var i in unusables) {
             if(i.preset.name == name) {
                 temp.setEqualTo(i.preset, false);
-                temp.instanceID = GameInfo.getNextUsableInstanceID();
+                temp.instanceID = GameInfo.getNextUnusableInstanceID();
                 return temp;
             }
         }
@@ -563,21 +573,19 @@ public class PresetLibrary : MonoBehaviour {
     }
 
     public Collectable getRandomCollectable(GameInfo.region diff = (GameInfo.region)(-1)) {
-        if(diff == (GameInfo.region)(-1))
-            diff = GameInfo.getRandomReg();
-
-        int type = Random.Range(0, 5);
-        if(type == 0)
-            return getRandomWeapon(diff);
-        else if(type == 1)
-            return getRandomArmor(diff);
-        else if(type == 2)
-            return getRandomItem(diff);
-        else if(type == 3)
-            return getRandomUsable(diff);
-        else if(type == 4)
-            return getRandomUnusable(diff);
-        return null;
+        while(true) {
+            int type = Random.Range(0, 5);
+            if(type == 0)
+                return getRandomWeapon(diff);
+            else if(type == 1)
+                return getRandomArmor(diff);
+            else if(type == 2)
+                return getRandomItem(diff);
+            else if(type == 3)
+                return getRandomUsable(diff);
+            else if(type == 4)
+                return getRandomUnusable(diff);
+        }
     }
 
     public EquipmentPair getRelevantPair(UnitStats stats) {
@@ -632,12 +640,26 @@ public class PresetLibrary : MonoBehaviour {
 
     //  special locations
     public CombatLocation createCombatLocation(GameInfo.region reg) {
-        int waveCount = Random.Range(1, 4);
+        int waveCount = Random.Range(1, 3);
         var loc = new CombatLocation(reg, this, waveCount);
         loc.reg = reg;
 
-        loc.coinReward = 2 * ((int)reg + 1) * waveCount; // default value
-        loc.coinReward += (int)Random.Range(loc.coinReward * -0.1f, loc.coinReward * 0.1f);   //  randomizes it
+        loc.instanceID = GameInfo.getNextCombatLocationInstanceID();
+
+        loc.coins = 2 * ((int)reg + 1) * waveCount; // default value
+        loc.coins += (int)Random.Range(loc.coins * -0.1f, loc.coins * 0.1f);   //  randomizes it
+
+        return loc;
+    }
+    public CombatLocation createSpecialCombatLocation(GameInfo.region reg) {
+        int waveCount = Random.Range(2, 4);
+        var loc = new CombatLocation(reg, this, waveCount, 3);
+        loc.reg = reg;
+
+        loc.instanceID = GameInfo.getNextCombatLocationInstanceID();
+
+        loc.coins = 3 * ((int)reg + 1) * waveCount; // default value
+        loc.coins += (int)Random.Range(loc.coins * -0.1f, loc.coins * 0.1f);   //  randomizes it
 
         return loc;
     }
@@ -689,11 +711,17 @@ public class PresetLibrary : MonoBehaviour {
     }
 
 
-    public BossFightQuest createRandomBossFightQuest(bool setID, GameInfo.region reg) {
-        return new BossFightQuest(createBossLocation(reg), setID);
+    public BossFightQuest createRandomBossFightQuest(bool setID, bool createMapLocation, GameInfo.region reg) {
+        var loc = createBossLocation(reg);
+        if(createMapLocation)
+            MapLocationHolder.addLocation(loc);
+        return new BossFightQuest(loc, setID);
     }
-    public PickupQuest createRandomPickupQuest(bool setID, GameInfo.region reg) {
-        return new PickupQuest(createPickupLocation(reg), setID);
+    public PickupQuest createRandomPickupQuest(bool setID, bool createMapLocation, GameInfo.region reg) {
+        var loc = createPickupLocation(reg);
+        if(createMapLocation)
+            MapLocationHolder.addLocation(loc);
+        return new PickupQuest(loc, setID);
     }
     public KillQuest createRandomKillQuest(bool setID, GameInfo.region reg) {
         return new KillQuest(Random.Range(5, 36), getRandomEnemy(reg).GetComponent<EnemyUnitInstance>().enemyType, setID);   //  change this number too
@@ -752,6 +780,15 @@ public class PresetLibrary : MonoBehaviour {
             return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd), things, setID);
         }
         return null;
+    }
+    public FishingQuest createRandomFishingQuest(bool setID, bool createMapLocation, GameInfo.region reg) {
+        var loc = createFishingLocation(reg);
+        if(createMapLocation)
+            MapLocationHolder.addLocation(loc);
+        return new FishingQuest(loc, setID);
+    }
+    public RescueQuest createRandomRescueQuest(bool setID, GameInfo.region reg) {
+        return new RescueQuest(createRescueLocation(reg), setID);
     }
 
     public CombatScarSpriteHolder getCombatScarSprite(int index) {

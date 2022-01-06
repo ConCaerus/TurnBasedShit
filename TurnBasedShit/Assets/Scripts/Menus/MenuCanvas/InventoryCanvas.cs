@@ -9,8 +9,9 @@ public class InventoryCanvas : MonoBehaviour {
     public int state = 0;
     [SerializeField] GameObject mainSlot, unitSlot;
     [SerializeField] Slider healthSlider;
-    [SerializeField] TextMeshProUGUI nameText, itemNameText;
+    [SerializeField] TextMeshProUGUI nameText, itemNameText, flavorText;
     [SerializeField] SlotMenu slot;
+    [SerializeField] AudioClip usable;
 
     UnitStats shownUnit;
 
@@ -93,10 +94,14 @@ public class InventoryCanvas : MonoBehaviour {
         healthSlider.value = shownUnit.u_health;
 
         nameText.text = shownUnit.u_name;
-        if(getSelectedCollectable() != null)
+        if(getSelectedCollectable() != null) {
             itemNameText.text = getSelectedCollectable().name;
-        else
+            flavorText.text = getSelectedCollectable().flavor;
+        }
+        else {
             itemNameText.text = "";
+            flavorText.text = "";
+        }
 
         if(slot.getSelectedSlot() == null)
             mainSlot.transform.GetChild(0).GetComponent<Image>().sprite = null;
@@ -273,6 +278,7 @@ public class InventoryCanvas : MonoBehaviour {
             swapItem((Item)obj);
         else if(obj.type == Collectable.collectableType.usable && ((Usable)obj).applyStatsEffect(shownUnit, FindObjectOfType<PartyObject>())) {
             Inventory.removeUsable((Usable)obj);
+            FindObjectOfType<AudioManager>().playSound(usable);
             shownUnit = Party.getMemberStats(Party.getUnitIndex(shownUnit));
         }
 

@@ -46,16 +46,16 @@ public class QuestCanvas : MonoBehaviour {
 
     public void updateList() {
         infos.Clear();
-        var b = ActiveQuests.getAllBossFightQuests();
-        var k = ActiveQuests.getAllKillQuests();
-        var d = ActiveQuests.getAllDeliveryQuests();
-        var p = ActiveQuests.getAllPickupQuests();
+        var b = ActiveQuests.getQuestHolder().getObjects<BossFightQuest>();
+        var k = ActiveQuests.getQuestHolder().getObjects<KillQuest>();
+        var d = ActiveQuests.getQuestHolder().getObjects<DeliveryQuest>();
+        var p = ActiveQuests.getQuestHolder().getObjects<PickupQuest>();
+        var f = ActiveQuests.getQuestHolder().getObjects<FishingQuest>();
 
         int slotIndex = 0;
         if(!sortType) {
             int index = 0;
-            int stopPoint = ActiveQuests.getMostRecentQuestInstanceID();
-            while((b.Count > 0 || k.Count > 0 || d.Count > 0 || p.Count > 0) && index <= stopPoint) {
+            while((b.Count > 0 || k.Count > 0 || d.Count > 0 || p.Count > 0 || f.Count > 0)) {
                 bool found = false;
                 foreach(var i in b) {
                     if(i.instanceID == index) {
@@ -141,7 +141,7 @@ public class QuestCanvas : MonoBehaviour {
     }
 
     public void updateInfo() {
-        countText.text = ActiveQuests.getQuestCount().ToString();
+        countText.text = ActiveQuests.getQuestHolder().getObjectCount<Quest>().ToString();
 
 
         if(slot.getSelectedSlotIndex() == -1 || slot.getSelectedSlotIndex() >= infos.Count)
@@ -151,25 +151,49 @@ public class QuestCanvas : MonoBehaviour {
         switch(currentInfo.type) {
             case Quest.questType.bossFight:
                 nameText.text = "Boss: " + currentInfo.questInstanceID.ToString();
-                BossFightQuest b = ActiveQuests.getBossFightQuestWithInstanceID(currentInfo.questInstanceID);
+                BossFightQuest b = null;
+                foreach(var i in ActiveQuests.getQuestHolder().getObjects<BossFightQuest>()) {
+                    if(i.instanceID == currentInfo.questInstanceID) {
+                        b = i;
+                        break;
+                    }
+                }
                 infoText.text = "   Kill " + b.bossUnit.u_name;
                 break;
 
             case Quest.questType.kill:
                 nameText.text = "Kill: " + currentInfo.questInstanceID.ToString();
-                KillQuest k = ActiveQuests.getKillQuestWithInstanceID(currentInfo.questInstanceID);
+                KillQuest k = null;
+                foreach(var i in ActiveQuests.getQuestHolder().getObjects<KillQuest>()) {
+                    if(i.instanceID == currentInfo.questInstanceID) {
+                        k = i;
+                        break;
+                    }
+                }
                 infoText.text = "   Kill " + k.howManyToKill.ToString() + " " + k.enemyType.ToString() + "s";
                 break;
 
             case Quest.questType.delivery:
                 nameText.text = "Delivery: " + currentInfo.questInstanceID.ToString();
-                DeliveryQuest d = ActiveQuests.getDeliveryQuestWithInstanceID(currentInfo.questInstanceID);
+                DeliveryQuest d = null;
+                foreach(var i in ActiveQuests.getQuestHolder().getObjects<DeliveryQuest>()) {
+                    if(i.instanceID == currentInfo.questInstanceID) {
+                        d = i;
+                        break;
+                    }
+                }
                 infoText.text = "   Deliver " + d.type.ToString() + " to " + d.deliveryLocation.town.t_name;
                 break;
 
             case Quest.questType.pickup:
                 nameText.text = "Pickup: " + currentInfo.questInstanceID.ToString();
-                PickupQuest p = ActiveQuests.getPickupQuestWithInstanceID(currentInfo.questInstanceID);
+                PickupQuest p = null;
+                foreach(var i in ActiveQuests.getQuestHolder().getObjects<PickupQuest>()) {
+                    if(i.instanceID == currentInfo.questInstanceID) {
+                        p = i;
+                        break;
+                    }
+                }
                 infoText.text = "   Pickup a " + p.pType.ToString();
                 break;
         }
@@ -188,19 +212,43 @@ public class QuestCanvas : MonoBehaviour {
 
         switch(currentInfo.type) {
             case Quest.questType.bossFight:
-                ActiveQuests.removeQuest(ActiveQuests.getBossFightQuestWithInstanceID(currentInfo.questInstanceID));
+                for(int i = 0; i < ActiveQuests.getQuestHolder().getObjectCount<BossFightQuest>(); i++) {
+                    var b = ActiveQuests.getQuestHolder().getObject<BossFightQuest>(i);
+                    if(b.instanceID == currentInfo.questInstanceID) {
+                        ActiveQuests.removeQuest(b);
+                        break;
+                    }
+                }
                 break;
 
             case Quest.questType.kill:
-                ActiveQuests.removeQuest(ActiveQuests.getKillQuestWithInstanceID(currentInfo.questInstanceID));
+                for(int i = 0; i < ActiveQuests.getQuestHolder().getObjectCount<KillQuest>(); i++) {
+                    var b = ActiveQuests.getQuestHolder().getObject<KillQuest>(i);
+                    if(b.instanceID == currentInfo.questInstanceID) {
+                        ActiveQuests.removeQuest(b);
+                        break;
+                    }
+                }
                 break;
 
             case Quest.questType.delivery:
-                ActiveQuests.removeQuest(ActiveQuests.getDeliveryQuestWithInstanceID(currentInfo.questInstanceID));
+                for(int i = 0; i < ActiveQuests.getQuestHolder().getObjectCount<DeliveryQuest>(); i++) {
+                    var b = ActiveQuests.getQuestHolder().getObject<DeliveryQuest>(i);
+                    if(b.instanceID == currentInfo.questInstanceID) {
+                        ActiveQuests.removeQuest(b);
+                        break;
+                    }
+                }
                 break;
 
             case Quest.questType.pickup:
-                ActiveQuests.removeQuest(ActiveQuests.getPickupQuestWithInstanceID(currentInfo.questInstanceID));
+                for(int i = 0; i < ActiveQuests.getQuestHolder().getObjectCount<PickupQuest>(); i++) {
+                    var b = ActiveQuests.getQuestHolder().getObject<PickupQuest>(i);
+                    if(b.instanceID == currentInfo.questInstanceID) {
+                        ActiveQuests.removeQuest(b);
+                        break;
+                    }
+                }
                 break;
         }
 

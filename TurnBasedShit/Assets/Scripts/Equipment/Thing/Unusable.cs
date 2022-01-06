@@ -6,17 +6,15 @@ using UnityEngine;
 public class Unusable : Collectable {
 
     [SerializeField] UnusableSpriteHolder sprite;
-    public int maxStackCount = 1;
 
     public override void setEqualTo(Collectable col, bool takeInstanceID) {
-        if(col.type != collectableType.unusable || col == null || col.isEmpty())
+        if(col.type != collectableType.unusable || col == null)
             return;
 
         var other = (Unusable)col;
-        if(other == null || other.isEmpty())
+        if(other == null)
             return;
         matchParentValues(col, takeInstanceID);
-        maxStackCount = other.maxStackCount;
         sprite = other.sprite;
     }
 

@@ -7,7 +7,8 @@ public class CombatCameraController : MonoBehaviour {
     float maxRandAmount = 0.15f;
     float moveSpeed = 0.75f;
     float buffer = 4.0f;
-    [SerializeField] float parallaxAmount = 1.5f;
+    [SerializeField] float parallaxAmount;
+    [SerializeField] float maxX, minX;
 
     GameObject lookingAtObj = null;
 
@@ -94,6 +95,7 @@ public class CombatCameraController : MonoBehaviour {
         var randX = Random.Range(-maxRandAmount, maxRandAmount);
         var randY = Random.Range(-maxRandAmount, maxRandAmount);
         var target = ((Vector2)unitPos / buffer) + new Vector2(randX, randY);
+        target.x = Mathf.Clamp(target.x, minX, maxX);
 
         moveParallaxObjs(transform.position.x - target.x);
 
@@ -104,6 +106,7 @@ public class CombatCameraController : MonoBehaviour {
         var randX = Random.Range(-maxRandAmount, maxRandAmount);
         var randY = Random.Range(-maxRandAmount, maxRandAmount);
         var target = ((Vector2)unitPos / buffer) + new Vector2(randX, randY);
+        target.x = Mathf.Clamp(target.x, minX, maxX);
 
         moveParallaxObjs(transform.position.x  - target.x);
 
@@ -113,6 +116,7 @@ public class CombatCameraController : MonoBehaviour {
         var randX = Random.Range(-maxRandAmount, maxRandAmount);
         var randY = Random.Range(-maxRandAmount, maxRandAmount);
         var target = new Vector2(randX, randY);
+        target.x = Mathf.Clamp(target.x, minX, maxX);
 
         moveParallaxObjs(transform.position.x - target.x);
 
@@ -133,5 +137,16 @@ public class CombatCameraController : MonoBehaviour {
 
     public void resetLookingAtObj() {
         lookingAtObj = null;
+    }
+
+    public GameObject getEnivironmentHolder() {
+        switch(GameInfo.getCurrentRegion()) {
+            case GameInfo.region.grassland: return grasslandObjects;
+            case GameInfo.region.forest: return forestObjects;
+            case GameInfo.region.swamp: return swampObjects;
+            case GameInfo.region.mountains: return mountainObjects;
+            case GameInfo.region.hell: return hellObjects;
+            default: return null;
+        }
     }
 }

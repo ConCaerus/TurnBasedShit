@@ -93,20 +93,30 @@ public class DebuggerWindow : EditorWindow {
         GUILayout.EndHorizontal();
         GUILayout.BeginHorizontal();
         if(GUILayout.Button("+Boss"))
-            ActiveQuests.addQuest(FindObjectOfType<PresetLibrary>().createRandomBossFightQuest(true, GameInfo.getCurrentRegion()));
+            ActiveQuests.addQuest(FindObjectOfType<PresetLibrary>().createRandomBossFightQuest(true, true, GameInfo.getCurrentRegion()));
         if(GUILayout.Button("+Delivery"))
             ActiveQuests.addQuest(FindObjectOfType<PresetLibrary>().createRandomDeliveryQuest(true, GameInfo.getCurrentRegion()));
         if(GUILayout.Button("+Kill"))
             ActiveQuests.addQuest(FindObjectOfType<PresetLibrary>().createRandomKillQuest(true, GameInfo.getCurrentRegion()));
         if(GUILayout.Button("+Pickup"))
-            ActiveQuests.addQuest(FindObjectOfType<PresetLibrary>().createRandomPickupQuest(true, GameInfo.getCurrentRegion()));
+            ActiveQuests.addQuest(FindObjectOfType<PresetLibrary>().createRandomPickupQuest(true, true, GameInfo.getCurrentRegion()));
+        if(GUILayout.Button("+Fishing"))
+            ActiveQuests.addQuest(FindObjectOfType<PresetLibrary>().createRandomFishingQuest(true, true, GameInfo.getCurrentRegion()));
         GUILayout.EndHorizontal();
 
         //  MapLocations
         GUILayout.Label("Map", EditorStyles.boldLabel);
         GUILayout.BeginHorizontal();
-        if(GUILayout.Button("Clear Towns"))
-            MapLocationHolder.clearTownLocations();
+        if(GUILayout.Button("Set Grassland"))
+            GameInfo.setCurrentRegion(GameInfo.region.grassland);
+        if(GUILayout.Button("Set Forest"))
+            GameInfo.setCurrentRegion(GameInfo.region.forest);
+        if(GUILayout.Button("Set Swamp"))
+            GameInfo.setCurrentRegion(GameInfo.region.swamp);
+        if(GUILayout.Button("Set Mountains"))
+            GameInfo.setCurrentRegion(GameInfo.region.mountains);
+        if(GUILayout.Button("Set Hell"))
+            GameInfo.setCurrentRegion(GameInfo.region.hell);
 
         GUILayout.EndHorizontal();
         GUILayout.BeginHorizontal();
@@ -127,8 +137,10 @@ public class DebuggerWindow : EditorWindow {
         //  Save Data
         GUILayout.Label("Save Data", EditorStyles.boldLabel);
         GUILayout.BeginHorizontal();
-        if(GUILayout.Button("Create Save Data"))
+        if(GUILayout.Button("Create Save Data")) {
+            SaveData.deleteCurrentSave();
             SaveData.createSaveDataForCurrentSave(FindObjectOfType<PresetLibrary>(), FindObjectOfType<TransitionCanvas>());
+        }
         if(GUILayout.Button("Clear Save"))
             SaveData.deleteCurrentSave();
         if(GUILayout.Button("Clear Everything"))

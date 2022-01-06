@@ -8,7 +8,7 @@ public static class DialogLibrary {
         if(mem.isNPC)
             return getDialogForNPC(mem);
         if(mem.hasQuest)
-            return getGenericDialogForQuest(mem.quest.getType());
+            return getGenericDialogForQuest(mem.questType);
         return null;
     }
 
@@ -45,10 +45,10 @@ public static class DialogLibrary {
         var f = new DialogInfo("Well said, slugger. Grab your nearest rod and head to the lake", "Hell yeah, brother!", "lakes creep me out");
         var s = new DialogInfo("I understand completely. Fishing are monsters of the deep that need to be removed from modern society. I myself am deeply afraid of the creatures, but someone has to " +
             "delve their line into the murky depths to rid the world of the monsters. I hope one day you find the courage to aid my in my noble quest. Good day my friend", "Neat");
-        
+
         main.firstResponseDialog = f;
         main.secondResponseDialog = s;
-        f.firstResponseDialog= main;
+        f.firstResponseDialog = main;
         f.secondResponseDialog = s;
         s.firstResponseDialog = main;
 

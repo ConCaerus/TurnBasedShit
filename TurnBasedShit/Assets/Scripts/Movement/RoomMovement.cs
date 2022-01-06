@@ -6,6 +6,7 @@ using UnityEngine.Events;
 public class RoomMovement : LocationMovement {
     [SerializeField] GameObject door;
     [SerializeField] GameObject[] buildingOjbects;
+    [SerializeField] AudioClip doorSound;
 
     [SerializeField] doorDestinations destination;
 
@@ -34,9 +35,11 @@ public class RoomMovement : LocationMovement {
         }
 
 
-        if(Mathf.Abs(door.transform.position.x - transform.position.x) < distToInt) {
-            if(destination == doorDestinations.town)
+        if(door != null && Mathf.Abs(door.transform.position.x - transform.position.x) < distToInt) {
+            if(destination == doorDestinations.town) {
+                FindObjectOfType<AudioManager>().playSound(doorSound);
                 GameInfo.getCurrentLocationAsTown().enterLocation(FindObjectOfType<TransitionCanvas>());
+            }
             else if(destination == doorDestinations.map)
                 FindObjectOfType<TransitionCanvas>().loadSceneWithTransition("Map");
         }

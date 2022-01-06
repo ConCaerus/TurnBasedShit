@@ -18,6 +18,14 @@ MonoBehaviour:
     type: 2
     rarity: 0
     coinCost: 0
+    canBeFished: 0
+    maxStackCount: 1
+    fishedData:
+      hookedPos: {x: 0, y: 0}
+      scale: 0
+      hookedRot: 0
+      chanceToCatch: 0
+    flavor: Works like a charm.
     tEffects: []
     pEffects:
     - effect: 3

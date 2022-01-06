@@ -44,16 +44,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff44c122f0dc0b14e9d36309bdd2dde4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  armorPos: {fileID: 474940520112355049}
   unit: {fileID: 142734570813866412}
   walkSound: {fileID: 8300000, guid: a61a4ee2a90aba8489ce0d6304824007, type: 3}
-  rightMost: 7.17
-  leftMost: -7.88
-  movingDir: 1
+  moveSpeed: 10
+  movingRight: 1
+  movingDown: 1
   canMove: 1
   isMoving: 0
+  interactDist: 0
+  interactString: W
+  interactText: {fileID: 0}
+  rightMost: 7.17
+  leftMost: -7.88
   door: {fileID: 0}
   buildingOjbects: []
+  doorSound: {fileID: 8300000, guid: 9eb1dd611db727d458b8ae1342491d09, type: 3}
+  destination: 0
+  interactFunc:
+    m_PersistentCalls:
+      m_Calls: []
+  deinteractFunc:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &1022610709085025161
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -132,12 +144,6 @@ GameObject:
 --- !u!4 &142734570813866413 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1137743091860681252, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
-    type: 3}
-  m_PrefabInstance: {fileID: 1022610709085025161}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &474940520112355049 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 623283349279573344, guid: 21401ef7c3cf5474e879d2cd0c5b1e0e,
     type: 3}
   m_PrefabInstance: {fileID: 1022610709085025161}
   m_PrefabAsset: {fileID: 0}

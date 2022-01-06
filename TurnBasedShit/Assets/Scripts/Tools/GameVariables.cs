@@ -38,7 +38,7 @@ public static class GameVariables {
     }
 
     public static bool chanceEquipmentWornDecrease() {
-        return chanceOutOfHundred(10);
+        return chanceOutOfHundred(4);
     }
 
 
@@ -92,6 +92,11 @@ public static class GameVariables {
         if(rand < 75)
             return 1;
         return 0;
+    }
+
+    //  Map chances
+    public static bool chanceEnemyBeingSpecial() {
+        return chanceOutOfHundred(100);
     }
 
 

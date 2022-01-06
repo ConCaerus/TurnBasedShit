@@ -8,8 +8,6 @@ public class PickupQuest : Quest {
 
     public PickupLocation location;
 
-    public Collectable col;
-
 
     public PickupQuest(PickupLocation pickup, bool setID) {
         if(setID)
@@ -21,14 +19,10 @@ public class PickupQuest : Quest {
             return;
         }
 
-        if(pickup.col != null && !pickup.col.isEmpty()) {
-            col = pickup.col;
-        }
-
         location = pickup;
     }
 
-    public override questType getType() {
+    public override questType getQuestType() {
         return questType.pickup;
     }
 }

@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class FishingQuest : Quest {
-    public Collectable fish;
 
-
-    public FishingQuest(Collectable f) {
-        fish = f;
-        if(!fish.canBeFished)
-            fish = null;
+    public FishingQuest(FishingLocation loc, bool setID) {
+        if(setID)
+            instanceID = GameInfo.getNextQuestInstanceID();
     }
 
-    public override questType getType() {
+    public override questType getQuestType() {
         return questType.fishing;
     }
 }

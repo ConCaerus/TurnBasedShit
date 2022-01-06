@@ -6,6 +6,7 @@ using UnityEngine;
 public class EnemyUnitInstance : UnitClass {
     public GameInfo.region enemyDiff = 0;
     public Weapon.attackType weakTo;
+    [SerializeField] AnimationClip idle;
 
     public WeaponPreset weaponDrop;
     public int chanceToDropWeapon;
@@ -21,11 +22,9 @@ public class EnemyUnitInstance : UnitClass {
 
     public type enemyType;
 
-    Coroutine idler = null;
-
     [System.Serializable]
     public enum type {
-        slime, groundBird, stumpSpider
+        slime, groundBird, stumpSpider, rockCrawler
     }
 
 
@@ -37,34 +36,26 @@ public class EnemyUnitInstance : UnitClass {
         if(GetComponent<Animator>() != null) {
             GetComponent<Animator>().speed = 1.0f;
             GetComponent<Animator>().SetTrigger("attack");
-            if(idler != null)
-                StopCoroutine(idler);
-            idler = StartCoroutine(returnToIdle());
         }
     }
     public override void setDefendingAnim() {
         if(GetComponent<Animator>() != null) {
             GetComponent<Animator>().speed = 1.0f;
             GetComponent<Animator>().SetTrigger("defend");
-            if(idler != null)
-                StopCoroutine(idler);
-            idler = StartCoroutine(returnToIdle());
         }
     }
 
-    public IEnumerator combatTurn() {
-        if(FindObjectOfType<TurnOrderSorter>().playingUnit != gameObject)
-            yield return 0;
+    public bool isIdle() {
+        return GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip == idle;
+    }
 
+    public IEnumerator combatTurn() {
         if(attackingTarget == null)
             calcNextAttackingTarget();
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
 
-        if(attackingTarget != null) {
-            yield return new WaitForSeconds(0.5f);
-            attack(attackingTarget);
-        }
+        attack(attackingTarget);
     }
 
 
@@ -73,7 +64,7 @@ public class EnemyUnitInstance : UnitClass {
         float defaultChancePerUnit = 100.0f / attackableCount;
         float total = 0.0f;
 
-        
+
 
         for(int i = 0; i < attackableCount; i++) {
             if(i < Party.getMemberCount()) {
@@ -122,30 +113,12 @@ public class EnemyUnitInstance : UnitClass {
     }
 
 
-
-    IEnumerator returnToIdle() {
-        yield return new WaitForEndOfFrame();
-
-        if(isDone()) {
-            GetComponent<Animator>().SetInteger("state", 0);
-        }
-        else
-            idler = StartCoroutine(returnToIdle());
-    }
-
-    bool isDone() {
-        if(GetComponent<Animator>() == null || GetComponent<Animator>().GetInteger("state") == 0)
-            return false;
-        return GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && !GetComponent<Animator>().IsInTransition(0);
-    }
-
-
     public void chanceWeaponDrop(int bonusChance) {
         if(weaponDrop == null)
             return;
         if(GameVariables.chanceOutOfHundred(chanceToDropWeapon + bonusChance)) {
             var loc = GameInfo.getCombatDetails();
-            loc.collectables.Add(weaponDrop.preset);
+            loc.spoils.addObject<Collectable>(FindObjectOfType<PresetLibrary>().getWeapon(weaponDrop.preset));
             GameInfo.setCombatDetails(loc);
         }
     }
@@ -154,7 +127,7 @@ public class EnemyUnitInstance : UnitClass {
             return;
         if(GameVariables.chanceOutOfHundred(chanceToDropArmor + bonusChance)) {
             var loc = GameInfo.getCombatDetails();
-            loc.collectables.Add(armorDrop.preset);
+            loc.spoils.addObject<Collectable>(FindObjectOfType<PresetLibrary>().getArmor(armorDrop.preset));
             GameInfo.setCombatDetails(loc);
         }
     }
@@ -163,7 +136,7 @@ public class EnemyUnitInstance : UnitClass {
             return;
         if(GameVariables.chanceOutOfHundred(chanceToDropItem + bonusChance)) {
             var loc = GameInfo.getCombatDetails();
-            loc.collectables.Add(itemDrop.preset);
+            loc.spoils.addObject<Collectable>(FindObjectOfType<PresetLibrary>().getItem(itemDrop.preset));
             GameInfo.setCombatDetails(loc);
         }
     }
@@ -172,7 +145,7 @@ public class EnemyUnitInstance : UnitClass {
             return;
         if(GameVariables.chanceOutOfHundred(chanceToDropUsable + bonusChance)) {
             var loc = GameInfo.getCombatDetails();
-            loc.collectables.Add(usableDrop.preset);
+            loc.spoils.addObject<Collectable>(FindObjectOfType<PresetLibrary>().getUsable(usableDrop.preset));
             GameInfo.setCombatDetails(loc);
         }
     }
@@ -181,7 +154,7 @@ public class EnemyUnitInstance : UnitClass {
             return;
         if(GameVariables.chanceOutOfHundred(chanceToDropUnusable + bonusChance)) {
             var loc = GameInfo.getCombatDetails();
-            loc.collectables.Add(unusableDrop.preset);
+            loc.spoils.addObject<Collectable>(FindObjectOfType<PresetLibrary>().getUnusable(unusableDrop.preset));
             GameInfo.setCombatDetails(loc);
         }
     }

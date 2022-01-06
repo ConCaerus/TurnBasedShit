@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class UnitSpriteHandler : MonoBehaviour {
     public GameObject head, face, body, rArm, lArm, weapon, armor, rShoulder, lShoulder, hat;
@@ -48,7 +49,7 @@ public class UnitSpriteHandler : MonoBehaviour {
         setHead();
         setFace();
         setBody();
-        setColor();
+        setToNormalColor();
         offsetLayer();
 
         if(FindObjectOfType<PartyObject>() != null)
@@ -70,7 +71,7 @@ public class UnitSpriteHandler : MonoBehaviour {
 
         setFace();
         setArmor();
-        setColor();
+        setToNormalColor();
         offsetLayer();
     }
     public void setFace() {
@@ -94,7 +95,7 @@ public class UnitSpriteHandler : MonoBehaviour {
             if(body.GetComponentsInChildren<Transform>()[i].GetComponent<SpriteRenderer>() != null)
                 body.GetComponentsInChildren<Transform>()[i].GetComponent<SpriteRenderer>().sprite = b.GetComponentsInChildren<Transform>()[i].GetComponent<SpriteRenderer>().sprite;
         }
-        setColor();
+        setToNormalColor();
         setHead();
 
         setWeapon();
@@ -117,8 +118,7 @@ public class UnitSpriteHandler : MonoBehaviour {
         return showingFace;
     }
 
-    //  add a tint parameter
-    public void setColor() {
+    public void setToNormalColor() {
         var c = reference.u_sprite.color;
         //  body
         body.GetComponent<SpriteRenderer>().color = c;
@@ -129,6 +129,40 @@ public class UnitSpriteHandler : MonoBehaviour {
 
         //  head
         head.GetComponent<SpriteRenderer>().color = c;
+    }
+    public void setATempColor(Color c) {
+        //  body
+        body.GetComponent<SpriteRenderer>().color = c;
+
+        //  arms
+        body.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().color = c;
+        body.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().color = c;
+
+        //  head
+        head.GetComponent<SpriteRenderer>().color = c;
+    }
+    public void tweenColorToNormal(float time) {
+        var c = reference.u_sprite.color;
+        //  body
+        body.GetComponent<SpriteRenderer>().DOColor(c, time);
+
+        //  arms
+        body.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().DOColor(c, time);
+        body.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().DOColor(c, time);
+
+        //  head
+        head.GetComponent<SpriteRenderer>().DOColor(c, time);
+    }
+    public void tweenColor(Color c, float time) {
+        //  body
+        body.GetComponent<SpriteRenderer>().DOColor(c, time);
+
+        //  arms
+        body.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().DOColor(c, time);
+        body.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().DOColor(c, time);
+
+        //  head
+        head.GetComponent<SpriteRenderer>().DOColor(c, time);
     }
     public Color getColor() {
         return col;

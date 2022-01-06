@@ -386,7 +386,7 @@ Transform:
   m_GameObject: {fileID: 5375930182506040063}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.05, z: 0}
-  m_LocalScale: {x: 0.35, y: 0.35, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5375930182369277727}
   - {fileID: 3495081191533809804}
@@ -465,12 +465,13 @@ MonoBehaviour:
   tempPowerMod: 1
   tempDefenceMod: 0
   tempSpeedMod: 1
-  spotOffset: 0.25
+  spotOffset: 0.762
   stats:
     u_name: Ground Bird
     u_expCap: 25
     u_exp: 0
     u_level: 2
+    u_skillExpCap: 100
     u_bluntExp: 0
     u_edgedExp: 0
     u_summonedExp: 0
@@ -486,25 +487,28 @@ MonoBehaviour:
     u_power: 8
     u_defence: 1
     u_critChance: 0.01
+    u_missChance: 1
     u_bleedCount: 0
     u_instanceID: -1
-    equippedWeapon:
+    weapon:
       instanceID: -1
       name: 
-      type: 0
-      rarity: 0
+      type: -1
+      rarity: -1
       coinCost: 0
       canBeFished: 0
+      maxStackCount: 1
       fishedData:
         hookedPos: {x: 0, y: 0}
+        scale: 0
         hookedRot: 0
-        diffRegion: 0
         chanceToCatch: 0
+      flavor: Choco
       wornAmount: 3
       attributes: 
       sUsage: 0
       sUsageAmount: 0
-      aType: 0
+      aType: -1
       power: 0
       speedMod: 0
       sprite:
@@ -514,18 +518,20 @@ MonoBehaviour:
         equippedRot: 0
         equippedXSize: 0
         equippedYSize: 0
-    equippedArmor:
+    armor:
       instanceID: -1
       name: 
-      type: 0
-      rarity: 0
+      type: -1
+      rarity: -1
       coinCost: 0
       canBeFished: 0
+      maxStackCount: 1
       fishedData:
         hookedPos: {x: 0, y: 0}
+        scale: 0
         hookedRot: 0
-        diffRegion: 0
         chanceToCatch: 0
+      flavor: Choco
       wornAmount: 3
       attributes: 
       defence: 0
@@ -574,18 +580,20 @@ MonoBehaviour:
         yHatPos2: 0
         xHatSize2: 0
         yHatSize2: 0
-    equippedItem:
+    item:
       instanceID: -1
       name: 
-      type: 0
-      rarity: 0
+      type: -1
+      rarity: -1
       coinCost: 0
       canBeFished: 0
+      maxStackCount: 1
       fishedData:
         hookedPos: {x: 0, y: 0}
+        scale: 0
         hookedRot: 0
-        diffRegion: 0
         chanceToCatch: 0
+      flavor: Choco
       tEffects: []
       pEffects: []
       sprite:
@@ -597,16 +605,18 @@ MonoBehaviour:
       enemyType: 0
   enemyDiff: 2
   weakTo: 0
+  idle: {fileID: 7400000, guid: ffea113519c4060438781078f9f0fea0, type: 2}
   weaponDrop: {fileID: 0}
   chanceToDropWeapon: 0
   armorDrop: {fileID: 0}
   chanceToDropArmor: 0
   itemDrop: {fileID: 11400000, guid: ff9c21fd13ec0ec4e8a99b9a9205e55d, type: 2}
   chanceToDropItem: 5
-  consumableDrop: {fileID: 0}
-  chanceToDropConsumable: 0
+  usableDrop: {fileID: 0}
+  chanceToDropUsable: 0
+  unusableDrop: {fileID: 0}
+  chanceToDropUnusable: 0
   enemyType: 1
-  profileIndex: 0
 --- !u!114 &2268679967223299726
 MonoBehaviour:
   m_ObjectHideFlags: 0

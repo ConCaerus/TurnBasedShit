@@ -42,18 +42,17 @@ public class BuildingSpawner : MonoBehaviour {
 
 
     private void Update() {
-        bool close = false;
+        GameObject closest = null;
         foreach(var i in buildingObjects) {
             if(Mathf.Abs(i.transform.position.x - FindObjectOfType<LocationMovement>().transform.position.x) < distToInteract) {
-                close = true;
-                break;
+                closest = i.gameObject;
             }
         }
 
-        if(close)
-            FindObjectOfType<LocationMovement>().showInteractText();
+        if(closest != null)
+            FindObjectOfType<InteractionCanvas>().show(closest.transform.position);
         else
-            FindObjectOfType<LocationMovement>().hideInteractText();
+            FindObjectOfType<InteractionCanvas>().hide();
     }
 
 

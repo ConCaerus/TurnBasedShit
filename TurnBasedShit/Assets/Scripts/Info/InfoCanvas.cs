@@ -33,9 +33,13 @@ public class InfoCanvas : MonoBehaviour {
     }
 
     void positionInfoBox() {
-        var offset = (background.GetComponent<RectTransform>().sizeDelta / 2.9f) * new Vector2(1.0f, -1.0f);
         Vector2 pos;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(GetComponent<Canvas>().transform as RectTransform, Input.mousePosition, GetComponent<Canvas>().worldCamera, out pos);
+        Vector2 offset;
+        if(pos.x < 0.0f) 
+            offset = (background.GetComponent<RectTransform>().sizeDelta / 2.9f) * new Vector2(1.0f, -1.0f);
+        else
+            offset = (background.GetComponent<RectTransform>().sizeDelta / 2.9f) * new Vector2(-0.9f, -1.0f);
         background.transform.position = GetComponent<Canvas>().transform.TransformPoint(pos + offset);
     }
 
@@ -47,8 +51,12 @@ public class InfoCanvas : MonoBehaviour {
     }
 
     public void startShowing(InfoBearer ib) {
-        if(shower != null)
-            StopCoroutine(shower);
+        if(shower != null) {
+            if(shownInfo != ib)
+                StopCoroutine(shower);
+            else
+                return;
+        }
 
         shownInfo = ib;
         background.GetComponent<Image>().DOComplete();
@@ -77,8 +85,10 @@ public class InfoCanvas : MonoBehaviour {
         infoText.GetComponent<LayoutElement>().preferredWidth = 200.0f;
         setAndPositionInfo(info);
 
-        if(!shown)
+
+        if(!shown) {
             yield return new WaitForSeconds(waitTimeForInfo);
+        }
         else
             yield return new WaitForEndOfFrame();
 

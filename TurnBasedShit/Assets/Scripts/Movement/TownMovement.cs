@@ -4,11 +4,11 @@ using UnityEngine;
 using DG.Tweening;
 
 public class TownMovement : LocationMovement {
+    [SerializeField] AudioClip doorSound;
 
 
     private void Start() {
         var town = GameInfo.getCurrentLocationAsTown();
-        hideInteractText();
 
         rightMost = FindObjectOfType<BuildingSpawner>().endingX;
 
@@ -35,6 +35,7 @@ public class TownMovement : LocationMovement {
         var b = FindObjectOfType<BuildingSpawner>().getBuildingWithinInteractRange(transform.position.x);
         if(b != null) {
             FindObjectOfType<TownCameraMovement>().zoomIn(new Vector2(0.0f, 2.0f));
+            FindObjectOfType<AudioManager>().playSound(doorSound);
             StartCoroutine(enterBuilding(b.GetComponent<BuildingInstance>()));
             return;
         }

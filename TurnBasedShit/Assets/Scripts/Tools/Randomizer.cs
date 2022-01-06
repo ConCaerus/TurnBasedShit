@@ -23,11 +23,6 @@ public static class Randomizer {
         return u;
     }
 
-    public static CombatLocation randomizeCombatLocation(CombatLocation cl) {
-        //  this function currently does nothing
-        return cl;
-    }
-
     public static HospitalBuilding randomizeBuilding(HospitalBuilding hos) {
         var temp = new HospitalBuilding();
         temp.setEqualTo(hos);

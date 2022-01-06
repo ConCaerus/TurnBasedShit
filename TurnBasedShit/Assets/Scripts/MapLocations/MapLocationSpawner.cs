@@ -8,7 +8,7 @@ public class MapLocationSpawner : MonoBehaviour {
     public GameObject bridgePreset;
     public GameObject bossLocationPreset, rescueLocationPreset, townLocationPreset, upgradeLocationPreset, pickupLocationPreset, fishingLocationPreset, eyeLocationPreset;
 
-    public List<GameObject> currentIcons = new List<GameObject>();
+    List<GameObject> currentIcons = new List<GameObject>();
 
     float distToInteract = 1.0f;
 
@@ -24,13 +24,13 @@ public class MapLocationSpawner : MonoBehaviour {
             Destroy(i.gameObject);
 
         //  Boss Locations
-        for(int i = 0; i < ActiveQuests.getBossFightQuestCount(); i++) {
-            if(ActiveQuests.getBossFightQuest(i).location.region != GameInfo.getCurrentRegion())
+        for(int i = 0; i < MapLocationHolder.getBossCount(); i++) {
+            if(MapLocationHolder.getBossLocation(i).region != GameInfo.getCurrentRegion())
                 continue;
             //  positioning and scaling
             var obj = Instantiate(bossLocationPreset.gameObject);
             obj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-            obj.transform.position = ActiveQuests.getBossFightQuest(i).location.pos;
+            obj.transform.position = MapLocationHolder.getBossLocation(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
 
@@ -51,12 +51,12 @@ public class MapLocationSpawner : MonoBehaviour {
         }
 
         //  Rescue Locations
-        for(int i = 0; i < ActiveQuests.getRescueQuestCount(); i++) {
-            if(ActiveQuests.getRescueQuest(i).location.region != GameInfo.getCurrentRegion())
+        for(int i = 0; i < MapLocationHolder.getRescueCount(); i++) {
+            if(MapLocationHolder.getRescueLocation(i).region != GameInfo.getCurrentRegion())
                 continue;
             //  positioning and scaling
             var obj = Instantiate(rescueLocationPreset.gameObject);
-            obj.transform.position = ActiveQuests.getRescueQuest(i).location.pos;
+            obj.transform.position = MapLocationHolder.getRescueLocation(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
 
@@ -77,12 +77,12 @@ public class MapLocationSpawner : MonoBehaviour {
         }
 
         //  Pickup Locations
-        for(int i = 0; i < ActiveQuests.getPickupQuestCount(); i++) {
-            if(ActiveQuests.getPickupQuest(i).location.region != GameInfo.getCurrentRegion())
+        for(int i = 0; i < MapLocationHolder.getPickupCount(); i++) {
+            if(MapLocationHolder.getPickupLocation(i).region != GameInfo.getCurrentRegion())
                 continue;
             //  positioning and scaling
             var obj = Instantiate(pickupLocationPreset.gameObject);
-            obj.transform.position = ActiveQuests.getPickupQuest(i).location.pos;
+            obj.transform.position = MapLocationHolder.getPickupLocation(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
 
@@ -144,23 +144,13 @@ public class MapLocationSpawner : MonoBehaviour {
         }
     }
 
-    GameObject checkIconsProximity() {
-        GameObject selected = null;
-        float d = distToInteract + 1.0f;
+    public List<GameObject> getCurrentObjects() {
+        var temp = new List<GameObject>();
         foreach(var i in currentIcons) {
-            var dist = Vector2.Distance(i.transform.position, FindObjectOfType<MapMovement>().transform.position);
-
-            if(dist < distToInteract && selected == null) {
-                selected = i.gameObject;
-                d = dist;
-            }
-
-            else if(dist < distToInteract && selected != null && dist < d) {
-                selected = i.gameObject;
-                d = dist;
-            }
+            if(FindObjectOfType<MapFogTexture>().isPositionCleared(i.transform.position))
+                temp.Add(i.gameObject);
         }
 
-        return selected;
+        return temp;
     }
 }

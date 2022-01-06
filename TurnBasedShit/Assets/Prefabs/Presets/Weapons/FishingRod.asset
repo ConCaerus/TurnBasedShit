@@ -19,11 +19,13 @@ MonoBehaviour:
     rarity: 0
     coinCost: 4
     canBeFished: 0
+    maxStackCount: 1
     fishedData:
       hookedPos: {x: 0, y: 0}
+      scale: 0
       hookedRot: 0
-      diffRegion: 0
       chanceToCatch: 0
+    flavor: Just an old rod.
     wornAmount: 3
     attributes: 
     sUsage: 0
