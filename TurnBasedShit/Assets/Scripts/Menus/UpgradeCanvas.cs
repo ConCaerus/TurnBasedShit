@@ -67,9 +67,9 @@ public class UpgradeCanvas : MonoBehaviour {
         }
 
         //  Inventory Equipment
-        for(int i = 0; i < Inventory.getWeaponCount(); i++) {
+        for(int i = 0; i < Inventory.getHolder().getObjectCount<Weapon>(); i++) {
             if(index == 0)
-                return Inventory.getWeapon(i);
+                return Inventory.getHolder().getObject<Weapon>(i);
             index--;
         }
 
@@ -89,9 +89,9 @@ public class UpgradeCanvas : MonoBehaviour {
         }
 
         //  Inventory Equipment
-        for(int i = 0; i < Inventory.getArmorCount(); i++) {
+        for(int i = 0; i < Inventory.getHolder().getObjectCount<Armor>(); i++) {
             if(index == 0)
-                return Inventory.getArmor(i);
+                return Inventory.getHolder().getObject<Armor>(i);
             index--;
         }
 
@@ -113,10 +113,10 @@ public class UpgradeCanvas : MonoBehaviour {
             }
 
             //  Inventory Equipment
-            for(int i = 0; i < Inventory.getWeaponCount(); i++) {
-                var s = slot.createSlot(index, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getWeapon(i).rarity));
+            for(int i = 0; i < Inventory.getHolder().getObjectCount<Weapon>(); i++) {
+                var s = slot.createSlot(index, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getHolder().getObject<Weapon>(i).rarity));
                 s.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Inv";
-                s.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getWeapon(i)).sprite;
+                s.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getHolder().getObject<Weapon>(i)).sprite;
                 index++;
             }
         }
@@ -134,10 +134,10 @@ public class UpgradeCanvas : MonoBehaviour {
             }
 
             //  Inventory Equipment
-            for(int i = 0; i < Inventory.getArmorCount(); i++) {
-                var s = slot.createSlot(index, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getArmor(i).rarity));
+            for(int i = 0; i < Inventory.getHolder().getObjectCount<Armor>(); i++) {
+                var s = slot.createSlot(index, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getHolder().getObject<Armor>(i).rarity));
                 s.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Inv";
-                s.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getArmor(i)).sprite;
+                s.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getHolder().getObject<Armor>(i)).sprite;
                 index++;
             }
         }
@@ -215,9 +215,9 @@ public class UpgradeCanvas : MonoBehaviour {
             }
 
             //  Inventory Equipment
-            for(int i = 0; i < Inventory.getWeaponCount(); i++) {
-                if(we.isTheSameInstanceAs(Inventory.getWeapon(i))) {
-                    Inventory.overrideWeapon(i, we);
+            for(int i = 0; i < Inventory.getHolder().getObjectCount<Weapon>(); i++) {
+                if(we.isTheSameInstanceAs(Inventory.getHolder().getObject<Weapon>(i))) {
+                    Inventory.overrideCollectable(i, we);
 
                     hasBeenUsed = true;
                     FindObjectOfType<RoomMovement>().deinteract();
@@ -257,9 +257,9 @@ public class UpgradeCanvas : MonoBehaviour {
             }
 
             //  Inventory Equipment
-            for(int i = 0; i < Inventory.getArmorCount(); i++) {
-                if(ar.isTheSameInstanceAs(Inventory.getArmor(i))) {
-                    Inventory.overrideArmor(i, ar);
+            for(int i = 0; i < Inventory.getHolder().getObjectCount<Armor>(); i++) {
+                if(ar.isTheSameInstanceAs(Inventory.getHolder().getObject<Armor>(i))) {
+                    Inventory.overrideCollectable(i, ar);
 
                     hasBeenUsed = true;
                     FindObjectOfType<RoomMovement>().deinteract();

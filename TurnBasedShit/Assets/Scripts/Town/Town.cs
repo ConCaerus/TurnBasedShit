@@ -17,10 +17,8 @@ public class Town {
     public bool visited = false;
 
     //  Building Save Data
-    string buildingTag(Building.type t) {
-        return "Buildings In Town " + t_instanceID.ToString() + " " + t.ToString();
-    }
-
+    public ObjectHolder holder;
+    /*
     public void clearBuildings() {
         for(int i = 0; i < Building.buildingTypeCount; i++) {
             SaveData.deleteKey(buildingTag((Building.type)i));
@@ -103,86 +101,86 @@ public class Town {
         if(getBlacksmith() != null)
             count++;
         return count;
-    }
+    }*/
     public void randomizeBuildings() {
         List<int> useables = new List<int>();
-        for(int i = 0; i < getBuildingCount(); i++)
+        for(int i = 0; i < holder.getObjectCount<Building>(); i++)
             useables.Add(i);
 
-        if(getHospital() != null) {
-            var temp = getHospital();
+        if(holder.getObject<HospitalBuilding>(0) != null) {
+            var temp = holder.getObject<HospitalBuilding>(0);
             int rand = Random.Range(0, useables.Count);
             temp.orderInTown = useables[rand];
             useables.RemoveAt(rand);
-            addBuilding(temp);
+            holder.overrideObject<Building>(0, temp);
         }
-        if(getChurch() != null) {
-            var temp = getChurch();
+        if(holder.getObject<ChurchBuilding>(0) != null) {
+            var temp = holder.getObject<ChurchBuilding>(0);
             int rand = Random.Range(0, useables.Count);
             temp.orderInTown = useables[rand];
             useables.RemoveAt(rand);
-            addBuilding(temp);
+            holder.overrideObject<Building>(0, temp);
         }
-        if(getShop() != null) {
-            var temp = getShop();
+        if(holder.getObject<ShopBuilding>(0) != null) {
+            var temp = holder.getObject<ShopBuilding>(0);
             int rand = Random.Range(0, useables.Count);
             temp.orderInTown = useables[rand];
             useables.RemoveAt(rand);
-            addBuilding(temp);
+            holder.overrideObject<Building>(0, temp);
         }
-        if(getCasino() != null) {
-            var temp = getCasino();
+        if(holder.getObject<CasinoBuilding>(0) != null) {
+            var temp = holder.getObject<CasinoBuilding>(0);
             int rand = Random.Range(0, useables.Count);
             temp.orderInTown = useables[rand];
             useables.RemoveAt(rand);
-            addBuilding(temp);
+            holder.overrideObject<Building>(0, temp);
         }
-        if(getBlacksmith() != null) {
-            var temp = getBlacksmith();
+        if(holder.getObject<BlacksmithBuilding>(0) != null) {
+            var temp = holder.getObject<BlacksmithBuilding>(0);
             int rand = Random.Range(0, useables.Count);
             temp.orderInTown = useables[rand];
             useables.RemoveAt(rand);
-            addBuilding(temp);
+            holder.overrideObject<Building>(0, temp);
         }
     }
     public Building.type getBuidingTypeWithOrder(int or) {
-        if(getHospital() != null && getHospital().orderInTown == or)
+        if(holder.getObject<HospitalBuilding>(0) != null && holder.getObject<HospitalBuilding>(0).orderInTown == or)
             return Building.type.Hospital;
-        if(getChurch() != null && getChurch().orderInTown == or)
+        if(holder.getObject<ChurchBuilding>(0) != null && holder.getObject<ChurchBuilding>(0).orderInTown == or)
             return Building.type.Church;
-        if(getShop() != null && getShop().orderInTown == or)
+        if(holder.getObject<ShopBuilding>(0) != null && holder.getObject<ShopBuilding>(0).orderInTown == or)
             return Building.type.Shop;
-        if(getCasino() != null && getCasino().orderInTown == or)
+        if(holder.getObject<CasinoBuilding>(0) != null && holder.getObject<CasinoBuilding>(0).orderInTown == or)
             return Building.type.Casino;
-        if(getBlacksmith() != null && getBlacksmith().orderInTown == or)
+        if(holder.getObject<BlacksmithBuilding>(0) != null && holder.getObject<BlacksmithBuilding>(0).orderInTown == or)
             return Building.type.Blacksmith;
         return (Building.type)(-1);
     }
     public int getOrderForBuilding(Building.type t) {
         switch(t) {
             case Building.type.Hospital:
-                if(getHospital() != null)
-                    return getHospital().orderInTown;
+                if(holder.getObject<HospitalBuilding>(0) != null)
+                    return holder.getObject<HospitalBuilding>(0).orderInTown;
                 return -1;
 
             case Building.type.Church:
-                if(getChurch() != null)
-                    return getChurch().orderInTown;
+                if(holder.getObject<ChurchBuilding>(0) != null)
+                    return holder.getObject<ChurchBuilding>(0).orderInTown;
                 return -1;
 
             case Building.type.Shop:
-                if(getShop() != null)
-                    return getShop().orderInTown;
+                if(holder.getObject<ShopBuilding>(0) != null)
+                    return holder.getObject<ShopBuilding>(0).orderInTown;
                 return -1;
 
             case Building.type.Casino:
-                if(getCasino() != null)
-                    return getCasino().orderInTown;
+                if(holder.getObject<CasinoBuilding>(0) != null)
+                    return holder.getObject<CasinoBuilding>(0).orderInTown;
                 return -1;
 
             case Building.type.Blacksmith:
-                if(getBlacksmith() != null)
-                    return getBlacksmith().orderInTown;
+                if(holder.getObject<BlacksmithBuilding>(0) != null)
+                    return holder.getObject<BlacksmithBuilding>(0).orderInTown;
                 return -1;
         }
         return -1;
@@ -191,33 +189,33 @@ public class Town {
     public void saveBuildingOrder(Building.type t, int order) {
         switch(t) {
             case Building.type.Hospital:
-                var hos = getHospital();
+                var hos = holder.getObject<HospitalBuilding>(0);
                 hos.orderInTown = order;
-                addBuilding(hos);
+                holder.overrideObject<Building>(0, hos);
                 break;
 
             case Building.type.Shop:
-                var shop = getShop();
+                var shop = holder.getObject<ShopBuilding>(0);
                 shop.orderInTown = order;
-                addBuilding(shop);
+                holder.overrideObject<Building>(0, shop);
                 break;
 
             case Building.type.Church:
-                var chur = getChurch();
+                var chur = holder.getObject<ChurchBuilding>(0);
                 chur.orderInTown = order;
-                addBuilding(chur);
+                holder.overrideObject<Building>(0, chur);
                 break;
 
             case Building.type.Casino:
-                var cas = getCasino();
+                var cas = holder.getObject<CasinoBuilding>(0);
                 cas.orderInTown = order;
-                addBuilding(cas);
+                holder.overrideObject<Building>(0, cas);
                 break;
 
             case Building.type.Blacksmith:
-                var blac = getBlacksmith();
+                var blac = holder.getObject<BlacksmithBuilding>(0);
                 blac.orderInTown = order;
-                addBuilding(blac);
+                holder.overrideObject<Building>(0, blac);
                 break;
         }
     }
@@ -309,19 +307,19 @@ public class Town {
     public bool hasBuilding(Building.type t) {
         switch(t) {
             case Building.type.Church:
-                return getChurch() != null;
+                return holder.getObject<ChurchBuilding>(0) != null;
 
             case Building.type.Hospital:
-                return getHospital() != null;
+                return holder.getObject<HospitalBuilding>(0) != null;
 
             case Building.type.Shop:
-                return getShop() != null;
+                return holder.getObject<ShopBuilding>(0) != null;
 
             case Building.type.Casino:
-                return getCasino() != null;
+                return holder.getObject<CasinoBuilding>(0) != null;
 
             case Building.type.Blacksmith:
-                return getBlacksmith() != null;
+                return holder.getObject<BlacksmithBuilding>(0) != null;
         }
 
         return false;
@@ -335,7 +333,7 @@ public class Town {
         t_name = NameLibrary.getRandomUsableTownName();
         region = diff;
 
-        clearBuildings();
+        holder = new ObjectHolder();
         int index = 0;
         for(int i = 0; i < Building.buildingTypeCount; i++) {
             if(GameVariables.shouldTownHaveBuilding((Building.type)i)) {
@@ -344,27 +342,27 @@ public class Town {
                 if(b.GetComponent<HospitalInstance>() != null) {
                     b.GetComponent<HospitalInstance>().reference.orderInTown = index;
                     b.GetComponent<HospitalInstance>().reference.setEqualTo(Randomizer.randomizeBuilding(b.GetComponent<HospitalInstance>().reference));
-                    addBuilding(b.GetComponent<HospitalInstance>().reference);
+                    holder.addObject<Building>(b.GetComponent<HospitalInstance>().reference);
                 }
                 else if(b.GetComponent<ChurchInstance>() != null) {
                     b.GetComponent<ChurchInstance>().reference.orderInTown = index;
                     b.GetComponent<ChurchInstance>().reference.setEqualTo(Randomizer.randomizeBuilding(b.GetComponent<ChurchInstance>().reference));
-                    addBuilding(b.GetComponent<ChurchInstance>().reference);
+                    holder.addObject<Building>(b.GetComponent<ChurchInstance>().reference);
                 }
                 else if(b.GetComponent<ShopInstance>() != null) {
                     b.GetComponent<ShopInstance>().reference.orderInTown = index;
                     b.GetComponent<ShopInstance>().reference.setEqualTo(Randomizer.randomizeBuilding(b.GetComponent<ShopInstance>().reference));
-                    addBuilding(b.GetComponent<ShopInstance>().reference);
+                    holder.addObject<Building>(b.GetComponent<ShopInstance>().reference);
                 }
                 else if(b.GetComponent<CasinoInstance>() != null) {
                     b.GetComponent<CasinoInstance>().reference.orderInTown = index;
                     b.GetComponent<CasinoInstance>().reference.setEqualTo(Randomizer.randomizeBuilding(b.GetComponent<CasinoInstance>().reference));
-                    addBuilding(b.GetComponent<CasinoInstance>().reference);
+                    holder.addObject<Building>(b.GetComponent<CasinoInstance>().reference);
                 }
                 else if(b.GetComponent<BlacksmithInstance>() != null) {
                     b.GetComponent<BlacksmithInstance>().reference.orderInTown = index;
                     b.GetComponent<BlacksmithInstance>().reference.setEqualTo(Randomizer.randomizeBuilding(b.GetComponent<BlacksmithInstance>().reference));
-                    addBuilding(b.GetComponent<BlacksmithInstance>().reference);
+                    holder.addObject<Building>(b.GetComponent<BlacksmithInstance>().reference);
                 }
 
                 index++;
@@ -372,33 +370,33 @@ public class Town {
         }
 
         //  town came out with no buildings also randomizes the order of buildings
-        if(getBuildingCount() == 0) {
+        if(holder.getObjectCount<Building>() == 0) {
             var b = lib.getBuilding((Building.type)Random.Range(0, Building.buildingTypeCount));
 
             if(b.GetComponent<HospitalInstance>() != null) {
                 b.GetComponent<HospitalInstance>().reference.orderInTown = index;
                 b.GetComponent<HospitalInstance>().reference.setEqualTo(Randomizer.randomizeBuilding(b.GetComponent<HospitalInstance>().reference));
-                addBuilding(b.GetComponent<HospitalInstance>().reference);
+                holder.addObject<Building>(b.GetComponent<HospitalInstance>().reference);
             }
             else if(b.GetComponent<ChurchInstance>() != null) {
                 b.GetComponent<ChurchInstance>().reference.orderInTown = index;
                 b.GetComponent<ChurchInstance>().reference.setEqualTo(Randomizer.randomizeBuilding(b.GetComponent<ChurchInstance>().reference));
-                addBuilding(b.GetComponent<ChurchInstance>().reference);
+                holder.addObject<Building>(b.GetComponent<ChurchInstance>().reference);
             }
             else if(b.GetComponent<ShopInstance>() != null) {
                 b.GetComponent<ShopInstance>().reference.orderInTown = index;
                 b.GetComponent<ShopInstance>().reference.setEqualTo(Randomizer.randomizeBuilding(b.GetComponent<ShopInstance>().reference));
-                addBuilding(b.GetComponent<ShopInstance>().reference);
+                holder.addObject<Building>(b.GetComponent<ShopInstance>().reference);
             }
             else if(b.GetComponent<CasinoInstance>() != null) {
                 b.GetComponent<CasinoInstance>().reference.orderInTown = index;
                 b.GetComponent<CasinoInstance>().reference.setEqualTo(Randomizer.randomizeBuilding(b.GetComponent<CasinoInstance>().reference));
-                addBuilding(b.GetComponent<CasinoInstance>().reference);
+                holder.addObject<Building>(b.GetComponent<CasinoInstance>().reference);
             }
             else if(b.GetComponent<BlacksmithInstance>() != null) {
                 b.GetComponent<BlacksmithInstance>().reference.orderInTown = index;
                 b.GetComponent<BlacksmithInstance>().reference.setEqualTo(Randomizer.randomizeBuilding(b.GetComponent<BlacksmithInstance>().reference));
-                addBuilding(b.GetComponent<BlacksmithInstance>().reference);
+                holder.addObject<Building>(b.GetComponent<BlacksmithInstance>().reference);
             }
             index++;
         }

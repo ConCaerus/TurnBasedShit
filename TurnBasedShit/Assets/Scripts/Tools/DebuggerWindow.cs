@@ -59,7 +59,7 @@ public class DebuggerWindow : EditorWindow {
         GUILayout.BeginHorizontal();
 
         if(GUILayout.Button("Clear Inventory")) {
-            Inventory.clearInventory(true);
+            Inventory.clear(true);
         }
 
         GUILayout.EndHorizontal();
@@ -81,7 +81,7 @@ public class DebuggerWindow : EditorWindow {
         GUILayout.EndHorizontal();
         GUILayout.BeginHorizontal();
         if(GUILayout.Button("Clear Graveyard"))
-            Graveyard.clearGraveyard();
+            Graveyard.clear();
         GUILayout.EndHorizontal();
 
         //  Quests
@@ -100,8 +100,10 @@ public class DebuggerWindow : EditorWindow {
             ActiveQuests.addQuest(FindObjectOfType<PresetLibrary>().createRandomKillQuest(true, GameInfo.getCurrentRegion()));
         if(GUILayout.Button("+Pickup"))
             ActiveQuests.addQuest(FindObjectOfType<PresetLibrary>().createRandomPickupQuest(true, true, GameInfo.getCurrentRegion()));
+        if(GUILayout.Button("+Rescue"))
+            ActiveQuests.addQuest(FindObjectOfType<PresetLibrary>().createRandomRescueQuest(true, true, GameInfo.getCurrentRegion()));
         if(GUILayout.Button("+Fishing"))
-            ActiveQuests.addQuest(FindObjectOfType<PresetLibrary>().createRandomFishingQuest(true, true, GameInfo.getCurrentRegion()));
+            ActiveQuests.addQuest(FindObjectOfType<PresetLibrary>().createRandomFishingQuest(true, GameInfo.getCurrentRegion()));
         GUILayout.EndHorizontal();
 
         //  MapLocations
@@ -156,27 +158,27 @@ public class DebuggerWindow : EditorWindow {
         for(int j = 0; j < count; j++) {
             if(weaponToAdd != null) {
                 Weapon w = FindObjectOfType<PresetLibrary>().getWeapon(weaponToAdd.preset);
-                Inventory.addWeapon(w);
+                Inventory.addCollectable(w);
             }
 
             if(armorToAdd != null) {
                 Armor a = FindObjectOfType<PresetLibrary>().getArmor(armorToAdd.preset);
-                Inventory.addArmor(a);
+                Inventory.addCollectable(a);
             }
 
             if(usableToAdd != null) {
                 Usable c = FindObjectOfType<PresetLibrary>().getUsable(usableToAdd.preset);
-                Inventory.addUsable(c);
+                Inventory.addCollectable(c);
             }
 
             if(unusableToAdd != null) {
                 Unusable c = FindObjectOfType<PresetLibrary>().getUnusable(unusableToAdd.preset);
-                Inventory.addUnusable(c);
+                Inventory.addCollectable(c);
             }
 
             if(itemToAdd != null) {
                 Item i = FindObjectOfType<PresetLibrary>().getItem(itemToAdd.preset);
-                Inventory.addItem(i);
+                Inventory.addCollectable(i);
             }
         }
 

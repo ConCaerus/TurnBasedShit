@@ -16,9 +16,8 @@ public class NPCQuestLibrary : MonoBehaviour {
 
 
     public FishingQuest getTobyQuest() {
-        var loc = FindObjectOfType<PresetLibrary>().createFishingLocation(GameInfo.getCurrentRegion());
-        loc.fish = FindObjectOfType<PresetLibrary>().getUnusable(tobysFishable.preset);
-        FishingQuest qu = new FishingQuest(loc, true);
+        var fish = FindObjectOfType<PresetLibrary>().getUnusable(tobysFishable.preset);
+        FishingQuest qu = new FishingQuest(fish, true);
         return qu;
     }
 }

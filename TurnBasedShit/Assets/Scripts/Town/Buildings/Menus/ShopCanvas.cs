@@ -28,11 +28,11 @@ public class ShopCanvas : MonoBehaviour {
 
         if(GameInfo.getCurrentLocationAsTown() == null || true) {
             var tempTown = Map.getRandomTownLocationInRegion(GameInfo.getCurrentRegion());
-            tempTown.town.addBuilding(FindObjectOfType<PresetLibrary>().getBuilding(Building.type.Shop).GetComponent<ShopInstance>().reference);
+            tempTown.town.holder.overrideObject<ShopBuilding>(0, FindObjectOfType<PresetLibrary>().getBuilding(Building.type.Shop).GetComponent<ShopInstance>().reference);
             GameInfo.setCurrentLocationAsTown(tempTown);
         }
         currentTown = GameInfo.getCurrentLocationAsTown().town;
-        currentShop = GameInfo.getCurrentLocationAsTown().town.getShop();
+        currentShop = GameInfo.getCurrentLocationAsTown().town.holder.getObject<ShopBuilding>(0);
         updateInfo();
         createSlots();
 
@@ -63,37 +63,37 @@ public class ShopCanvas : MonoBehaviour {
             Collectable currentCol = null;
             if(slotState == 0) {    //  Wepons
                 if(shopState == 0)
-                    currentCol = ShopInventory.getWeapon(currentTown.t_instanceID, slot.getSelectedSlotIndex());
+                    currentCol = ShopInventory.getHolder(currentTown.t_instanceID).getObject<Weapon>(slot.getSelectedSlotIndex());
                 else
-                    currentCol = Inventory.getWeapon(slot.getSelectedSlotIndex());
+                    currentCol = Inventory.getHolder().getObject<Weapon>(slot.getSelectedSlotIndex());
             }
             else if(slotState == 1) {   //  Amor
                 if(shopState == 0)
-                    currentCol = ShopInventory.getArmor(currentTown.t_instanceID, slot.getSelectedSlotIndex());
+                    currentCol = ShopInventory.getHolder(currentTown.t_instanceID).getObject<Armor>(slot.getSelectedSlotIndex());
                 else
-                    currentCol = Inventory.getArmor(slot.getSelectedSlotIndex());
+                    currentCol = Inventory.getHolder().getObject<Armor>(slot.getSelectedSlotIndex());
             }
             else if(slotState == 2) {   //  Usables
                 if(shopState == 0)
-                    currentCol = ShopInventory.getUsable(currentTown.t_instanceID, slot.getSelectedSlotIndex());
+                    currentCol = ShopInventory.getHolder(currentTown.t_instanceID).getObject<Usable>(slot.getSelectedSlotIndex());
                 else
-                    currentCol = Inventory.getUsable(slot.getSelectedSlotIndex());
+                    currentCol = Inventory.getHolder().getObject<Usable>(slot.getSelectedSlotIndex());
             }
             else if(slotState == 3) {   //  Unusables
                 if(shopState == 0)
-                    currentCol = ShopInventory.getUnusable(currentTown.t_instanceID, slot.getSelectedSlotIndex());
+                    currentCol = ShopInventory.getHolder(currentTown.t_instanceID).getObject<Unusable>(slot.getSelectedSlotIndex());
                 else
-                    currentCol = Inventory.getUnusable(slot.getSelectedSlotIndex());
+                    currentCol = Inventory.getHolder().getObject<Unusable>(slot.getSelectedSlotIndex());
             }
             else if(slotState == 4) {   //  Items
                 if(shopState == 0)
-                    currentCol = ShopInventory.getItem(currentTown.t_instanceID, slot.getSelectedSlotIndex());
+                    currentCol = ShopInventory.getHolder(currentTown.t_instanceID).getObject<Item>(slot.getSelectedSlotIndex());
                 else
-                    currentCol = Inventory.getItem(slot.getSelectedSlotIndex());
+                    currentCol = Inventory.getHolder().getObject<Item>(slot.getSelectedSlotIndex());
             }
             else if(slotState == 5) {   //  Slaves
                 if(shopState == 0) {
-                    UnitStats stats = ShopInventory.getSlave(currentTown.t_instanceID, slot.getSelectedSlotIndex());
+                    UnitStats stats = ShopInventory.getHolder(currentTown.t_instanceID).getObject<UnitStats>(slot.getSelectedSlotIndex());
                     nameText.text = stats.u_name;
                     costText.text = getBuyPrice(stats.determineCost()).ToString() + "c";
                 }
@@ -127,68 +127,68 @@ public class ShopCanvas : MonoBehaviour {
             switch(slotState) {
                 //  Weapons
                 case 0:
-                    int weaponCount = ShopInventory.getTypeCount(currentTown.t_instanceID, typeof(Weapon));
+                    int weaponCount = ShopInventory.getHolder(currentTown.t_instanceID).getObjectCount<Weapon>();
                     if(weaponCount <= 0)
                         break;
                     for(int i = 0; i < weaponCount; i++) {
-                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForCollectable(Inventory.getWeapon(i)));
-                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(ShopInventory.getWeapon(currentTown.t_instanceID, i)).sprite;
+                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForCollectable(Inventory.getHolder().getObject<Weapon>(i)));
+                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(ShopInventory.getHolder(currentTown.t_instanceID).getObject<Weapon>(i)).sprite;
                     }
                     break;
 
                 //  Armor
                 case 1:
-                    int armorCount = ShopInventory.getTypeCount(currentTown.t_instanceID, typeof(Armor));
+                    int armorCount = ShopInventory.getHolder(currentTown.t_instanceID).getObjectCount<Armor>();
                     if(armorCount <= 0)
                         break;
                     for(int i = 0; i < armorCount; i++) {
-                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForCollectable(Inventory.getArmor(i)));
-                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(ShopInventory.getArmor(currentTown.t_instanceID, i)).sprite;
+                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForCollectable(Inventory.getHolder().getObject<Armor>(i)));
+                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(ShopInventory.getHolder(currentTown.t_instanceID).getObject<Armor>(i)).sprite;
                     }
                     break;
 
                 //  Usable
                 case 2:
-                    int consumableCount = ShopInventory.getTypeCount(currentTown.t_instanceID, typeof(Usable));
+                    int consumableCount = ShopInventory.getHolder(currentTown.t_instanceID).getObjectCount<Usable>();
                     if(consumableCount <= 0)
                         break;
                     for(int i = 0; i < consumableCount; i++) {
                         var obj = slot.createSlot(i, Color.white);
-                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUsableSprite(ShopInventory.getUsable(currentTown.t_instanceID, i)).sprite;
+                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUsableSprite(ShopInventory.getHolder(currentTown.t_instanceID).getObject<Usable>(i)).sprite;
                     }
                     break;
 
                 //  Unusable
                 case 3:
-                    int unusableCount = ShopInventory.getTypeCount(currentTown.t_instanceID, typeof(Unusable));
+                    int unusableCount = ShopInventory.getHolder(currentTown.t_instanceID).getObjectCount<Unusable>();
                     if(unusableCount <= 0)
                         break;
                     for(int i = 0; i < unusableCount; i++) {
                         var obj = slot.createSlot(i, Color.white);
-                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnusableSprite(ShopInventory.getUnusable(currentTown.t_instanceID, i)).sprite;
+                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnusableSprite(ShopInventory.getHolder(currentTown.t_instanceID).getObject<Unusable>(i)).sprite;
                     }
                     break;
 
                 //  Item
                 case 4:
-                    int itemCount = ShopInventory.getTypeCount(currentTown.t_instanceID, typeof(Item));
+                    int itemCount = ShopInventory.getHolder(currentTown.t_instanceID).getObjectCount<Item>();
                     if(itemCount <= 0)
                         break;
                     for(int i = 0; i < itemCount; i++) {
                         var obj = slot.createSlot(i, Color.white);
-                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(ShopInventory.getItem(currentTown.t_instanceID, i)).sprite;
+                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(ShopInventory.getHolder(currentTown.t_instanceID).getObject<Item>(i)).sprite;
                     }
                     break;
 
                 //  Slave
                 case 5:
-                    int slaveCount = ShopInventory.getTypeCount(currentTown.t_instanceID, typeof(UnitStats));
+                    int slaveCount = ShopInventory.getHolder(currentTown.t_instanceID).getObjectCount<UnitStats>();
                     if(slaveCount <= 0)
                         break;
                     for(int i = 0; i < slaveCount; i++) {
                         var obj = slot.createSlot(i, Color.white);
-                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnitHeadSprite(ShopInventory.getSlave(currentTown.t_instanceID, i).u_sprite.headIndex);
-                        obj.transform.GetChild(0).GetComponent<Image>().color = ShopInventory.getSlave(currentTown.t_instanceID, i).u_sprite.color;
+                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnitHeadSprite(ShopInventory.getHolder(currentTown.t_instanceID).getObject<UnitStats>(i).u_sprite.headIndex);
+                        obj.transform.GetChild(0).GetComponent<Image>().color = ShopInventory.getHolder(currentTown.t_instanceID).getObject<UnitStats>(i).u_sprite.color;
                     }
                     break;
             }
@@ -199,56 +199,56 @@ public class ShopCanvas : MonoBehaviour {
             switch(slotState) {
                 //  Weapons
                 case 0:
-                    if(Inventory.getWeaponCount() <= 0)
+                    if(Inventory.getHolder().getObjectCount<Weapon>() <= 0)
                         break;
 
-                    for(int i = 0; i < Inventory.getWeaponCount(); i++) {
-                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForCollectable(Inventory.getWeapon(i)));
-                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getWeapon(i)).sprite;
+                    for(int i = 0; i < Inventory.getHolder().getObjectCount<Weapon>(); i++) {
+                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForCollectable(Inventory.getHolder().getObject<Weapon>(i)));
+                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getHolder().getObject<Weapon>(i)).sprite;
                     }
                     break;
 
                 //  Armor
                 case 1:
-                    if(Inventory.getArmorCount() <= 0)
+                    if(Inventory.getHolder().getObjectCount<Armor>() <= 0)
                         break;
 
-                    for(int i = 0; i < Inventory.getArmorCount(); i++) {
-                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForCollectable(Inventory.getArmor(i)));
-                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getArmor(i)).sprite;
+                    for(int i = 0; i < Inventory.getHolder().getObjectCount<Armor>(); i++) {
+                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForCollectable(Inventory.getHolder().getObject<Armor>(i)));
+                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getHolder().getObject<Armor>(i)).sprite;
                     }
                     break;
 
                 //  Consumable
                 case 2:
-                    if(Inventory.getUsableCount() <= 0)
+                    if(Inventory.getHolder().getObjectCount<Usable>() <= 0)
                         break;
 
-                    for(int i = 0; i < Inventory.getUsableCount(); i++) {
-                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForCollectable(Inventory.getUsable(i)));
-                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUsableSprite(Inventory.getUsable(i)).sprite;
+                    for(int i = 0; i < Inventory.getHolder().getObjectCount<Usable>(); i++) {
+                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForCollectable(Inventory.getHolder().getObject<Usable>(i)));
+                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUsableSprite(Inventory.getHolder().getObject<Usable>(i)).sprite;
                     }
                     break;
 
                 //  Unusable
                 case 3:
-                    if(Inventory.getUnusableCount() <= 0)
+                    if(Inventory.getHolder().getObjectCount<Unusable>() <= 0)
                         break;
 
-                    for(int i = 0; i < Inventory.getUnusableCount(); i++) {
-                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForCollectable(Inventory.getUnusable(i)));
-                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnusableSprite(Inventory.getUnusable(i)).sprite;
+                    for(int i = 0; i < Inventory.getHolder().getObjectCount<Unusable>(); i++) {
+                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForCollectable(Inventory.getHolder().getObject<Unusable>(i)));
+                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnusableSprite(Inventory.getHolder().getObject<Unusable>(i)).sprite;
                     }
                     break;
 
                 //  Item
                 case 4:
-                    if(Inventory.getItemCount() <= 0)
+                    if(Inventory.getHolder().getObjectCount<Item>() <= 0)
                         break;
 
-                    for(int i = 0; i < Inventory.getItemCount(); i++) {
-                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForCollectable(Inventory.getItem(i)));
-                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(Inventory.getItem(i)).sprite;
+                    for(int i = 0; i < Inventory.getHolder().getObjectCount<Item>(); i++) {
+                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForCollectable(Inventory.getHolder().getObject<Item>(i)));
+                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(Inventory.getHolder().getObject<Item>(i)).sprite;
                     }
                     break;
 
@@ -289,30 +289,30 @@ public class ShopCanvas : MonoBehaviour {
             //  Buying
             if(shopState == 0) {
                 if(slotState == 0)
-                    currentCol = ShopInventory.getWeapon(townIndex, slot.getSelectedSlotIndex());
+                    currentCol = ShopInventory.getHolder(townIndex).getObject<Weapon>(slot.getSelectedSlotIndex());
                 else if(slotState == 1)
-                    currentCol = ShopInventory.getArmor(townIndex, slot.getSelectedSlotIndex());
+                    currentCol = ShopInventory.getHolder(townIndex).getObject<Armor>(slot.getSelectedSlotIndex());
                 else if(slotState == 2)
-                    currentCol = ShopInventory.getUsable(townIndex, slot.getSelectedSlotIndex());
+                    currentCol = ShopInventory.getHolder(townIndex).getObject<Usable>(slot.getSelectedSlotIndex());
                 else if(slotState == 3)
-                    currentCol = ShopInventory.getUnusable(townIndex, slot.getSelectedSlotIndex());
+                    currentCol = ShopInventory.getHolder(townIndex).getObject<Unusable>(slot.getSelectedSlotIndex());
                 else if(slotState == 4)
-                    currentCol = ShopInventory.getItem(townIndex, slot.getSelectedSlotIndex());
+                    currentCol = ShopInventory.getHolder(townIndex).getObject<Item>(slot.getSelectedSlotIndex());
 
                 else if(slotState == 5) {
-                    UnitStats statsInSlot = ShopInventory.getSlave(townIndex, slot.getSelectedSlotIndex());
+                    UnitStats statsInSlot = ShopInventory.getHolder(townIndex).getObject<UnitStats>(slot.getSelectedSlotIndex());
                     var sPrice = statsInSlot.determineCost();
 
                     if(Inventory.getCoinCount() >= sPrice) {
-                        Inventory.removeCoins(sPrice);
+                        Inventory.addCoins(-sPrice);
                         Party.addUnit(statsInSlot);
-                        ShopInventory.removeSlave(townIndex, slot.getSelectedSlotIndex());
+                        ShopInventory.removeUnit(townIndex, slot.getSelectedSlotIndex());
                     }
                 }
 
                 var cPrice = getBuyPrice(currentCol.coinCost);
                 if(Inventory.getCoinCount() >= cPrice && currentCol != null && !currentCol.isEmpty()) {
-                    Inventory.removeCoins(cPrice);
+                    Inventory.addCoins(-cPrice);
                     Inventory.addCollectable(currentCol);
                     ShopInventory.removeCollectable(townIndex, currentCol);
                 }
@@ -321,26 +321,26 @@ public class ShopCanvas : MonoBehaviour {
             //  Selling
             else {
                 if(slotState == 0) {
-                    currentCol = Inventory.getWeapon(slot.getSelectedSlotIndex());
+                    currentCol = Inventory.getHolder().getObject<Weapon>(slot.getSelectedSlotIndex());
                 }
                 else if(slotState == 1) {
-                    currentCol = Inventory.getArmor(slot.getSelectedSlotIndex());
+                    currentCol = Inventory.getHolder().getObject<Armor>(slot.getSelectedSlotIndex());
                 }
                 else if(slotState == 2) {
-                    currentCol = Inventory.getUsable(slot.getSelectedSlotIndex());
+                    currentCol = Inventory.getHolder().getObject<Usable>(slot.getSelectedSlotIndex());
                 }
                 else if(slotState == 3) {
-                    currentCol = Inventory.getUnusable(slot.getSelectedSlotIndex());
+                    currentCol = Inventory.getHolder().getObject<Unusable>(slot.getSelectedSlotIndex());
                 }
                 else if(slotState == 4) {
-                    currentCol = Inventory.getItem(slot.getSelectedSlotIndex());
+                    currentCol = Inventory.getHolder().getObject<Item>(slot.getSelectedSlotIndex());
                 }
 
                 else if(slotState == 5) {
                     var stats = Party.getMemberStats(slot.getSelectedSlotIndex());
                     Inventory.addCoins(getSellPrice(stats.determineCost()));
                     Party.removeUnit(slot.getSelectedSlotIndex());
-                    ShopInventory.addSlave(townIndex, stats);
+                    ShopInventory.addUnit(townIndex, stats);
                 }
 
                 if(currentCol != null && !currentCol.isEmpty()) {

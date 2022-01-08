@@ -70,11 +70,12 @@ public class RoadRenderer : MonoBehaviour {
         }
 
         //  enter the location that the party object is over
+        /*
         if(Input.GetKeyDown(KeyCode.S) && MapLocationHolder.locationAtPosition(partyObject.transform.position)) {
             shrinkPartyObj();
             canMove = false;
             FindObjectOfType<EnounterCanvas>().showEnemyEncounterAlert();
-        }
+        }*/
 
 
         if(Input.GetKeyDown(KeyCode.Alpha0)) {
@@ -277,12 +278,13 @@ public class RoadRenderer : MonoBehaviour {
         }
 
         //  snapping to map location
+        /*
         foreach(var i in MapLocationHolder.getLocations()) {
             if(Vector2.Distance(i.pos, target) < snappingDist) {
                 target = i.pos;
                 break;
             }
-        }
+        }*/
 
         customPoint.transform.position = target;
         var points = RoadCreator.calcRoadPoints(customPointReferencePoint, target, false);

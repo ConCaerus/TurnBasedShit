@@ -75,7 +75,7 @@ public class TownMovement : LocationMovement {
 
         var town = GameInfo.getCurrentLocationAsTown();
         town.town.interactedBuildingIndex = town.town.getOrderForBuilding(bi.b_type);
-        MapLocationHolder.overrideTownLocation(town);
+        MapLocationHolder.overrideLocationOfSameType(town);
         GameInfo.setCurrentLocationAsTown(town);
 
         switch(bi.b_type) {
@@ -108,7 +108,7 @@ public class TownMovement : LocationMovement {
         var t = GameInfo.getCurrentLocationAsTown();
         t.town.visited = true;
         t.town.interactedBuildingIndex = -1;
-        MapLocationHolder.overrideTownLocation(t);
+        MapLocationHolder.overrideLocationOfSameType(t);
 
         flip(false);
 

@@ -5,7 +5,6 @@ using UnityEngine;
 [System.Serializable]
 public class KillQuest : Quest {
     public int howManyToKill;
-    public int killCount;
     public EnemyUnitInstance.type enemyType;
 
 
@@ -15,6 +14,8 @@ public class KillQuest : Quest {
 
         howManyToKill = c;
         enemyType = type;
+
+        reward = GameVariables.getCoinRewardForQuest(this);
     }
 
     public override questType getQuestType() {

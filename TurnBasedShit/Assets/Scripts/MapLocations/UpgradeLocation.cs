@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[System.Serializable]
 public class UpgradeLocation : MapLocation {
     //  0 - weapon, 1 - armor
     public int state = 0;

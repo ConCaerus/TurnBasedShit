@@ -3,6 +3,47 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class Graveyard {
+    const string holderTag = "GraveyardHolderTag";
+
+    public static ObjectHolder getHolder() {
+        var data = SaveData.getString(holderTag);
+        return JsonUtility.FromJson<ObjectHolder>(data);
+    }
+    static void saveHolder(ObjectHolder holder) {
+        var data = JsonUtility.ToJson(holder);
+        SaveData.setString(holderTag, data);
+    }
+
+
+    public static void clear() {
+        saveHolder(new ObjectHolder());
+    }
+
+
+    public static void addUnit(UnitStats unit) {
+        if(unit == null || unit.isEmpty())
+            return;
+
+        var holder = getHolder();
+        holder.addObject<UnitStats>(unit);
+        saveHolder(holder);
+    }
+    public static void overrideUnit(int index, UnitStats unit) {
+        if(unit == null || unit.isEmpty() || index == -1)
+            return;
+        var holder = getHolder();
+        holder.overrideObject<UnitStats>(index, unit);
+        saveHolder(holder);
+    }
+    public static void removeUnit(UnitStats unit) {
+        if(unit == null || unit.isEmpty())
+            return;
+        var holder = getHolder();
+        holder.removeObject<UnitStats>(holder.getUnitStatsIndex(unit));
+        saveHolder(holder);
+    }
+
+    /*
     public const string graveyardSizeTag = "Graveyard Size";
     public static string deadTag(int index) { return "Graveyard" + index.ToString(); }
 
@@ -60,5 +101,5 @@ public static class Graveyard {
     public static UnitStats getDeadStats(int index) {
         var data = SaveData.getString(deadTag(index));
         return JsonUtility.FromJson<UnitStats>(data);
-    }
+    } */
 }

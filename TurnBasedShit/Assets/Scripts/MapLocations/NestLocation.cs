@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[System.Serializable]
 public class NestLocation : MapLocation {
 
     public NestLocation(Vector2 p, int waveNumber, GameInfo.region reg, PresetLibrary lib) {

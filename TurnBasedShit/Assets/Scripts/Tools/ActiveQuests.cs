@@ -6,51 +6,59 @@ public static class ActiveQuests {
 
     const string questTag = "ActiveQuestHolderTag";
 
-    public static ObjectHolder getQuestHolder() {
+    public static ObjectHolder getHolder() {
         var data = SaveData.getString(questTag);
         return JsonUtility.FromJson<ObjectHolder>(data);
     }
-    static void saveQuestHolder(ObjectHolder holder) {
+    static void saveHolder(ObjectHolder holder) {
         var data = JsonUtility.ToJson(holder);
         SaveData.setString(questTag, data);
     }
 
 
     public static void clear(bool clearInstanceQueue) {
-        saveQuestHolder(new ObjectHolder());
+        saveHolder(new ObjectHolder());
 
         if(clearInstanceQueue)
             GameInfo.clearQuestInstanceIDQueue();
     }
-    public static void addQuest<Quest>(Quest qu) {
+    public static void addQuest(Quest qu) {
         if(qu == null)
             return;
 
-        var holder = getQuestHolder();
+        var holder = getHolder();
         holder.addObject<Quest>(qu);
-        saveQuestHolder(holder);
+        saveHolder(holder);
     }
     public static void overrideQuest(int index, Quest qu) {
         if(qu == null || index == -1)
             return;
-        var holder = getQuestHolder();
+
+        var holder = getHolder();
         holder.overrideObject<Quest>(index, qu);
-        saveQuestHolder(holder);
+        saveHolder(holder);
     }
     public static void removeQuest(Quest qu) {
         if(qu == null)
             return;
-        var holder = getQuestHolder();
+        var holder = getHolder();
         holder.removeQuest(qu);
-        saveQuestHolder(holder);
+        saveHolder(holder);
     }
 
     public static bool hasQuest(Quest qu) {
-        foreach(var i in getQuestHolder().getQuests()) {
+        foreach(var i in getHolder().getQuests()) {
             if(i.isTheSameInstanceAs(qu))
                 return true;
         }
         return false;
+    }
+
+
+    public static void completeQuest(Quest qu, QuestCompleteCanvas canvas) {
+        canvas.showCanvas();
+        qu.completed = true;
+        overrideQuest(getHolder().getQuestIndex(qu), qu);
     }
 
     /*

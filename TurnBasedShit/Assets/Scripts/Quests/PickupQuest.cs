@@ -20,6 +20,8 @@ public class PickupQuest : Quest {
         }
 
         location = pickup;
+
+        reward = GameVariables.getCoinRewardForQuest(this);
     }
 
     public override questType getQuestType() {

@@ -29,6 +29,8 @@ public class TurnOrderCanvas : MonoBehaviour {
         var units = GetComponent<TurnOrderSorter>().getNextPlayers(slots.Count);
         for(int i = 0; i < slots.Count; i++) {
             slots[i].GetComponent<RectTransform>().DOPunchAnchorPos(new Vector3(0.0f, 25.0f, 0.0f), speed);
+            if(units[i] == null)
+                continue;
 
             var newUnit = units[i].GetComponent<UnitClass>();
 

@@ -87,7 +87,7 @@ public class UnitBattleMech : MonoBehaviour {
             battleResultsCanvas.GetComponent<BattleResultsCanvas>().showCombatLocationEquipment();
         }
 
-
+        updateMapAndQuests();
         GameInfo.setCombatDetails(null);
     }
 
@@ -96,18 +96,33 @@ public class UnitBattleMech : MonoBehaviour {
     }
 
 
-    void updateMap() {
+    void updateMapAndQuests() {
         //  pickup 
-        for(int i = 0; i < MapLocationHolder.getPickupCount(); i++) {
-            if(MapLocationHolder.getPickupLocation(i).pos == GameInfo.getCurrentMapPos()) {
-                MapLocationHolder.removePickupLocation(MapLocationHolder.getPickupLocation(i));
+        for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<PickupLocation>(); i++) {
+            if(MapLocationHolder.getHolder().getObject<PickupLocation>(i).pos == GameInfo.getCurrentMapPos()) {
+                MapLocationHolder.removeLocation(MapLocationHolder.getHolder().getObject<PickupLocation>(i));
                 break;
             }
         }
-        for(int i = 0; i < ActiveQuests.getQuestHolder().getObjectCount<PickupQuest>(); i++) {
-            var j = ActiveQuests.getQuestHolder().getObject<PickupQuest>(i);
+        for(int i = 0; i < ActiveQuests.getHolder().getObjectCount<PickupQuest>(); i++) {
+            var j = ActiveQuests.getHolder().getObject<PickupQuest>(i);
             if(j.location.pos == GameInfo.getCurrentMapPos()) {
-                ActiveQuests.removeQuest(j);
+                ActiveQuests.completeQuest(j, FindObjectOfType<QuestCompleteCanvas>());
+                break;
+            }
+        }
+
+        //  rescue
+        for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<RescueLocation>(); i++) {
+            if(MapLocationHolder.getHolder().getObject<RescueLocation>(i).pos == GameInfo.getCurrentMapPos()) {
+                MapLocationHolder.removeLocation(MapLocationHolder.getHolder().getObject<RescueLocation>(i));
+                break;
+            }
+        }
+        for(int i = 0; i < ActiveQuests.getHolder().getObjectCount<RescueQuest>(); i++) {
+            var j = ActiveQuests.getHolder().getObject<RescueQuest>(i);
+            if(j.location.pos == GameInfo.getCurrentMapPos()) {
+                ActiveQuests.completeQuest(j, FindObjectOfType<QuestCompleteCanvas>());
                 break;
             }
         }

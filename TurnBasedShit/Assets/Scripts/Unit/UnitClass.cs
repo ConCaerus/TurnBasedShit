@@ -254,16 +254,16 @@ public abstract class UnitClass : MonoBehaviour {
 
             //  add exp
             if(killer != null && killer.GetComponent<PlayerUnitInstance>() != null) {
-                killer.GetComponent<PlayerUnitInstance>().addWeaponTypeExpOnKill(GameVariables.getExpForDefeatedEnemy(GetComponent<EnemyUnitInstance>().enemyDiff));
-                killer.GetComponent<PlayerUnitInstance>().stats.addExp(GameVariables.getExpForDefeatedEnemy(GetComponent<EnemyUnitInstance>().enemyDiff));
+                killer.GetComponent<PlayerUnitInstance>().addWeaponTypeExpOnKill(GameVariables.getExpForEnemy(GetComponent<EnemyUnitInstance>().enemyType));
+                killer.GetComponent<PlayerUnitInstance>().stats.addExp(GameVariables.getExpForEnemy(GetComponent<EnemyUnitInstance>().enemyType));
             }
             else if(killer != null && killer.GetComponent<SummonedUnitInstance>() != null) {
                 int lvlBefore = killer.GetComponent<SummonedUnitInstance>().summoner.getSummonedLevel();
-                killer.GetComponent<SummonedUnitInstance>().summoner.u_summonedExp += GameVariables.getExpForDefeatedEnemy(GetComponent<EnemyUnitInstance>().enemyDiff);
+                killer.GetComponent<SummonedUnitInstance>().summoner.u_summonedExp += GameVariables.getExpForEnemy(GetComponent<EnemyUnitInstance>().enemyType);
                 if(lvlBefore != killer.GetComponent<SummonedUnitInstance>().summoner.getSummonedLevel())
                     FindObjectOfType<DamageTextCanvas>().showSummonLevelUpTextForUnit(FindObjectOfType<PartyObject>().getInstantiatedMember(killer.GetComponent<SummonedUnitInstance>().summoner).gameObject);
 
-                if(killer.GetComponent<SummonedUnitInstance>().summoner.addExp(GameVariables.getExpForDefeatedEnemy(GetComponent<EnemyUnitInstance>().enemyDiff)))
+                if(killer.GetComponent<SummonedUnitInstance>().summoner.addExp(GameVariables.getExpForEnemy(GetComponent<EnemyUnitInstance>().enemyType)))
                     FindObjectOfType<DamageTextCanvas>().showLevelUpTextForUnit(FindObjectOfType<PartyObject>().getInstantiatedMember(killer.GetComponent<SummonedUnitInstance>().summoner).gameObject);
             }
 
@@ -280,11 +280,14 @@ public abstract class UnitClass : MonoBehaviour {
             GetComponent<EnemyUnitInstance>().chanceUnusableDrop(chanceMod);
 
             //  increases acc quest counter
-            for(int i = 0; i < ActiveQuests.getQuestHolder().getObjectCount<KillQuest>(); i++) {
-                var k = ActiveQuests.getQuestHolder().getObject<KillQuest>(i);
-                if(k.enemyType == GetComponent<EnemyUnitInstance>().enemyType) {
+            for(int i = 0; i < ActiveQuests.getHolder().getObjectCount<KillQuest>(); i++) {
+                var k = ActiveQuests.getHolder().getObject<KillQuest>(i);
+                if(k.enemyType == GetComponent<EnemyUnitInstance>().enemyType && !k.completed) {
                     k.howManyToKill--;
-                    ActiveQuests.overrideQuest(i, k);
+                    if(k.howManyToKill > 0)
+                        ActiveQuests.overrideQuest(i, k);
+                    else
+                        ActiveQuests.completeQuest(k, FindObjectOfType<QuestCompleteCanvas>());
                 }
             }
         }

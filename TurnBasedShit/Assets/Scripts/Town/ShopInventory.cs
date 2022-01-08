@@ -4,6 +4,93 @@ using UnityEngine;
 
 [System.Serializable]
 public static class ShopInventory {
+    static string holderTag(int townIndex) { return "InventoryHolderTag: " + townIndex.ToString(); }
+
+    public static ObjectHolder getHolder(int townInstance) {
+        var data = SaveData.getString(holderTag(townInstance));
+        return JsonUtility.FromJson<ObjectHolder>(data);
+    }
+    static void saveHolder(int townInstance, ObjectHolder holder) {
+        var data = JsonUtility.ToJson(holder);
+        SaveData.setString(holderTag(townInstance), data);
+    }
+
+
+    public static void clear(int townInstance) {
+        saveHolder(townInstance, new ObjectHolder());
+    }
+
+
+    public static void addCollectable(int townIndex, Collectable col) {
+        if(col == null || col.isEmpty())
+            return;
+
+        var holder = getHolder(townIndex);
+        holder.addObject<Collectable>(col);
+        saveHolder(townIndex, holder);
+    }
+    public static void addUnit(int townIndex, UnitStats stats) {
+        if(stats == null)
+            return;
+
+        var holder = getHolder(townIndex);
+        holder.addObject<UnitStats>(stats);
+        saveHolder(townIndex, holder);
+    }
+    public static void overrideCollectable(int townIndex, int index, Collectable col) {
+        if(col == null || index == -1)
+            return;
+        var holder = getHolder(townIndex);
+        holder.overrideObject<Collectable>(index, col);
+        saveHolder(townIndex, holder);
+    }
+    public static void removeCollectable(int townIndex, Collectable col) {
+        if(col == null)
+            return;
+        var holder = getHolder(townIndex);
+        holder.removeCollectable(col);
+        saveHolder(townIndex, holder);
+    }
+    public static void removeUnit(int townIndex, int index) {
+        if(index < 0)
+            return;
+        var holder = getHolder(townIndex);
+        holder.removeObject<UnitStats>(index);
+        saveHolder(townIndex, holder);
+    }
+
+
+
+    public static void populateShop(int townIndex, GameInfo.region lvl, PresetLibrary library) {
+        clear(townIndex);
+
+        int weaponCount = Random.Range(1, 11);
+        for(int i = 0; i < weaponCount; i++) {
+            addCollectable(townIndex, library.getRandomWeapon(lvl));
+        }
+
+        int armorCount = Random.Range(1, 11);
+        for(int i = 0; i < armorCount; i++) {
+            addCollectable(townIndex, library.getRandomArmor(lvl));
+        }
+
+        int consumableCount = Random.Range(1, 11);
+        for(int i = 0; i < consumableCount; i++) {
+            addCollectable(townIndex, library.getRandomUsable(lvl));
+        }
+
+        int itemCount = Random.Range(1, 11);
+        for(int i = 0; i < itemCount; i++) {
+            addCollectable(townIndex, library.getRandomItem(lvl));
+        }
+
+        int slaveCount = Random.Range(0, 3);
+        for(int i = 0; i < slaveCount; i++) {
+            addUnit(townIndex, library.createRandomPlayerUnitStats(true));
+        }
+    }
+
+    /*
     static string objectTag(int townIndex, int index, System.Type type) {
         if(type == typeof(Weapon))
             return "Town:" + townIndex.ToString() + " Shop Weapon:" + index.ToString();
@@ -365,5 +452,5 @@ public static class ShopInventory {
         if(!string.IsNullOrEmpty(data))
             return JsonUtility.FromJson<UnitStats>(data);
         return null;
-    }
+    }*/
 }

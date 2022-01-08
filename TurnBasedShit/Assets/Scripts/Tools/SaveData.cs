@@ -94,7 +94,7 @@ public static class SaveData {
         setCurrentSaveIndex(i);
 
         //  clear shit
-        Inventory.clearInventory(true);
+        Inventory.clear(true);
         Party.clearParty(true);
         Party.clearPartyEquipment();
         MapLocationHolder.clear();

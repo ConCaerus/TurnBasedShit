@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class EyeLocation : MapLocation {
 
     public EyeLocation(Vector2 p, GameInfo.region reg) {

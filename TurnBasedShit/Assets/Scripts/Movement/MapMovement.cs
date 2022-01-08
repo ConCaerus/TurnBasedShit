@@ -121,7 +121,7 @@ public class MapMovement : InteractiveMovement {
     public override void interact() {
         if(closestIcon == null)
             return;
-        var loc = MapLocationHolder.getLocationAtPos(closestIcon.transform.position, GameInfo.getCurrentRegion());
+        var loc = MapLocationHolder.getLocationAtPos(closestIcon.transform.position);
         if(loc == null)
             return;
         GameInfo.setCurrentMapPos(closestIcon.transform.position);

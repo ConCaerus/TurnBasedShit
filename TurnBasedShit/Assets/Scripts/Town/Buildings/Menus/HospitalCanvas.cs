@@ -13,7 +13,7 @@ public class HospitalCanvas : BuildingCanvas {
 
     private void Awake() {
         if(GameInfo.getCurrentLocationAsTown().town.hasBuilding(Building.type.Hospital))
-            hospital = GameInfo.getCurrentLocationAsTown().town.getHospital();
+            hospital = GameInfo.getCurrentLocationAsTown().town.holder.getObject<HospitalBuilding>(0);
         else
             hospital = Randomizer.randomizeBuilding(new HospitalBuilding());
     }
@@ -39,7 +39,7 @@ public class HospitalCanvas : BuildingCanvas {
 
             if(hospital.freeHeals > 0) {
                 hospital.freeHeals--;
-                GameInfo.getCurrentLocationAsTown().town.addBuilding(hospital);
+                GameInfo.getCurrentLocationAsTown().town.holder.overrideObject<HospitalBuilding>(0, hospital);
             }
             else if(Inventory.getCoinCount() >= hospital.pricePerHeal) {
                 Inventory.addCoins(-hospital.pricePerHeal);

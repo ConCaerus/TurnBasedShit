@@ -15,6 +15,8 @@ public class BossFightQuest : Quest {
 
         bossUnit = boss.bossUnit;
         location = boss;
+
+        reward = GameVariables.getCoinRewardForQuest(this);
     }
 
 

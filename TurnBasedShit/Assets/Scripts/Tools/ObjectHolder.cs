@@ -38,6 +38,14 @@ public class ObjectHolder {
             addQuest((Quest)thing);
             return;
         }
+        if(typeof(T) == typeof(Building)) {
+            addBuilding((Building)thing);
+            return;
+        }
+        if(typeof(T) == typeof(MapLocation)) {
+            addMapLocation((MapLocation)thing);
+            return;
+        }
 
         int index = getObjectCount<T>();
         var data = JsonUtility.ToJson((T)thing);
@@ -45,6 +53,8 @@ public class ObjectHolder {
         SaveData.setInt(countTag<T>(), index + 1);
     }
     void addCollectable(Collectable thing) {
+        if(thing == null || thing.isEmpty())
+            return;
         switch(thing.type) {
             case Collectable.collectableType.weapon:
                 addObject<Weapon>((Weapon)thing);
@@ -68,6 +78,8 @@ public class ObjectHolder {
         }
     }
     void addQuest(Quest thing) {
+        if(thing == null)
+            return;
         switch(thing.getQuestType()) {
             case Quest.questType.bossFight:
                 addObject<BossFightQuest>((BossFightQuest)thing);
@@ -94,9 +106,81 @@ public class ObjectHolder {
                 return;
         }
     }
+    void addBuilding(Building thing) {
+        if(thing == null)
+            return;
+        switch(thing.b_type) {
+            case Building.type.Hospital:
+                addObject<HospitalBuilding>((HospitalBuilding)thing);
+                return;
+
+            case Building.type.Shop:
+                addObject<ShopBuilding>((ShopBuilding)thing);
+                return;
+
+            case Building.type.Church:
+                addObject<ChurchBuilding>((ChurchBuilding)thing);
+                return;
+
+            case Building.type.Casino:
+                addObject<CasinoBuilding>((CasinoBuilding)thing);
+                return;
+
+            case Building.type.Blacksmith:
+                addObject<BlacksmithBuilding>((BlacksmithBuilding)thing);
+                return;
+        }
+    }
+    void addMapLocation(MapLocation thing) {
+        if(thing == null)
+            return;
+        switch(thing.type) {
+            case MapLocation.locationType.town:
+                addObject<TownLocation>((TownLocation)thing);
+                return;
+            case MapLocation.locationType.pickup:
+                addObject<PickupLocation>((PickupLocation)thing);
+                return;
+            case MapLocation.locationType.upgrade:
+                addObject<UpgradeLocation>((UpgradeLocation)thing);
+                return;
+            case MapLocation.locationType.rescue:
+                addObject<RescueLocation>((RescueLocation)thing);
+                return;
+            case MapLocation.locationType.boss:
+                addObject<BossLocation>((BossLocation)thing);
+                return;
+            case MapLocation.locationType.fishing:
+                addObject<FishingLocation>((FishingLocation)thing);
+                return;
+            case MapLocation.locationType.eye:
+                addObject<EyeLocation>((EyeLocation)thing);
+                return;
+            case MapLocation.locationType.bridge:
+                addObject<BridgeLocation>((BridgeLocation)thing);
+                return;
+        }
+    }
+
 
     //  override
     public void overrideObject<T>(int index, object thing) {
+        if(typeof(T) == typeof(Collectable)) {
+            overrideCollectable(index, (Collectable)thing);
+            return;
+        }
+        if(typeof(T) == typeof(Quest)) {
+            overrideQuest(index, (Quest)thing);
+            return;
+        }
+        if(typeof(T) == typeof(Building)) {
+            overrideBuilding(index, (Building)thing);
+            return;
+        }
+        if(typeof(T) == typeof(MapLocation)) {
+            overrideMapLocation(index, (MapLocation)thing);
+            return;
+        }
         var data = JsonUtility.ToJson((T)thing);
         SaveData.setString(tag<T>(index), data);
     }
@@ -222,70 +306,184 @@ public class ObjectHolder {
                 return;
         }
     }
+    public void overrideMapLocationOfSameType(MapLocation thing) {
+        if(thing == null)
+            return;
+        int index = getMapLocationIndex(thing);
+        switch(thing.type) {
+            case MapLocation.locationType.town:
+                overrideObject<TownLocation>(index, (TownLocation)thing);
+                return;
+            case MapLocation.locationType.pickup:
+                overrideObject<PickupLocation>(index, (PickupLocation)thing);
+                return;
+            case MapLocation.locationType.upgrade:
+                overrideObject<UpgradeLocation>(index, (UpgradeLocation)thing);
+                return;
+            case MapLocation.locationType.rescue:
+                overrideObject<RescueLocation>(index, (RescueLocation)thing);
+                return;
+            case MapLocation.locationType.boss:
+                overrideObject<BossLocation>(index, (BossLocation)thing);
+                return;
+            case MapLocation.locationType.fishing:
+                overrideObject<FishingLocation>(index, (FishingLocation)thing);
+                return;
+            case MapLocation.locationType.eye:
+                overrideObject<EyeLocation>(index, (EyeLocation)thing);
+                return;
+            case MapLocation.locationType.bridge:
+                overrideObject<BridgeLocation>(index, (BridgeLocation)thing);
+                return;
+        }
+    }
+    void overrideCollectable(int index, Collectable thing) {
+        if(thing == null || thing.isEmpty())
+            return;
+        switch(thing.type) {
+            case Collectable.collectableType.weapon:
+                overrideObject<Weapon>(index, (Weapon)thing);
+                return;
+
+            case Collectable.collectableType.armor:
+                overrideObject<Armor>(index, (Armor)thing);
+                return;
+
+            case Collectable.collectableType.item:
+                overrideObject<Item>(index, (Item)thing);
+                return;
+
+            case Collectable.collectableType.usable:
+                overrideObject<Usable>(index, (Usable)thing);
+                return;
+
+            case Collectable.collectableType.unusable:
+                overrideObject<Unusable>(index, (Unusable)thing);
+                return;
+        }
+    }
+    void overrideQuest(int index, Quest thing) {
+        if(thing == null)
+            return;
+        switch(thing.getQuestType()) {
+            case Quest.questType.bossFight:
+                overrideObject<BossFightQuest>(index, (BossFightQuest)thing);
+                return;
+
+            case Quest.questType.pickup:
+                overrideObject<PickupQuest>(index, (PickupQuest)thing);
+                return;
+
+            case Quest.questType.delivery:
+                overrideObject<DeliveryQuest>(index, (DeliveryQuest)thing);
+                return;
+
+            case Quest.questType.kill:
+                overrideObject<KillQuest>(index, (KillQuest)thing);
+                return;
+
+            case Quest.questType.rescue:
+                overrideObject<RescueQuest>(index, (RescueQuest)thing);
+                return;
+
+            case Quest.questType.fishing:
+                overrideObject<FishingQuest>(index, (FishingQuest)thing);
+                return;
+        }
+    }
+    void overrideBuilding(int index, Building thing) {
+        if(thing == null)
+            return;
+        switch(thing.b_type) {
+            case Building.type.Hospital:
+                overrideObject<HospitalBuilding>(index, (HospitalBuilding)thing);
+                return;
+            case Building.type.Shop:
+                overrideObject<ShopBuilding>(index, (ShopBuilding)thing);
+                return;
+            case Building.type.Church:
+                overrideObject<ChurchBuilding>(index, (ChurchBuilding)thing);
+                return;
+            case Building.type.Casino:
+                overrideObject<CasinoBuilding>(index, (CasinoBuilding)thing);
+                return;
+            case Building.type.Blacksmith:
+                overrideObject<BlacksmithBuilding>(index, (BlacksmithBuilding)thing);
+                return;
+        }
+    }
+    void overrideMapLocation(int index, MapLocation thing) {
+        if(thing == null)
+            return;
+        switch(thing.type) {
+            case MapLocation.locationType.town:
+                overrideObject<TownLocation>(index, (TownLocation)thing);
+                return;
+            case MapLocation.locationType.pickup:
+                overrideObject<PickupLocation>(index, (PickupLocation)thing);
+                return;
+            case MapLocation.locationType.upgrade:
+                overrideObject<UpgradeLocation>(index, (UpgradeLocation)thing);
+                return;
+            case MapLocation.locationType.rescue:
+                overrideObject<RescueLocation>(index, (RescueLocation)thing);
+                return;
+            case MapLocation.locationType.boss:
+                overrideObject<BossLocation>(index, (BossLocation)thing);
+                return;
+            case MapLocation.locationType.fishing:
+                overrideObject<FishingLocation>(index, (FishingLocation)thing);
+                return;
+            case MapLocation.locationType.eye:
+                overrideObject<EyeLocation>(index, (EyeLocation)thing);
+                return;
+            case MapLocation.locationType.bridge:
+                overrideObject<BridgeLocation>(index, (BridgeLocation)thing);
+                return;
+        }
+    }
 
     //  remove
     public void removeObject<T>(int index) {
-        if(typeof(T) == typeof(Collectable) || typeof(T) == typeof(Quest)) {
-            Debug.LogError("Use removeCollectalbe() instead");
+        if(invalidTyping<T>()) {
+            Debug.LogError("Use specific function instead");
             return;
         }
+        var thing = getObject<T>(index);
 
-        List<T> temp = getObjects<T>();
-        temp.RemoveAt(index);
+        if(thing == null)
+            return;
 
-        clearObjects<T>();
-        foreach(var i in temp)
-            addObject<T>(i);
+        for(int i = index; i < getObjectCount<T>(); i++) {
+            overrideObject<T>(i, getObject<T>(i + 1));
+        }
+
+        SaveData.setInt(countTag<T>(), getObjectCount<T>() - 1);
     }
     public void removeCollectable(Collectable thing) {
         if(thing == null || thing.isEmpty())
             return;
 
-        int startingIndex = 0;
+        int index = getCollectableIndex(thing);
         switch((thing).type) {
             case Collectable.collectableType.weapon:
-                startingIndex = getCollectableIndex(thing);
-                for(int i = startingIndex; i < getObjectCount<Weapon>(); i++) {
-                    overrideObject<Weapon>(i, getObject<Weapon>(i + 1));
-                }
-
-                SaveData.setInt(countTag<Weapon>(), getObjectCount<Weapon>() - 1);
+                removeObject<Weapon>(index);
                 break;
 
             case Collectable.collectableType.armor:
-                startingIndex = getCollectableIndex(thing);
-                for(int i = startingIndex; i < getObjectCount<Armor>(); i++) {
-                    overrideObject<Armor>(i, getObject<Armor>(i + 1));
-                }
-
-                SaveData.setInt(countTag<Armor>(), getObjectCount<Armor>() - 1);
+                removeObject<Armor>(index);
                 break;
 
             case Collectable.collectableType.item:
-                startingIndex = getCollectableIndex(thing);
-                for(int i = startingIndex; i < getObjectCount<Item>(); i++) {
-                    overrideObject<Item>(i, getObject<Item>(i + 1));
-                }
-
-                SaveData.setInt(countTag<Item>(), getObjectCount<Item>() - 1);
+                removeObject<Item>(index);
                 break;
 
             case Collectable.collectableType.usable:
-                startingIndex = getCollectableIndex(thing);
-                for(int i = startingIndex; i < getObjectCount<Usable>(); i++) {
-                    overrideObject<Usable>(i, getObject<Usable>(i + 1));
-                }
-
-                SaveData.setInt(countTag<Usable>(), getObjectCount<Usable>() - 1);
+                removeObject<Usable>(index);
                 break;
 
             case Collectable.collectableType.unusable:
-                startingIndex = getCollectableIndex(thing);
-                for(int i = startingIndex; i < getObjectCount<Unusable>(); i++) {
-                    overrideObject<Unusable>(i, getObject<Unusable>(i + 1));
-                }
-
-                SaveData.setInt(countTag<Unusable>(), getObjectCount<Unusable>() - 1);
+                removeObject<Unusable>(index);
                 break;
         }
     }
@@ -293,70 +491,99 @@ public class ObjectHolder {
         if(thing == null)
             return;
 
-        int startingIndex;
+        int index = getQuestIndex(thing);
+        if(index < 0)
+            return;
         switch(thing.getQuestType()) {
             case Quest.questType.bossFight:
-                startingIndex = getQuestIndex(thing);
-                for(int i = startingIndex; i < getObjectCount<BossFightQuest>(); i++) {
-                    overrideObject<BossFightQuest>(i, getObject<BossFightQuest>(i + 1));
-                }
-
-                SaveData.setInt(countTag<BossFightQuest>(), getObjectCount<BossFightQuest>() - 1);
+                removeObject<BossFightQuest>(index);
                 break;
 
             case Quest.questType.pickup:
-                startingIndex = getQuestIndex(thing);
-                for(int i = startingIndex; i < getObjectCount<PickupQuest>(); i++) {
-                    overrideObject<PickupQuest>(i, getObject<PickupQuest>(i + 1));
-                }
-
-                SaveData.setInt(countTag<PickupQuest>(), getObjectCount<PickupQuest>() - 1);
+                removeObject<PickupQuest>(index);
                 break;
 
             case Quest.questType.delivery:
-                startingIndex = getQuestIndex(thing);
-                for(int i = startingIndex; i < getObjectCount<DeliveryQuest>(); i++) {
-                    overrideObject<DeliveryQuest>(i, getObject<DeliveryQuest>(i + 1));
-                }
-
-                SaveData.setInt(countTag<DeliveryQuest>(), getObjectCount<DeliveryQuest>() - 1);
+                removeObject<DeliveryQuest>(index);
                 break;
 
             case Quest.questType.kill:
-                startingIndex = getQuestIndex(thing);
-                for(int i = startingIndex; i < getObjectCount<KillQuest>(); i++) {
-                    overrideObject<KillQuest>(i, getObject<KillQuest>(i + 1));
-                }
-
-                SaveData.setInt(countTag<KillQuest>(), getObjectCount<KillQuest>() - 1);
+                removeObject<KillQuest>(index);
                 break;
 
             case Quest.questType.rescue:
-                startingIndex = getQuestIndex(thing);
-                for(int i = startingIndex; i < getObjectCount<RescueQuest>(); i++) {
-                    overrideObject<RescueQuest>(i, getObject<RescueQuest>(i + 1));
-                }
-
-                SaveData.setInt(countTag<RescueQuest>(), getObjectCount<RescueQuest>() - 1);
+                removeObject<RescueQuest>(index);
                 break;
 
             case Quest.questType.fishing:
-                startingIndex = getQuestIndex(thing);
-                for(int i = startingIndex; i < getObjectCount<FishingQuest>(); i++) {
-                    overrideObject<FishingQuest>(i, getObject<FishingQuest>(i + 1));
-                }
-
-                SaveData.setInt(countTag<FishingQuest>(), getObjectCount<FishingQuest>() - 1);
+                removeObject<FishingQuest>(index);
                 break;
+        }
+    }
+    public void removeBuilding(Building thing) {
+        if(thing == null)
+            return;
+
+        int index = getBuildingIndex(thing);
+        if(index < 0)
+            return;
+        switch(thing.b_type) {
+            case Building.type.Hospital:
+                removeObject<HospitalBuilding>(index);
+                return;
+            case Building.type.Shop:
+                removeObject<ShopBuilding>(index);
+                return;
+            case Building.type.Church:
+                removeObject<ChurchBuilding>(index);
+                return;
+            case Building.type.Casino:
+                removeObject<CasinoBuilding>(index);
+                return;
+            case Building.type.Blacksmith:
+                removeObject<BlacksmithBuilding>(index);
+                return;
+        }
+    }
+    public void removeMapLocation(MapLocation thing) {
+        if(thing == null)
+            return;
+        int index = getMapLocationIndex(thing);
+        switch(thing.type) {
+            case MapLocation.locationType.town:
+                removeObject<TownLocation>(index);
+                return;
+            case MapLocation.locationType.pickup:
+                removeObject<PickupLocation>(index);
+                return;
+            case MapLocation.locationType.upgrade:
+                removeObject<UpgradeLocation>(index);
+                return;
+            case MapLocation.locationType.rescue:
+                removeObject<RescueLocation>(index);
+                return;
+            case MapLocation.locationType.boss:
+                removeObject<BossLocation>(index);
+                return;
+            case MapLocation.locationType.fishing:
+                removeObject<FishingLocation>(index);
+                return;
+            case MapLocation.locationType.eye:
+                removeObject<EyeLocation>(index);
+                return;
+            case MapLocation.locationType.bridge:
+                removeObject<BridgeLocation>(index);
+                return;
         }
     }
 
     //  get multiple
     public List<T> getObjects<T>() {
-        if(typeof(T) == typeof(Collectable)) {
-            Debug.LogError("Use getCollectables() instead");
+        if(invalidTyping<T>()) {
+            Debug.LogError("Use specific function instead");
             return null;
         }
+
         var temp = new List<T>();
         for(int i = 0; i < getObjectCount<T>(); i++) {
             temp.Add(getObject<T>(i));
@@ -393,10 +620,44 @@ public class ObjectHolder {
             cols.Add(i);
         return cols;
     }
+    public List<Building> getBuildings() {
+        var buils = new List<Building>();
+        foreach(var i in getObjects<HospitalBuilding>())
+            buils.Add(i);
+        foreach(var i in getObjects<ShopBuilding>())
+            buils.Add(i);
+        foreach(var i in getObjects<ChurchBuilding>())
+            buils.Add(i);
+        foreach(var i in getObjects<CasinoBuilding>())
+            buils.Add(i);
+        foreach(var i in getObjects<BlacksmithBuilding>())
+            buils.Add(i);
+        return buils;
+    }
+    public List<MapLocation> getMapLocations() {
+        var mls = new List<MapLocation>();
+        foreach(var i in getObjects<TownLocation>())
+            mls.Add(i);
+        foreach(var i in getObjects<PickupLocation>())
+            mls.Add(i);
+        foreach(var i in getObjects<UpgradeLocation>())
+            mls.Add(i);
+        foreach(var i in getObjects<RescueLocation>())
+            mls.Add(i);
+        foreach(var i in getObjects<BossLocation>())
+            mls.Add(i);
+        foreach(var i in getObjects<FishingLocation>())
+            mls.Add(i);
+        foreach(var i in getObjects<EyeLocation>())
+            mls.Add(i);
+        foreach(var i in getObjects<BridgeLocation>())
+            mls.Add(i);
+        return mls;
+    }
 
     //  get singular
     public T getObject<T>(int index) {
-        if(typeof(T) == typeof(Collectable) || typeof(T) == typeof(Quest)) {
+        if(invalidTyping<T>()) {
             Debug.LogError("Cannot get object of type Collectable");
         }
 
@@ -498,6 +759,109 @@ public class ObjectHolder {
 
         return -1;
     }
+    public int getUnitStatsIndex(UnitStats thing) {
+        for(int i = 0; i < getObjectCount<UnitStats>(); i++) {
+            if(thing.isTheSameInstanceAs(getObject<UnitStats>(i)))
+                return i;
+        }
+        return -1;
+    }
+    public int getBuildingIndex(Building thing) {
+        if(thing == null)
+            return -1;
+
+        switch(thing.b_type) {
+            case Building.type.Hospital:
+                for(int i = 0; i < getObjectCount<HospitalBuilding>(); i++) {
+                    if(getObject<HospitalBuilding>(i).isEqualTo((HospitalBuilding)thing))
+                        return i;
+                }
+                break;
+            case Building.type.Shop:
+                for(int i = 0; i < getObjectCount<ShopBuilding>(); i++) {
+                    if(getObject<ShopBuilding>(i).isEqualTo((ShopBuilding)thing))
+                        return i;
+                }
+                break;
+            case Building.type.Church:
+                for(int i = 0; i < getObjectCount<ChurchBuilding>(); i++) {
+                    if(getObject<ChurchBuilding>(i).isEqualTo((ChurchBuilding)thing))
+                        return i;
+                }
+                break;
+            case Building.type.Casino:
+                for(int i = 0; i < getObjectCount<CasinoBuilding>(); i++) {
+                    if(getObject<CasinoBuilding>(i).isEqualTo((CasinoBuilding)thing))
+                        return i;
+                }
+                break;
+            case Building.type.Blacksmith:
+                for(int i = 0; i < getObjectCount<BlacksmithBuilding>(); i++) {
+                    if(getObject<BlacksmithBuilding>(i).isEqualTo((BlacksmithBuilding)thing))
+                        return i;
+                }
+                break;
+        }
+
+        return -1;
+    }
+    public int getMapLocationIndex(MapLocation thing) {
+        if(thing == null)
+            return -1;
+
+        switch(thing.type) {
+            case MapLocation.locationType.town:
+                for(int i = 0; i < getObjectCount<TownLocation>(); i++) {
+                    if(getObject<TownLocation>(i).isEqualTo((TownLocation)thing))
+                        return i;
+                }
+                break;
+            case MapLocation.locationType.pickup:
+                for(int i = 0; i < getObjectCount<PickupLocation>(); i++) {
+                    if(getObject<PickupLocation>(i).isEqualTo((PickupLocation)thing))
+                        return i;
+                }
+                break;
+            case MapLocation.locationType.upgrade:
+                for(int i = 0; i < getObjectCount<UpgradeLocation>(); i++) {
+                    if(getObject<UpgradeLocation>(i).isEqualTo((UpgradeLocation)thing))
+                        return i;
+                }
+                break;
+            case MapLocation.locationType.rescue:
+                for(int i = 0; i < getObjectCount<RescueLocation>(); i++) {
+                    if(getObject<RescueLocation>(i).isEqualTo((RescueLocation)thing))
+                        return i;
+                }
+                break;
+            case MapLocation.locationType.boss:
+                for(int i = 0; i < getObjectCount<BossLocation>(); i++) {
+                    if(getObject<BossLocation>(i).isEqualTo((BossLocation)thing))
+                        return i;
+                }
+                break;
+            case MapLocation.locationType.fishing:
+                for(int i = 0; i < getObjectCount<FishingLocation>(); i++) {
+                    if(getObject<FishingLocation>(i).isEqualTo((FishingLocation)thing))
+                        return i;
+                }
+                break;
+            case MapLocation.locationType.eye:
+                for(int i = 0; i < getObjectCount<EyeLocation>(); i++) {
+                    if(getObject<EyeLocation>(i).isEqualTo((EyeLocation)thing))
+                        return i;
+                }
+                break;
+            case MapLocation.locationType.bridge:
+                for(int i = 0; i < getObjectCount<BridgeLocation>(); i++) {
+                    if(getObject<BridgeLocation>(i).isEqualTo((BridgeLocation)thing))
+                        return i;
+                }
+                break;
+        }
+
+        return -1;
+    }
 
     //  get count
     public int getObjectCount<T>() {
@@ -505,9 +869,13 @@ public class ObjectHolder {
             return getCollectableCount();
         if(typeof(T) == typeof(Quest))
             return getQuestCount();
+        if(typeof(T) == typeof(Building))
+            return getBuildingCount();
+        if(typeof(T) == typeof(MapLocation))
+            return getMapLocationCount();
         return SaveData.getInt(countTag<T>());
     }
-    public int getCollectableCount() {
+    int getCollectableCount() {
         int count = 0;
         count += getObjectCount<Weapon>();
         count += getObjectCount<Armor>();
@@ -516,7 +884,7 @@ public class ObjectHolder {
         count += getObjectCount<Unusable>();
         return count;
     }
-    public int getQuestCount() {
+    int getQuestCount() {
         int count = 0;
         count += getObjectCount<BossFightQuest>();
         count += getObjectCount<DeliveryQuest>();
@@ -525,5 +893,31 @@ public class ObjectHolder {
         count += getObjectCount<RescueQuest>();
         count += getObjectCount<FishingQuest>();
         return count;
+    }
+    int getBuildingCount() {
+        int count = 0;
+        count += getObjectCount<HospitalBuilding>();
+        count += getObjectCount<ShopBuilding>();
+        count += getObjectCount<ChurchBuilding>();
+        count += getObjectCount<CasinoBuilding>();
+        count += getObjectCount<BlacksmithBuilding>();
+        return count;
+    }
+    int getMapLocationCount() {
+        int count = 0;
+        count += getObjectCount<TownLocation>();
+        count += getObjectCount<PickupLocation>();
+        count += getObjectCount<UpgradeLocation>();
+        count += getObjectCount<RescueLocation>();
+        count += getObjectCount<BossLocation>();
+        count += getObjectCount<FishingLocation>();
+        count += getObjectCount<EyeLocation>();
+        count += getObjectCount<BridgeLocation>();
+        return count;
+    }
+
+
+    bool invalidTyping<T>() {
+        return typeof(T) == typeof(Collectable) || typeof(T) == typeof(Quest) || typeof(T) == typeof(Building) || typeof(T) == typeof(MapLocation);
     }
 }

@@ -4,12 +4,12 @@ using UnityEngine;
 using DG.Tweening;
 using TMPro;
 
-public class MapQuestMenu : MonoBehaviour {
+public class MapQuestMenu : MonoBehaviour { //  only for quests with a location
     public bool shown;
 
     [SerializeField] SlotMenu slot;
 
-    [SerializeField] Color bossColor, delColor, pickColor, fishColor;
+    [SerializeField] Color bossColor, delColor, pickColor, rescueColor;
 
     Coroutine shower = null;
 
@@ -30,20 +30,28 @@ public class MapQuestMenu : MonoBehaviour {
 
     void createSlots() {
         int slotIndex = 0;
-        foreach(var i in ActiveQuests.getQuestHolder().getObjects<BossFightQuest>()) {
+        foreach(var i in ActiveQuests.getHolder().getObjects<BossFightQuest>()) {
+            if(i.completed)
+                continue;
             slot.createSlot(slotIndex, bossColor);
             slotIndex++;
         }
-        foreach(var i in ActiveQuests.getQuestHolder().getObjects<DeliveryQuest>()) {
+        foreach(var i in ActiveQuests.getHolder().getObjects<DeliveryQuest>()) {
+            if(i.completed)
+                continue;
             slot.createSlot(slotIndex, delColor);
             slotIndex++;
         }
-        foreach(var i in ActiveQuests.getQuestHolder().getObjects<PickupQuest>()) {
+        foreach(var i in ActiveQuests.getHolder().getObjects<PickupQuest>()) {
+            if(i.completed)
+                continue;
             slot.createSlot(slotIndex, pickColor);
             slotIndex++;
         }
-        foreach(var i in ActiveQuests.getQuestHolder().getObjects<FishingQuest>()) {
-            slot.createSlot(slotIndex, fishColor);
+        foreach(var i in ActiveQuests.getHolder().getObjects<RescueQuest>()) {
+            if(i.completed)
+                continue;
+            slot.createSlot(slotIndex, rescueColor);
             slotIndex++;
         }
     }
@@ -60,25 +68,38 @@ public class MapQuestMenu : MonoBehaviour {
         if(slot.getSelectedSlotIndex() == -1)
             return transform.position;
         int slotIndex = 0;
-        foreach(var i in ActiveQuests.getQuestHolder().getObjects<BossFightQuest>()) {
+        foreach(var i in ActiveQuests.getHolder().getObjects<BossFightQuest>()) {
+            if(i.completed)
+                continue;
             if(slotIndex == slot.getSelectedSlotIndex()) {
                 return i.location.pos;
             }
             slotIndex++;
         }
-        foreach(var i in ActiveQuests.getQuestHolder().getObjects<DeliveryQuest>()) {
+        foreach(var i in ActiveQuests.getHolder().getObjects<DeliveryQuest>()) {
+            if(i.completed)
+                continue;
             if(slotIndex == slot.getSelectedSlotIndex()) {
                 return i.deliveryLocation.pos;
             }
             slotIndex++;
         }
-        foreach(var i in ActiveQuests.getQuestHolder().getObjects<PickupQuest>()) {
+        foreach(var i in ActiveQuests.getHolder().getObjects<PickupQuest>()) {
+            if(i.completed)
+                continue;
             if(slotIndex == slot.getSelectedSlotIndex()) {
                 return i.location.pos;
             }
             slotIndex++;
         }
-        //  fishing quests don't have a location
+        foreach(var i in ActiveQuests.getHolder().getObjects<RescueQuest>()) {
+            if(i.completed)
+                continue;
+            if(slotIndex == slot.getSelectedSlotIndex()) {
+                return i.location.pos;
+            }
+            slotIndex++;
+        }
 
         return transform.position;
     }

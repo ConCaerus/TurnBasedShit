@@ -173,6 +173,19 @@ public static class GameInfo {
     public static region getRandomReg() {
         return (region)Random.Range(0, 5);
     }
+    public static region getRegionForEnemyType(EnemyUnitInstance.type t) {
+        switch(t) {
+            case EnemyUnitInstance.type.groundBird:
+                return region.grassland;
+            case EnemyUnitInstance.type.slime:
+                return region.swamp;
+            case EnemyUnitInstance.type.stumpSpider:
+                return region.forest;
+            case EnemyUnitInstance.type.rockCrawler:
+                return region.mountains;
+        }
+        return (region)(-1);
+    }
 
     public static int getNextCombatLocationInstanceID() {
         int index = SaveData.getInt(nextCombatLocationID);

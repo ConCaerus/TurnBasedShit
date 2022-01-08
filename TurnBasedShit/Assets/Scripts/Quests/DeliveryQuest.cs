@@ -29,6 +29,8 @@ public class DeliveryQuest : Quest {
             weaponsToDeliver.Add(i);
 
         type = deliveryType.weapon;
+
+        reward = GameVariables.getCoinRewardForQuest(this);
     }
     public DeliveryQuest(TownLocation t, List<Armor> a, bool setID) {
         if(setID)
@@ -40,6 +42,8 @@ public class DeliveryQuest : Quest {
             armorToDeliver.Add(i);
 
         type = deliveryType.armor;
+
+        reward = GameVariables.getCoinRewardForQuest(this);
     }
     public DeliveryQuest(TownLocation t, List<Usable> c, bool setID) {
         if(setID)
@@ -51,6 +55,8 @@ public class DeliveryQuest : Quest {
             consumablesToDeliver.Add(i);
 
         type = deliveryType.consumable;
+
+        reward = GameVariables.getCoinRewardForQuest(this);
     }
     public DeliveryQuest(TownLocation t, List<Item> it, bool setID) {
         if(setID)
@@ -62,6 +68,8 @@ public class DeliveryQuest : Quest {
             itemsToDeliver.Add(i);
 
         type = deliveryType.item;
+
+        reward = GameVariables.getCoinRewardForQuest(this);
     }
     public DeliveryQuest(TownLocation t, List<UnitStats> u, bool setID) {
         if(setID)
@@ -73,6 +81,8 @@ public class DeliveryQuest : Quest {
             unitsToDeliver.Add(i);
 
         type = deliveryType.weapon;
+
+        reward = GameVariables.getCoinRewardForQuest(this);
     }
 
 

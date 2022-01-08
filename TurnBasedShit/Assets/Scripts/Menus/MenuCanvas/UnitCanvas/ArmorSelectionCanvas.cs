@@ -11,9 +11,9 @@ public class ArmorSelectionCanvas : UnitEquipmentSelectionCanvas {
 
     public Armor getArmorInSlot(int index) {
         if(FindObjectOfType<UnitCanvas>().shownUnit.armor == null || FindObjectOfType<UnitCanvas>().shownUnit.armor.isEmpty())
-            return Inventory.getArmor(index);
+            return Inventory.getHolder().getObject<Armor>(index);
         else if(index > 0)
-            return Inventory.getArmor(index - 1);
+            return Inventory.getHolder().getObject<Armor>(index - 1);
         return FindObjectOfType<UnitCanvas>().shownUnit.armor;
     }
 
@@ -26,11 +26,11 @@ public class ArmorSelectionCanvas : UnitEquipmentSelectionCanvas {
             slotIndex++;
         }
 
-        for(int i = 0; i < Inventory.getArmorCount(); i++) {
-            if(Inventory.getArmor(i) == null || Inventory.getArmor(i).isEmpty())
+        for(int i = 0; i < Inventory.getHolder().getObjectCount<Armor>(); i++) {
+            if(Inventory.getHolder().getObject<Armor>(i) == null || Inventory.getHolder().getObject<Armor>(i).isEmpty())
                 continue;
-            var obj = slot.createSlot(slotIndex, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getArmor(i).rarity), InfoTextCreator.createForCollectable(Inventory.getArmor(i)));
-            obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getArmor(i)).sprite;
+            var obj = slot.createSlot(slotIndex, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getHolder().getObject<Armor>(i).rarity), InfoTextCreator.createForCollectable(Inventory.getHolder().getObject<Armor>(i)));
+            obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getHolder().getObject<Armor>(i)).sprite;
             slotIndex++;
         }
 
@@ -102,9 +102,9 @@ public class ArmorSelectionCanvas : UnitEquipmentSelectionCanvas {
     public override void rotateEquipment() {
         if(FindObjectOfType<UnitCanvas>().shownUnit.armor != null && !FindObjectOfType<UnitCanvas>().shownUnit.armor.isEmpty()) {
             var slottedArmor = getArmorInSlot(slot.getSelectedSlotIndex());
-            Inventory.addArmor(FindObjectOfType<UnitCanvas>().shownUnit.armor);
+            Inventory.addCollectable(FindObjectOfType<UnitCanvas>().shownUnit.armor);
             FindObjectOfType<UnitCanvas>().setUnitArmor(slottedArmor);
-            Inventory.removeArmor(slottedArmor);
+            Inventory.removeCollectable(slottedArmor);
         }
 
 
@@ -113,7 +113,7 @@ public class ArmorSelectionCanvas : UnitEquipmentSelectionCanvas {
             var slottedArmor = getArmorInSlot(slot.getSelectedSlotIndex());
             FindObjectOfType<UnitCanvas>().setUnitArmor(slottedArmor);
 
-            Inventory.removeArmor(slottedArmor);
+            Inventory.removeCollectable(slottedArmor);
         }
     }
 
@@ -126,7 +126,7 @@ public class ArmorSelectionCanvas : UnitEquipmentSelectionCanvas {
         if(unitArmor == null || unitArmor.isEmpty())
             return;
 
-        Inventory.addArmor(unitArmor);
+        Inventory.addCollectable(unitArmor);
         FindObjectOfType<UnitCanvas>().setUnitArmor(null);
     }
 

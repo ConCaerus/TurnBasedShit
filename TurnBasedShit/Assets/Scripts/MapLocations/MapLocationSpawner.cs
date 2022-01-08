@@ -24,13 +24,13 @@ public class MapLocationSpawner : MonoBehaviour {
             Destroy(i.gameObject);
 
         //  Boss Locations
-        for(int i = 0; i < MapLocationHolder.getBossCount(); i++) {
-            if(MapLocationHolder.getBossLocation(i).region != GameInfo.getCurrentRegion())
+        for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<BossLocation>(); i++) {
+            if(MapLocationHolder.getHolder().getObject<BossLocation>(i).region != GameInfo.getCurrentRegion())
                 continue;
             //  positioning and scaling
             var obj = Instantiate(bossLocationPreset.gameObject);
             obj.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-            obj.transform.position = MapLocationHolder.getBossLocation(i).pos;
+            obj.transform.position = MapLocationHolder.getHolder().getObject<BossLocation>(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
 
@@ -38,12 +38,12 @@ public class MapLocationSpawner : MonoBehaviour {
         }
 
         //  Town locations
-        for(int i = 0; i < MapLocationHolder.getTownCount(); i++) {
-            if(MapLocationHolder.getTownLocation(i).region != GameInfo.getCurrentRegion())
+        for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<TownLocation>(); i++) {
+            if(MapLocationHolder.getHolder().getObject<TownLocation>(i).region != GameInfo.getCurrentRegion())
                 continue;
             //  positioning and scaling
             var obj = Instantiate(townLocationPreset.gameObject);
-            obj.transform.position = MapLocationHolder.getTownLocation(i).pos;
+            obj.transform.position = MapLocationHolder.getHolder().getObject<TownLocation>(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
 
@@ -51,12 +51,12 @@ public class MapLocationSpawner : MonoBehaviour {
         }
 
         //  Rescue Locations
-        for(int i = 0; i < MapLocationHolder.getRescueCount(); i++) {
-            if(MapLocationHolder.getRescueLocation(i).region != GameInfo.getCurrentRegion())
+        for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<RescueLocation>(); i++) {
+            if(MapLocationHolder.getHolder().getObject<RescueLocation>(i).region != GameInfo.getCurrentRegion())
                 continue;
             //  positioning and scaling
             var obj = Instantiate(rescueLocationPreset.gameObject);
-            obj.transform.position = MapLocationHolder.getRescueLocation(i).pos;
+            obj.transform.position = MapLocationHolder.getHolder().getObject<RescueLocation>(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
 
@@ -64,12 +64,12 @@ public class MapLocationSpawner : MonoBehaviour {
         }
 
         //  Upgrade Locations
-        for(int i = 0; i < MapLocationHolder.getUpgradeCount(); i++) {
-            if(MapLocationHolder.getUpgradeLocation(i).region != GameInfo.getCurrentRegion())
+        for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<UpgradeLocation>(); i++) {
+            if(MapLocationHolder.getHolder().getObject<UpgradeLocation>(i).region != GameInfo.getCurrentRegion())
                 continue;
             //  positioning and scaling
             var obj = Instantiate(upgradeLocationPreset.gameObject);
-            obj.transform.position = MapLocationHolder.getUpgradeLocation(i).pos;
+            obj.transform.position = MapLocationHolder.getHolder().getObject<UpgradeLocation>(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
 
@@ -77,12 +77,12 @@ public class MapLocationSpawner : MonoBehaviour {
         }
 
         //  Pickup Locations
-        for(int i = 0; i < MapLocationHolder.getPickupCount(); i++) {
-            if(MapLocationHolder.getPickupLocation(i).region != GameInfo.getCurrentRegion())
+        for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<PickupLocation>(); i++) {
+            if(MapLocationHolder.getHolder().getObject<PickupLocation>(i).region != GameInfo.getCurrentRegion())
                 continue;
             //  positioning and scaling
             var obj = Instantiate(pickupLocationPreset.gameObject);
-            obj.transform.position = MapLocationHolder.getPickupLocation(i).pos;
+            obj.transform.position = MapLocationHolder.getHolder().getObject<PickupLocation>(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
 
@@ -90,12 +90,12 @@ public class MapLocationSpawner : MonoBehaviour {
         }
 
         //  FISHING
-        for(int i = 0; i < MapLocationHolder.getFishingCount(); i++) {
-            if(MapLocationHolder.getFishingLocation(i).region != GameInfo.getCurrentRegion())
+        for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<FishingLocation>(); i++) {
+            if(MapLocationHolder.getHolder().getObject<FishingLocation>(i).region != GameInfo.getCurrentRegion())
                 continue;
             //  positioning and scaling
             var obj = Instantiate(fishingLocationPreset.gameObject);
-            obj.transform.position = MapLocationHolder.getFishingLocation(i).pos;
+            obj.transform.position = MapLocationHolder.getHolder().getObject<FishingLocation>(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
 
@@ -103,12 +103,12 @@ public class MapLocationSpawner : MonoBehaviour {
         }
 
         //  eyes
-        for(int i = 0; i < MapLocationHolder.getEyeCount(); i++) {
-            if(MapLocationHolder.getEyeLocation(i).region != GameInfo.getCurrentRegion())
+        for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<EyeLocation>(); i++) {
+            if(MapLocationHolder.getHolder().getObject<EyeLocation>(i).region != GameInfo.getCurrentRegion())
                 continue;
             //  positioning and scaling
             var obj = Instantiate(eyeLocationPreset.gameObject);
-            obj.transform.position = MapLocationHolder.getEyeLocation(i).pos;
+            obj.transform.position = MapLocationHolder.getHolder().getObject<EyeLocation>(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
 
@@ -116,17 +116,17 @@ public class MapLocationSpawner : MonoBehaviour {
         }
 
         //  bridges
-        for(int i = 0; i < MapLocationHolder.getBridgeCount(); i++) {
-            if(MapLocationHolder.getBridgeLocation(i).region != GameInfo.getCurrentRegion())
+        for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<BridgeLocation>(); i++) {
+            if(MapLocationHolder.getHolder().getObject<BridgeLocation>(i).region != GameInfo.getCurrentRegion())
                 continue;
 
             //  positioning and scaling
             var obj = Instantiate(bridgePreset.gameObject);
-            obj.transform.position = MapLocationHolder.getBridgeLocation(i).pos;
+            obj.transform.position = MapLocationHolder.getHolder().getObject<BridgeLocation>(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
 
-            if(!MapLocationHolder.getBridgeLocation(i).advancing)
+            if(!MapLocationHolder.getHolder().getObject<BridgeLocation>(i).advancing)
                 obj.transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
 
             currentIcons.Add(obj);

@@ -63,13 +63,13 @@ public static class NameLibrary {
         return first + " " + last;
     }
     public static string getRandomUsableTownName() {
-        if(MapLocationHolder.getTownCount() >= townNames.Count)
+        if(MapLocationHolder.getHolder().getObjectCount<TownLocation>() >= townNames.Count)
             return townNames[Random.Range(0, townNames.Count)];
 
         var useables = townNames;
-        for(int i = 0; i < MapLocationHolder.getTownCount(); i++) {
+        for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<TownLocation>(); i++) {
             foreach(var u in useables) {
-                if(u == MapLocationHolder.getTownLocation(i).town.t_name) {
+                if(u == MapLocationHolder.getHolder().getObject<TownLocation>(i).town.t_name) {
                     useables.Remove(u);
                     break;
                 }

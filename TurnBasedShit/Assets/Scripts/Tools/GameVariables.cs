@@ -8,8 +8,11 @@ public static class GameVariables {
         return 18;
     }
 
-    public static float getExpForDefeatedEnemy(GameInfo.region lvl) {
+    public static float getExpForEnemy(GameInfo.region lvl) {
         return 10.0f * (1 + (int)lvl);
+    }
+    public static float getExpForEnemy(EnemyUnitInstance.type t) {
+        return getExpForEnemy(GameInfo.getRegionForEnemyType(t));
     }
 
     //  chances
@@ -39,6 +42,38 @@ public static class GameVariables {
 
     public static bool chanceEquipmentWornDecrease() {
         return chanceOutOfHundred(4);
+    }
+
+
+    //  rewards
+    public static int getCoinRewardForQuest(Quest qu) {
+        switch(qu.getQuestType()) {
+            case Quest.questType.bossFight:
+                var b = (BossFightQuest)qu;
+                return Random.Range(b.bossUnit.u_level * 5, b.bossUnit.u_level * 10 + 1);
+
+            case Quest.questType.pickup:
+                return 0;
+
+            case Quest.questType.delivery:
+                var d = (DeliveryQuest)qu;
+                return Random.Range(((int)d.deliveryLocation.region + 1) * 5, ((int)d.deliveryLocation.region + 1) * 10 + 1);
+
+            case Quest.questType.kill:
+                var k = (KillQuest)qu;
+                var min = k.howManyToKill * ((int)GameInfo.getRegionForEnemyType(k.enemyType) + 1) / 5;
+                var max = k.howManyToKill * ((int)GameInfo.getRegionForEnemyType(k.enemyType) + 1) / 2;
+                return Random.Range(min, max + 1);
+
+            case Quest.questType.rescue:
+                var r = (RescueQuest)qu;
+                return Random.Range(r.location.unit.u_level * 2, r.location.unit.u_level * 5 + 1);
+
+            case Quest.questType.fishing:
+                var f = (FishingQuest)qu;
+                return Random.Range((int)(f.fish.coinCost * 1.5f), (int)(f.fish.coinCost * 2.5f) + 1);
+        }
+        return 0;
     }
 
 

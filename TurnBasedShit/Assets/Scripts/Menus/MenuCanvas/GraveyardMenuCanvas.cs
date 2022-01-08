@@ -16,17 +16,17 @@ public class GraveyardMenuCanvas : MonoBehaviour {
     }
 
     public void createSlots() {
-        count.text = Graveyard.getDeadCount().ToString();
-        for(int i = 0; i < Graveyard.getDeadCount(); i++) {
-            var obj = slots.createSlot(i, Graveyard.getDeadStats(i).u_sprite.color, Graveyard.getDeadStats(i).u_name);
-            obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Graveyard.getDeadStats(i).u_name;
+        count.text = Graveyard.getHolder().getObjectCount<UnitStats>().ToString();
+        for(int i = 0; i < Graveyard.getHolder().getObjectCount<UnitStats>(); i++) {
+            var obj = slots.createSlot(i, Graveyard.getHolder().getObject<UnitStats>(i).u_sprite.color, Graveyard.getHolder().getObject<UnitStats>(i).u_name);
+            obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Graveyard.getHolder().getObject<UnitStats>(i).u_name;
 
-            if(Graveyard.getDeadStats(i).u_deathInfo.causeOfDeath == DeathInfo.killCause.murdered) {
+            if(Graveyard.getHolder().getObject<UnitStats>(i).u_deathInfo.causeOfDeath == DeathInfo.killCause.murdered) {
                 obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Killed by ";
-                if(Graveyard.getDeadStats(i).u_deathInfo.enemyType == (EnemyUnitInstance.type)(-1))
-                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text += "a teammate named " + Graveyard.getDeadStats(i).u_deathInfo.nameOfKiller;
+                if(Graveyard.getHolder().getObject<UnitStats>(i).u_deathInfo.enemyType == (EnemyUnitInstance.type)(-1))
+                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text += "a teammate named " + Graveyard.getHolder().getObject<UnitStats>(i).u_deathInfo.nameOfKiller;
                 else
-                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text += "a " + Graveyard.getDeadStats(i).u_deathInfo.enemyType.ToString() + " named " + Graveyard.getDeadStats(i).u_deathInfo.nameOfKiller;
+                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text += "a " + Graveyard.getHolder().getObject<UnitStats>(i).u_deathInfo.enemyType.ToString() + " named " + Graveyard.getHolder().getObject<UnitStats>(i).u_deathInfo.nameOfKiller;
             }
         }
     }

@@ -22,13 +22,12 @@ public class TownMenuCanvas : MonoBehaviour {
 
 
     public void updateSlots() {
-        var slots = slot.createANumberOfSlots(MapLocationHolder.getTownCount(), unvisitedColor);
-
+        slot.createANumberOfSlots(MapLocationHolder.getHolder().getObjectCount<TownLocation>(), unvisitedColor);
+        int count = 0;
         //  by time
         if(!state) {
-            int count = 0;
-            for(int i = 0; i < MapLocationHolder.getTownCount(); i++) {
-                var loc = MapLocationHolder.getTownLocation(i);
+            for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<TownLocation>(); i++) {
+                var loc = MapLocationHolder.getHolder().getObject<TownLocation>(i);
                 if(loc.town.visited) {
                     var obj = slot.replaceSlot(i, townSlotPreset, slot.gameObject.transform.GetChild(0).transform, visitedColor);
                     obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = loc.town.t_name;
@@ -53,15 +52,12 @@ public class TownMenuCanvas : MonoBehaviour {
                     count++;
                 }
             }
-
-            countText.text = count.ToString() + " / " + MapLocationHolder.getTownCount();
         }
 
         //  by visited
         else {
-            int count = 0;
-            for(int i = 0; i < MapLocationHolder.getTownCount(); i++) {
-                var loc = MapLocationHolder.getTownLocation(i);
+            for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<TownLocation>(); i++) {
+                var loc = MapLocationHolder.getHolder().getObject<TownLocation>(i);
                 if(loc.town.visited) {
                     var obj = slot.replaceSlot(count, townSlotPreset, slot.gameObject.transform.GetChild(0).transform, visitedColor);
                     obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = loc.town.t_name;
@@ -87,9 +83,9 @@ public class TownMenuCanvas : MonoBehaviour {
                     count++;
                 }
             }
-
-            countText.text = count.ToString() + " / " + MapLocationHolder.getTownCount();
         }
+
+        countText.text = count.ToString() + " / " + MapLocationHolder.getHolder().getObjectCount<TownLocation>();
     }
 
 

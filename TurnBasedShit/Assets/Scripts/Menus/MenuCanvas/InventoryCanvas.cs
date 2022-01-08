@@ -9,7 +9,7 @@ public class InventoryCanvas : MonoBehaviour {
     public int state = 0;
     [SerializeField] GameObject mainSlot, unitSlot;
     [SerializeField] Slider healthSlider;
-    [SerializeField] TextMeshProUGUI nameText, itemNameText, flavorText;
+    [SerializeField] TextMeshProUGUI nameText, itemNameText, flavorText, coinText;
     [SerializeField] SlotMenu slot;
     [SerializeField] AudioClip usable;
 
@@ -25,10 +25,14 @@ public class InventoryCanvas : MonoBehaviour {
     private void Update() {
         if(slot.run()) {
             updateInfo();
-            if(getSelectedCollectable() != null)
+            if(getSelectedCollectable() != null) {
                 itemNameText.text = getSelectedCollectable().name;
-            else
+                flavorText.text = getSelectedCollectable().flavor;
+            }
+            else {
                 itemNameText.text = "";
+                flavorText.text = "";
+            }
         }
     }
 
@@ -37,29 +41,29 @@ public class InventoryCanvas : MonoBehaviour {
         switch(state) {
             //  weapon
             case 0:
-                for(int i = 0; i < Inventory.getWeaponCount(); i++) {
-                    var obj = makeSlot(i, FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getWeapon(i)).sprite, InfoTextCreator.createForCollectable(Inventory.getWeapon(i)));
+                for(int i = 0; i < Inventory.getHolder().getObjectCount<Weapon>(); i++) {
+                    var obj = makeSlot(i, Inventory.getHolder().getObject<Weapon>(i), InfoTextCreator.createForCollectable(Inventory.getHolder().getObject<Weapon>(i)));
                     obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
                 }
-                slot.deleteSlotsAfterIndex(Inventory.getWeaponCount());
+                slot.deleteSlotsAfterIndex(Inventory.getHolder().getObjectCount<Weapon>());
                 break;
 
             //  armor
             case 1:
-                for(int i = 0; i < Inventory.getArmorCount(); i++) {
-                    var obj = makeSlot(i, FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getArmor(i)).sprite, InfoTextCreator.createForCollectable(Inventory.getArmor(i)));
+                for(int i = 0; i < Inventory.getHolder().getObjectCount<Armor>(); i++) {
+                    var obj = makeSlot(i, Inventory.getHolder().getObject<Armor>(i), InfoTextCreator.createForCollectable(Inventory.getHolder().getObject<Armor>(i)));
                     obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
                 }
-                slot.deleteSlotsAfterIndex(Inventory.getArmorCount());
+                slot.deleteSlotsAfterIndex(Inventory.getHolder().getObjectCount<Armor>());
                 break;
 
             //  item
             case 2:
-                for(int i = 0; i < Inventory.getItemCount(); i++) {
-                    var obj = makeSlot(i, FindObjectOfType<PresetLibrary>().getItemSprite(Inventory.getItem(i)).sprite, InfoTextCreator.createForCollectable(Inventory.getItem(i)));
+                for(int i = 0; i < Inventory.getHolder().getObjectCount<Item>(); i++) {
+                    var obj = makeSlot(i, Inventory.getHolder().getObject<Item>(i), InfoTextCreator.createForCollectable(Inventory.getHolder().getObject<Item>(i)));
                     obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
                 }
-                slot.deleteSlotsAfterIndex(Inventory.getItemCount());
+                slot.deleteSlotsAfterIndex(Inventory.getHolder().getObjectCount<Item>());
                 break;
 
             //  usable
@@ -81,6 +85,8 @@ public class InventoryCanvas : MonoBehaviour {
 
 
     void updateInfo() {
+        coinText.text = Inventory.getCoinCount().ToString() + "c";
+
         if(shownUnit == null || shownUnit.isEmpty())
             shownUnit = Party.getMemberStats(0);
         unitSlot.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnitHeadSprite(shownUnit.u_sprite.headIndex);
@@ -115,7 +121,7 @@ public class InventoryCanvas : MonoBehaviour {
         int numberOfSlots = 0;
         int slotIndex = 0;
         for(int i = 0; i < l.Count; i++) {
-            var obj = makeSlot(slotIndex, FindObjectOfType<PresetLibrary>().getUsableSprite(l[i]).sprite, InfoTextCreator.createForCollectable(l[i]));
+            var obj = makeSlot(slotIndex, l[i], InfoTextCreator.createForCollectable(l[i]));
             obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
 
             slotIndex++;
@@ -130,7 +136,7 @@ public class InventoryCanvas : MonoBehaviour {
                             obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
                     }
                     else {
-                        var temp = makeSlot(slotIndex, FindObjectOfType<PresetLibrary>().getUsableSprite(l[i]).sprite, InfoTextCreator.createForCollectable(l[i]));
+                        var temp = makeSlot(slotIndex, l[i], InfoTextCreator.createForCollectable(l[i]));
                         if(l[i].maxStackCount > 1)
                             temp.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = l[i].maxStackCount.ToString();
                         else
@@ -142,7 +148,7 @@ public class InventoryCanvas : MonoBehaviour {
                     count -= l[i].maxStackCount;
                 }
 
-                var catcher = makeSlot(slotIndex, FindObjectOfType<PresetLibrary>().getUsableSprite(l[i]).sprite, InfoTextCreator.createForCollectable(l[i]));
+                var catcher = makeSlot(slotIndex, l[i], InfoTextCreator.createForCollectable(l[i]));
                 if(count > 1)
                     catcher.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = count.ToString();
                 else
@@ -163,7 +169,7 @@ public class InventoryCanvas : MonoBehaviour {
         int numberOfSlots = 0;
         int slotIndex = 0;
         for(int i = 0; i < l.Count; i++) {
-            var obj = makeSlot(slotIndex, FindObjectOfType<PresetLibrary>().getUnusableSprite(l[i]).sprite, InfoTextCreator.createForCollectable(l[i]));
+            var obj = makeSlot(slotIndex, l[i], InfoTextCreator.createForCollectable(l[i]));
 
             slotIndex++;
 
@@ -177,7 +183,7 @@ public class InventoryCanvas : MonoBehaviour {
                             obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
                     }
                     else {
-                        var temp = makeSlot(slotIndex, FindObjectOfType<PresetLibrary>().getUnusableSprite(l[i]).sprite, InfoTextCreator.createForCollectable(l[i]));
+                        var temp = makeSlot(slotIndex, l[i], InfoTextCreator.createForCollectable(l[i]));
                         if(l[i].maxStackCount > 1)
                             temp.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = l[i].maxStackCount.ToString();
                         else
@@ -189,7 +195,7 @@ public class InventoryCanvas : MonoBehaviour {
                     count -= l[i].maxStackCount;
                 }
 
-                var catcher = makeSlot(slotIndex, FindObjectOfType<PresetLibrary>().getUnusableSprite(l[i]).sprite, InfoTextCreator.createForCollectable(l[i]));
+                var catcher = makeSlot(slotIndex, l[i], InfoTextCreator.createForCollectable(l[i]));
                 if(count > 1)
                     catcher.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = count.ToString();
                 else
@@ -207,9 +213,10 @@ public class InventoryCanvas : MonoBehaviour {
         return numberOfSlots;
     }
 
-    GameObject makeSlot(int i, Sprite sp, string info) {
+    GameObject makeSlot(int i, Collectable c, string info) {
         var obj = slot.createSlot(i, Color.white, info);
-        obj.transform.GetChild(0).GetComponent<Image>().sprite = sp;
+        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getGenericSpriteForCollectable(c);
+        obj.transform.GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(c.rarity);
 
         return obj;
     }
@@ -219,11 +226,11 @@ public class InventoryCanvas : MonoBehaviour {
             return null;
 
         if(state == 0)
-            return Inventory.getWeapon(slot.getSelectedSlotIndex());
+            return Inventory.getHolder().getObject<Weapon>(slot.getSelectedSlotIndex());
         else if(state == 1)
-            return Inventory.getArmor(slot.getSelectedSlotIndex());
+            return Inventory.getHolder().getObject<Armor>(slot.getSelectedSlotIndex());
         else if(state == 2)
-            return Inventory.getItem(slot.getSelectedSlotIndex());
+            return Inventory.getHolder().getObject<Item>(slot.getSelectedSlotIndex());
         else if(state == 3)
             return Inventory.getFirstMatchingUsable(FindObjectOfType<PresetLibrary>().getUsableFromSprite(mainSlot.transform.GetChild(0).GetComponent<Image>().sprite));
         else if(state == 4)
@@ -277,7 +284,7 @@ public class InventoryCanvas : MonoBehaviour {
         else if(obj.type == Collectable.collectableType.item)
             swapItem((Item)obj);
         else if(obj.type == Collectable.collectableType.usable && ((Usable)obj).applyStatsEffect(shownUnit, FindObjectOfType<PartyObject>())) {
-            Inventory.removeUsable((Usable)obj);
+            Inventory.removeCollectable((Usable)obj);
             FindObjectOfType<AudioManager>().playSound(usable);
             shownUnit = Party.getMemberStats(Party.getUnitIndex(shownUnit));
         }
@@ -290,10 +297,10 @@ public class InventoryCanvas : MonoBehaviour {
         uWeapon.setEqualTo(shownUnit.weapon, true);
         shownUnit.weapon = new Weapon();
         shownUnit.weapon.setEqualTo(w, true);
-        Inventory.removeWeapon(w);
+        Inventory.removeCollectable(w);
 
         if(uWeapon != null && !uWeapon.isEmpty())
-            Inventory.addWeapon(uWeapon);
+            Inventory.addCollectable(uWeapon);
 
         Party.overrideUnit(shownUnit);
     }
@@ -302,10 +309,10 @@ public class InventoryCanvas : MonoBehaviour {
         uArmor.setEqualTo(shownUnit.armor, true);
         shownUnit.armor = new Armor();
         shownUnit.armor.setEqualTo(a, true);
-        Inventory.removeArmor(a);
+        Inventory.removeCollectable(a);
 
         if(uArmor != null && !uArmor.isEmpty())
-            Inventory.addArmor(uArmor);
+            Inventory.addCollectable(uArmor);
 
         Party.overrideUnit(shownUnit);
     }
@@ -314,10 +321,10 @@ public class InventoryCanvas : MonoBehaviour {
         uItem.setEqualTo(shownUnit.item, true);
         shownUnit.item = new Item();
         shownUnit.item.setEqualTo(i, true);
-        Inventory.removeItem(i);
+        Inventory.removeCollectable(i);
 
         if(uItem != null && !uItem.isEmpty())
-            Inventory.addItem(uItem);
+            Inventory.addCollectable(uItem);
 
         Party.overrideUnit(shownUnit);
     }

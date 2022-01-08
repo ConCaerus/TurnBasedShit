@@ -23,6 +23,7 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
     private void Awake() {
         GetComponentInParent<InfoBearer>().runOnMouseOver(animateMouseOverSlot);
         GetComponentInParent<InfoBearer>().runOnMouseExit(animateMouseExitSlot);
+        slot.setSelectedSlotIndex(-1);
     }
 
     private void Update() {
@@ -47,8 +48,10 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
 
     public void startHiding() {
         transform.parent.GetComponent<BoxCollider2D>().enabled = true;
-        if(slot.getSelectedSlotIndex() != -1)
+        if(slot.getSelectedSlotIndex() != -1) {
             rotateEquipment();
+        }
+        slot.setSelectedSlotIndex(-1);
         StartCoroutine(hide());
     }
     public void setMouseOverX(bool b) {

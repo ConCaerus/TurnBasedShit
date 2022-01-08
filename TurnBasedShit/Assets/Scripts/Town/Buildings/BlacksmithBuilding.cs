@@ -19,4 +19,9 @@ public class BlacksmithBuilding : Building {
         chargeRate = other.chargeRate;
         hasHammer = other.hasHammer;
     }
+    public bool isEqualTo(BlacksmithBuilding other) {
+        if(other == null)
+            return false;
+        return chargeRate == other.chargeRate && hasHammer == other.hasHammer;
+    }
 }

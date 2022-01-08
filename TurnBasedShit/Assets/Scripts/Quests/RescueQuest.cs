@@ -12,6 +12,8 @@ public class RescueQuest : Quest {
             instanceID = GameInfo.getNextQuestInstanceID();
 
         location = rescue;
+
+        reward = GameVariables.getCoinRewardForQuest(this);
     }
 
     public override questType getQuestType() {

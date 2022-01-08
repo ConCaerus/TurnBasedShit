@@ -246,13 +246,14 @@ public class MapTrailRenderer : MonoBehaviour {
         bool snapped = false;
 
         //  checks for map locations
+        /*
         foreach(var i in MapLocationHolder.getLocations()) {
             if(Vector2.Distance(movingAnchor.transform.position, i.pos) < snappingDist * 2.0f) {
                 movingAnchor.transform.position = i.pos;
                 snapped = true;
                 break;
             }
-        }
+        }*/
 
         //  checks for other anchors if not snapped yet
         if(!snapped) {

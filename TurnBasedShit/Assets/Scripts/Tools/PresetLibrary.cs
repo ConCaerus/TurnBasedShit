@@ -103,26 +103,17 @@ public class PresetLibrary : MonoBehaviour {
             useables.Clear();
             foreach(var i in enemies) {
                 //  same difficulty
-                if(i.GetComponent<EnemyUnitInstance>().enemyDiff == diff)
+                if(GameInfo.getRegionForEnemyType(i.GetComponent<EnemyUnitInstance>().enemyType) == diff)
                     useables.Add(i.gameObject);
-
-                //  higher difficulty
-                else if(i.GetComponent<EnemyUnitInstance>().enemyDiff == diff + 1) {
-                    if(Random.Range(0, 101) <= 25)
-                        useables.Add(i.gameObject);
-                }
-
-                //  lower difficulty
-                else if(i.GetComponent<EnemyUnitInstance>().enemyDiff == diff - 1) {
-                    if(Random.Range(0, 101) <= 25)
-                        useables.Add(i.gameObject);
-                }
             }
 
             if(useables.Count > 0)
                 enemy = useables[Random.Range(0, useables.Count)].gameObject;
+            else
+                enemy = enemies[Random.Range(0, enemies.Length)].gameObject;
         }
-        enemy = enemies[Random.Range(0, enemies.Length)].gameObject;
+        else
+            enemy = enemies[Random.Range(0, enemies.Length)].gameObject;
         return enemy;
     }
     public GameObject getRandomBoss(GameInfo.region diff = (GameInfo.region)(-1)) {
@@ -132,20 +123,8 @@ public class PresetLibrary : MonoBehaviour {
             List<GameObject> useables = new List<GameObject>();
             foreach(var i in bosses) {
                 //  same difficulty
-                if(i.GetComponent<BossUnitInstance>().enemyDiff == diff)
+                if(GameInfo.getRegionForEnemyType(i.GetComponent<BossUnitInstance>().enemyType) == diff)
                     useables.Add(i);
-
-                //  higher difficulty
-                else if(i.GetComponent<BossUnitInstance>().enemyDiff == diff + 1) {
-                    if(Random.Range(0, 101) <= 25)
-                        useables.Add(i);
-                }
-
-                //  lower difficulty
-                else if(i.GetComponent<BossUnitInstance>().enemyDiff == diff - 1) {
-                    if(Random.Range(0, 101) <= 25)
-                        useables.Add(i);
-                }
             }
 
             if(useables.Count > 0)
@@ -178,17 +157,8 @@ public class PresetLibrary : MonoBehaviour {
             List<int> useables = new List<int>();
             useables.Clear();
             for(int i = 0; i < enemies.Length; i++) {
-                if(enemies[i].GetComponent<EnemyUnitInstance>().enemyDiff == diff)
+                if(GameInfo.getRegionForEnemyType(enemies[i].GetComponent<EnemyUnitInstance>().enemyType) == diff)
                     useables.Add(i);
-
-                else if(enemies[i].GetComponent<EnemyUnitInstance>().enemyDiff == diff + 1) {
-                    if(GameVariables.chanceOutOfHundred(25))
-                        useables.Add(i);
-                }
-
-                else if(enemies[i].GetComponent<EnemyUnitInstance>().enemyDiff == diff - 1)
-                    if(GameVariables.chanceOutOfHundred(25))
-                        useables.Add(i);
             }
 
             if(useables.Count > 0)
@@ -724,20 +694,21 @@ public class PresetLibrary : MonoBehaviour {
         return new PickupQuest(loc, setID);
     }
     public KillQuest createRandomKillQuest(bool setID, GameInfo.region reg) {
-        return new KillQuest(Random.Range(5, 36), getRandomEnemy(reg).GetComponent<EnemyUnitInstance>().enemyType, setID);   //  change this number too
+        var temp = new KillQuest(Random.Range(5, 36), getRandomEnemy(reg).GetComponent<EnemyUnitInstance>().enemyType, setID);
+        return temp;
     }
     public DeliveryQuest createRandomDeliveryQuest(bool setID, GameInfo.region reg) {
         int townInd = 0;
         //  no towns
-        if(MapLocationHolder.getTownCount() == 0) {
+        if(MapLocationHolder.getHolder().getObjectCount<TownLocation>() == 0) {
             Vector2 pos = Map.getRandPos();
             MapLocationHolder.addLocation(new TownLocation(pos, reg, this));
         }
         else {
-            townInd = Random.Range(0, MapLocationHolder.getTownCount());
+            townInd = Random.Range(0, MapLocationHolder.getHolder().getObjectCount<TownLocation>());
             if(GameInfo.getCurrentLocationAsTown() != null) {
-                while(MapLocationHolder.getTownLocation(townInd).isEqualTo(GameInfo.getCurrentLocationAsTown()))
-                    townInd = Random.Range(0, MapLocationHolder.getTownCount());
+                while(MapLocationHolder.getHolder().getObject<TownLocation>(townInd).isEqualTo(GameInfo.getCurrentLocationAsTown()))
+                    townInd = Random.Range(0, MapLocationHolder.getHolder().getObjectCount<TownLocation>());
             }
         }
 
@@ -748,14 +719,14 @@ public class PresetLibrary : MonoBehaviour {
             for(int i = 0; i < Random.Range(1, 4); i++)
                 things.Add(getRandomWeapon());
 
-            return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd), things, setID);
+            return new DeliveryQuest(MapLocationHolder.getHolder().getObject<TownLocation>(townInd), things, setID);
         }
         if(rand == 1) {
             var things = new List<Armor>();
             for(int i = 0; i < Random.Range(1, 4); i++)
                 things.Add(getRandomArmor());
 
-            return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd), things, setID);
+            return new DeliveryQuest(MapLocationHolder.getHolder().getObject<TownLocation>(townInd), things, setID);
         }
         if(rand == 2) {
             var things = new List<Usable>();
@@ -763,32 +734,32 @@ public class PresetLibrary : MonoBehaviour {
             for(int i = 0; i < Random.Range(1, 26); i++)
                 things.Add(con);
 
-            return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd), things, setID);
+            return new DeliveryQuest(MapLocationHolder.getHolder().getObject<TownLocation>(townInd), things, setID);
         }
         if(rand == 3) {
             var things = new List<Item>();
             for(int i = 0; i < Random.Range(0, 4); i++)
                 things.Add(getRandomItem());
 
-            return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd), things, setID);
+            return new DeliveryQuest(MapLocationHolder.getHolder().getObject<TownLocation>(townInd), things, setID);
         }
         if(rand == 4) {
             var things = new List<UnitStats>();
             for(int i = 0; i < Random.Range(1, 3); i++)
                 things.Add(createRandomPlayerUnitStats(true));
 
-            return new DeliveryQuest(MapLocationHolder.getTownLocation(townInd), things, setID);
+            return new DeliveryQuest(MapLocationHolder.getHolder().getObject<TownLocation>(townInd), things, setID);
         }
         return null;
     }
-    public FishingQuest createRandomFishingQuest(bool setID, bool createMapLocation, GameInfo.region reg) {
-        var loc = createFishingLocation(reg);
+    public FishingQuest createRandomFishingQuest(bool setID, GameInfo.region reg) {
+        return new FishingQuest(getRandomFishInRegion(reg), setID);
+    }
+    public RescueQuest createRandomRescueQuest(bool setID, bool createMapLocation, GameInfo.region reg) {
+        var loc = createRescueLocation(reg);
         if(createMapLocation)
             MapLocationHolder.addLocation(loc);
-        return new FishingQuest(loc, setID);
-    }
-    public RescueQuest createRandomRescueQuest(bool setID, GameInfo.region reg) {
-        return new RescueQuest(createRescueLocation(reg), setID);
+        return new RescueQuest(loc, setID);
     }
 
     public CombatScarSpriteHolder getCombatScarSprite(int index) {

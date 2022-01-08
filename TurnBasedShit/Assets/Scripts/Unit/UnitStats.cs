@@ -8,8 +8,8 @@ public class UnitStats {
 
     public float u_expCap = 25.0f;
     public float u_exp = 0.0f;
-    public int u_level = 0;
-    const int maxLevel = 5;
+    public int u_level = 1;
+    const int maxLevel = 6;
     public float u_skillExpCap = 100.0f;
     public float u_bluntExp;
     public float u_edgedExp;
@@ -291,11 +291,11 @@ public class UnitStats {
     public void die(DeathInfo.killCause cause, GameObject killer = null) {
         //  add equipped things back into the inventory
         if(weapon != null && !weapon.isEmpty())
-            Inventory.addWeapon(weapon);
+            Inventory.addCollectable(weapon);
         if(armor != null && !armor.isEmpty())
-            Inventory.addArmor(armor);
+            Inventory.addCollectable(armor);
         if(item != null && !item.isEmpty())
-            Inventory.addItem(item);
+            Inventory.addCollectable(item);
 
         weapon = null;
         armor = null;

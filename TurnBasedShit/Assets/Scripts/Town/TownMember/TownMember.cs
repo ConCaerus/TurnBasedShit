@@ -69,12 +69,12 @@ public class TownMember {
                     break;
 
                 case Quest.questType.rescue:
-                    questHolder.addObject<RescueQuest>(lib.createRandomRescueQuest(true, home.region));
+                    questHolder.addObject<RescueQuest>(lib.createRandomRescueQuest(true, true, home.region));
                     questType = Quest.questType.pickup;
                     break;
 
                 case Quest.questType.fishing:
-                    questHolder.addObject<FishingQuest>(lib.createRandomFishingQuest(true, true, home.region));
+                    questHolder.addObject<FishingQuest>(lib.createRandomFishingQuest(true, home.region));
                     questType = Quest.questType.fishing;
                     break;
             }

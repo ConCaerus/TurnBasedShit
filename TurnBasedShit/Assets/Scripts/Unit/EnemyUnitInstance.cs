@@ -4,7 +4,6 @@ using UnityEngine;
 
 [System.Serializable]
 public class EnemyUnitInstance : UnitClass {
-    public GameInfo.region enemyDiff = 0;
     public Weapon.attackType weakTo;
     [SerializeField] AnimationClip idle;
 

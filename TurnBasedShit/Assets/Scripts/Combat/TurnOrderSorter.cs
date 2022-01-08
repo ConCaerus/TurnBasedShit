@@ -170,7 +170,6 @@ public class TurnOrderSorter : MonoBehaviour {
         foreach(var i in FindObjectsOfType<CombatSpot>())
             i.setColor();
         FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
-        FindObjectOfType<CombatCameraController>().resetLookingAtObj();
 
         //  triggers
         if(playingUnit.GetComponent<UnitClass>().stats.item != null && !playingUnit.GetComponent<UnitClass>().stats.item.isEmpty()) {

@@ -135,10 +135,6 @@ public class CombatCameraController : MonoBehaviour {
         }
     }
 
-    public void resetLookingAtObj() {
-        lookingAtObj = null;
-    }
-
     public GameObject getEnivironmentHolder() {
         switch(GameInfo.getCurrentRegion()) {
             case GameInfo.region.grassland: return grasslandObjects;

@@ -3,6 +3,114 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class MapLocationHolder {
+    const string holderTag = "InventoryHolderTag";
+
+    public static ObjectHolder getHolder() {
+        var data = SaveData.getString(holderTag);
+        return JsonUtility.FromJson<ObjectHolder>(data);
+    }
+    static void saveHolder(ObjectHolder holder) {
+        var data = JsonUtility.ToJson(holder);
+        SaveData.setString(holderTag, data);
+    }
+
+
+    public static void clear() {
+        saveHolder(new ObjectHolder());
+    }
+
+
+    public static void addLocation(MapLocation loc) {
+        if(loc == null)
+            return;
+
+        var holder = getHolder();
+        holder.addObject<MapLocation>(loc);
+        saveHolder(holder);
+    }
+    public static void overrideLocation(int index, MapLocation loc) {
+        if(loc == null || index == -1)
+            return;
+        var holder = getHolder();
+        holder.overrideObject<MapLocation>(index, loc);
+        saveHolder(holder);
+    }
+    public static void overrideLocationOfSameType(MapLocation loc) {
+        if(loc == null)
+            return;
+        var holder = getHolder();
+        holder.overrideMapLocationOfSameType(loc);
+        saveHolder(holder);
+    }
+    public static void removeLocation(MapLocation loc) {
+        if(loc == null)
+            return;
+        var holder = getHolder();
+        holder.removeMapLocation(loc);
+        saveHolder(holder);
+    }
+
+
+    public static void populateMapLocations(PresetLibrary lib) {
+        //  these are the only ones that need to be populated on start
+        int upgradeCount = Random.Range(10, 26);
+        //int nestCount = Random.Range(7, 16);
+        int fishCount = Random.Range(10, 31);
+        int eyeCount = Random.Range(10, 51);
+
+        for(int i = 0; i < upgradeCount; i++) {
+            var u = lib.createUpgradeLocation(GameInfo.getRandomReg());
+            getHolder().addObject<UpgradeLocation>(u);
+            addLocation(u);
+        }
+        /*
+        for(int i = 0; i < nestCount; i++) {
+            var n = lib.createNestLocation();
+            addLocation(n);
+        }*/
+        for(int i = 0; i < fishCount; i++) {
+            var f = lib.createFishingLocation(GameInfo.getRandomReg());
+            addLocation(f);
+        }
+        for(int i = 0; i < eyeCount; i++) {
+            var e = lib.createEyeLocation(GameInfo.getRandomReg());
+            addLocation(e);
+        }
+
+        //  bridges
+        float lastY = Map.getRandPos().y;
+        for(int i = 0; i < 5; i++) {
+            if(i > 0)   //  doesn't add a privious bridge to grasslands
+                addLocation(lib.createBridgeLocation(lastY, false, (GameInfo.region)i));
+            else
+                GameInfo.setCurrentMapPos(new Vector2(Map.leftBound(), lastY));
+
+            if(i < 4) { //  doesn't add a next bridge for hell
+                lastY = Map.getRandPos().y;
+                addLocation(lib.createBridgeLocation(lastY, true, (GameInfo.region)i));
+            }
+        }
+    }
+    public static MapLocation getLocationAtPos(Vector2 p) {
+        foreach(var i in getHolder().getMapLocations()) {
+            if(i.pos == p)
+                return i;
+        }
+
+        return null;
+    }
+    public static TownLocation getRandomTownLocationWithBuilding(Building.type type) {
+        List<TownLocation> locs = new List<TownLocation>();
+        for(int i = 0; i < getHolder().getObjectCount<TownLocation>(); i++) {
+            if(getHolder().getObject<TownLocation>(i).town.hasBuilding(type))
+                locs.Add(getHolder().getObject<TownLocation>(i));
+        }
+        if(locs.Count == 0)
+            return null;
+        return locs[Random.Range(0, locs.Count)];
+    }
+
+    /*
     static string townTag(int i) { return "TownLocation" + i.ToString(); }
     static string pickupTag(int i) { return "PickupLocation" + i.ToString(); }
     static string upgradeTag(int i) { return "UpgradeLocation" + i.ToString(); }
@@ -38,7 +146,7 @@ public static class MapLocationHolder {
         for(int i = 0; i < nestCount; i++) {
             var n = lib.createNestLocation();
             addLocation(n);
-        }*/
+        }
         for(int i = 0; i < fishCount; i++) {
             var f = lib.createFishingLocation(GameInfo.getRandomReg());
             addLocation(f);
@@ -412,16 +520,6 @@ public static class MapLocationHolder {
         }
         return null;
     }
-    public static TownLocation getRandomTownLocationWithBuilding(Building.type type) {
-        List<TownLocation> locs = new List<TownLocation>();
-        for(int i = 0; i < getTownCount(); i++) {
-            if(getTownLocation(i).town.hasBuilding(type))
-                locs.Add(getTownLocation(i));
-        }
-        if(locs.Count == 0)
-            return null;
-        return locs[Random.Range(0, locs.Count)];
-    }
     public static PickupLocation getPickupLocation(int index) {
         var data = SaveData.getString(pickupTag(index));
         var temp = JsonUtility.FromJson<PickupLocation>(data);
@@ -770,11 +868,11 @@ public static class MapLocationHolder {
         }
 
         return temp;
-    }
+    } */
 }
 
-public class locationFindInfo {
-    public MapLocation.locationType type = MapLocation.locationType.empty;
+    public class locationFindInfo {
+    public MapLocation.locationType type = (MapLocation.locationType)(-1);
     public int referenceIndex = -1;
 
     public locationFindInfo(MapLocation.locationType t, int ind) {
