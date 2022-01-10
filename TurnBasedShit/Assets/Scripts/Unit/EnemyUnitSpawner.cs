@@ -4,8 +4,6 @@ using UnityEngine;
 using DG.Tweening;
 
 public class EnemyUnitSpawner : MonoBehaviour {
-    [SerializeField] GameObject enemyPreset;
-
     [SerializeField] float showingSpeed = 0.15f;
 
     public void spawnEnemies(int waveIndex) {
