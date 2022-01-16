@@ -52,10 +52,11 @@ public class DamageTextCanvas : MonoBehaviour {
         StartCoroutine(animateText(obj.gameObject, unit.gameObject, special));
     }
 
-    public void showBreakTextForUnit(GameObject unit) {
+    public void showTatterTextForUnit(GameObject unit) {
         var obj = createTextObj(unit);
         obj.text = "Tattered";
         obj.color = Color.white;
+        FindObjectOfType<AudioManager>().playTatterSound();
         StartCoroutine(animateText(obj.gameObject, unit.gameObject, false));
     }
     public void showLevelUpTextForUnit(GameObject unit) {

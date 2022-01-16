@@ -36,11 +36,4 @@ public class UpgradeLocation : MapLocation {
         MapLocationHolder.removeLocation(this);
         tc.loadSceneWithTransition("UpgradeLocation");
     }
-
-    public override bool isEqualTo(MapLocation other) {
-        if(other.type != locationType.upgrade)
-            return false;
-
-        return state == ((UpgradeLocation)other).state && other.pos == pos;
-    }
 }

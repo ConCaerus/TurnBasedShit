@@ -6,7 +6,7 @@ using TMPro;
 using DG.Tweening;
 
 public class UnitCanvas : MonoBehaviour {
-    public TextMeshProUGUI nameText, powerText, defenceText, speedText, critText, firstTraitText, secondTraitText, levelText;
+    public TextMeshProUGUI nameText, powerText, defenceText, speedText, critText, firstTraitText, secondTraitText, levelText, talentText;
     public Slider healthSlider, expSlider;
     public Image faceImage, headImage, bodyImage, rArmImage, lArmImage, weaponImage, armorImage, itemImage;
     public Button leaderButton;
@@ -19,7 +19,7 @@ public class UnitCanvas : MonoBehaviour {
     const string indexTag = "UnitCanvas shown unit index";
     public UnitStats shownUnit;
 
-    public Color leaderColor, nonLeaderColor;
+    public Color leaderColor, nonLeaderColor, goodTalentColor, badTalentColor;
 
     public Slider rSlider, gSlider, bSlider;
     bool lockColor = true;
@@ -38,10 +38,10 @@ public class UnitCanvas : MonoBehaviour {
 
     public void setup() {
         lockColor = true;
-        if(SaveData.getInt(indexTag) < Party.getMemberCount())
-            shownUnit = Party.getMemberStats(SaveData.getInt(indexTag));
+        if(SaveData.getInt(indexTag) < Party.getHolder().getObjectCount<UnitStats>())
+            shownUnit = Party.getHolder().getObject<UnitStats>(SaveData.getInt(indexTag));
         else {
-            shownUnit = Party.getMemberStats(0);
+            shownUnit = Party.getHolder().getObject<UnitStats>(0);
             SaveData.setInt(indexTag, 0);
         }
         updateLockedState();
@@ -80,6 +80,12 @@ public class UnitCanvas : MonoBehaviour {
         foreach(var i in traits)
             Destroy(i.gameObject);
         traits.Clear();
+        if(shownUnit.u_talent != null) {
+            talentText.text = shownUnit.u_talent.t_name;
+            talentText.color = (shownUnit.u_talent.t_isGood) ? goodTalentColor : badTalentColor;
+        }
+        else
+            talentText.text = "";
 
         int traitCount = shownUnit.u_traits.Count;
         firstTraitText.text = "";
@@ -165,7 +171,8 @@ public class UnitCanvas : MonoBehaviour {
             armorImage.enabled = false;
         }
         if(shownUnit.item != null && !shownUnit.item.isEmpty()) {
-            itemImage.sprite = FindObjectOfType<PresetLibrary>().getItemSprite(shownUnit.item).sprite;
+            var sr = FindObjectOfType<PresetLibrary>().getItemSprite(shownUnit.item).sprite;
+            itemImage.sprite = sr;
             if(shownUnit.item.isTheSameTypeAs(FindObjectOfType<PresetLibrary>().getItem("Dummy")))
                 itemImage.color = shownUnit.u_sprite.color;
             else
@@ -271,7 +278,7 @@ public class UnitCanvas : MonoBehaviour {
     //  buttons
     public void cycleUnit(bool right) {
         lockColor = true;
-        int index = Party.getUnitIndex(shownUnit);
+        int index = Party.getHolder().getUnitStatsIndex(shownUnit);
 
         //  right
         if(right) {
@@ -282,13 +289,13 @@ public class UnitCanvas : MonoBehaviour {
             index--;
         }
 
-        if(index >= Party.getMemberCount())
+        if(index >= Party.getHolder().getObjectCount<UnitStats>())
             index = 0;
         else if(index < 0)
-            index = Party.getMemberCount() - 1;
+            index = Party.getHolder().getObjectCount<UnitStats>() - 1;
 
         SaveData.setInt(indexTag, index);
-        shownUnit = Party.getMemberStats(index);
+        shownUnit = Party.getHolder().getObject<UnitStats>(index);
         updateUnitWindow();
     }
     public void setLeader() {
@@ -380,6 +387,6 @@ public class UnitCanvas : MonoBehaviour {
         if(FindObjectOfType<PartyObject>() != null)
             FindObjectOfType<PartyObject>().resaveInstantiatedUnit(shownUnit);
         else
-            Party.overrideUnit(shownUnit);
+            Party.overrideUnitOfSameInstance(shownUnit);
     }
 }

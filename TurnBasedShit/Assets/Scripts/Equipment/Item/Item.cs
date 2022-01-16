@@ -12,12 +12,12 @@ public class Item : Collectable {
     //  effects the item has
     [System.Serializable]
     public enum passiveEffectTypes {
-        modPower, modSpeed, modDefence, modHealGiven, modSummonDamageGiven, modEdgedDamageGiven, modBluntDamageGiven, modChanceToBeAttacked, extraTurn
+        modPower, modSpeed, modDefence, modHealGiven, modSummonDamageGiven, modEdgedDamageGiven, modBluntDamageGiven, modChanceToBeAttacked, extraTurn, modMissChance, healInsteadOfDamage
     }
 
     [System.Serializable]
     public enum timedEffectTypes { 
-        healSelf, addTempSpeed, addTempPower, addTempDefence
+        healSelf, addTempSpeed, addTempPower, addTempDefence, chanceEnemyTurnsIntoSummon
     }
 
 
@@ -50,6 +50,16 @@ public class Item : Collectable {
         return temp;
     }
 
+    //  timed shit
+    public float getTimedMod(timedEffectTypes type) {
+        float temp = 0.0f;
+        foreach(var i in tEffects) {
+            if(i.effect == type)
+                temp += i.effectAmount;
+        }
+        return temp;
+    }
+
 
     public void triggerUseTime(UnitClass unit, useTimes time) {
         foreach(var i in tEffects) {
@@ -61,15 +71,44 @@ public class Item : Collectable {
                         break;
 
                     case timedEffectTypes.addTempSpeed:
-                        unit.tempSpeedMod += i.effectAmount;
+                        unit.combatStats.tempSpeedMod += i.effectAmount;
                         break;
 
                     case timedEffectTypes.addTempPower:
-                        unit.tempPowerMod += i.effectAmount;
+                        unit.combatStats.tempPowerMod += i.effectAmount;
                         break;
 
                     case timedEffectTypes.addTempDefence:
-                        unit.tempDefenceMod += i.effectAmount;
+                        unit.combatStats.tempDefenceMod += i.effectAmount;
+                        break;
+
+                    case timedEffectTypes.chanceEnemyTurnsIntoSummon:
+                        //  not a valid unit type
+                        if(unit.GetComponent<UnitClass>().combatStats.attackingTarget == null || unit.GetComponent<UnitClass>().combatStats.attackingTarget.GetComponent<UnitClass>().combatStats.isPlayerUnit)
+                            break;
+
+                        //  cant take another summon
+                        if(!unit.GetComponent<PlayerUnitInstance>().roomToSummon())
+                            break;
+
+                        //  takes the chance
+                        if(GameVariables.chanceOutOfHundred((int)getTimedMod(timedEffectTypes.chanceEnemyTurnsIntoSummon))) {
+                            var enemy = unit.GetComponent<UnitClass>().combatStats.attackingTarget;
+                            //  creates a summon class for the enemy
+                            enemy.AddComponent<SummonedUnitInstance>();
+                            enemy.GetComponent<SummonedUnitInstance>().summoner = unit.stats;
+                            enemy.GetComponent<SummonedUnitInstance>().stats = enemy.GetComponent<EnemyUnitInstance>().stats;
+                            enemy.GetComponent<SummonedUnitInstance>().combatStats = enemy.GetComponent<EnemyUnitInstance>().combatStats;
+                            enemy.GetComponent<SummonedUnitInstance>().combatStats.isPlayerUnit = true;
+                            enemy.GetComponent<EnemyUnitInstance>().selfDestruct();
+
+                            enemy.GetComponent<UnitClass>().combatStats.attackingTarget = null;
+
+                            var spot = unit.GetComponent<PlayerUnitInstance>().getNextSummonSpotForUnit();
+                            enemy.transform.position = spot.transform.position;
+                            enemy.transform.SetParent(spot.transform);
+                            enemy.transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+                        }
                         break;
                 }
             }

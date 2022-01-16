@@ -28,7 +28,7 @@ public class EnemyUnitInstance : UnitClass {
 
 
     private void Awake() {
-        isPlayerUnit = false;
+        combatStats.isPlayerUnit = false;
     }
 
     public override void setAttackingAnim() {
@@ -49,25 +49,24 @@ public class EnemyUnitInstance : UnitClass {
     }
 
     public IEnumerator combatTurn() {
-        if(attackingTarget == null)
+        if(combatStats.attackingTarget == null)
             calcNextAttackingTarget();
 
         yield return new WaitForSeconds(1f);
 
-        attack(attackingTarget);
+        attack(combatStats.attackingTarget);
     }
 
 
     void calcNextAttackingTarget() {
-        int attackableCount = Party.getMemberCount() + FindObjectsOfType<SummonedUnitInstance>().Length;
+        int attackableCount = Party.getHolder().getObjectCount<UnitStats>() + FindObjectsOfType<SummonedUnitInstance>().Length;
         float defaultChancePerUnit = 100.0f / attackableCount;
         float total = 0.0f;
 
 
-
         for(int i = 0; i < attackableCount; i++) {
-            if(i < Party.getMemberCount()) {
-                total += calcChanceToAttack(attackableCount, Party.getMemberStats(i));
+            if(i < Party.getHolder().getObjectCount<UnitStats>()) {
+                total += calcChanceToAttack(attackableCount, Party.getHolder().getObject<UnitStats>(i));
             }
             else
                 total += defaultChancePerUnit;
@@ -75,10 +74,10 @@ public class EnemyUnitInstance : UnitClass {
 
         float rand = Random.Range(0.0f, total);
         for(int i = 0; i < attackableCount; i++) {
-            if(i < Party.getMemberCount()) {
-                var chance = calcChanceToAttack(attackableCount, Party.getMemberStats(i));
+            if(i < Party.getHolder().getObjectCount<UnitStats>()) {
+                var chance = calcChanceToAttack(attackableCount, Party.getHolder().getObject<UnitStats>(i));
                 if(rand < chance) {
-                    attackingTarget = FindObjectOfType<PartyObject>().getInstantiatedMember(Party.getMemberStats(i)).gameObject;
+                    combatStats.attackingTarget = FindObjectOfType<PartyObject>().getInstantiatedMember(Party.getHolder().getObject<UnitStats>(i)).gameObject;
                     return;
                 }
                 rand -= chance;
@@ -86,7 +85,7 @@ public class EnemyUnitInstance : UnitClass {
 
             else {
                 if(rand < defaultChancePerUnit) {
-                    attackingTarget = FindObjectsOfType<SummonedUnitInstance>()[i - Party.getMemberCount()].gameObject;
+                    combatStats.attackingTarget = FindObjectsOfType<SummonedUnitInstance>()[i - Party.getHolder().getObjectCount<UnitStats>()].gameObject;
                     return;
                 }
                 rand -= defaultChancePerUnit;
@@ -156,5 +155,9 @@ public class EnemyUnitInstance : UnitClass {
             loc.spoils.addObject<Collectable>(FindObjectOfType<PresetLibrary>().getUnusable(unusableDrop.preset));
             GameInfo.setCombatDetails(loc);
         }
+    }
+
+    public void selfDestruct() {
+        Destroy(this);
     }
 }

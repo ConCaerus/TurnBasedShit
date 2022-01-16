@@ -4,28 +4,16 @@ using UnityEngine;
 using DG.Tweening;
 
 public abstract class UnitClass : MonoBehaviour {
-    [SerializeField] AudioClip hurtSound, dieSound;
-    public GameObject attackingTarget = null;
-    public ParticleSystem bloodParticles;
-    public Color hitColor;
+    public UnitCombatStats combatStats;
 
-    public bool isPlayerUnit = true;
+    public UnitStats stats;
+
     public bool defending = false;
     public bool stunned = false;
     public bool charging = false;
-    public bool isMouseOverUnit = false;
 
-    public float tempPowerMod = 0.0f;   //  adds
-    public float tempDefenceMod = 0.0f; //  adds
-    public float tempSpeedMod = 0.0f;   //  adds 
-
-    public float spotOffset = 0.0f;
-
-    protected Vector2 normalSize, normalPos;
+    public bool isMouseOverUnit { get; protected set; } = false;
     public Coroutine attackAnim, defendAnim;
-
-
-    public UnitStats stats;
 
 
 
@@ -64,7 +52,7 @@ public abstract class UnitClass : MonoBehaviour {
     }
 
     public void setup() {
-        if(isPlayerUnit && GetComponentInChildren<UnitSpriteHandler>() != null) {
+        if(combatStats.isPlayerUnit && GetComponentInChildren<UnitSpriteHandler>() != null) {
             GetComponentInChildren<UnitSpriteHandler>().setReference(stats, true);
         }
         GetComponent<InfoBearer>().setInfo(InfoTextCreator.createForUnitClass(this));
@@ -75,28 +63,30 @@ public abstract class UnitClass : MonoBehaviour {
         else
             name = stats.u_name;
 
-
         foreach(var i in FindObjectsOfType<CombatSpot>()) {
             if(i.unit == gameObject) {
                 transform.parent = i.transform;
-                normalSize = new Vector3(1.0f, 1.0f);
-                normalPos = new Vector3(0.0f, spotOffset);
                 break;
             }
         }
 
-        transform.localPosition = normalPos;
-        transform.localScale = normalSize;
+        combatStats.normalSize = new Vector3(1.0f, 1.0f);
+        combatStats.normalPos = new Vector3(0.0f, combatStats.spotOffset);
 
-        if(isPlayerUnit) {
+        if(GetComponentInChildren<UnitSpriteHandler>() != null)
+            combatStats.normalPos = GetComponentInChildren<UnitSpriteHandler>().getCombatNormalPos();
+
+        transform.localPosition = combatStats.normalPos;
+        transform.localScale = combatStats.normalSize;
+
+        if(combatStats.isPlayerUnit) {
             FindObjectOfType<PartyObject>().resaveInstantiatedUnit(stats);
         }
     }
 
 
-
     public float getSpeed() {
-        return stats.getModifiedSpeed(tempSpeedMod);
+        return stats.getModifiedSpeed(combatStats.tempSpeedMod);
     }
 
 
@@ -127,7 +117,6 @@ public abstract class UnitClass : MonoBehaviour {
     }
 
     public void prepareUnitForNextRound() {
-        attackingTarget = null;
         defending = false;
 
         takeBleedDamage();
@@ -137,6 +126,7 @@ public abstract class UnitClass : MonoBehaviour {
         if(stats.canLevelUp()) {
             FindObjectOfType<DamageTextCanvas>().showLevelUpTextForUnit(gameObject);
             stats.levelUp();
+            FindObjectOfType<AudioManager>().playLevelUpSound();
             return true;
         }
         return false;
@@ -152,8 +142,11 @@ public abstract class UnitClass : MonoBehaviour {
         foreach(var i in stats.u_traits) {
             if(!stunned && i.shouldStunSelf()) {
                 stunned = true;
+                break;
             }
         }
+        if(stats.u_talent != null && !stunned)
+            stunned = stats.u_talent.shouldStunSelf();
 
         defending = b;
     }
@@ -189,12 +182,12 @@ public abstract class UnitClass : MonoBehaviour {
 
 
         //  if defender is an enemy, check if it's weak or strong to the attack
-        if(!isPlayerUnit) {
+        if(!combatStats.isPlayerUnit) {
             //  check if it's weak to the attack
             if(GetComponent<EnemyUnitInstance>().weakTo == attacker.GetComponent<UnitClass>().stats.weapon.aType)
                 dmg *= 1.25f;
         }
-        dmg *= (stats.getDefenceMult(defending, FindObjectOfType<PresetLibrary>(), tempDefenceMod));
+        dmg *= (stats.getDefenceMult(defending, FindObjectOfType<PresetLibrary>(), combatStats.tempDefenceMod));
 
         float crit = attacker.GetComponent<UnitClass>().stats.getCritMult();
         dmg *= crit;
@@ -213,16 +206,16 @@ public abstract class UnitClass : MonoBehaviour {
             FindObjectOfType<DamageTextCanvas>().showDamageTextForUnit(gameObject, dmg, DamageTextCanvas.damageType.crit);
         else
             FindObjectOfType<DamageTextCanvas>().showDamageTextForUnit(gameObject, dmg, DamageTextCanvas.damageType.weapon);
-        var blood = Instantiate(bloodParticles);
+        var blood = Instantiate(combatStats.bloodParticles);
         Destroy(blood.gameObject, blood.main.startLifetimeMultiplier);
         blood.gameObject.transform.position = transform.position;
-        FindObjectOfType<AudioManager>().playSound(hurtSound);
+        FindObjectOfType<AudioManager>().playSound(combatStats.hurtSound);
         defendAnim = StartCoroutine(defendingAnim());
 
         //  chance worn state decrease
-        if(stats.armor != null && !stats.armor.isEmpty() && stats.armor.wornAmount > GameInfo.wornState.old && GameVariables.chanceEquipmentWornDecrease() && isPlayerUnit) {
+        if(stats.armor != null && !stats.armor.isEmpty() && stats.armor.wornAmount > GameInfo.wornState.old && GameVariables.chanceEquipmentWornDecrease() && combatStats.isPlayerUnit) {
             stats.armor.wornAmount--;
-            FindObjectOfType<DamageTextCanvas>().showBreakTextForUnit(gameObject);
+            FindObjectOfType<DamageTextCanvas>().showTatterTextForUnit(gameObject);
         }
 
 
@@ -243,7 +236,7 @@ public abstract class UnitClass : MonoBehaviour {
 
     public void die(DeathInfo.killCause cause, GameObject killer = null) {
         //  things to do with removing the unit from the party and what to do with equippment
-        if(isPlayerUnit) {
+        if(combatStats.isPlayerUnit) {
             stats.die(cause, killer);
         }
         else {
@@ -272,6 +265,8 @@ public abstract class UnitClass : MonoBehaviour {
             if(killer != null) {
                 foreach(var i in killer.GetComponent<UnitClass>().stats.u_traits)
                     chanceMod += i.getEnemyDropChanceMod();
+                if(killer.GetComponent<UnitClass>().stats.u_talent != null)
+                    chanceMod += killer.GetComponent<UnitClass>().stats.u_talent.getEnemyDropChanceMod();
             }
             GetComponent<EnemyUnitInstance>().chanceWeaponDrop(chanceMod);
             GetComponent<EnemyUnitInstance>().chanceArmorDrop(chanceMod);
@@ -293,7 +288,7 @@ public abstract class UnitClass : MonoBehaviour {
         }
 
         //  flair
-        FindObjectOfType<AudioManager>().playSound(dieSound);
+        FindObjectOfType<AudioManager>().playSound(combatStats.dieSound);
         foreach(var i in FindObjectsOfType<CombatSpot>()) {
             if(i.unit == gameObject) {
                 i.unit = null;
@@ -313,30 +308,30 @@ public abstract class UnitClass : MonoBehaviour {
         if(attackAnim != null)
             StopCoroutine(attackAnim);
 
-        GetComponent<SpriteRenderer>().DOColor(hitColor, 0.05f);
-        transform.DOScale(normalSize * 1.5f, 0.15f);
+        GetComponent<SpriteRenderer>().DOColor(combatStats.hitColor, 0.05f);
+        transform.DOScale(combatStats.normalSize * 1.5f, 0.15f);
 
         setDefendingAnim();
         //  flair
-        var blood = Instantiate(bloodParticles, transform);
+        var blood = Instantiate(combatStats.bloodParticles, transform);
         blood.transform.position = transform.position;
-        if(isPlayerUnit)
+        if(combatStats.isPlayerUnit)
             blood.transform.localRotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
         Destroy(blood, blood.GetComponent<ParticleSystem>().duration);
 
-        if(!isPlayerUnit) {
+        if(GetComponentInChildren<UnitSpriteHandler>() == null) {
             yield return new WaitForEndOfFrame();
             for(int i = 0; i < transform.childCount; i++) {
                 if(transform.GetChild(i).gameObject.activeInHierarchy) {
                     foreach(var s in transform.GetChild(i).gameObject.GetComponentsInChildren<SpriteRenderer>()) {
-                        s.color = hitColor;
+                        s.color = combatStats.hitColor;
                         s.DOColor(Color.white, .35f);
                     }
                 }
             }
         }
         else {
-            GetComponentInChildren<UnitSpriteHandler>().setATempColor(hitColor);
+            GetComponentInChildren<UnitSpriteHandler>().setATempColor(combatStats.hitColor);
             GetComponentInChildren<UnitSpriteHandler>().tweenColorToNormal(.35f);
         }
 
@@ -346,7 +341,7 @@ public abstract class UnitClass : MonoBehaviour {
 
         yield return new WaitForSeconds(0.25f);
 
-        transform.DOScale(normalSize, 0.15f);
+        transform.DOScale(combatStats.normalSize, 0.15f);
     }
     IEnumerator attackingAnim(GameObject defender) {
         //  play animation
@@ -356,36 +351,48 @@ public abstract class UnitClass : MonoBehaviour {
         yield return new WaitForSeconds(0.25f);
 
         //  move to target
-        if(isPlayerUnit)
+        if(combatStats.isPlayerUnit)
             transform.DOMove(defender.transform.position - new Vector3(1.25f, 0.0f, 0.0f), 0.25f);
         else
             transform.DOMove(defender.transform.position + new Vector3(1.25f, 0.0f, 0.0f), 0.25f);
-        transform.DOScale(normalSize * 1.15f, 0.15f);
+        transform.DOScale(combatStats.normalSize * 1.15f, 0.15f);
 
         //  wait for attacker to reach defender
         yield return new WaitForSeconds(0.35f);
         int bluntLvlBefore = stats.getBluntLevel();
         int edgedLvlBefore = stats.getEdgedLevel();
         int lvlBefore = stats.u_level;
-        bool miss = GameVariables.chanceOutOfHundred(stats.u_missChance);
+        bool miss = GameVariables.chanceOutOfHundred(stats.getModifiedMissChance());
 
+        //  damage logic
         if(!miss) {
-            //  actually deal damage to defender
-            var dmg = stats.getDamageGiven(FindObjectOfType<PresetLibrary>()) + tempPowerMod;
-            if(charging) {
-                dmg *= 2.0f;
+            var dmg = stats.getDamageGiven(FindObjectOfType<PresetLibrary>()) + combatStats.tempPowerMod;
+            //  check if other modifications to damage
+            if(stats.item != null && !stats.item.isEmpty()) {
+                if(stats.item.getPassiveMod(Item.passiveEffectTypes.healInsteadOfDamage) != 0.0f) {
+                    dmg *= stats.item.getPassiveMod(Item.passiveEffectTypes.healInsteadOfDamage);
+                    defender.GetComponent<UnitClass>().addHealth(dmg);
+                }
             }
-            defender.GetComponent<UnitClass>().defend(gameObject, dmg);
+
+            //  actually deal damage to defender
+            else {
+                if(charging) {
+                    dmg *= 2.0f;
+                }
+                defender.GetComponent<UnitClass>().defend(gameObject, dmg);
+            }
         }
         else {
             FindObjectOfType<DamageTextCanvas>().showMissTextForUnit(gameObject);
+            FindObjectOfType<AudioManager>().playSound(combatStats.missSound);
         }
         charging = false;
         yield return new WaitForSeconds(0.4f);
 
         //  move back to original position
-        transform.DOScale(normalSize, 0.15f);
-        transform.DOLocalMove(normalPos, 0.15f);
+        transform.DOScale(combatStats.normalSize, 0.15f);
+        transform.DOLocalMove(combatStats.normalPos, 0.15f);
 
         yield return new WaitForSeconds(0.15f);
 
@@ -404,15 +411,50 @@ public abstract class UnitClass : MonoBehaviour {
             if(defender != null && !defender.GetComponent<UnitClass>().isStunned() && i.shouldStunTarget())
                 defender.GetComponent<UnitClass>().setStunned(true);
         }
+        if(stats.u_talent != null) {
+            if(!stunned && stats.u_talent.shouldStunSelf()) {
+                stunned = true;
+            }
+            if(defender != null && !defender.GetComponent<UnitClass>().isStunned() && stats.u_talent.shouldStunTarget())
+                defender.GetComponent<UnitClass>().setStunned(true);
+        }
 
         //  chance worn state decrease
-        if(stats.weapon != null && !stats.weapon.isEmpty() && stats.weapon.wornAmount > GameInfo.wornState.old && GameVariables.chanceEquipmentWornDecrease() && isPlayerUnit) {
-            FindObjectOfType<DamageTextCanvas>().showBreakTextForUnit(gameObject);
+        if(stats.weapon != null && !stats.weapon.isEmpty() && stats.weapon.wornAmount > GameInfo.wornState.old && GameVariables.chanceEquipmentWornDecrease() && combatStats.isPlayerUnit) {
+            FindObjectOfType<DamageTextCanvas>().showTatterTextForUnit(gameObject);
             stats.weapon.wornAmount--;
         }
 
         attackAnim = null;
-        attackingTarget = null;
         FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
     }
+
+
+    public int getNumberOfInPlaySummons() {
+        int temp = 0;
+        foreach(var i in FindObjectsOfType<SummonedUnitInstance>()) {
+            if(i.summoner.isTheSameInstanceAs(stats))
+                temp++;
+        }
+        return temp;
+    }
+}
+
+
+[System.Serializable]
+public class UnitCombatStats {
+    public AudioClip hurtSound, dieSound, missSound;
+    public GameObject attackingTarget = null;
+    public ParticleSystem bloodParticles;
+    public Color hitColor;
+
+    public bool isPlayerUnit = true;
+
+    public float tempPowerMod = 0.0f;   //  adds
+    public float tempDefenceMod = 0.0f; //  adds
+    public float tempSpeedMod = 0.0f;   //  adds 
+
+    public float spotOffset = 0.0f;
+
+    public Vector2 normalSize, normalPos;
 }

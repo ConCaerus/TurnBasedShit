@@ -24,6 +24,9 @@ public static class MapLocationHolder {
         if(loc == null)
             return;
 
+        if(getHolder() == null)
+            saveHolder(new ObjectHolder());
+
         var holder = getHolder();
         holder.addObject<MapLocation>(loc);
         saveHolder(holder);
@@ -60,7 +63,6 @@ public static class MapLocationHolder {
 
         for(int i = 0; i < upgradeCount; i++) {
             var u = lib.createUpgradeLocation(GameInfo.getRandomReg());
-            getHolder().addObject<UpgradeLocation>(u);
             addLocation(u);
         }
         /*

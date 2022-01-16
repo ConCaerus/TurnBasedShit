@@ -72,7 +72,7 @@ public class MenuCanvas : MonoBehaviour {
         else if(FindObjectOfType<TownMenuCanvas>() != null)
             FindObjectOfType<TownMenuCanvas>().updateSlots();
         else if(FindObjectOfType<InventoryCanvas>() != null)
-            FindObjectOfType<InventoryCanvas>().populateSlots();
+            StartCoroutine(FindObjectOfType<InventoryCanvas>().populateSlots());
         else if(FindObjectOfType<GraveyardMenuCanvas>() != null)
             FindObjectOfType<GraveyardMenuCanvas>().createSlots();
 
@@ -143,7 +143,7 @@ public class MenuCanvas : MonoBehaviour {
         graveyardCanvas.SetActive(false);
         optionsCanvas.SetActive(false);
 
-        FindObjectOfType<InventoryCanvas>().populateSlots();
+        StartCoroutine(FindObjectOfType<InventoryCanvas>().populateSlots());
     }
     public void questTab() {
         SaveData.setInt(openTag, 2);

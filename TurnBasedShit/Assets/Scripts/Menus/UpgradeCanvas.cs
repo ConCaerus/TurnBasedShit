@@ -58,10 +58,10 @@ public class UpgradeCanvas : MonoBehaviour {
         int index = slot.getSelectedSlotIndex();
 
         //  Party Equipment
-        for(int i = 0; i < Party.getMemberCount(); i++) {
-            if(Party.getMemberStats(i).weapon != null && !Party.getMemberStats(i).weapon.isEmpty()) {
+        for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
+            if(Party.getHolder().getObject<UnitStats>(i).weapon != null && !Party.getHolder().getObject<UnitStats>(i).weapon.isEmpty()) {
                 if(index == 0)
-                    return Party.getMemberStats(i).weapon;
+                    return Party.getHolder().getObject<UnitStats>(i).weapon;
                 index--;
             }
         }
@@ -80,10 +80,10 @@ public class UpgradeCanvas : MonoBehaviour {
         int index = slot.getSelectedSlotIndex();
 
         //  Party Equipment
-        for(int i = 0; i < Party.getMemberCount(); i++) {
-            if(Party.getMemberStats(i).armor != null && !Party.getMemberStats(i).armor.isEmpty()) {
+        for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
+            if(Party.getHolder().getObject<UnitStats>(i).armor != null && !Party.getHolder().getObject<UnitStats>(i).armor.isEmpty()) {
                 if(index == 0)
-                    return Party.getMemberStats(i).armor;
+                    return Party.getHolder().getObject<UnitStats>(i).armor;
                 index--;
             }
         }
@@ -103,11 +103,11 @@ public class UpgradeCanvas : MonoBehaviour {
         if(state == 0) {
             //  Party Equipment
             int index = 0;
-            for(int i = 0; i < Party.getMemberCount(); i++) {
-                if(Party.getMemberStats(i).weapon != null && !Party.getMemberStats(i).weapon.isEmpty()) {
-                    var s = slot.createSlot(index, FindObjectOfType<PresetLibrary>().getRarityColor(Party.getMemberStats(i).weapon.rarity));
-                    s.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Party.getMemberStats(i).u_name + "'s Weapon";
-                    s.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Party.getMemberStats(i).weapon).sprite;
+            for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
+                if(Party.getHolder().getObject<UnitStats>(i).weapon != null && !Party.getHolder().getObject<UnitStats>(i).weapon.isEmpty()) {
+                    var s = slot.createSlot(index, FindObjectOfType<PresetLibrary>().getRarityColor(Party.getHolder().getObject<UnitStats>(i).weapon.rarity));
+                    s.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Party.getHolder().getObject<UnitStats>(i).u_name + "'s Weapon";
+                    s.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Party.getHolder().getObject<UnitStats>(i).weapon).sprite;
                     index++;
                 }
             }
@@ -124,11 +124,11 @@ public class UpgradeCanvas : MonoBehaviour {
         else if(state == 1) {
             //  Party Equipment
             int index = 0;
-            for(int i = 0; i < Party.getMemberCount(); i++) {
-                if(Party.getMemberStats(i).armor != null && !Party.getMemberStats(i).armor.isEmpty()) {
-                    var s = slot.createSlot(index, FindObjectOfType<PresetLibrary>().getRarityColor(Party.getMemberStats(i).armor.rarity));
-                    s.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Party.getMemberStats(i).u_name + "'s Armor";
-                    s.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Party.getMemberStats(i).armor).sprite;
+            for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
+                if(Party.getHolder().getObject<UnitStats>(i).armor != null && !Party.getHolder().getObject<UnitStats>(i).armor.isEmpty()) {
+                    var s = slot.createSlot(index, FindObjectOfType<PresetLibrary>().getRarityColor(Party.getHolder().getObject<UnitStats>(i).armor.rarity));
+                    s.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Party.getHolder().getObject<UnitStats>(i).u_name + "'s Armor";
+                    s.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Party.getHolder().getObject<UnitStats>(i).armor).sprite;
                     index++;
                 }
             }
@@ -199,12 +199,12 @@ public class UpgradeCanvas : MonoBehaviour {
             shrine.GetComponent<SpriteRenderer>().color = Color.grey;
 
             //  Party Equipment
-            for(int i = 0; i < Party.getMemberCount(); i++) {
-                if(Party.getMemberStats(i).weapon != null && !Party.getMemberStats(i).weapon.isEmpty()) {
-                    if(we.isTheSameInstanceAs(Party.getMemberStats(i).weapon)) {
-                        var stats = Party.getMemberStats(i);
+            for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
+                if(Party.getHolder().getObject<UnitStats>(i).weapon != null && !Party.getHolder().getObject<UnitStats>(i).weapon.isEmpty()) {
+                    if(we.isTheSameInstanceAs(Party.getHolder().getObject<UnitStats>(i).weapon)) {
+                        var stats = Party.getHolder().getObject<UnitStats>(i);
                         stats.weapon.setEqualTo(we, false);
-                        Party.overrideUnit(stats);
+                        Party.overrideUnitOfSameInstance(stats);
 
                         hasBeenUsed = true;
                         FindObjectOfType<RoomMovement>().deinteract();
@@ -241,12 +241,12 @@ public class UpgradeCanvas : MonoBehaviour {
             shrine.GetComponent<SpriteRenderer>().color = Color.grey;
 
             //  Party Equipment
-            for(int i = 0; i < Party.getMemberCount(); i++) {
-                if(Party.getMemberStats(i).armor != null && !Party.getMemberStats(i).armor.isEmpty()) {
-                    if(ar.isTheSameInstanceAs(Party.getMemberStats(i).armor)) {
-                        var stats = Party.getMemberStats(i);
+            for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
+                if(Party.getHolder().getObject<UnitStats>(i).armor != null && !Party.getHolder().getObject<UnitStats>(i).armor.isEmpty()) {
+                    if(ar.isTheSameInstanceAs(Party.getHolder().getObject<UnitStats>(i).armor)) {
+                        var stats = Party.getHolder().getObject<UnitStats>(i);
                         stats.armor.setEqualTo(ar, false);
-                        Party.overrideUnit(stats);
+                        Party.overrideUnitOfSameInstance(stats);
 
                         hasBeenUsed = true;
                         FindObjectOfType<RoomMovement>().deinteract();

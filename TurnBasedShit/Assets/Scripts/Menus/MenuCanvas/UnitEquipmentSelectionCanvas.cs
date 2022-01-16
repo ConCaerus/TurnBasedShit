@@ -8,7 +8,7 @@ using DG.Tweening;
 public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
     public abstract void rotateEquipment();
     public abstract void updateInfo();
-    public abstract void populateSlots();
+    public abstract IEnumerator populateSlots();
     public abstract int getState();
     public abstract void removeUnitEquipmentAndResetSelection();
 
@@ -17,6 +17,7 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
 
     bool shouldShowState = false;
     bool mouseOverX = false;
+    protected float populatingWaitTime = 0.035f;
 
     public bool shown = false;
 
@@ -41,7 +42,6 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
 
     public void startShowing() {
         transform.parent.GetComponent<BoxCollider2D>().enabled = false;
-        populateSlots();
         updateInfo();
         StartCoroutine(show());
     }
@@ -99,6 +99,8 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
         yield return new WaitForSeconds(FindObjectOfType<UnitCanvas>().equippmentTransitionTime / 2.0f);
 
         transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f), FindObjectOfType<UnitCanvas>().equippmentTransitionTime / 2.0f);
+        
+        StartCoroutine(populateSlots());
     }
 
     IEnumerator hide() {

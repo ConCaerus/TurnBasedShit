@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour {
     [SerializeField] AudioSource player;
+    [SerializeField] AudioClip levelUpSound, tatterSound;
 
 
     List<AudioClip> playedClips = new List<AudioClip>();
@@ -34,5 +35,13 @@ public class AudioManager : MonoBehaviour {
 
         playedClips.Clear();
         StartCoroutine(refreshPlaylist());
+    }
+
+    //  specific players
+    public void playLevelUpSound() {
+        playSound(levelUpSound);
+    }
+    public void playTatterSound() {
+        playSound(tatterSound);
     }
 }

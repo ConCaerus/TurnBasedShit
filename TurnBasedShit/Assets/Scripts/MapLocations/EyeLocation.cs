@@ -21,11 +21,4 @@ public class EyeLocation : MapLocation {
 
     public override void enterLocation(TransitionCanvas tc) {
     }
-
-    public override bool isEqualTo(MapLocation other) {
-        if(other.type != locationType.eye)
-            return false;
-
-        return other.pos == pos;
-    }
 }

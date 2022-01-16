@@ -1490,7 +1490,6 @@ RectTransform:
   - {fileID: 1218681591}
   - {fileID: 2063541957}
   - {fileID: 1206075483}
-  - {fileID: 1649271321}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2679,6 +2678,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   info: <b><u>Charge Attack
   hideWhenMenuOpen: 1
+  hideWhenCoveredByMapFog: 0
 --- !u!95 &397881406
 Animator:
   serializedVersion: 3
@@ -4096,7 +4096,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1.0400009, y: 2.7000008}
+  m_AnchoredPosition: {x: -1.039978, y: 2.7000008}
   m_SizeDelta: {x: -13.207809, y: -0.0000076293945}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &514118319
@@ -5730,11 +5730,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3887826273129815285, guid: c84c08bacbfbfb3448e411f3e20b56f1,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3887826274309117441, guid: c84c08bacbfbfb3448e411f3e20b56f1,
         type: 3}
       propertyPath: m_Name
@@ -8138,6 +8133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   info: <b><u>Attack
   hideWhenMenuOpen: 1
+  hideWhenCoveredByMapFog: 0
 --- !u!95 &907468104
 Animator:
   serializedVersion: 3
@@ -9133,6 +9129,7 @@ RectTransform:
   - {fileID: 2056151264}
   - {fileID: 1085944085}
   - {fileID: 864140379}
+  - {fileID: 1649271321}
   m_Father: {fileID: 1671485204}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9473,11 +9470,11 @@ RectTransform:
   m_Father: {fileID: 1029134702}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 25, y: 60}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -0.21130371, y: 63.8}
   m_SizeDelta: {x: 50, y: 50}
-  m_Pivot: {x: 0, y: 0}
+  m_Pivot: {x: 1, y: 0}
 --- !u!114 &1085944086
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10793,6 +10790,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   info: <b><u>Special
   hideWhenMenuOpen: 1
+  hideWhenCoveredByMapFog: 0
 --- !u!95 &1337847344
 Animator:
   serializedVersion: 3
@@ -12084,8 +12082,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9047c8031f6698e428e97dc7788c5d88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPreset: {fileID: 6037864551336239585, guid: 7e2d0e1460eb0d041b27304ca7917a33,
-    type: 3}
   showingSpeed: 0.15
 --- !u!1 &1422976874
 GameObject:
@@ -13121,11 +13117,11 @@ RectTransform:
   m_Father: {fileID: 1649271321}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -24.5}
-  m_SizeDelta: {x: 92.81378, y: -1}
-  m_Pivot: {x: 1, y: 0.5}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 92.81378, y: 315}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1482324818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13139,12 +13135,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 10
-    m_Right: 10
+    m_Left: 0
+    m_Right: 0
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: -263.3
+  m_Spacing: 0
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
@@ -14544,19 +14540,19 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1649271320}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1482324817}
-  m_Father: {fileID: 219992121}
-  m_RootOrder: 4
+  m_Father: {fileID: 1029134702}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 25, y: 161}
-  m_SizeDelta: {x: 100, y: 548}
-  m_Pivot: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 56.9}
+  m_SizeDelta: {x: 50.843384, y: 316.01538}
+  m_Pivot: {x: 0, y: 0}
 --- !u!114 &1649271322
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16147,6 +16143,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   info: <b><u>Defend
   hideWhenMenuOpen: 1
+  hideWhenCoveredByMapFog: 0
 --- !u!95 &1778971705
 Animator:
   serializedVersion: 3
@@ -18434,7 +18431,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 6, y: -5}
+  m_AnchoredPosition: {x: 0.7999878, y: -8.400002}
   m_SizeDelta: {x: 0, y: 28.817688}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2056151265
@@ -18485,8 +18482,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25
-  m_fontSizeBase: 25
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

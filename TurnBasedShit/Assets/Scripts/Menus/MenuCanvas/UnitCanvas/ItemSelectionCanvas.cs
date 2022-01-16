@@ -19,11 +19,12 @@ public class ItemSelectionCanvas : UnitEquipmentSelectionCanvas {
     }
 
 
-    public override void populateSlots() {
+    public override IEnumerator populateSlots() {
         int slotIndex = 0;
         if(FindObjectOfType<UnitCanvas>().shownUnit.item != null && !FindObjectOfType<UnitCanvas>().shownUnit.item.isEmpty()) {
             var obj = slot.createSlot(slotIndex, FindObjectOfType<UnitCanvas>().shownUnit.u_sprite.color, InfoTextCreator.createForCollectable(FindObjectOfType<UnitCanvas>().shownUnit.item));
-            obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(FindObjectOfType<UnitCanvas>().shownUnit.item).sprite;
+            obj.GetComponent<InfoBearer>().setInfo(FindObjectOfType<UnitCanvas>().shownUnit.item.name);
+            obj.GetComponent<SlotObject>().setMainImage(FindObjectOfType<PresetLibrary>().getItemSprite(FindObjectOfType<UnitCanvas>().shownUnit.item).sprite);
             slotIndex++;
         }
 
@@ -31,8 +32,13 @@ public class ItemSelectionCanvas : UnitEquipmentSelectionCanvas {
             if(Inventory.getHolder().getObject<Item>(i) == null || Inventory.getHolder().getObject<Item>(i).isEmpty())
                 continue;
             var obj = slot.createSlot(slotIndex, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getHolder().getObject<Item>(i).rarity), InfoTextCreator.createForCollectable(Inventory.getHolder().getObject<Item>(i)));
-            obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getItemSprite(Inventory.getHolder().getObject<Item>(i)).sprite;
+            obj.GetComponent<SlotObject>().setInfo(Inventory.getHolder().getObject<Item>(i).name);
+            obj.GetComponent<SlotObject>().setMainImage(FindObjectOfType<PresetLibrary>().getItemSprite(Inventory.getHolder().getObject<Item>(i)).sprite);
+            float prevScale = obj.transform.localScale.x;
+            obj.transform.localScale = Vector3.zero;
+            obj.transform.DOScale(prevScale, populatingWaitTime);
             slotIndex++;
+            yield return new WaitForSeconds(populatingWaitTime);
         }
 
         slot.deleteSlotsAfterIndex(slotIndex);

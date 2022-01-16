@@ -26,6 +26,9 @@ public static class ActiveQuests {
         if(qu == null)
             return;
 
+        if(getHolder() == null)
+            saveHolder(new ObjectHolder());
+
         var holder = getHolder();
         holder.addObject<Quest>(qu);
         saveHolder(holder);

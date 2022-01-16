@@ -42,7 +42,7 @@ public abstract class BuildingCanvas : MonoBehaviour {
         }
         if(Input.GetMouseButtonDown(0) && getMousedOverSlot() != null) {
             selectedIndex = getIndexForSlot(getMousedOverSlot());
-            if(Party.getMemberStats(selectedIndex) == null || Party.getMemberStats(selectedIndex).isEmpty())
+            if(Party.getHolder().getObject<UnitStats>(selectedIndex) == null || Party.getHolder().getObject<UnitStats>(selectedIndex).isEmpty())
                 selectedIndex = -1;
             updateInfo();
         }
@@ -64,7 +64,7 @@ public abstract class BuildingCanvas : MonoBehaviour {
     }
 
     public UnitStats getSelectedUnit() {
-        return Party.getMemberStats(selectedIndex);
+        return Party.getHolder().getObject<UnitStats>(selectedIndex);
     }
 
     public void updateInfo() {
@@ -74,23 +74,23 @@ public abstract class BuildingCanvas : MonoBehaviour {
             slots.transform.GetChild(i).GetChild(0).gameObject.SetActive(false);
             slots.transform.GetChild(i).GetChild(1).gameObject.SetActive(false);
         }
-        for(int i = 0; i < Party.getMemberCount(); i++) {
+        for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
             slots.transform.GetChild(i).GetChild(0).gameObject.SetActive(true);
-            slots.transform.GetChild(i).GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnitHeadSprite(Party.getMemberStats(i).u_sprite.headIndex);
+            slots.transform.GetChild(i).GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnitHeadSprite(Party.getHolder().getObject<UnitStats>(i).u_sprite.headIndex);
             slots.transform.GetChild(i).GetChild(0).GetComponent<Image>().SetNativeSize();
-            slots.transform.GetChild(i).GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnitFace(Party.getMemberStats(i).u_sprite.faceIndex);
+            slots.transform.GetChild(i).GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnitFace(Party.getHolder().getObject<UnitStats>(i).u_sprite.faceIndex);
             slots.transform.GetChild(i).GetChild(1).GetComponent<Image>().SetNativeSize();
-            slots.transform.GetChild(i).GetChild(0).GetComponent<Image>().color = Party.getMemberStats(i).u_sprite.color;
+            slots.transform.GetChild(i).GetChild(0).GetComponent<Image>().color = Party.getHolder().getObject<UnitStats>(i).u_sprite.color;
         }
 
         //  main slot
         mainSlot.transform.GetChild(0).gameObject.SetActive(selectedIndex > -1);
         mainSlot.transform.GetChild(1).gameObject.SetActive(selectedIndex > -1);
         if(selectedIndex > -1) {
-            mainSlot.transform.GetChild(0).GetComponent<Image>().color = Party.getMemberStats(selectedIndex).u_sprite.color;
-            mainSlot.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnitHeadSprite(Party.getMemberStats(selectedIndex).u_sprite.headIndex);
+            mainSlot.transform.GetChild(0).GetComponent<Image>().color = Party.getHolder().getObject<UnitStats>(selectedIndex).u_sprite.color;
+            mainSlot.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnitHeadSprite(Party.getHolder().getObject<UnitStats>(selectedIndex).u_sprite.headIndex);
             mainSlot.transform.GetChild(0).GetComponent<Image>().SetNativeSize();
-            mainSlot.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnitFace(Party.getMemberStats(selectedIndex).u_sprite.faceIndex);
+            mainSlot.transform.GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnitFace(Party.getHolder().getObject<UnitStats>(selectedIndex).u_sprite.faceIndex);
             mainSlot.transform.GetChild(1).GetComponent<Image>().SetNativeSize();
         }
 

@@ -62,6 +62,12 @@ public static class SaveData {
         createSaveDataForSave(lib, tc);
     }
     public static void createSaveDataForSave(PresetLibrary lib, TransitionCanvas tc) {
+        //  Inventory
+        Inventory.clear(true);
+        Graveyard.clear();
+        Party.clear(true);
+
+
         //  Party
         lib.addStartingUnits();
         Debug.Log("Added starting units: " + Time.realtimeSinceStartup.ToString("0.00"));
@@ -77,11 +83,14 @@ public static class SaveData {
         //  MapLocations
         GameInfo.setCurrentRegion(GameInfo.region.grassland);
         Map.createFogTexture();
+        MapLocationHolder.clear();
         MapLocationHolder.populateMapLocations(lib);
         Debug.Log("Location Shit: " + Time.realtimeSinceStartup.ToString("0.00"));
 
         //  Quests
         ActiveQuests.clear(true);
+
+        //  rest
 
         tc.loadCircle.GetComponent<CircularSlider>().setValue(1f);
     }
@@ -95,8 +104,7 @@ public static class SaveData {
 
         //  clear shit
         Inventory.clear(true);
-        Party.clearParty(true);
-        Party.clearPartyEquipment();
+        Party.clear(true);
         MapLocationHolder.clear();
         Map.clearFogTexture();
         GameInfo.clearEverything();
@@ -117,6 +125,6 @@ public static class SaveData {
         return hasSaveDataForSave(getCurrentSaveIndex());
     }
     public static bool hasSaveDataForSave(int index) {
-        return getIntInSave(index, Party.partySizeTag) > 0;
+        return Party.getHolder().getObjectCount<UnitStats>() > 0;
     }
 }

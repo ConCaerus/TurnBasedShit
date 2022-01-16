@@ -30,11 +30,4 @@ public class BossLocation : MapLocation {
         MapLocationHolder.removeLocation(this);
         tc.loadSceneWithTransition("Combat");
     }
-
-    public override bool isEqualTo(MapLocation other) {
-        if(other.type != locationType.boss)
-            return false;
-
-        return bossUnit == ((BossLocation)other).bossUnit && pos == other.pos;
-    }
 }

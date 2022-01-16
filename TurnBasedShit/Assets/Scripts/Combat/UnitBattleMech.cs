@@ -88,7 +88,6 @@ public class UnitBattleMech : MonoBehaviour {
         }
 
         updateMapAndQuests();
-        GameInfo.setCombatDetails(null);
     }
 
     void showBattleResults() {
@@ -107,6 +106,7 @@ public class UnitBattleMech : MonoBehaviour {
         for(int i = 0; i < ActiveQuests.getHolder().getObjectCount<PickupQuest>(); i++) {
             var j = ActiveQuests.getHolder().getObject<PickupQuest>(i);
             if(j.location.pos == GameInfo.getCurrentMapPos()) {
+                MapLocationHolder.removeLocation(j.location);
                 ActiveQuests.completeQuest(j, FindObjectOfType<QuestCompleteCanvas>());
                 break;
             }

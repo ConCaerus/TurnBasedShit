@@ -58,15 +58,4 @@ public class PickupLocation : MapLocation {
         MapLocationHolder.removeLocation(this);
         tc.loadSceneWithTransition("Combat");
     }
-
-    public override bool isEqualTo(MapLocation other) {
-        if(other == null || other.type != locationType.pickup)
-            return false;
-
-        PickupLocation o = (PickupLocation)other;
-        if(o.col == null || o.col.isEmpty())
-            return false;
-
-        return pos == o.pos && col.isTheSameInstanceAs(o.col);
-    }
 }

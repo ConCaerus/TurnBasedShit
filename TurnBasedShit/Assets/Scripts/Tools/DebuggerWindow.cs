@@ -68,10 +68,7 @@ public class DebuggerWindow : EditorWindow {
         GUILayout.Label("Party", EditorStyles.boldLabel);
         GUILayout.BeginHorizontal();
         if(GUILayout.Button("Clear Party")) {
-            Party.clearParty(true);
-        }
-        if(GUILayout.Button("Clear Party Equipment")) {
-            Party.clearPartyEquipment();
+            Party.clear(true);
         }
         if(GUILayout.Button("Add Unit")) {
             var thing = FindObjectOfType<PresetLibrary>().createRandomPlayerUnitStats(true);

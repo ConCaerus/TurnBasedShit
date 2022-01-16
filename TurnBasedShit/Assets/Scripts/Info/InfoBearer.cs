@@ -6,6 +6,7 @@ public class InfoBearer : MonoBehaviour {
     [SerializeField] string info = "<b><u>Information";
 
     public bool hideWhenMenuOpen = true;
+    public bool hideWhenCoveredByMapFog = false;
 
 
     public delegate void func();
@@ -14,6 +15,8 @@ public class InfoBearer : MonoBehaviour {
 
     private void OnMouseEnter() {
         if(hideWhenMenuOpen && FindObjectOfType<MenuCanvas>().isOpen())
+            return;
+        if(hideWhenCoveredByMapFog && !FindObjectOfType<MapFogTexture>().isPositionCleared(transform.position))
             return;
         if(string.IsNullOrEmpty(info))
             return;

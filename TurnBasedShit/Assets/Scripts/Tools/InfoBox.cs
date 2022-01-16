@@ -47,7 +47,7 @@ public class InfoBox : MonoBehaviour {
                 return;
             }
             nameText.text = FindObjectOfType<TextCreator>().createColoredText(s.u_name);
-            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("NUM: " + Party.getUnitIndex(s).ToString(), 1));
+            createNewDataText(FindObjectOfType<TextCreator>().createColoredText("NUM: " + Party.getHolder().getUnitStatsIndex(s).ToString(), 1));
             createNewDataText(FindObjectOfType<TextCreator>().createColoredText("POW: " + s.u_power.ToString("0.0"), 1));
             createNewDataText(FindObjectOfType<TextCreator>().createColoredText("SPD: " + s.u_speed.ToString("0.0"), 1));
         }

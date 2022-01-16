@@ -9,16 +9,16 @@ public static class InfoTextCreator {
         temp += unit.stats.u_name + "\n";
         temp += "</b></u>hp: " + unit.stats.u_health.ToString("0.0") + " / " + unit.stats.getModifiedMaxHealth().ToString("0.0");
         temp += "\n   pow: " + unit.stats.u_power.ToString("0.0");
-        if(unit.tempPowerMod > 1.0f)
-            temp += " * " + unit.tempPowerMod.ToString("0.0");
+        if(unit.combatStats.tempPowerMod > 1.0f)
+            temp += " * " + unit.combatStats.tempPowerMod.ToString("0.0");
 
         temp += "\n   def: " + unit.stats.u_defence.ToString("0.0");
-        if(unit.tempDefenceMod > 0.0f)
-            temp += " * " + unit.tempDefenceMod.ToString("0.0");
+        if(unit.combatStats.tempDefenceMod > 0.0f)
+            temp += " * " + unit.combatStats.tempDefenceMod.ToString("0.0");
 
         temp += "\n   spd: " + unit.stats.u_speed.ToString("0.0");
-        if(unit.tempSpeedMod > 1.0f)
-            temp += " + " + unit.tempSpeedMod.ToString("0.0");
+        if(unit.combatStats.tempSpeedMod > 1.0f)
+            temp += " + " + unit.combatStats.tempSpeedMod.ToString("0.0");
 
         return temp;
     }

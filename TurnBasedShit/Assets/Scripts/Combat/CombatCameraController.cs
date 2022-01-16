@@ -30,13 +30,13 @@ public class CombatCameraController : MonoBehaviour {
             moveToMiddle();
             return;
         }
-        else if(FindObjectOfType<TurnOrderSorter>().playingUnit != null && lookingAtObj != FindObjectOfType<TurnOrderSorter>().playingUnit && FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().attackingTarget == null) {
+        else if(FindObjectOfType<TurnOrderSorter>().playingUnit != null && lookingAtObj != FindObjectOfType<TurnOrderSorter>().playingUnit && FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().combatStats.attackingTarget == null) {
             lookingAtObj = FindObjectOfType<TurnOrderSorter>().playingUnit;
             moveToPlayingUnit();
             return;
         }
-        else if(FindObjectOfType<TurnOrderSorter>().playingUnit != null && FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().attackingTarget != null && lookingAtObj != FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().attackingTarget) {
-            lookingAtObj = FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().attackingTarget;
+        else if(FindObjectOfType<TurnOrderSorter>().playingUnit != null && FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().combatStats.attackingTarget != null && lookingAtObj != FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().combatStats.attackingTarget) {
+            lookingAtObj = FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().combatStats.attackingTarget;
             moveToAttackTarget();
             return;
         }
@@ -102,7 +102,7 @@ public class CombatCameraController : MonoBehaviour {
         Camera.main.transform.DOMove(new Vector3(target.x, target.y, Camera.main.transform.position.z), moveSpeed);
     }
     void moveToAttackTarget() {
-        var unitPos = (FindObjectOfType<TurnOrderSorter>().playingUnit.transform.position + (FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().attackingTarget.transform.position * 2.0f)) / 3.0f;
+        var unitPos = (FindObjectOfType<TurnOrderSorter>().playingUnit.transform.position + (FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().combatStats.attackingTarget.transform.position * 2.0f)) / 3.0f;
         var randX = Random.Range(-maxRandAmount, maxRandAmount);
         var randY = Random.Range(-maxRandAmount, maxRandAmount);
         var target = ((Vector2)unitPos / buffer) + new Vector2(randX, randY);

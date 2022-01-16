@@ -40,25 +40,25 @@ public class Usable : Collectable {
             case effectType.powerBuff:
                 if(po == null)
                     break;
-                obj.tempPowerMod += effectAmount;
+                obj.combatStats.tempPowerMod += effectAmount;
                 break;
 
             case effectType.defenceBuff:
                 if(po == null)
                     break;
-                obj.tempDefenceMod += effectAmount;
+                obj.combatStats.tempDefenceMod += effectAmount;
                 break;
 
             case effectType.speedBuff:
                 if(po == null)
                     break;
-                obj.tempSpeedMod += effectAmount;
+                obj.combatStats.tempSpeedMod += effectAmount;
                 break;
         }
 
         if(po != null)
             po.resaveInstantiatedUnit(stats);
-        Party.overrideUnit(stats);
+        Party.overrideUnitOfSameInstance(stats);
 
         return true;
     }

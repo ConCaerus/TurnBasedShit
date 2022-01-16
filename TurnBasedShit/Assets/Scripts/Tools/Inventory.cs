@@ -31,6 +31,9 @@ public static class Inventory {
         if(col == null || col.isEmpty())
             return;
 
+        if(getHolder() == null)
+            saveHolder(new ObjectHolder());
+
         var holder = getHolder();
         holder.addObject<Collectable>(col);
         saveHolder(holder);
@@ -49,35 +52,6 @@ public static class Inventory {
         holder.removeCollectable(col);
         saveHolder(holder);
     }
-
-    
-    static string objectCountTag(System.Type type) {
-        if(type == typeof(Weapon))
-            return "Inventory Weapon Count";
-        if(type == typeof(Armor))
-            return "Inventory Armor Count";
-        if(type == typeof(Usable))
-            return "Inventory Usable Count";
-        if(type == typeof(Unusable))
-            return "Inventory Unusable Count";
-        if(type == typeof(Item))
-            return "Inventory Item Count";
-        return string.Empty;
-    }
-    static string objectTag(int index, System.Type type) {
-        if(type == typeof(Weapon))
-            return "Inventory Weapon" + index.ToString();
-        if(type == typeof(Armor))
-            return "Inventory Armor" + index.ToString();
-        if(type == typeof(Usable))
-            return "Inventory Usable" + index.ToString();
-        if(type == typeof(Unusable))
-            return "Inventory Unusable" + index.ToString();
-        if(type == typeof(Item))
-            return "Inventory Item" + index.ToString();
-        return string.Empty;
-    }
-
 
     public static void createDefaultInventory() {
 

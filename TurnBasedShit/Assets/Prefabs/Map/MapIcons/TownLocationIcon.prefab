@@ -285,6 +285,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   info: <b><u>Town
   hideWhenMenuOpen: 1
+  hideWhenCoveredByMapFog: 1
 --- !u!58 &531714198382710365
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -313,6 +314,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80f169caa5695f540bc8695af5a9e2f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animated: 1
 --- !u!95 &5339193425458189424
 Animator:
   serializedVersion: 3

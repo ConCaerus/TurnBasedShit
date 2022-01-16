@@ -193,7 +193,7 @@ public class MapFogTexture : MonoBehaviour {
     }
     public bool isPositionCleared(Vector2 pos) {
         var cord = getTexPosForWorldPoint(pos);
-        return fow.GetPixel(cord.x, cord.y) != Color.white;
+        return fow.GetPixel(cord.x, cord.y).a == 0.0f;
     }
 
     IEnumerator animateFogClearing() {
@@ -241,7 +241,6 @@ public class MapFogTexture : MonoBehaviour {
             if(highlightingIndexes.Count > 0) {
                 for(int i = highlightingIndexes.Count - 1; i >= 0; i--) {
                     var p = clearingAreaPoints[highlightingIndexes[i]];
-
                     fow.SetPixel(p.pos.x, p.pos.y, new Color(0.0f, 0.0f, 0.0f, 0.1f));
                     highlightingIndexes.RemoveAt(i);
                 }

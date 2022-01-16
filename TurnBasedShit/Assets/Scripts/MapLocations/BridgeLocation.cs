@@ -23,10 +23,4 @@ public class BridgeLocation : MapLocation {
 
         tc.loadSceneWithTransition("Bridge");
     }
-
-    public override bool isEqualTo(MapLocation other) {
-        if(other.type != type || region != other.region)
-            return false;
-        return advancing == ((BridgeLocation)other).advancing;
-    }
 }

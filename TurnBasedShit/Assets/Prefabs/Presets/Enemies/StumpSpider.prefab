@@ -2460,21 +2460,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa06e361c1cc4654bb21458ac9ab693e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hurtSound: {fileID: 8300000, guid: f15719dcce204794099a0a4467591b7d, type: 3}
-  dieSound: {fileID: 8300000, guid: 5665238162eda3c4e8090423e9059acf, type: 3}
-  attackingTarget: {fileID: 0}
-  bloodParticles: {fileID: 2915087688519792205, guid: 4fdf5a70cefb9dc409fa113f55c33321,
-    type: 3}
-  hitColor: {r: 1, g: 0, b: 0, a: 1}
-  isPlayerUnit: 0
-  defending: 0
-  stunned: 0
-  charging: 0
-  isMouseOverUnit: 0
-  tempPowerMod: 1
-  tempDefenceMod: 0
-  tempSpeedMod: 1
-  spotOffset: 0.778
+  combatStats:
+    hurtSound: {fileID: 8300000, guid: f15719dcce204794099a0a4467591b7d, type: 3}
+    dieSound: {fileID: 8300000, guid: 5665238162eda3c4e8090423e9059acf, type: 3}
+    missSound: {fileID: 8300000, guid: 484b5b1384ddf4d47bb1e82d4183095a, type: 3}
+    attackingTarget: {fileID: 0}
+    bloodParticles: {fileID: 2915087688519792205, guid: 4fdf5a70cefb9dc409fa113f55c33321,
+      type: 3}
+    hitColor: {r: 1, g: 0, b: 0, a: 1}
+    isPlayerUnit: 0
+    tempPowerMod: 0
+    tempDefenceMod: 0
+    tempSpeedMod: 0
+    spotOffset: 0.62
+    normalSize: {x: 0, y: 0}
+    normalPos: {x: 0, y: 0}
   stats:
     u_name: Stump Spider
     u_expCap: 25
@@ -2498,6 +2498,7 @@ MonoBehaviour:
     u_critChance: 0.02
     u_missChance: 1
     u_bleedCount: 0
+    u_isLeader: 0
     u_instanceID: -1
     weapon:
       instanceID: -1
@@ -2608,11 +2609,17 @@ MonoBehaviour:
       sprite:
         sprite: {fileID: 0}
     u_traits: []
+    u_talent:
+      t_name: 
+      t_infos: []
+      t_isGood: 0
     u_deathInfo:
       nameOfKiller: 
       causeOfDeath: 0
       enemyType: 0
-  enemyDiff: 1
+  defending: 0
+  stunned: 0
+  charging: 0
   weakTo: 1
   idle: {fileID: 7400000, guid: f37f387f049a01443a2cb97b16d4361c, type: 2}
   weaponDrop: {fileID: 0}
@@ -2640,6 +2647,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   info: <b><u>Information
   hideWhenMenuOpen: 1
+  hideWhenCoveredByMapFog: 0
 --- !u!114 &-1964233590007932947
 MonoBehaviour:
   m_ObjectHideFlags: 0

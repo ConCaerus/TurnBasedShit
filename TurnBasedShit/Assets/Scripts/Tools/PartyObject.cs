@@ -17,7 +17,7 @@ public class PartyObject : MonoBehaviour {
                 unusedSpawnPoses.Add(i.gameObject);
         }
 
-        for(int i = 0; i < Party.getMemberCount(); i++) {
+        for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
             var obj = Instantiate(FindObjectOfType<PresetLibrary>().getPlayerUnitObject());
             obj.GetComponent<UnitClass>().stats = FindObjectOfType<PresetLibrary>().createRandomPlayerUnitStats(false);
 
@@ -28,24 +28,24 @@ public class PartyObject : MonoBehaviour {
             unusedSpawnPoses.RemoveAt(randIndex);
 
             //  sets up stats
-            obj.GetComponent<UnitClass>().stats = Party.getMemberStats(i);
-            obj.GetComponent<UnitClass>().isPlayerUnit = true;
+            obj.GetComponent<UnitClass>().stats = Party.getHolder().getObject<UnitStats>(i);
+            obj.GetComponent<UnitClass>().combatStats.isPlayerUnit = true;
             obj.GetComponent<UnitClass>().setup();
 
             //  adds a trait if traits are empty
-            if(Party.getMemberStats(i).u_traits.Count == 0)
+            if(Party.getHolder().getObject<UnitStats>(i).u_traits.Count == 0)
                 obj.GetComponent<UnitClass>().stats.u_traits.Add(FindObjectOfType<PresetLibrary>().getRandomUnusedUnitTrait(obj.GetComponent<UnitClass>().stats));
 
 
             //  sets sprite
-            obj.GetComponentInChildren<UnitSpriteHandler>().setReference(Party.getMemberStats(i), true);
+            obj.GetComponentInChildren<UnitSpriteHandler>().setReference(Party.getHolder().getObject<UnitStats>(i), true);
 
-            Party.overrideUnit(obj.GetComponent<UnitClass>().stats);
+            Party.overrideUnitOfSameInstance(obj.GetComponent<UnitClass>().stats);
         }
     }
 
     public void resaveInstantiatedUnit(UnitStats stats) {
-        Party.overrideUnit(stats);
+        Party.overrideUnitOfSameInstance(stats);
 
         foreach(var i in FindObjectsOfType<PlayerUnitInstance>()) {
             if(i.stats.isTheSameInstanceAs(stats)) {
@@ -58,7 +58,7 @@ public class PartyObject : MonoBehaviour {
 
     public void saveParty() {
         foreach(var i in FindObjectsOfType<PlayerUnitInstance>()) {
-            Party.overrideUnit(i.stats);
+            Party.overrideUnitOfSameInstance(i.stats);
         }
     }
 
@@ -91,6 +91,95 @@ public class PartyObject : MonoBehaviour {
 
 //  Actual Party Script
 public static class Party {
+    const string holderTag = "PartyHolderTag";
+
+    public static ObjectHolder getHolder() {
+        var data = SaveData.getString(holderTag);
+        return JsonUtility.FromJson<ObjectHolder>(data);
+    }
+    static void saveHolder(ObjectHolder holder) {
+        var data = JsonUtility.ToJson(holder);
+        SaveData.setString(holderTag, data);
+    }
+
+
+    public static void clear(bool clearInstanceQueue) {
+        saveHolder(new ObjectHolder());
+
+        if(clearInstanceQueue)
+            GameInfo.clearUnitInstanceIDQueue();
+    }
+
+
+    public static void addUnit(UnitStats col) {
+        if(col == null || col.isEmpty())
+            return;
+
+        if(getHolder() == null)
+            saveHolder(new ObjectHolder());
+
+        var holder = getHolder();
+        holder.addObject<UnitStats>(col);
+        saveHolder(holder);
+    }
+    public static void overrideUnitOfSameInstance(UnitStats col) {
+        if(col == null)
+            return;
+        var holder = getHolder();
+        int index = holder.getUnitStatsIndex(col);
+        if(index == -1)
+            return;
+        holder.overrideObject<UnitStats>(index, col);
+        saveHolder(holder);
+    }
+    public static void removeUnit(UnitStats col) {
+        if(col == null)
+            return;
+        var holder = getHolder();
+        holder.removeObject<UnitStats>(holder.getUnitStatsIndex(col));
+        saveHolder(holder);
+    }
+    public static void removeUnit(int index) {
+        if(index == -1)
+            return;
+
+        var holder = getHolder();
+        holder.removeObject<UnitStats>(index);
+        saveHolder(holder);
+    }
+
+
+    public static UnitStats getLeaderStats() {
+        var holder = getHolder();
+        foreach(var i in holder.getObjects<UnitStats>()) {
+            if(i.u_isLeader)
+                return i;
+        }
+
+        //  creates a new leader if non were found
+        var temp = holder.getObject<UnitStats>(0);
+        temp.u_isLeader = true;
+        overrideUnitOfSameInstance(temp);
+
+        return holder.getObject<UnitStats>(0);
+    }
+    public static void setLeader(UnitStats stats) {
+        var holder = getHolder();
+        int index = holder.getUnitStatsIndex(stats);
+        for(int i = 0; i < holder.getObjectCount<UnitStats>(); i++) {
+            var unit = holder.getObject<UnitStats>(i);
+
+            if(i == index) {
+                unit.u_isLeader = true;
+                overrideUnitOfSameInstance(unit);
+            }
+            else {
+                unit.u_isLeader = false;
+                overrideUnitOfSameInstance(unit);
+            }
+        }
+    }
+    /*
     public const string partySizeTag = "PartySize";
     public const string partyLeaderTag = "PartyLeader";
     public static string memberTag(int index) { return "Party" + index.ToString(); }
@@ -189,5 +278,5 @@ public static class Party {
             return getMemberStats(0);
         }
         return getMemberStats(leaderID);
-    }
+    }*/
 }

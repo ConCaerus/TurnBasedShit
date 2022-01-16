@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c50175b1ce807ce4d84b5e99f5ff832c, type: 3}
+  m_Name: Kibble
+  m_EditorClassIdentifier: 
+  preset:
+    instanceID: -1
+    name: Kibble
+    type: 2
+    rarity: 3
+    coinCost: 25
+    canBeFished: 0
+    maxStackCount: 1
+    fishedData:
+      hookedPos: {x: 0, y: 0}
+      scale: 0
+      hookedRot: 0
+      chanceToCatch: 0
+    flavor: From foes to friends.
+    tEffects:
+    - effect: 4
+      time: 3
+      effectAmount: 100.29
+    pEffects:
+    - effect: 10
+      effectAmount: 0.25
+    sprite:
+      sprite: {fileID: 21300000, guid: 04323f36576aaa94c9209e517cdbcf86, type: 3}

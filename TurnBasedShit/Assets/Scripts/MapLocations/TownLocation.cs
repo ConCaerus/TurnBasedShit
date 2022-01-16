@@ -26,11 +26,4 @@ public class TownLocation : MapLocation {
         GameInfo.setCurrentLocationAsTown(this);
         tc.loadSceneWithTransition("Town");
     }
-
-    public override bool isEqualTo(MapLocation other) {
-        if(other.type != locationType.town)
-            return false;
-
-        return town.isEqualTo(((TownLocation)other).town);
-    }
 }

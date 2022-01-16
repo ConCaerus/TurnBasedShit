@@ -29,6 +29,7 @@ public class UnitStats {
 
     public int u_bleedCount = 0;
 
+    public bool u_isLeader = false;
     public int u_instanceID = -1;
 
     public Weapon weapon;
@@ -36,6 +37,7 @@ public class UnitStats {
     public Item item;
 
     public List<UnitTrait> u_traits = new List<UnitTrait>();
+    public UnitTalent u_talent = null;
 
     public DeathInfo u_deathInfo = null;
 
@@ -65,6 +67,7 @@ public class UnitStats {
 
         foreach(var i in other.u_traits)
             u_traits.Add(i);
+        u_talent = other.u_talent;
     }
 
     public bool isTheSameInstanceAs(UnitStats other) {
@@ -108,11 +111,7 @@ public class UnitStats {
     }
     public bool addExp(float ex) {
         u_exp += ex;
-        if(canLevelUp()) {
-            levelUp();
-            return true;
-        }
-        return false;
+        return canLevelUp();
     }
 
     //  Attack amount
@@ -148,6 +147,8 @@ public class UnitStats {
         foreach(var i in u_traits) {    //  adds whatever the trait's power mod is times the base damage
             dmg += i.getDamageGivenMod() * baseDmg;
         }
+        if(u_talent != null)
+            dmg += u_talent.getDamageGivenMod() * baseDmg;
 
         //  levels modify damage
         dmg *= getLevelDamageMult();
@@ -193,6 +194,8 @@ public class UnitStats {
         foreach(var i in u_traits) {
             temp -= i.getDamageTakenMod();
         }
+        if(u_talent != null)
+            temp -= u_talent.getDamageTakenMod();
 
         //  have item reduce damage
         if(item != null && !item.isEmpty())
@@ -223,6 +226,8 @@ public class UnitStats {
 
         foreach(var i in u_traits)
             temp += i.getMaxHealthMod();
+        if(u_talent != null)
+            temp += u_talent.getMaxHealthMod();
 
         return temp;
     }
@@ -236,6 +241,8 @@ public class UnitStats {
             temp += item.getPassiveMod(Item.passiveEffectTypes.modSpeed);
         foreach(var i in u_traits)
             temp += i.getSpeedMod();
+        if(u_talent != null)
+            temp += u_talent.getSpeedMod();
 
         return temp;
     }
@@ -245,6 +252,13 @@ public class UnitStats {
     }
     public float getBaseMaxHealth() {
         return u_baseMaxHealth;
+    }
+
+    public int getModifiedMissChance() {
+        var temp = u_missChance;
+        if(item != null && !item.isEmpty())
+            temp += (int)item.getPassiveMod(Item.passiveEffectTypes.modMissChance);
+        return temp;
     }
 
     public bool hasTrait(UnitTrait t) {

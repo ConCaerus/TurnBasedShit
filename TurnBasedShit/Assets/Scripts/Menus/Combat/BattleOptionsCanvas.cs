@@ -31,7 +31,7 @@ public class BattleOptionsCanvas : MonoBehaviour {
         var playingUnit = FindObjectOfType<TurnOrderSorter>().playingUnit;
         if(FindObjectOfType<TurnOrderSorter>().playingUnit != null) {
             //  player's turn
-            if(playingUnit.GetComponent<UnitClass>().isPlayerUnit) {
+            if(playingUnit.GetComponent<UnitClass>().combatStats.isPlayerUnit) {
                 transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = playingUnit.GetComponent<UnitClass>().stats.u_name;
                 //  skip turn if stunned
                 if(playingUnit.GetComponent<UnitClass>().isStunned())
@@ -43,7 +43,7 @@ public class BattleOptionsCanvas : MonoBehaviour {
             }
 
             //  enemy's turn
-            else if(!playingUnit.GetComponent<UnitClass>().isPlayerUnit) {
+            else if(!playingUnit.GetComponent<UnitClass>().combatStats.isPlayerUnit) {
                 //  skip turn if stunned
                 if(playingUnit.GetComponent<UnitClass>().isStunned())
                     StartCoroutine(skipUnitTurn(playingUnit.GetComponent<UnitClass>()));
@@ -54,10 +54,10 @@ public class BattleOptionsCanvas : MonoBehaviour {
                 }
             }
         }
-        if(playingUnit != null && playingUnit.GetComponent<UnitClass>().isPlayerUnit && playingUnit.GetComponent<SummonedUnitInstance>() == null && !playingUnit.GetComponent<UnitClass>().isStunned() && !showing) {
+        if(playingUnit != null && playingUnit.GetComponent<UnitClass>().combatStats.isPlayerUnit && playingUnit.GetComponent<SummonedUnitInstance>() == null && !playingUnit.GetComponent<UnitClass>().isStunned() && !showing) {
             showUI();
         }
-        else if((playingUnit == null || !playingUnit.GetComponent<UnitClass>().isPlayerUnit || playingUnit.GetComponent<UnitClass>().isStunned() || playingUnit.GetComponent<SummonedUnitInstance>() != null) && showing)
+        else if((playingUnit == null || !playingUnit.GetComponent<UnitClass>().combatStats.isPlayerUnit || playingUnit.GetComponent<UnitClass>().isStunned() || playingUnit.GetComponent<SummonedUnitInstance>() != null) && showing)
             hideUI();
     }
 

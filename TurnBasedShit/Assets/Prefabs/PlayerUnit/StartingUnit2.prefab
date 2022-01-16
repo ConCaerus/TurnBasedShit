@@ -73,21 +73,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99b1e960874d0d84f831b39cc89d74c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hurtSound: {fileID: 8300000, guid: f9ab6cd3341723f4f8a4cb65b539d7c3, type: 3}
-  dieSound: {fileID: 8300000, guid: 5665238162eda3c4e8090423e9059acf, type: 3}
-  attackingTarget: {fileID: 0}
-  bloodParticles: {fileID: 2915087688519792205, guid: 4fdf5a70cefb9dc409fa113f55c33321,
-    type: 3}
-  hitColor: {r: 1, g: 0, b: 0, a: 1}
-  isPlayerUnit: 1
-  defending: 0
-  stunned: 0
-  charging: 0
-  isMouseOverUnit: 0
-  tempPowerMod: 1
-  tempDefenceMod: 0
-  tempSpeedMod: 1
-  spotOffset: 1
+  combatStats:
+    hurtSound: {fileID: 8300000, guid: f9ab6cd3341723f4f8a4cb65b539d7c3, type: 3}
+    dieSound: {fileID: 8300000, guid: 5665238162eda3c4e8090423e9059acf, type: 3}
+    missSound: {fileID: 8300000, guid: 484b5b1384ddf4d47bb1e82d4183095a, type: 3}
+    attackingTarget: {fileID: 0}
+    bloodParticles: {fileID: 2915087688519792205, guid: 4fdf5a70cefb9dc409fa113f55c33321,
+      type: 3}
+    hitColor: {r: 1, g: 0, b: 0, a: 1}
+    isPlayerUnit: 1
+    tempPowerMod: 0
+    tempDefenceMod: 0
+    tempSpeedMod: 0
+    spotOffset: 0
+    normalSize: {x: 0, y: 0}
+    normalPos: {x: 0, y: 0}
   stats:
     u_name: Eburwin
     u_expCap: 25
@@ -109,7 +109,9 @@ MonoBehaviour:
     u_power: 1
     u_defence: 1
     u_critChance: 0
+    u_missChance: 1
     u_bleedCount: 0
+    u_isLeader: 0
     u_instanceID: -1
     weapon:
       instanceID: -1
@@ -118,11 +120,11 @@ MonoBehaviour:
       rarity: 0
       coinCost: 0
       canBeFished: 0
+      maxStackCount: 1
       fishedData:
         hookedPos: {x: 0, y: 0}
         scale: 0
         hookedRot: 0
-        diffRegion: 0
         chanceToCatch: 0
       flavor: Choco
       wornAmount: 3
@@ -146,11 +148,11 @@ MonoBehaviour:
       rarity: 0
       coinCost: 0
       canBeFished: 0
+      maxStackCount: 1
       fishedData:
         hookedPos: {x: 0, y: 0}
         scale: 0
         hookedRot: 0
-        diffRegion: 0
         chanceToCatch: 0
       flavor: Choco
       wornAmount: 3
@@ -208,11 +210,11 @@ MonoBehaviour:
       rarity: 0
       coinCost: 0
       canBeFished: 0
+      maxStackCount: 1
       fishedData:
         hookedPos: {x: 0, y: 0}
         scale: 0
         hookedRot: 0
-        diffRegion: 0
         chanceToCatch: 0
       flavor: Choco
       tEffects: []
@@ -225,10 +227,17 @@ MonoBehaviour:
       - modType: 1
         modAmount: -0.15
       t_isGood: 0
+    u_talent:
+      t_name: 
+      t_infos: []
+      t_isGood: 0
     u_deathInfo:
       nameOfKiller: 
       causeOfDeath: 0
       enemyType: 0
+  defending: 0
+  stunned: 0
+  charging: 0
 --- !u!114 &6768158759298979237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -266,6 +275,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   info: <b><u>Information
   hideWhenMenuOpen: 1
+  hideWhenCoveredByMapFog: 0
 --- !u!1001 &954274707321897296
 PrefabInstance:
   m_ObjectHideFlags: 0

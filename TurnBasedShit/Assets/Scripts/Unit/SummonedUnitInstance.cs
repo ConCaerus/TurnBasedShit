@@ -9,7 +9,9 @@ public class SummonedUnitInstance : UnitClass {
     Coroutine idler = null;
 
     private void Awake() {
-        isPlayerUnit = true;
+        if(combatStats == null)
+            combatStats = new UnitCombatStats();
+        combatStats.isPlayerUnit = true;
     }
 
     private void Start() {
@@ -23,7 +25,7 @@ public class SummonedUnitInstance : UnitClass {
     public override void setAttackingAnim() {
         if(GetComponent<Animator>() != null) {
             GetComponent<Animator>().speed = 1.0f;
-            GetComponent<Animator>().SetInteger("state", 2);
+            GetComponent<Animator>().SetTrigger("attack");
             if(idler != null)
                 StopCoroutine(idler);
             idler = StartCoroutine(returnToIdle());
@@ -32,7 +34,7 @@ public class SummonedUnitInstance : UnitClass {
     public override void setDefendingAnim() {
         if(GetComponent<Animator>() != null) {
             GetComponent<Animator>().speed = 1.0f;
-            GetComponent<Animator>().SetInteger("state", 1);
+            GetComponent<Animator>().SetTrigger("defend");
             if(idler != null)
                 StopCoroutine(idler);
             idler = StartCoroutine(returnToIdle());
@@ -40,20 +42,17 @@ public class SummonedUnitInstance : UnitClass {
     }
 
     public IEnumerator combatTurn() {
-        if(FindObjectOfType<TurnOrderSorter>().playingUnit != gameObject)
+        if(FindObjectOfType<TurnOrderSorter>().playingUnit != gameObject || GetComponents<EnemyUnitInstance>().Length == 0)
             yield return 0;
 
-        if(FindObjectsOfType<EnemyUnitInstance>().Length == 0)
-            FindObjectOfType<UnitBattleMech>().endBattle();
-
-        if(attackingTarget == null)
-            attackingTarget = FindObjectsOfType<EnemyUnitInstance>()[Random.Range(0, FindObjectsOfType<EnemyUnitInstance>().Length)].gameObject;
+        if(combatStats.attackingTarget == null)
+            combatStats.attackingTarget = FindObjectsOfType<EnemyUnitInstance>()[Random.Range(0, FindObjectsOfType<EnemyUnitInstance>().Length)].gameObject;
 
         yield return new WaitForSeconds(0.5f);
 
-        if(attackingTarget != null) {
+        if(combatStats.attackingTarget != null) {
             yield return new WaitForSeconds(0.5f);
-            attack(attackingTarget);
+            attack(combatStats.attackingTarget);
         }
     }
 

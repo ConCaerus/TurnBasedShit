@@ -9,6 +9,7 @@ public class PresetLibrary : MonoBehaviour {
     [SerializeField] GameObject[] bosses;
     [SerializeField] NPCPreset[] townNPCs;
     [SerializeField] UnitTraitPreset[] unitTraits;
+    [SerializeField] UnitTalentPreset[] unitTalents;
 
     //  unit customs
     [SerializeField] GameObject[] unitHeads;
@@ -46,8 +47,7 @@ public class PresetLibrary : MonoBehaviour {
 
     //  Units
     public void addStartingUnits() {
-        Party.clearParty(true);
-        Party.clearPartyEquipment();
+        Party.clear(true);
         for(int i = 0; i < startingUnitCount; i++) {
             var stats = createRandomPlayerUnitStats(true);
 
@@ -227,6 +227,46 @@ public class PresetLibrary : MonoBehaviour {
         }
         return null;
     }
+    public UnitTalent getRandomGoodUnitTalent() {
+        List<UnitTalent> goods = new List<UnitTalent>();
+        foreach(var i in unitTalents) {
+            if(i.preset.t_isGood)
+                goods.Add(i.preset);
+        }
+
+        return goods[Random.Range(0, goods.Count)];
+    }
+    public UnitTalent getRandomBadUnitTalent() {
+        List<UnitTalent> bads = new List<UnitTalent>();
+        foreach(var i in unitTalents) {
+            if(!i.preset.t_isGood)
+                bads.Add(i.preset);
+        }
+
+        return bads[Random.Range(0, bads.Count)];
+    }
+    public UnitTalent getRandomUnitTalent() {
+        return unitTalents[Random.Range(0, unitTalents.Length)].preset;
+    }
+    public UnitTalent getRandomUnusedUnitTalent(UnitStats stats) {
+        List<UnitTalent> temp = new List<UnitTalent>();
+
+        foreach(var i in unitTalents) {
+            bool hasTalent = false;
+            if(!stats.u_talent.isTheSameTypeAs(i.preset)) {
+                temp.Add(i.preset);
+            }
+        }
+
+        return temp[Random.Range(0, temp.Count)];
+    }
+    public UnitTalent getUnitTalent(string name) {
+        foreach(var i in unitTalents) {
+            if(i.preset.t_name == name)
+                return i.preset;
+        }
+        return null;
+    }
 
 
     //  unit customs
@@ -279,7 +319,7 @@ public class PresetLibrary : MonoBehaviour {
 
     //  Profiles
     public GameObject getProfileForUnit(UnitClass unit) {
-        if(unit.isPlayerUnit)
+        if(unit.combatStats.isPlayerUnit)
             return getPlayerUnitProfile();
 
         return getEnemyProfile(unit.GetComponent<EnemyUnitInstance>().enemyType);

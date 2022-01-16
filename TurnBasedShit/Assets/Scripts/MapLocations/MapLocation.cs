@@ -22,5 +22,10 @@ public abstract class MapLocation {
 
     public abstract void enterLocation(TransitionCanvas tc);
 
-    public abstract bool isEqualTo(MapLocation other);
+    public bool isEqualTo(MapLocation other) {  //  two locations shouldn't have the same position and the same region so this should be enough
+        if(other == null)
+            return false;
+
+        return pos == other.pos && type == other.type && region == other.region;
+    }
 }

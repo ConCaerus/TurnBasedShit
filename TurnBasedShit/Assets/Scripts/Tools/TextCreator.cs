@@ -72,7 +72,7 @@ public class TextCreator : MonoBehaviour {
         //  uses to lower to decrease oopsies
         switch(command.ToLower()) {
             case "[name]": return  createUnitNameText(Party.getLeaderStats());
-            case "[partysize]": return Party.getMemberCount().ToString();
+            case "[partysize]": return Party.getHolder().getObjectCount<UnitStats>().ToString();
             case "[region]": return GameInfo.getCurrentRegion().ToString();
             case "[money]": return Inventory.getCoinCount().ToString();
 

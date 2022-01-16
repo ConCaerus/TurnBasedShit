@@ -35,7 +35,7 @@ public class HospitalCanvas : BuildingCanvas {
         if(getSelectedUnit() != null && !getSelectedUnit().isEmpty()) {
             var stats = getSelectedUnit();
             stats.addHealth(healAmt);
-            Party.overrideUnit(stats);
+            Party.overrideUnitOfSameInstance(stats);
 
             if(hospital.freeHeals > 0) {
                 hospital.freeHeals--;

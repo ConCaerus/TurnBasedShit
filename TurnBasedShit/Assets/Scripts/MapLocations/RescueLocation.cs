@@ -34,11 +34,4 @@ public class RescueLocation : MapLocation {
         MapLocationHolder.removeLocation(this);
         tc.loadSceneWithTransition("Combat");
     }
-
-    public override bool isEqualTo(MapLocation other) {
-        if(other.type != locationType.rescue)
-            return false;
-
-        return unit == ((RescueLocation)other).unit && pos == other.pos;
-    }
 }

@@ -57,7 +57,7 @@ public class ChurchCanvas : BuildingCanvas {
             Inventory.addCoins(-church.priceToRemove);
             var stats = getSelectedUnit();
             stats.u_traits.RemoveAt(traitInd);
-            Party.overrideUnit(stats);
+            Party.overrideUnitOfSameInstance(stats);
 
             updateInfo();
         }

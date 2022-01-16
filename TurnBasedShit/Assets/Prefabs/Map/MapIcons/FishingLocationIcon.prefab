@@ -286,6 +286,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   info: <b><u>Fishing
   hideWhenMenuOpen: 1
+  hideWhenCoveredByMapFog: 1
 --- !u!95 &33459526464194613
 Animator:
   serializedVersion: 3
@@ -333,6 +334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80f169caa5695f540bc8695af5a9e2f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animated: 1
 --- !u!1 &8910834771678395021
 GameObject:
   m_ObjectHideFlags: 0

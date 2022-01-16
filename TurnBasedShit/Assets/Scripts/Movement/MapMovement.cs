@@ -35,13 +35,13 @@ public class MapMovement : InteractiveMovement {
     void createSideUnitObjects() {
         var offset = new Vector3(0.75f, 0.0f, 0.0f);
         var last = transform.position;
-        for(int i = 0; i < Party.getMemberCount(); i++) {
-            if(Party.getMemberStats(i).isTheSameInstanceAs(Party.getLeaderStats()))
+        for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
+            if(Party.getHolder().getObject<UnitStats>(i).isTheSameInstanceAs(Party.getLeaderStats()))
                 continue;
 
 
             var temp = Instantiate(sideUnitPreset.gameObject, transform.parent);
-            temp.GetComponentInChildren<UnitSpriteHandler>().setReference(Party.getMemberStats(i), true);
+            temp.GetComponentInChildren<UnitSpriteHandler>().setReference(Party.getHolder().getObject<UnitStats>(i), true);
             temp.GetComponent<MapSideUnitMovement>().moveSpeed = moveSpeed / 1.25f;
             temp.transform.localScale = new Vector3(0.25f, 0.25f, 1.0f);
             temp.transform.position = last + offset;
@@ -74,13 +74,13 @@ public class MapMovement : InteractiveMovement {
     public void eatFood() {
         if(Vector2.Distance(transform.position, lastAteAtPos) > distToEat) {
             lastAteAtPos = transform.position;
-            for(int p = 0; p < Party.getMemberCount(); p++) {
+            for(int p = 0; p < Party.getHolder().getObjectCount<UnitStats>(); p++) {
                 var food = Inventory.eatFood();
                 if(food == null || food.isEmpty()) {
-                    for(int i = 0; i < Party.getMemberCount(); i++) {
-                        var stats = Party.getMemberStats(i);
+                    for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
+                        var stats = Party.getHolder().getObject<UnitStats>(i);
                         stats.addHealth(-2f);
-                        Party.overrideUnit(stats);
+                        Party.overrideUnitOfSameInstance(stats);
                     }
                     return;
                 }
@@ -92,7 +92,7 @@ public class MapMovement : InteractiveMovement {
 
     public void setSideUnitVisuals() {
         for(int i = 0; i < sideUnits.Count; i++) {
-            sideUnits[i].GetComponentInChildren<UnitSpriteHandler>().setReference(Party.getMemberStats(sideUnitIndexes[i]), true);
+            sideUnits[i].GetComponentInChildren<UnitSpriteHandler>().setReference(Party.getHolder().getObject<UnitStats>(sideUnitIndexes[i]), true);
         }
     }
 

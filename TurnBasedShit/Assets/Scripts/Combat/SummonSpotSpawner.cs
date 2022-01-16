@@ -40,7 +40,8 @@ public class SummonSpotSpawner : MonoBehaviour {
             if(!i.isPlayerSpot() || i.unit == null)
                 continue;
             var stats = i.unit.GetComponent<UnitClass>().stats;
-            if(stats.weapon != null && !stats.weapon.isEmpty() && stats.weapon.sUsage == Weapon.specialUsage.summoning)
+            //  makes sure that the unit is able to summon something before adding
+            if((stats.weapon != null && !stats.weapon.isEmpty() && stats.weapon.sUsage == Weapon.specialUsage.summoning) || (stats.item != null && !stats.item.isEmpty() && stats.item.getTimedMod(Item.timedEffectTypes.chanceEnemyTurnsIntoSummon) > 0.0f))
                 spots.Add(i);
         }
 
@@ -67,9 +68,11 @@ public class SummonSpotSpawner : MonoBehaviour {
     }
 
     public GameObject getCombatSpotAtIndexForUnit(GameObject unit, int index) {
+        if(index == -1)
+            return null;
         foreach(var i in FindObjectsOfType<CombatSpot>()) {
             if(i.unit == unit) {
-                return i.transform.GetChild(1).GetChild(index).gameObject;
+                return i.transform.GetChild(index + 1).GetChild(0).gameObject;
             }
         }
         return null;

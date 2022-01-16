@@ -18,11 +18,4 @@ public class FishingLocation : MapLocation {
         GameInfo.setCurrentLocationAsFishing(this);
         tc.loadSceneWithTransition("Fishing");
     }
-
-    public override bool isEqualTo(MapLocation other) {
-        if(other.type != locationType.nest)
-            return false;
-
-        return pos == other.pos;
-    }
 }

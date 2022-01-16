@@ -5,7 +5,7 @@ using DG.Tweening;
 
 public class PlayerUnitInstance : UnitClass {
     private void Awake() {
-        isPlayerUnit = true;
+        combatStats.isPlayerUnit = true;
     }
 
     private void Start() {
@@ -17,8 +17,11 @@ public class PlayerUnitInstance : UnitClass {
     private void Update() {
         attackingLogic();
 
+        if((Vector2)transform.localPosition != combatStats.normalPos)
+            transform.localPosition = combatStats.normalPos;
+
         if(Input.GetKeyDown(KeyCode.Space))
-            Debug.Log(FindObjectOfType<InfoCanvas>().isOpen());
+            Debug.Log(combatStats.normalPos + "       " + (Vector2)transform.localPosition);
     }
 
 
@@ -38,12 +41,12 @@ public class PlayerUnitInstance : UnitClass {
     void attackingLogic() {
         if(FindObjectOfType<TurnOrderSorter>().playingUnit != gameObject)
             attackAnim = null;
-        if(FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject && attackingTarget == null) {
+        if(FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject && combatStats.attackingTarget == null) {
             setAttackingTarget();
         }
 
-        else if(attackingTarget != null && attackingTarget != gameObject && attackAnim == null && FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject && FindObjectOfType<BattleOptionsCanvas>().battleState == 1) {
-            attack(attackingTarget);
+        else if(combatStats.attackingTarget != null && combatStats.attackingTarget != gameObject && attackAnim == null && FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject && FindObjectOfType<BattleOptionsCanvas>().battleState == 1) {
+            attack(combatStats.attackingTarget);
         }
 
         if(attackAnim == null && FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject && FindObjectOfType<BattleOptionsCanvas>().battleState == 3) {
@@ -55,7 +58,7 @@ public class PlayerUnitInstance : UnitClass {
         if(Input.GetMouseButtonDown(0) && (FindObjectOfType<BattleOptionsCanvas>().battleState == 1 || FindObjectOfType<BattleOptionsCanvas>().battleState == 3)) {
             foreach(var i in FindObjectsOfType<UnitClass>()) {
                 if(i.isMouseOverUnit) {
-                    attackingTarget = i.gameObject;
+                    combatStats.attackingTarget = i.gameObject;
                     return;
                 }
             }
@@ -65,10 +68,10 @@ public class PlayerUnitInstance : UnitClass {
 
     void useWeaponSpecialUse() {
         //  wants to heal but no target
-        if(stats.weapon.sUsage == Weapon.specialUsage.healing && attackingTarget == null)
+        if(stats.weapon.sUsage == Weapon.specialUsage.healing && combatStats.attackingTarget == null)
             return;
-        if(stats.weapon.sUsage == Weapon.specialUsage.healing && attackingTarget != null) {
-            stats.weapon.applySpecailUsage(stats, attackingTarget.GetComponent<UnitClass>());
+        if(stats.weapon.sUsage == Weapon.specialUsage.healing && combatStats.attackingTarget != null) {
+            stats.weapon.applySpecailUsage(stats, combatStats.attackingTarget.GetComponent<UnitClass>());
             FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
         }
 
@@ -76,13 +79,13 @@ public class PlayerUnitInstance : UnitClass {
         if(stats.weapon.sUsage == Weapon.specialUsage.summoning && roomToSummon()) {
             var obj = Instantiate(FindObjectOfType<PresetLibrary>().getSummonForWeapon(stats.weapon).gameObject);
             obj.GetComponent<SummonedUnitInstance>().summoner = stats;
-            FindObjectOfType<SummonSpotSpawner>().getCombatSpotAtIndexForUnit(gameObject, getSummonCount() - 1).GetComponent<CombatSpot>().unit = obj.gameObject;
-            obj.transform.position = FindObjectOfType<SummonSpotSpawner>().getCombatSpotAtIndexForUnit(gameObject, getSummonCount() - 1).transform.position + new Vector3(0.0f, obj.GetComponent<UnitClass>().spotOffset);
+            getNextSummonSpotForUnit().GetComponent<CombatSpot>().unit = obj.gameObject;
+            obj.transform.position = FindObjectOfType<SummonSpotSpawner>().getCombatSpotAtIndexForUnit(gameObject, getSummonCount() - 1).transform.position + new Vector3(0.0f, obj.GetComponent<UnitClass>().combatStats.spotOffset);
             obj.GetComponent<UnitClass>().setup();
 
             //  apply item modifiers to summon
             if(stats.item != null && !stats.item.isEmpty()) {
-                obj.GetComponent<UnitClass>().tempPowerMod += stats.item.getPassiveMod(Item.passiveEffectTypes.modSummonDamageGiven);
+                obj.GetComponent<UnitClass>().combatStats.tempPowerMod += stats.item.getPassiveMod(Item.passiveEffectTypes.modSummonDamageGiven);
             }
 
             FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
@@ -90,7 +93,7 @@ public class PlayerUnitInstance : UnitClass {
     }
 
 
-    bool roomToSummon() {
+    public bool roomToSummon() {
         int max = stats.getSummonedLevel();
         int count = 0;
         foreach(var i in FindObjectsOfType<SummonedUnitInstance>()) {
@@ -98,6 +101,11 @@ public class PlayerUnitInstance : UnitClass {
                 count++;
         }
         return count < max;
+    }
+
+    public GameObject getNextSummonSpotForUnit() {
+        Debug.Log(getSummonCount() - 1);
+        return FindObjectOfType<SummonSpotSpawner>().getCombatSpotAtIndexForUnit(gameObject, getSummonCount() - 1);
     }
 
     int getSummonCount() {
@@ -125,6 +133,7 @@ public class PlayerUnitInstance : UnitClass {
     }
 
     public void updateSprites() {
+        GetComponentInChildren<UnitSpriteHandler>().setReference(stats, true);
         GetComponentInChildren<UnitSpriteHandler>().updateVisuals();
         foreach(var i in FindObjectsOfType<CombatSpot>()) {
             if(i.unit == gameObject) {
@@ -135,7 +144,7 @@ public class PlayerUnitInstance : UnitClass {
         }
 
         //  if not summoning, kill all summoned shit
-        if(stats.weapon == null || stats.weapon.isEmpty() || stats.weapon.sUsage != Weapon.specialUsage.summoning) {
+        if((stats.weapon == null || stats.weapon.isEmpty() || stats.weapon.sUsage != Weapon.specialUsage.summoning) && (stats.item == null || stats.item.isEmpty() || stats.item.getTimedMod(Item.timedEffectTypes.chanceEnemyTurnsIntoSummon) == 0.0f)) {
             foreach(var i in FindObjectsOfType<SummonedUnitInstance>()) {
                 if(i.summoner.isTheSameInstanceAs(stats))
                     i.die(DeathInfo.killCause.murdered);
@@ -143,7 +152,8 @@ public class PlayerUnitInstance : UnitClass {
         }
 
         FindObjectOfType<SummonSpotSpawner>().updateSpots();
-        transform.localPosition = normalPos;
-        transform.localScale = normalSize;
+        combatStats.normalPos = GetComponentInChildren<UnitSpriteHandler>().getCombatNormalPos();
+        transform.localPosition = combatStats.normalPos;
+        transform.localScale = combatStats.normalSize;
     }
 }

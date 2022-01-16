@@ -42,7 +42,7 @@ public class TurnOrderCanvas : MonoBehaviour {
             slots[i] = Instantiate(FindObjectOfType<PresetLibrary>().getProfileForUnit(newUnit).gameObject, slots[i].transform.parent);
             Destroy(prev.gameObject);
 
-            if(newUnit.isPlayerUnit) {
+            if(newUnit.combatStats.isPlayerUnit) {
                 slots[i].transform.GetChild(0).GetComponent<Image>().color = newUnit.stats.u_sprite.color;
                 var backgroundColor = newUnit.stats.u_sprite.color * 2.0f;
                 slots[i].GetComponent<Image>().color = new Color(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1.0f);

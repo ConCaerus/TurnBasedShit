@@ -21,11 +21,4 @@ public class NestLocation : MapLocation {
         MapLocationHolder.removeLocation(this);
         tc.loadSceneWithTransition("Combat");
     }
-
-    public override bool isEqualTo(MapLocation other) {
-        if(other.type != locationType.nest)
-            return false;
-
-        return pos == other.pos;
-    }
 }

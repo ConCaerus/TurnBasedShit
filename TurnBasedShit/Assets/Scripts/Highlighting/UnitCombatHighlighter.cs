@@ -88,7 +88,7 @@ public class UnitCombatHighlighter : MonoBehaviour {
             }
 
             //  active but not correct highlight
-            else if(highlightedUnits[i].gameObject == FindObjectOfType<TurnOrderSorter>().playingUnit.gameObject && highlightedUnits[i].GetComponent<UnitClass>().isPlayerUnit) {
+            else if(highlightedUnits[i].gameObject == FindObjectOfType<TurnOrderSorter>().playingUnit.gameObject && highlightedUnits[i].GetComponent<UnitClass>().combatStats.isPlayerUnit) {
                 int state = FindObjectOfType<BattleOptionsCanvas>().battleState;
                 if(state == 1 && highlights[i].GetComponent<CombatHighlightObject>().getColor() != playerAttacking) {
                     createHighlightObject(highlightedUnits[i], playerAttacking, i);
@@ -114,7 +114,7 @@ public class UnitCombatHighlighter : MonoBehaviour {
             if(i.gameObject == FindObjectOfType<TurnOrderSorter>().playingUnit.gameObject || i.GetComponent<UnitClass>().isMouseOverUnit) {
                 highlightedUnits.Add(i.gameObject);
 
-                if(i.GetComponent<UnitClass>().isPlayerUnit) {
+                if(i.GetComponent<UnitClass>().combatStats.isPlayerUnit) {
                     if(FindObjectOfType<BattleOptionsCanvas>().battleState == 1)
                         createHighlightObject(i.gameObject, playerAttacking);
                     else if(FindObjectOfType<BattleOptionsCanvas>().battleState == 3)

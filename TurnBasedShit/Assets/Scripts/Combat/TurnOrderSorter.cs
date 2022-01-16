@@ -38,7 +38,7 @@ public class TurnOrderSorter : MonoBehaviour {
 
     public void updatePlayerUnits() {
         for(int i = 0; i < unitsInPlay.Count; i++) {
-            if(!unitsInPlay[i].GetComponent<UnitClass>().isPlayerUnit)
+            if(!unitsInPlay[i].GetComponent<UnitClass>().combatStats.isPlayerUnit)
                 continue;
 
             unitsInPlay[i] = FindObjectOfType<PartyObject>().getInstantiatedMember(unitsInPlay[i].GetComponent<UnitClass>().stats);
@@ -122,6 +122,7 @@ public class TurnOrderSorter : MonoBehaviour {
             }
 
             //  resets unit after turn, and removes it from the list of playing units
+            playingUnit.GetComponent<UnitClass>().combatStats.attackingTarget = null;
             unitsInPlay.Remove(playingUnit);
             FindObjectOfType<PartyObject>().saveParty();
         }

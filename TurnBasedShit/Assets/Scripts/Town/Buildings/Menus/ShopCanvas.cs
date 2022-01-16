@@ -98,7 +98,7 @@ public class ShopCanvas : MonoBehaviour {
                     costText.text = getBuyPrice(stats.determineCost()).ToString() + "c";
                 }
                 else if(shopState == 1) {
-                    UnitStats stats = Party.getMemberStats(slot.getSelectedSlotIndex());
+                    UnitStats stats = Party.getHolder().getObject<UnitStats>(slot.getSelectedSlotIndex());
                     nameText.text = stats.u_name;
                     costText.text = getSellPrice(stats.determineCost()).ToString() + "c";
                 }
@@ -254,13 +254,13 @@ public class ShopCanvas : MonoBehaviour {
 
                 //  Slave
                 case 5:
-                    if(Party.getMemberCount() <= 0)
+                    if(Party.getHolder().getObjectCount<UnitStats>() <= 0)
                         break;
 
-                    for(int i = 0; i < Party.getMemberCount(); i++) {
-                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForUnitStats(Party.getMemberStats(i)));
-                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnitHeadSprite(Party.getMemberStats(i).u_sprite.headIndex);
-                        obj.transform.GetChild(0).GetComponent<Image>().color = Party.getMemberStats(i).u_sprite.color;
+                    for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
+                        var obj = slot.createSlot(i, Color.white, InfoTextCreator.createForUnitStats(Party.getHolder().getObject<UnitStats>(i)));
+                        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnitHeadSprite(Party.getHolder().getObject<UnitStats>(i).u_sprite.headIndex);
+                        obj.transform.GetChild(0).GetComponent<Image>().color = Party.getHolder().getObject<UnitStats>(i).u_sprite.color;
                     }
                     break;
             }
@@ -337,7 +337,7 @@ public class ShopCanvas : MonoBehaviour {
                 }
 
                 else if(slotState == 5) {
-                    var stats = Party.getMemberStats(slot.getSelectedSlotIndex());
+                    var stats = Party.getHolder().getObject<UnitStats>(slot.getSelectedSlotIndex());
                     Inventory.addCoins(getSellPrice(stats.determineCost()));
                     Party.removeUnit(slot.getSelectedSlotIndex());
                     ShopInventory.addUnit(townIndex, stats);

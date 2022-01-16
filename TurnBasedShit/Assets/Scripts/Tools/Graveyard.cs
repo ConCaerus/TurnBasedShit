@@ -24,6 +24,9 @@ public static class Graveyard {
         if(unit == null || unit.isEmpty())
             return;
 
+        if(getHolder() == null)
+            saveHolder(new ObjectHolder());
+
         var holder = getHolder();
         holder.addObject<UnitStats>(unit);
         saveHolder(holder);

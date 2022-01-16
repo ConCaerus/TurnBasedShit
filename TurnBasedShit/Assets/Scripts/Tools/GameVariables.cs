@@ -15,6 +15,10 @@ public static class GameVariables {
         return getExpForEnemy(GameInfo.getRegionForEnemyType(t));
     }
 
+    public static bool chanceUnitHasTalent() {
+        return chanceOutOfHundred(25);
+    }
+
     //  chances
     //  combat
     public static bool chanceBleed() {

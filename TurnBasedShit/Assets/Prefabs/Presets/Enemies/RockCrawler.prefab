@@ -68,8 +68,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 921474463
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 3347407308802887294, guid: a13ffaae454942342bd9919ee26af227,
     type: 3}
@@ -151,8 +151,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 921474463
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 8514312695591546914, guid: a13ffaae454942342bd9919ee26af227,
     type: 3}
@@ -234,8 +234,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 921474463
+  m_SortingLayer: 2
   m_SortingOrder: 1
   m_Sprite: {fileID: -3258746634187718243, guid: b1c93b8555157c34ab859427104d9c19,
     type: 3}
@@ -317,8 +317,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 921474463
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 2328052880852690982, guid: a13ffaae454942342bd9919ee26af227,
     type: 3}
@@ -436,8 +436,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 921474463
+  m_SortingLayer: 2
   m_SortingOrder: 2
   m_Sprite: {fileID: -4457256198739990391, guid: a13ffaae454942342bd9919ee26af227,
     type: 3}
@@ -519,8 +519,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 921474463
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 1564149256792104175, guid: b1c93b8555157c34ab859427104d9c19,
     type: 3}
@@ -602,8 +602,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 921474463
+  m_SortingLayer: 2
   m_SortingOrder: 2
   m_Sprite: {fileID: 1546851121393031581, guid: a13ffaae454942342bd9919ee26af227,
     type: 3}
@@ -743,21 +743,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa06e361c1cc4654bb21458ac9ab693e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hurtSound: {fileID: 8300000, guid: f15719dcce204794099a0a4467591b7d, type: 3}
-  dieSound: {fileID: 8300000, guid: 5665238162eda3c4e8090423e9059acf, type: 3}
-  attackingTarget: {fileID: 0}
-  bloodParticles: {fileID: 2915087688519792205, guid: 4fdf5a70cefb9dc409fa113f55c33321,
-    type: 3}
-  hitColor: {r: 1, g: 0, b: 0, a: 1}
-  isPlayerUnit: 0
-  defending: 0
-  stunned: 0
-  charging: 0
-  isMouseOverUnit: 0
-  tempPowerMod: 1
-  tempDefenceMod: 0
-  tempSpeedMod: 1
-  spotOffset: 1
+  combatStats:
+    hurtSound: {fileID: 8300000, guid: 55c8b6125c1524144b74ea1571ed81c1, type: 3}
+    dieSound: {fileID: 8300000, guid: 5665238162eda3c4e8090423e9059acf, type: 3}
+    missSound: {fileID: 8300000, guid: 484b5b1384ddf4d47bb1e82d4183095a, type: 3}
+    attackingTarget: {fileID: 0}
+    bloodParticles: {fileID: 2915087688519792205, guid: 4fdf5a70cefb9dc409fa113f55c33321,
+      type: 3}
+    hitColor: {r: 1, g: 0, b: 0, a: 1}
+    isPlayerUnit: 0
+    tempPowerMod: 0
+    tempDefenceMod: 0
+    tempSpeedMod: 0
+    spotOffset: 0.82
+    normalSize: {x: 0, y: 0}
+    normalPos: {x: 0, y: 0}
   stats:
     u_name: Rock Crawler
     u_expCap: 75
@@ -781,6 +781,7 @@ MonoBehaviour:
     u_critChance: 0.05
     u_missChance: 1
     u_bleedCount: 0
+    u_isLeader: 0
     u_instanceID: -1
     weapon:
       instanceID: -1
@@ -891,11 +892,17 @@ MonoBehaviour:
       sprite:
         sprite: {fileID: 0}
     u_traits: []
+    u_talent:
+      t_name: 
+      t_infos: []
+      t_isGood: 0
     u_deathInfo:
       nameOfKiller: 
       causeOfDeath: 0
       enemyType: 0
-  enemyDiff: 3
+  defending: 0
+  stunned: 0
+  charging: 0
   weakTo: 0
   idle: {fileID: 7400000, guid: 50425f5f82ad95943b62a622e4267fef, type: 2}
   weaponDrop: {fileID: 0}
@@ -946,6 +953,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   info: <b><u>Information
   hideWhenMenuOpen: 1
+  hideWhenCoveredByMapFog: 0
 --- !u!1 &1795054418175750679
 GameObject:
   m_ObjectHideFlags: 0
@@ -1014,8 +1022,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 921474463
+  m_SortingLayer: 2
   m_SortingOrder: 2
   m_Sprite: {fileID: -4457256198739990391, guid: a13ffaae454942342bd9919ee26af227,
     type: 3}
@@ -1133,8 +1141,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 921474463
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 2328052880852690982, guid: a13ffaae454942342bd9919ee26af227,
     type: 3}
@@ -1216,8 +1224,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 921474463
+  m_SortingLayer: 2
   m_SortingOrder: 2
   m_Sprite: {fileID: 1546851121393031581, guid: a13ffaae454942342bd9919ee26af227,
     type: 3}
@@ -1299,8 +1307,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 921474463
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 3347407308802887294, guid: a13ffaae454942342bd9919ee26af227,
     type: 3}
@@ -1382,8 +1390,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 921474463
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 8514312695591546914, guid: a13ffaae454942342bd9919ee26af227,
     type: 3}
@@ -1465,8 +1473,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 921474463
+  m_SortingLayer: 2
   m_SortingOrder: 1
   m_Sprite: {fileID: -7814581973629076522, guid: a13ffaae454942342bd9919ee26af227,
     type: 3}

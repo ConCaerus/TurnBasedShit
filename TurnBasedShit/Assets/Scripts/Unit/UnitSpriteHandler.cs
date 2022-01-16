@@ -296,4 +296,14 @@ public class UnitSpriteHandler : MonoBehaviour {
         float thing = body.GetComponent<SpriteRenderer>().bounds.size.y / 1.0f;
         return thing;
     }
+    public Vector2 getCombatNormalPos() {
+        if(GetComponentInChildren<UnitSpriteHandler>() != null) {
+            switch(reference.u_sprite.bodyIndex) {
+                case 0: return new Vector3(-.09f, .5f);
+                case 1: return new Vector3(-.06f, .21f);
+                case 2: return new Vector3(-0.09f, .51f);
+            }
+        }
+        return Vector2.zero;
+    }
 }

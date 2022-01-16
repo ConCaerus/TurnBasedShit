@@ -45,9 +45,9 @@ public static class NameLibrary {
         foreach(var i in playerNames)
             temp.Add(i);
 
-        for(int i = 0; i < Party.getMemberCount(); i++) {
+        for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
             foreach(var n in temp) {
-                if(Party.getMemberStats(i) != null && !Party.getMemberStats(i).isEmpty() && n == Party.getMemberStats(i).u_name) {
+                if(Party.getHolder().getObject<UnitStats>(i) != null && !Party.getHolder().getObject<UnitStats>(i).isEmpty() && n == Party.getHolder().getObject<UnitStats>(i).u_name) {
                     temp.Remove(n);
                     break;
                 }

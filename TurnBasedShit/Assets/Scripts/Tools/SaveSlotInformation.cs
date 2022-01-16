@@ -17,7 +17,7 @@ public class SaveSlotInformation : MonoBehaviour {
             saveName.text = SaveData.getStringInSave(saveIndex, "Save Name");
         else
             saveName.text = "No Data";
-        partyCount.text = SaveData.getIntInSave(saveIndex, Party.partySizeTag).ToString();
+        partyCount.text = Party.getHolder().getObjectCount<UnitStats>().ToString();
     }
 
 

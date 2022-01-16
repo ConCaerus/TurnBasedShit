@@ -18,11 +18,12 @@ public class WeaponSelectionCanvas : UnitEquipmentSelectionCanvas {
     }
 
 
-    public override void populateSlots() {
+    public override IEnumerator populateSlots() {
         int slotIndex = 0;
         if(FindObjectOfType<UnitCanvas>().shownUnit.weapon != null && !FindObjectOfType<UnitCanvas>().shownUnit.weapon.isEmpty()) {
             var obj = slot.createSlot(slotIndex, FindObjectOfType<UnitCanvas>().shownUnit.u_sprite.color, InfoTextCreator.createForCollectable(FindObjectOfType<UnitCanvas>().shownUnit.weapon));
-            obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(FindObjectOfType<UnitCanvas>().shownUnit.weapon).sprite;
+            obj.GetComponent<SlotObject>().setInfo(FindObjectOfType<UnitCanvas>().shownUnit.weapon.name);
+            obj.GetComponent<SlotObject>().setMainImage(FindObjectOfType<PresetLibrary>().getWeaponSprite(FindObjectOfType<UnitCanvas>().shownUnit.weapon).sprite);
             slotIndex++;
         }
 
@@ -30,8 +31,13 @@ public class WeaponSelectionCanvas : UnitEquipmentSelectionCanvas {
             if(Inventory.getHolder().getObject<Weapon>(i) == null || Inventory.getHolder().getObject<Weapon>(i).isEmpty())
                 continue;
             var obj = slot.createSlot(slotIndex, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getHolder().getObject<Weapon>(i).rarity), InfoTextCreator.createForCollectable(Inventory.getHolder().getObject<Weapon>(i)));
-            obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getHolder().getObject<Weapon>(i)).sprite;
+            obj.GetComponent<SlotObject>().setInfo(Inventory.getHolder().getObject<Weapon>(i).name);
+            obj.GetComponent<SlotObject>().setMainImage(FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getHolder().getObject<Weapon>(i)).sprite);
+            float prevScale = obj.transform.localScale.x;
+            obj.transform.localScale = Vector3.zero;
+            obj.transform.DOScale(prevScale, populatingWaitTime);
             slotIndex++;
+            yield return new WaitForSeconds(populatingWaitTime);
         }
 
         slot.deleteSlotsAfterIndex(slotIndex);
