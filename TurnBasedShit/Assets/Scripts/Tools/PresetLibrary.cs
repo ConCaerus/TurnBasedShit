@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PresetLibrary : MonoBehaviour {
     //  Units
-    [SerializeField] GameObject playerUnit, townMemberUnit;
+    [SerializeField] GameObject playerUnit;
     [SerializeField] GameObject[] enemies;
     [SerializeField] GameObject[] bosses;
     [SerializeField] NPCPreset[] townNPCs;
@@ -18,7 +18,7 @@ public class PresetLibrary : MonoBehaviour {
 
     //  profiles
     [SerializeField] GameObject playerUnitProfile;
-    [SerializeField] GameObject[] enemyProfiles;
+    [SerializeField] GameObject[] combatUnitProfiles;
 
     [SerializeField] CombatScarSpriteHolder[] combatScars;
 
@@ -69,6 +69,19 @@ public class PresetLibrary : MonoBehaviour {
 
             Party.addUnit(stats);
         }
+
+        foreach(var i in startingWeapons) {
+            if(i != null)
+                Collection.addCollectable(i.preset, this);
+        }
+        foreach(var i in startingArmor) {
+            if(i != null)
+                Collection.addCollectable(i.preset, this);
+        }
+        foreach(var i in startingItems) {
+            if(i != null)
+                Collection.addCollectable(i.preset, this);
+        }
     }
 
     public UnitStats createRandomPlayerUnitStats(bool setID) {
@@ -103,7 +116,7 @@ public class PresetLibrary : MonoBehaviour {
             useables.Clear();
             foreach(var i in enemies) {
                 //  same difficulty
-                if(GameInfo.getRegionForEnemyType(i.GetComponent<EnemyUnitInstance>().enemyType) == diff)
+                if(GameInfo.getRegionForEnemyType(i.GetComponent<EnemyUnitInstance>().stats.u_type) == diff)
                     useables.Add(i.gameObject);
             }
 
@@ -123,7 +136,7 @@ public class PresetLibrary : MonoBehaviour {
             List<GameObject> useables = new List<GameObject>();
             foreach(var i in bosses) {
                 //  same difficulty
-                if(GameInfo.getRegionForEnemyType(i.GetComponent<BossUnitInstance>().enemyType) == diff)
+                if(GameInfo.getRegionForEnemyType(i.GetComponent<BossUnitInstance>().stats.u_type) == diff)
                     useables.Add(i);
             }
 
@@ -157,7 +170,7 @@ public class PresetLibrary : MonoBehaviour {
             List<int> useables = new List<int>();
             useables.Clear();
             for(int i = 0; i < enemies.Length; i++) {
-                if(GameInfo.getRegionForEnemyType(enemies[i].GetComponent<EnemyUnitInstance>().enemyType) == diff)
+                if(GameInfo.getRegionForEnemyType(enemies[i].GetComponent<EnemyUnitInstance>().stats.u_type) == diff)
                     useables.Add(i);
             }
 
@@ -318,23 +331,20 @@ public class PresetLibrary : MonoBehaviour {
 
 
     //  Profiles
-    public GameObject getProfileForUnit(UnitClass unit) {
-        if(unit.combatStats.isPlayerUnit)
-            return getPlayerUnitProfile();
-
-        return getEnemyProfile(unit.GetComponent<EnemyUnitInstance>().enemyType);
+    public GameObject getCombatUnitProfile(GameInfo.combatUnitType type) {
+        switch(type) {
+            case GameInfo.combatUnitType.player: return playerUnitProfile;
+            case GameInfo.combatUnitType.groundBird: return combatUnitProfiles[0];
+            case GameInfo.combatUnitType.slime: return combatUnitProfiles[1];
+            case GameInfo.combatUnitType.stumpSpider: return combatUnitProfiles[2];
+            case GameInfo.combatUnitType.rockCrawler: return combatUnitProfiles[3];
+            case GameInfo.combatUnitType.chicken: return combatUnitProfiles[4];
+            case GameInfo.combatUnitType.deadUnit: return playerUnitProfile;
+            default: return playerUnitProfile;
+        }
     }
     public GameObject getPlayerUnitProfile() {
         return playerUnitProfile;
-    }
-    public GameObject getEnemyProfile(EnemyUnitInstance.type type) {
-        switch(type) {
-            case EnemyUnitInstance.type.groundBird: return enemyProfiles[0];
-            case EnemyUnitInstance.type.slime: return enemyProfiles[1];
-            case EnemyUnitInstance.type.stumpSpider: return enemyProfiles[2];
-            case EnemyUnitInstance.type.rockCrawler: return enemyProfiles[3];
-            default: return playerUnitProfile;
-        }
     }
 
     //  Equipment
@@ -415,6 +425,13 @@ public class PresetLibrary : MonoBehaviour {
             return getWeapon(useables[Random.Range(0, useables.Count)]);
         }
         return getWeapon(weapons[Random.Range(0, weapons.Length)].preset);
+    }
+    public void overrideSavedWeapon(WeaponPreset preset) {
+        foreach(var i in weapons) {
+            if(i.preset.name == preset.preset.name) {
+                i.preset.setEqualTo(preset.preset, false);
+            }
+        }
     }
 
     public Armor getArmor(string name) {
@@ -679,7 +696,7 @@ public class PresetLibrary : MonoBehaviour {
     }
     public PickupLocation createPickupLocation(GameInfo.region reg) {
         var pos = Map.getRandPos();
-        return new PickupLocation(pos, getRandomCollectable(reg), reg, this); 
+        return new PickupLocation(pos, getRandomCollectable(reg), reg, this);
     }
     public RescueLocation createRescueLocation(GameInfo.region reg) {
         return new RescueLocation(Map.getRandPos(), GameInfo.getRandomReg(), this);
@@ -734,7 +751,7 @@ public class PresetLibrary : MonoBehaviour {
         return new PickupQuest(loc, setID);
     }
     public KillQuest createRandomKillQuest(bool setID, GameInfo.region reg) {
-        var temp = new KillQuest(Random.Range(5, 36), getRandomEnemy(reg).GetComponent<EnemyUnitInstance>().enemyType, setID);
+        var temp = new KillQuest(Random.Range(5, 36), getRandomEnemy(reg).GetComponent<EnemyUnitInstance>().stats.u_type, setID);
         return temp;
     }
     public DeliveryQuest createRandomDeliveryQuest(bool setID, GameInfo.region reg) {
@@ -828,15 +845,14 @@ public class PresetLibrary : MonoBehaviour {
     public WeaponSpriteHolder getWeaponSprite(Weapon we) {
         foreach(var i in weapons) {
             if(i.preset.isTheSameTypeAs(we))
-                return i.preset.getSpriteHolder();
+                return i.preset.sprite;
         }
-        Debug.Log("here");
         return null;
     }
     public ArmorSpriteHolder getArmorSprite(Armor ar) {
         foreach(var i in armor) {
             if(i.preset.name == ar.name)
-                return i.preset.getSpriteHolder();
+                return i.preset.sprite;
         }
         return null;
     }

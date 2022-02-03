@@ -8,6 +8,13 @@ public abstract class UnitClass : MonoBehaviour {
 
     public UnitStats stats;
 
+    [System.Serializable]
+    public enum combatModifier {
+        onlyAttackOnEvenRounds
+    }
+
+    public combatModifier[] combatMods;
+
     public bool defending = false;
     public bool stunned = false;
     public bool charging = false;
@@ -24,7 +31,7 @@ public abstract class UnitClass : MonoBehaviour {
             return;
         }
 
-        if(FindObjectOfType<BattleOptionsCanvas>().battleState == 3) {
+        if(FindObjectOfType<BattleOptionsCanvas>().battleState == 3 && stats.weapon.sUsage == Weapon.specialUsage.healing) {
             GetComponent<CombatUnitUI>().showingWouldBeHealedValue = true;
             GetComponent<CombatUnitUI>().moveLightHealthSliderToValue(stats.u_health + FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().stats.weapon.sUsageAmount);
         }
@@ -96,7 +103,7 @@ public abstract class UnitClass : MonoBehaviour {
             stats.u_health -= temp;
 
             FindObjectOfType<DamageTextCanvas>().showDamageTextForUnit(gameObject, temp, DamageTextCanvas.damageType.bleed);
-            if(GameVariables.chanceCureBleed())
+            if(GameVariables.chanceCureBleed()) //  currently at 100% but you never know
                 stats.u_bleedCount--;
 
             checkIfDead(DeathInfo.killCause.bleed);
@@ -113,7 +120,10 @@ public abstract class UnitClass : MonoBehaviour {
 
     public void addHealth(float h) {
         stats.u_health = Mathf.Clamp(stats.u_health + h, -1.0f, stats.getModifiedMaxHealth());
-        FindObjectOfType<DamageTextCanvas>().showDamageTextForUnit(gameObject, h, DamageTextCanvas.damageType.healed);
+        if(h > 0)
+            FindObjectOfType<DamageTextCanvas>().showDamageTextForUnit(gameObject, h, DamageTextCanvas.damageType.healed);
+        else
+            FindObjectOfType<DamageTextCanvas>().showDamageTextForUnit(gameObject, h, DamageTextCanvas.damageType.lostHealth);
     }
 
     public void prepareUnitForNextRound() {
@@ -150,18 +160,31 @@ public abstract class UnitClass : MonoBehaviour {
 
         defending = b;
     }
-    public void setStunned(bool b) {
-        stunned = b;
+    public void setUnstunned() {
+        stunned = false;
     }
     public bool isStunned() {
         return stunned;
     }
+    public void chanceGettingStunned(float chance) {
+        if(stats.u_talent != null)
+            chance *= stats.u_talent.getGetStunnedMod();
+
+        foreach(var i in stats.u_traits)
+            chance *= i.getGetStunnedMod();
+
+        stunned = GameVariables.chanceOutOfHundred((int)chance);
+    }
 
     public void attack(GameObject defender) {
+        if(defender == gameObject)
+            return;
+
         if(stunned) {
             stunned = false;
             return;
         }
+
         transform.DOComplete();
         //  triggers
         if(stats.item != null && !stats.item.isEmpty())
@@ -236,10 +259,11 @@ public abstract class UnitClass : MonoBehaviour {
 
     public void die(DeathInfo.killCause cause, GameObject killer = null) {
         //  things to do with removing the unit from the party and what to do with equippment
-        if(combatStats.isPlayerUnit) {
-            stats.die(cause, killer);
+        if(combatStats.isPlayerUnit && stats.u_type == GameInfo.combatUnitType.player) {
+            stats.die(cause, FindObjectOfType<PresetLibrary>(), killer);
+            FindObjectOfType<SummonSpotSpawner>().updateSpots();
         }
-        else {
+        else if(!combatStats.isPlayerUnit) {
             //  triggers items
             if(stats.item != null && !stats.item.isEmpty())
                 stats.item.triggerUseTime(killer.GetComponent<UnitClass>(), Item.useTimes.afterKill);
@@ -247,16 +271,18 @@ public abstract class UnitClass : MonoBehaviour {
 
             //  add exp
             if(killer != null && killer.GetComponent<PlayerUnitInstance>() != null) {
-                killer.GetComponent<PlayerUnitInstance>().addWeaponTypeExpOnKill(GameVariables.getExpForEnemy(GetComponent<EnemyUnitInstance>().enemyType));
-                killer.GetComponent<PlayerUnitInstance>().stats.addExp(GameVariables.getExpForEnemy(GetComponent<EnemyUnitInstance>().enemyType));
+                killer.GetComponent<PlayerUnitInstance>().addWeaponTypeExpOnKill(GameVariables.getExpForEnemy(stats.u_type));
+                killer.GetComponent<PlayerUnitInstance>().stats.addExp(GameVariables.getExpForEnemy(stats.u_type));
             }
             else if(killer != null && killer.GetComponent<SummonedUnitInstance>() != null) {
                 int lvlBefore = killer.GetComponent<SummonedUnitInstance>().summoner.getSummonedLevel();
-                killer.GetComponent<SummonedUnitInstance>().summoner.u_summonedExp += GameVariables.getExpForEnemy(GetComponent<EnemyUnitInstance>().enemyType);
+
+                killer.GetComponent<SummonedUnitInstance>().summoner.addSummonExp(GameVariables.getExpForEnemy(stats.u_type));
+
                 if(lvlBefore != killer.GetComponent<SummonedUnitInstance>().summoner.getSummonedLevel())
                     FindObjectOfType<DamageTextCanvas>().showSummonLevelUpTextForUnit(FindObjectOfType<PartyObject>().getInstantiatedMember(killer.GetComponent<SummonedUnitInstance>().summoner).gameObject);
 
-                if(killer.GetComponent<SummonedUnitInstance>().summoner.addExp(GameVariables.getExpForEnemy(GetComponent<EnemyUnitInstance>().enemyType)))
+                if(killer.GetComponent<SummonedUnitInstance>().summoner.addExp(GameVariables.getExpForEnemy(stats.u_type)))
                     FindObjectOfType<DamageTextCanvas>().showLevelUpTextForUnit(FindObjectOfType<PartyObject>().getInstantiatedMember(killer.GetComponent<SummonedUnitInstance>().summoner).gameObject);
             }
 
@@ -277,7 +303,7 @@ public abstract class UnitClass : MonoBehaviour {
             //  increases acc quest counter
             for(int i = 0; i < ActiveQuests.getHolder().getObjectCount<KillQuest>(); i++) {
                 var k = ActiveQuests.getHolder().getObject<KillQuest>(i);
-                if(k.enemyType == GetComponent<EnemyUnitInstance>().enemyType && !k.completed) {
+                if(k.enemyType == GetComponent<EnemyUnitInstance>().stats.u_type && !k.completed) {
                     k.howManyToKill--;
                     if(k.howManyToKill > 0)
                         ActiveQuests.overrideQuest(i, k);
@@ -297,6 +323,8 @@ public abstract class UnitClass : MonoBehaviour {
         }
 
         //  removes unit from game world
+        if(FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject)
+            FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
         FindObjectOfType<TurnOrderSorter>().removeUnitFromList(gameObject);
         Destroy(gameObject);
     }
@@ -368,11 +396,9 @@ public abstract class UnitClass : MonoBehaviour {
         if(!miss) {
             var dmg = stats.getDamageGiven(FindObjectOfType<PresetLibrary>()) + combatStats.tempPowerMod;
             //  check if other modifications to damage
-            if(stats.item != null && !stats.item.isEmpty()) {
-                if(stats.item.getPassiveMod(Item.passiveEffectTypes.healInsteadOfDamage) != 0.0f) {
-                    dmg *= stats.item.getPassiveMod(Item.passiveEffectTypes.healInsteadOfDamage);
-                    defender.GetComponent<UnitClass>().addHealth(dmg);
-                }
+            if(stats.item != null && !stats.item.isEmpty() && stats.item.getPassiveMod(Item.passiveEffectTypes.healInsteadOfDamage) != 0.0f) {
+                dmg *= stats.item.getPassiveMod(Item.passiveEffectTypes.healInsteadOfDamage);
+                defender.GetComponent<UnitClass>().addHealth(dmg);
             }
 
             //  actually deal damage to defender
@@ -409,14 +435,14 @@ public abstract class UnitClass : MonoBehaviour {
                 stunned = true;
             }
             if(defender != null && !defender.GetComponent<UnitClass>().isStunned() && i.shouldStunTarget())
-                defender.GetComponent<UnitClass>().setStunned(true);
+                defender.GetComponent<UnitClass>().stunned = true;
         }
         if(stats.u_talent != null) {
             if(!stunned && stats.u_talent.shouldStunSelf()) {
                 stunned = true;
             }
             if(defender != null && !defender.GetComponent<UnitClass>().isStunned() && stats.u_talent.shouldStunTarget())
-                defender.GetComponent<UnitClass>().setStunned(true);
+                defender.GetComponent<UnitClass>().stunned = true;
         }
 
         //  chance worn state decrease
@@ -437,6 +463,10 @@ public abstract class UnitClass : MonoBehaviour {
                 temp++;
         }
         return temp;
+    }
+
+    public void selfDestruct() {
+        Destroy(this);
     }
 }
 

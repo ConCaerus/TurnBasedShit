@@ -33,7 +33,7 @@ public class SlotMenu : MonoBehaviour {
         float ySize = (xSize / slotPreset.GetComponent<RectTransform>().rect.width) * slotPreset.GetComponent<RectTransform>().rect.height;
         GetComponentInChildren<GridLayoutGroup>().cellSize = new Vector2(xSize, ySize);
 
-        transform.GetChild(1).GetComponent<Scrollbar>().value = 1.0f;
+        resetScrollValue();
 
         initialized = true;
     }
@@ -47,9 +47,10 @@ public class SlotMenu : MonoBehaviour {
         //  returns true if selected slot changed
         if(Input.GetMouseButtonDown(0)) {
             for(int i = 0; i < slots.Count; i++) {
-                if(slots[i].gameObject == EventSystem.current.currentSelectedGameObject) {
+                if(slots[i].gameObject == EventSystem.current.currentSelectedGameObject)
                     selectedSlotIndex = i;
-                }
+                else if(slots[i].GetComponent<SlotObject>() != null && slots[i].GetComponent<SlotObject>().button.gameObject == EventSystem.current.currentSelectedGameObject)
+                    selectedSlotIndex = i;
             }
             return true;
         }
@@ -60,6 +61,8 @@ public class SlotMenu : MonoBehaviour {
         return selectedSlotIndex;
     }
     public void setSelectedSlotIndex(int i) {
+        if(i == -1)
+            Debug.Log("fuck");
         selectedSlotIndex = i;
     }
     public GameObject getSelectedSlot() {
@@ -97,7 +100,10 @@ public class SlotMenu : MonoBehaviour {
         transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.x, size);
 
         //  color
-        obj.GetComponent<Image>().color = slotColor;
+        if(obj.GetComponent<SlotObject>() != null)
+            obj.GetComponent<SlotObject>().setImageColor(0, slotColor);
+        else
+            obj.GetComponent<Image>().color = slotColor;
 
         return obj;
     }
@@ -111,7 +117,10 @@ public class SlotMenu : MonoBehaviour {
         obj = slots[index];
 
         //  color
-        obj.GetComponent<Image>().color = slotColor;
+        if(obj.GetComponent<SlotObject>() != null)
+            obj.GetComponent<SlotObject>().setImageColor(0, slotColor);
+        else
+            obj.GetComponent<Image>().color = slotColor;
 
         if(obj.GetComponent<InfoBearer>() != null)
             obj.GetComponent<InfoBearer>().setInfo(mousedOverInfo);
@@ -186,6 +195,10 @@ public class SlotMenu : MonoBehaviour {
         slots[index] = obj;
         return obj;
 
+    }
+
+    public void resetScrollValue() {
+        transform.GetChild(1).GetComponent<Scrollbar>().value = 1.0f;   //  for some reason, this is top
     }
 
 

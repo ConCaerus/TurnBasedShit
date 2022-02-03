@@ -148,6 +148,8 @@ GameObject:
   - component: {fileID: 4019266037040436890}
   - component: {fileID: 7611921784198337072}
   - component: {fileID: 804422770371952106}
+  - component: {fileID: 7159957262319696807}
+  - component: {fileID: 8010164082436110034}
   m_Layer: 5
   m_Name: ShopSlot
   m_TagString: Untagged
@@ -270,6 +272,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sound: {fileID: 8300000, guid: 5fd13a94499375b47ade8a604f21d0fe, type: 3}
+--- !u!114 &7159957262319696807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4572787218034622832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bc2b3444ef492f44a8ae34a30f7dc68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  images:
+  - {fileID: 3957851375225695174}
+  texts:
+  - {fileID: 8794291780663885776}
+  info: {fileID: 8010164082436110034}
+--- !u!114 &8010164082436110034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4572787218034622832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b50cf52fd2f3020489dae1d0b81e3fc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  info: <b><u>Information
+  hideWhenMenuOpen: 1
+  hideWhenCoveredByMapFog: 0
 --- !u!1 &8619756518785878998
 GameObject:
   m_ObjectHideFlags: 0

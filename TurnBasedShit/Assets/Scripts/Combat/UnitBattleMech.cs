@@ -18,7 +18,7 @@ public class UnitBattleMech : MonoBehaviour {
     }
 
     private void Start() {
-        foreach(var i in FindObjectOfType<CombatCameraController>().getEnivironmentHolder().GetComponentsInChildren<Animator>()) {
+        foreach(var i in FindObjectOfType<EnvironmentHandler>().getEnivironmentHolder().GetComponentsInChildren<Animator>()) {
             i.ForceStateNormalizedTime(i.gameObject.transform.position.x / 20.0f);
         }
         setUp();
@@ -57,12 +57,12 @@ public class UnitBattleMech : MonoBehaviour {
         FindObjectOfType<PartyObject>().instantiatePartyMembers();
         FindObjectOfType<EnemyUnitSpawner>().spawnEnemies(0);
         battleResultsCanvas.SetActive(false);
-        resetBattleRound();
+        nextBattleRound();
         FindObjectOfType<RoundCounterCanvas>().updateInfo();
         StartCoroutine(checkIfBattleEnded());
     }
 
-    public void resetBattleRound() {
+    public void nextBattleRound() {
         FindObjectOfType<TurnOrderSorter>().resetList();
         FindObjectOfType<RoundCounterCanvas>().incrementAndUpdateRoundCount();
     }
@@ -83,7 +83,7 @@ public class UnitBattleMech : MonoBehaviour {
         //  player killed all enemies and the battle is over
         else if(FindObjectsOfType<EnemyUnitInstance>().Length == 0) {
             showBattleResults();
-            GameInfo.getCombatDetails().receiveSpoils();
+            GameInfo.getCombatDetails().receiveSpoils(FindObjectOfType<PresetLibrary>());
             battleResultsCanvas.GetComponent<BattleResultsCanvas>().showCombatLocationEquipment();
         }
 

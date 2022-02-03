@@ -14,8 +14,29 @@ public class DamageTextCanvas : MonoBehaviour {
     public float moveY = 1.5f;
 
 
+    List<textInfo> textList = new List<textInfo>();
+
+    struct textInfo {
+        public GameObject text, unit;
+        public bool supersize;
+
+        public textInfo(GameObject t, GameObject u, bool s) {
+            text = t;
+            unit = u;
+            supersize = s;
+        }
+
+        public static bool operator==(textInfo x, textInfo y) {
+            return x.text == y.text && x.unit == y.unit && x.supersize == y.supersize;
+        }
+        public static bool operator!=(textInfo x, textInfo y) {
+            return !(x.text == y.text && x.unit == y.unit && x.supersize == y.supersize);
+        }
+    }
+
+
     public enum damageType {
-        weapon, bleed, defended, healed, crit, charged
+        weapon, bleed, defended, healed, crit, charged, lostHealth
     }
 
 
@@ -46,10 +67,14 @@ public class DamageTextCanvas : MonoBehaviour {
             obj.text += "Crit\n";
             obj.color = critColor;
         }
+        else if(type == damageType.healed) {
+            obj.text += "Lost\n";
+            obj.color = weaponColor;
+        }
 
         obj.text += dmg.ToString("0.#");
 
-        StartCoroutine(animateText(obj.gameObject, unit.gameObject, special));
+        StartCoroutine(queueText(new textInfo(obj.gameObject, unit, false)));
     }
 
     public void showTatterTextForUnit(GameObject unit) {
@@ -57,38 +82,44 @@ public class DamageTextCanvas : MonoBehaviour {
         obj.text = "Tattered";
         obj.color = Color.white;
         FindObjectOfType<AudioManager>().playTatterSound();
-        StartCoroutine(animateText(obj.gameObject, unit.gameObject, false));
+        StartCoroutine(queueText(new textInfo(obj.gameObject, unit.gameObject, false)));
     }
     public void showLevelUpTextForUnit(GameObject unit) {
         var obj = createTextObj(unit);
         obj.text = "Level Up!";
         obj.color = Color.white;
-        StartCoroutine(animateText(obj.gameObject, unit.gameObject, false));
+        StartCoroutine(queueText(new textInfo(obj.gameObject, unit.gameObject, false)));
     }
 
     public void showBluntLevelUpTextForUnit(GameObject unit) {
         var obj = createTextObj(unit);
         obj.text = "Blunt Level Up!";
         obj.color = Color.white;
-        StartCoroutine(animateText(obj.gameObject, unit.gameObject, false));
+        StartCoroutine(queueText(new textInfo(obj.gameObject, unit.gameObject, false)));
     }
     public void showEdgedLevelUpTextForUnit(GameObject unit) {
         var obj = createTextObj(unit);
         obj.text = "Edged Level Up!";
         obj.color = Color.white;
-        StartCoroutine(animateText(obj.gameObject, unit.gameObject, false));
+        StartCoroutine(queueText(new textInfo(obj.gameObject, unit.gameObject, false)));
     }
     public void showSummonLevelUpTextForUnit(GameObject unit) {
         var obj = createTextObj(unit);
         obj.text = "Summon Level Up!";
         obj.color = Color.white;
-        StartCoroutine(animateText(obj.gameObject, unit.gameObject, false));
+        StartCoroutine(queueText(new textInfo(obj.gameObject, unit.gameObject, false)));
     }
     public void showMissTextForUnit(GameObject unit) {
         var obj = createTextObj(unit);
         obj.text = "Miss";
         obj.color = Color.white;
-        StartCoroutine(animateText(obj.gameObject, unit.gameObject, false));
+        StartCoroutine(queueText(new textInfo(obj.gameObject, unit.gameObject, false)));
+    }
+    public void showFailedTextForUnit(GameObject unit) {
+        var obj = createTextObj(unit);
+        obj.text = "Failed";
+        obj.color = weaponColor;
+        StartCoroutine(queueText(new textInfo(obj.gameObject, unit.gameObject, false)));
     }
 
 
@@ -100,8 +131,22 @@ public class DamageTextCanvas : MonoBehaviour {
         return obj;
     }
 
-    IEnumerator animateText(GameObject obj, GameObject unit, bool supersize) {
-        float xVal = unit.transform.position.x + offset.x;
+
+    IEnumerator queueText(textInfo info) {
+        textList.Add(info);
+
+        while(textList[0] != info) {
+            yield return new WaitForEndOfFrame();
+        }
+
+        StartCoroutine(animateText(info));
+    }
+
+    IEnumerator animateText(textInfo info) {
+        var obj = info.text;
+        var unit = info.unit;
+        var supersize = info.supersize;
+
         Destroy(obj.gameObject, time);
         obj.transform.DOMoveY(obj.transform.position.y + moveY, time);
         obj.transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
@@ -115,9 +160,11 @@ public class DamageTextCanvas : MonoBehaviour {
             randRot = Random.Range(-45.0f, 45.0f);
         obj.transform.DORotate(new Vector3(0.0f, 0.0f, randRot), time);
 
-        while(obj.gameObject != null) {
-            obj.transform.position = new Vector3(xVal, obj.transform.position.y);
+        while(obj.gameObject != null && unit.gameObject != null) {
+            obj.transform.position = new Vector3(unit.transform.position.x + offset.x, obj.transform.position.y);
             yield return new WaitForEndOfFrame();
         }
+
+        textList.RemoveAt(0);
     }
 }

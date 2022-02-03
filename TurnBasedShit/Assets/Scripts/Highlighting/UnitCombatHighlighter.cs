@@ -4,149 +4,101 @@ using UnityEngine;
 using DG.Tweening;
 
 public class UnitCombatHighlighter : MonoBehaviour {
-    [SerializeField] GameObject highlight;
+    [SerializeField] GameObject highlightPreset;
     [SerializeField] Color playerColor, playerAttacking, playerSpecial, enemyColor;
 
-    List<GameObject> highlightedUnits = new List<GameObject>();
-    List<GameObject> highlights = new List<GameObject>();
+    List<highlight> highlights = new List<highlight>();
     float animSpeed = 0.35f;
-    float animMax = 0.55f, animMin = 0.45f;
+    float animMax = 1.05f, animMin = .95f;
+
+    public enum highlightType {
+        playerNorm, playerAttacking, playerSpecial, enemy
+    }
+
+    public struct highlight {
+        public GameObject obj, unit;
+        public highlightType type;
+
+        public highlight(GameObject o, GameObject u, highlightType t) {
+            obj = o;
+            unit = u;
+            type = t;
+        }
+    }
 
 
     private void Start() {
-        StartCoroutine(animation());
-    }
-
-    private void Update() {
-        if(FindObjectOfType<BattleResultsCanvas>() != null && highlights.Count > 0) {
-            endAllHighlights();
-        }
-
-
-        for(int i = 0; i < highlights.Count; i++) {
-            if(highlights[i] == null || highlightedUnits[i] == null || !highlightedUnits[i].activeInHierarchy) {
-                highlightedUnits.RemoveAt(i);
-                if(highlights[i] != null)
-                    highlights[i].GetComponent<CombatHighlightObject>().startEndAnim(true);
-                highlights.RemoveAt(i);
-                return;
-            }
-            highlights[i].transform.position = (Vector2)highlightedUnits[i].transform.position + highlightedUnits[i].GetComponent<CombatUnitUI>().highlightOffset;
-
-            if(i > 0 && highlights[i].GetComponent<CombatHighlightObject>().finishedAnim)
-                highlights[i].transform.localScale = highlights[0].transform.localScale;
-        }
-
-        foreach(var i in FindObjectsOfType<UnitClass>()) {
-            if(i.GetComponentInChildren<UnitSpriteHandler>() != null)
-                i.GetComponentInChildren<UnitSpriteHandler>().setAnimSpeed(1.0f);
-            if(i.GetComponent<Animator>() != null)
-                i.GetComponent<Animator>().speed = 1.0f;
-        }
-        foreach(var i in highlightedUnits) {
-            if(i != null && i.GetComponentInChildren<UnitSpriteHandler>() != null && i.GetComponentInChildren<UnitSpriteHandler>().isAnimIdle())
-                i.GetComponentInChildren<UnitSpriteHandler>().setAnimSpeed(2.5f);
-            if(i != null && i.GetComponent<Animator>() != null && i.GetComponent<EnemyUnitInstance>() != null && i.GetComponent<EnemyUnitInstance>().isIdle())
-                i.GetComponent<Animator>().speed = 2.5f;
-        }
+        StartCoroutine(highlightAnimation());
+        StartCoroutine(FindObjectOfType<TransitionCanvas>().runAfterLoading(updateHighlights));
     }
 
 
 
     public void endAllHighlights(bool endsScript = false) {
-        foreach(var i in FindObjectsOfType<CombatHighlightObject>()) {
-            i.GetComponent<CombatHighlightObject>().startEndAnim(true);
+        foreach(var i in highlights) {
+            i.obj.GetComponent<CombatHighlightObject>().startEndAnim(true);
         }
 
         if(endsScript) {
-            this.enabled = false;
+            enabled = false;
             return;
         }
-
-        highlights.Clear();
-        highlightedUnits.Clear();
     }
 
 
     public void updateHighlights() {
-        List<GameObject> removedUnits = new List<GameObject>();
-        List<GameObject> removedHighlights = new List<GameObject>();
-        removedUnits.Clear();
-        removedHighlights.Clear();
+        if(!FindObjectOfType<TransitionCanvas>().loaded)
+            return;
         //  checks if needs to remove highlight
-        for(int i = 0; i < highlightedUnits.Count; i++) {
-            if(highlightedUnits[i] == null) {
-                removedUnits.Add(highlightedUnits[i].gameObject);
-                removedHighlights.Add(highlights[i]);
-                continue;
-            }
-            //  not active
-            if(highlightedUnits[i].gameObject != FindObjectOfType<TurnOrderSorter>().playingUnit.gameObject && !highlightedUnits[i].GetComponent<UnitClass>().isMouseOverUnit) {
-                removedUnits.Add(highlightedUnits[i].gameObject);
-                removedHighlights.Add(highlights[i]);
+        for(int i = 0; i < highlights.Count; i++) {
+            //  unit destroyed
+            if(highlights[i].unit == null) {
+                dehighlightUnit(highlights[i], true);
                 continue;
             }
 
-            //  active but not correct highlight
-            else if(highlightedUnits[i].gameObject == FindObjectOfType<TurnOrderSorter>().playingUnit.gameObject && highlightedUnits[i].GetComponent<UnitClass>().combatStats.isPlayerUnit) {
-                int state = FindObjectOfType<BattleOptionsCanvas>().battleState;
-                if(state == 1 && highlights[i].GetComponent<CombatHighlightObject>().getColor() != playerAttacking) {
-                    createHighlightObject(highlightedUnits[i], playerAttacking, i);
-                }
-                else if(state == 3 && highlights[i].GetComponent<CombatHighlightObject>().getColor() != playerSpecial) {
-                    createHighlightObject(highlightedUnits[i], playerSpecial, i);
-                }
-                else if(state != 1 && state != 3 && highlights[i].GetComponent<CombatHighlightObject>().getColor() != playerColor) {
-                    createHighlightObject(highlightedUnits[i], playerColor, i);
-                }
+            //  unit not active
+            if(highlights[i].unit != FindObjectOfType<TurnOrderSorter>().playingUnit && !highlights[i].unit.GetComponent<UnitClass>().isMouseOverUnit) {
+                dehighlightUnit(highlights[i], true);
+                continue;
             }
         }
 
-        foreach(var i in removedUnits)
-            highlightedUnits.Remove(i.gameObject);
-        foreach(var i in removedHighlights) {
-            highlights.Remove(i.gameObject);
-            i.gameObject.GetComponent<CombatHighlightObject>().startEndAnim(true);
-        }
 
         //  checks if needs to add highlight
         foreach(var i in getNotHighlightedUnits()) {
             if(i.gameObject == FindObjectOfType<TurnOrderSorter>().playingUnit.gameObject || i.GetComponent<UnitClass>().isMouseOverUnit) {
-                highlightedUnits.Add(i.gameObject);
-
-                if(i.GetComponent<UnitClass>().combatStats.isPlayerUnit) {
-                    if(FindObjectOfType<BattleOptionsCanvas>().battleState == 1)
-                        createHighlightObject(i.gameObject, playerAttacking);
-                    else if(FindObjectOfType<BattleOptionsCanvas>().battleState == 3)
-                        createHighlightObject(i.gameObject, playerSpecial);
-                    else
-                        createHighlightObject(i.gameObject, playerColor);
-                }
+                if(i.GetComponent<UnitClass>().combatStats.isPlayerUnit)
+                    highlightUnit(i, highlightType.playerNorm);
                 else
-                    createHighlightObject(i.gameObject, enemyColor);
+                    highlightUnit(i, highlightType.enemy);
             }
+        }
+
+
+        //  update playing unit's highlight color 
+        if(FindObjectOfType<TurnOrderSorter>().playingUnit != null) {
+            var h = getHighlightIndexForUnit(FindObjectOfType<TurnOrderSorter>().playingUnit);
+            int state = FindObjectOfType<BattleOptionsCanvas>().battleState;
+            if(state == 1)  //  attacking
+                setHighlightType(highlights[h], highlightType.playerAttacking);
+            else if(state == 3) //  special
+                setHighlightType(highlights[h], highlightType.playerSpecial);
+            else
+                setHighlightType(highlights[h], highlightType.playerNorm);
         }
     }
 
     public bool isUnitInList(GameObject unit) {
-        foreach(var i in highlightedUnits) {
-            if(i.gameObject == unit.gameObject)
+        foreach(var i in highlights) {
+            if(i.unit == unit)
                 return true;
         }
         return false;
     }
 
-    int getUnitIndexInList(GameObject unit) {
-        for(int i = 0; i < highlightedUnits.Count; i++) {
-            if(unit == highlightedUnits[i].gameObject)
-                return i;
-        }
-        return -1;
-    }
-
     List<GameObject> getNotHighlightedUnits() {
         List<GameObject> not = new List<GameObject>();
-        not.Clear();
         foreach(var i in FindObjectsOfType<UnitClass>()) {
             if(!isUnitInList(i.gameObject))
                 not.Add(i.gameObject);
@@ -155,34 +107,113 @@ public class UnitCombatHighlighter : MonoBehaviour {
         return not;
     }
 
-    GameObject createHighlightObject(GameObject unit, Color col, int index = -1) {
-        var temp = Instantiate(highlight.gameObject, transform);
+    GameObject createHighlightObject(GameObject unit, Color col) {
+        var temp = Instantiate(highlightPreset.gameObject, unit.transform);
 
         temp.GetComponent<CombatHighlightObject>().setColor(col);
-        temp.transform.position = (Vector2)unit.transform.position + unit.GetComponent<CombatUnitUI>().highlightOffset;
-
-        if(index > -1) {
-            var obj = highlights[index];
-            highlights[index] = temp.gameObject;
-            Destroy(obj.gameObject);    //  destroy this without using the destory anim
-        }
+        if(unit.GetComponentInChildren<UnitSpriteHandler>() != null)
+            temp.transform.localPosition = unit.GetComponentInChildren<UnitSpriteHandler>().getCombatHighlightOffset();
         else
-            highlights.Add(temp.gameObject);
+            temp.transform.localPosition = unit.GetComponent<CombatUnitUI>().highlightOffset;
+        temp.transform.localScale = Vector3.one;
         return temp;
     }
 
+    public void highlightUnit(GameObject unit, highlightType type) {
+        if(!FindObjectOfType<TransitionCanvas>().loaded)
+            return;
+        //  creates highlight
+        var obj = createHighlightObject(unit, getRelevantColor(type));
 
-    public IEnumerator animation() {
-        if(highlights.Count > 0)
-            highlights[0].transform.DOScale(animMax, animSpeed);
+        //  speeds up the animation speed of the unit
+        if(unit != null && unit.GetComponentInChildren<UnitSpriteHandler>() != null && unit.GetComponentInChildren<UnitSpriteHandler>().isAnimIdle())
+            unit.GetComponentInChildren<UnitSpriteHandler>().setAnimSpeed(2.5f);
+        if(unit != null && unit.GetComponent<Animator>() != null && unit.GetComponent<EnemyUnitInstance>() != null && unit.GetComponent<EnemyUnitInstance>().isIdle())
+            unit.GetComponent<Animator>().speed = 2.5f;
+
+        //  adds the highlight to the list
+        highlights.Add(new highlight(obj, unit, type));
+    }
+
+    public void setHighlightType(GameObject unit, highlightType type) {
+        var index = getHighlightIndexForUnit(unit);
+        setHighlightType(highlights[index], type);
+    }
+    public void setHighlightType(highlight h, highlightType type) {
+        var index = highlights.IndexOf(h);
+        h.type = type;
+        h.obj.GetComponent<CombatHighlightObject>().setColor(getRelevantColor(type));
+
+        highlights[index] = h;
+    }
+
+    public void dehighlightUnit(GameObject unit, bool showEndAnim) {
+        //  finds highlight with unit
+        int index = getHighlightIndexForUnit(unit);
+        dehighlightUnit(highlights[index].obj, showEndAnim);
+    }
+    public void dehighlightUnit(highlight h, bool showEndAnim) {
+        var obj = h.obj;
+        var unit = h.unit;
+        var index = highlights.IndexOf(h);
+
+        //  resets the unit's animation speed
+        if(FindObjectOfType<TransitionCanvas>().loaded) {
+            if(unit.GetComponentInChildren<UnitSpriteHandler>() != null)
+                unit.GetComponentInChildren<UnitSpriteHandler>().setAnimSpeed(1.0f);
+            if(unit.GetComponent<Animator>() != null)
+                unit.GetComponent<Animator>().speed = 1.0f;
+        }
+
+        //  ends the life of the highlight
+        if(showEndAnim) {
+            obj.GetComponent<CombatHighlightObject>().startEndAnim(true);
+        }
+        else {
+            Destroy(obj.gameObject);
+        }
+
+        //  removes highlight
+        highlights.RemoveAt(index);
+    }
+
+
+    public int getHighlightIndexForUnit(GameObject unit) {
+        for(int i = 0; i < highlights.Count; i++) {
+            if(highlights[i].unit == unit)
+                return i;
+        }
+        return -1;
+    }
+
+
+    Color getRelevantColor(highlightType type) {
+        switch(type) {
+            case highlightType.playerNorm:
+                return playerColor;
+            case highlightType.playerAttacking:
+                return playerAttacking;
+            case highlightType.playerSpecial:
+                return playerSpecial;
+            case highlightType.enemy:
+                return enemyColor;
+        }
+        return Color.white;
+    }
+
+    IEnumerator highlightAnimation() {
+        foreach(var i in highlights) {
+            i.obj.transform.DOScale(animMax, animSpeed);
+        }
 
         yield return new WaitForSeconds(animSpeed);
 
-        if(highlights.Count > 0)
-            highlights[0].transform.DOScale(animMin, animSpeed);
+        foreach(var i in highlights) {
+            i.obj.transform.DOScale(animMin, animSpeed);
+        }
 
         yield return new WaitForSeconds(animSpeed);
 
-        StartCoroutine(animation());
+        StartCoroutine(highlightAnimation());
     }
 }

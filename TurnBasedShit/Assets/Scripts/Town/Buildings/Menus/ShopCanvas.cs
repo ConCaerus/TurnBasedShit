@@ -313,7 +313,7 @@ public class ShopCanvas : MonoBehaviour {
                 var cPrice = getBuyPrice(currentCol.coinCost);
                 if(Inventory.getCoinCount() >= cPrice && currentCol != null && !currentCol.isEmpty()) {
                     Inventory.addCoins(-cPrice);
-                    Inventory.addCollectable(currentCol);
+                    Inventory.addCollectable(currentCol, FindObjectOfType<PresetLibrary>());
                     ShopInventory.removeCollectable(townIndex, currentCol);
                 }
             }

@@ -26,15 +26,18 @@ public class TownCameraMovement : MonoBehaviour {
 
 
     void moveToTarget() {
+        float prev = transform.position.x;
         if(target.GetComponent<LocationMovement>().movingRight) {
             var p = new Vector3(target.transform.position.x, target.transform.position.y, transform.position.z) + (Vector3)offsetFromPlayer;
             transform.position = Vector3.Lerp(transform.position, p, speed * Time.deltaTime);
+            FindObjectOfType<EnvironmentHandler>().moveParallaxObjs(transform.position.x - prev);
         }
 
         else {
             var temp = new Vector2(-offsetFromPlayer.x, offsetFromPlayer.y);
             var p = new Vector3(target.transform.position.x, target.transform.position.y, transform.position.z) + (Vector3)temp;
             transform.position = Vector3.Lerp(transform.position, p, speed * Time.deltaTime);
+            FindObjectOfType<EnvironmentHandler>().moveParallaxObjs(transform.position.x - prev);
         }
     }
 

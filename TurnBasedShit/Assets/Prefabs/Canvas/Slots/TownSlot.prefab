@@ -586,6 +586,7 @@ GameObject:
   - component: {fileID: 7976603574908622782}
   - component: {fileID: 4650875080910807586}
   - component: {fileID: 6093725777328445303}
+  - component: {fileID: 60743300517592411}
   m_Layer: 5
   m_Name: TownSlot
   m_TagString: Untagged
@@ -739,6 +740,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sound: {fileID: 8300000, guid: 5fd13a94499375b47ade8a604f21d0fe, type: 3}
+--- !u!114 &60743300517592411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4572787218034622832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bc2b3444ef492f44a8ae34a30f7dc68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  images: []
+  texts:
+  - {fileID: 8794291780663885776}
+  - {fileID: 8353231506758315547}
+  - {fileID: 8837815604827985226}
+  - {fileID: 9016277879878880380}
+  info: {fileID: 0}
 --- !u!1 &4759166563215781057
 GameObject:
   m_ObjectHideFlags: 0

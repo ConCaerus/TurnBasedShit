@@ -6,8 +6,6 @@ using DG.Tweening;
 public class SummonedUnitInstance : UnitClass {
     public UnitStats summoner;
 
-    Coroutine idler = null;
-
     private void Awake() {
         if(combatStats == null)
             combatStats = new UnitCombatStats();
@@ -23,21 +21,23 @@ public class SummonedUnitInstance : UnitClass {
 
 
     public override void setAttackingAnim() {
-        if(GetComponent<Animator>() != null) {
+        if(stats.u_type == GameInfo.combatUnitType.deadUnit) {
+            GetComponentInChildren<UnitSpriteHandler>().setAnimSpeed(1.0f);
+            GetComponentInChildren<UnitSpriteHandler>().triggerAttackAnim();
+        }
+        else if(GetComponent<Animator>() != null) {
             GetComponent<Animator>().speed = 1.0f;
             GetComponent<Animator>().SetTrigger("attack");
-            if(idler != null)
-                StopCoroutine(idler);
-            idler = StartCoroutine(returnToIdle());
         }
     }
     public override void setDefendingAnim() {
-        if(GetComponent<Animator>() != null) {
+        if(stats.u_type == GameInfo.combatUnitType.deadUnit) {
+            GetComponentInChildren<UnitSpriteHandler>().setAnimSpeed(1.0f);
+            GetComponentInChildren<UnitSpriteHandler>().triggerDefendAnim();
+        }
+        else if(GetComponent<Animator>() != null) {
             GetComponent<Animator>().speed = 1.0f;
             GetComponent<Animator>().SetTrigger("defend");
-            if(idler != null)
-                StopCoroutine(idler);
-            idler = StartCoroutine(returnToIdle());
         }
     }
 
@@ -50,26 +50,9 @@ public class SummonedUnitInstance : UnitClass {
 
         yield return new WaitForSeconds(0.5f);
 
-        if(combatStats.attackingTarget != null) {
+        if(combatStats.attackingTarget != null && FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject) {
             yield return new WaitForSeconds(0.5f);
             attack(combatStats.attackingTarget);
         }
-    }
-
-
-    IEnumerator returnToIdle() {
-        yield return new WaitForEndOfFrame();
-
-        if(isDone()) {
-            GetComponent<Animator>().SetInteger("state", 0);
-        }
-        else
-            idler = StartCoroutine(returnToIdle());
-    }
-
-    bool isDone() {
-        if(GetComponent<Animator>() == null || GetComponent<Animator>().GetInteger("state") == 0)
-            return false;
-        return GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && !GetComponent<Animator>().IsInTransition(0);
     }
 }

@@ -7,7 +7,8 @@ public class UnitTrait {
 
     [System.Serializable]
     public enum modifierType {
-        damageGiven, damageTaken, speed, maxHealth, stunsSelf, stunsTarget, chanceToBeAttacked, enemyDropChance
+        damageGiven, damageTaken, speed, maxHealth, stunsSelfChance, stunsTargetChance, chanceToBeAttacked, enemyDropChance, bluntDmgGiven,
+        summonExpMod, getStunnedMod, allWeaponExpMod, bluntExpMod, edgedExpMod
     }
 
     [System.Serializable]
@@ -38,10 +39,12 @@ public class UnitTrait {
 
         return temp;
     }
-    public float getDamageGivenMod() {
+    public float getDamageGivenMod(Weapon.attackType type) {
         float temp = 0.0f;
         foreach(var i in t_infos) {
             if(i.modType == modifierType.damageTaken)
+                temp += i.modAmount;
+            else if(i.modType == modifierType.bluntDmgGiven && type == Weapon.attackType.blunt)
                 temp += i.modAmount;
         }
 
@@ -74,6 +77,47 @@ public class UnitTrait {
 
         return temp;
     }
+    public float getGetStunnedMod() {
+        float temp = 1.0f;  //  starts at 1 (to set to zero, modAmount needs to be -1)
+        foreach(var i in t_infos) {
+            if(i.modType == modifierType.getStunnedMod)
+                temp += i.modAmount;
+        }
+
+        return temp;
+    }
+
+    public float getSummonExpMod() {
+        float temp = 1.0f;
+        foreach(var i in t_infos) {
+            if(i.modType == modifierType.summonExpMod)
+                temp += i.modAmount;
+            else if(i.modType == modifierType.allWeaponExpMod)
+                temp += i.modAmount;
+        }
+        return temp;
+    }
+    public float getBluntExpMod() {
+        float temp = 1.0f;
+        foreach(var i in t_infos) {
+            if(i.modType == modifierType.bluntExpMod)
+                temp += i.modAmount;
+            else if(i.modType == modifierType.allWeaponExpMod)
+                temp += i.modAmount;
+        }
+        return temp;
+    }
+    public float getEdgedExpMod() {
+        float temp = 1.0f;
+        foreach(var i in t_infos) {
+            if(i.modType == modifierType.edgedExpMod)
+                temp += i.modAmount;
+            else if(i.modType == modifierType.allWeaponExpMod)
+                temp += i.modAmount;
+        }
+        return temp;
+    }
+
     public int getEnemyDropChanceMod() {
         int temp = 0;
         foreach(var i in t_infos) {
@@ -87,14 +131,14 @@ public class UnitTrait {
     //  non-value based mods
     public bool shouldStunSelf() {
         foreach(var i in t_infos) {
-            if(i.modType == modifierType.stunsSelf && GameVariables.chanceOutOfHundred(Mathf.FloorToInt(i.modAmount)))
+            if(i.modType == modifierType.stunsSelfChance && GameVariables.chanceOutOfHundred(Mathf.FloorToInt(i.modAmount)))
                 return true;
         }
         return false;
     }
     public bool shouldStunTarget() {
         foreach(var i in t_infos) {
-            if(i.modType == modifierType.stunsTarget && GameVariables.chanceOutOfHundred(Mathf.FloorToInt(i.modAmount)))
+            if(i.modType == modifierType.stunsTargetChance && GameVariables.chanceOutOfHundred(Mathf.FloorToInt(i.modAmount)))
                 return true;
         }
         return false;

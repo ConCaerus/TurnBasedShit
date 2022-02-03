@@ -610,33 +610,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6d80c9ebbab4de40accb5b888ccb6fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hurtSound: {fileID: 8300000, guid: f9ab6cd3341723f4f8a4cb65b539d7c3, type: 3}
-  dieSound: {fileID: 8300000, guid: 5665238162eda3c4e8090423e9059acf, type: 3}
-  attackingTarget: {fileID: 0}
-  bloodParticles: {fileID: 2915087688519792205, guid: 4fdf5a70cefb9dc409fa113f55c33321,
-    type: 3}
-  hitColor: {r: 1, g: 0, b: 0, a: 1}
-  isPlayerUnit: 1
-  defending: 0
-  stunned: 0
-  charging: 0
-  isMouseOverUnit: 0
-  tempPowerMod: 1
-  tempDefenceMod: 0
-  tempSpeedMod: 1
-  spotOffset: 0
+  combatStats:
+    hurtSound: {fileID: 8300000, guid: 5dc7573558108bd48a996400a30c2850, type: 3}
+    dieSound: {fileID: 8300000, guid: a345d60fcea70f44e803b8fb7d307f36, type: 3}
+    missSound: {fileID: 8300000, guid: 484b5b1384ddf4d47bb1e82d4183095a, type: 3}
+    attackingTarget: {fileID: 0}
+    bloodParticles: {fileID: 2915087688519792205, guid: 4fdf5a70cefb9dc409fa113f55c33321,
+      type: 3}
+    hitColor: {r: 1, g: 0, b: 0, a: 1}
+    isPlayerUnit: 1
+    tempPowerMod: 0
+    tempDefenceMod: 0
+    tempSpeedMod: 0
+    spotOffset: 0.31
+    normalSize: {x: 0, y: 0}
+    normalPos: {x: 0, y: 0}
   stats:
     u_name: Chicken
-    u_expCap: 25
-    u_exp: 0
-    u_level: 1
-    u_bluntExp: 0
-    u_edgedExp: 0
-    u_summonedExp: 0
+    u_type: 5
     u_sprite:
       headIndex: 0
       faceIndex: 0
       bodyIndex: 0
+      layerOffset: 0
       color: {r: 1, g: 1, b: 1, a: 1}
     u_baseMaxHealth: 25
     u_health: 25
@@ -644,107 +640,127 @@ MonoBehaviour:
     u_power: 3
     u_defence: 3
     u_critChance: 0.01
+    u_missChance: 1
     u_bleedCount: 0
+    u_isLeader: 0
     u_instanceID: -1
-    equippedWeapon:
-      w_instanceID: -1
-      w_name: 
-      w_rarity: 0
-      w_element: 0
-      w_wornAmount: 0
-      w_attributes: 
-      w_specialUsage: 0
-      w_specialUsageAmount: 0
-      w_attackType: 0
-      w_power: 0
-      w_speedMod: 0
-      w_coinCost: 0
-      w_sprite:
+    weapon:
+      instanceID: -1
+      name: 
+      type: -1
+      rarity: -1
+      coinCost: 0
+      canBeFished: 0
+      maxStackCount: 1
+      fishedData:
+        hookedPos: {x: 0, y: 0}
+        scale: 0
+        hookedRot: 0
+        chanceToCatch: 0
+      flavor: Choco
+      wornAmount: 3
+      attributes: 
+      sUsage: 0
+      sCosts: []
+      sUsageAmount: 0
+      sUsageChance: 0
+      aType: -1
+      power: 0
+      speedMod: 0
+      sprite:
         sprite: {fileID: 0}
-        equippedX: 0
-        equippedY: 0
-        equippedRot: 0
-        equippedXSize: 0
-        equippedYSize: 0
-    equippedArmor:
-      a_instanceID: -1
-      a_name: 
-      a_rarity: 0
-      a_wornAmount: 0
-      a_attributes: 
-      a_defence: 0
-      a_speedMod: 0
-      a_coinCost: 0
-      a_sprite:
+        pos: {x: 0, y: 0}
+        size: {x: 0, y: 0}
+        rot: 0
+    armor:
+      instanceID: -1
+      name: 
+      type: -1
+      rarity: -1
+      coinCost: 0
+      canBeFished: 0
+      maxStackCount: 1
+      fishedData:
+        hookedPos: {x: 0, y: 0}
+        scale: 0
+        hookedRot: 0
+        chanceToCatch: 0
+      flavor: Choco
+      wornAmount: 3
+      attributes: 
+      defence: 0
+      speedMod: 0
+      sprite:
         sprite: {fileID: 0}
         equippedSprite: {fileID: 0}
         equippedShoulder: {fileID: 0}
         equippedHat: {fileID: 0}
-        xPos0: 0
-        yPos0: 0
-        xSize0: 0
-        ySize0: 0
-        xPos1: 0
-        yPos1: 0
-        xSize1: 0
-        ySize1: 0
-        xPos2: 0
-        yPos2: 0
-        xSize2: 0
-        ySize2: 0
-        xShoulderPos0: 0
-        yShoulderPos0: 0
-        xShoulderSize0: 0
-        yShoulderSize0: 0
+        pos:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        size:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        shoulderPos:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        shoulderSize:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
         shoulderRot: 0
-        xShoulderPos1: 0
-        yShoulderPos1: 0
-        xShoulderSize1: 0
-        yShoulderSize1: 0
-        xShoulderPos2: 0
-        yShoulderPos2: 0
-        xShoulderSize2: 0
-        yShoulderSize2: 0
         hatInfrontOfHead: 1
-        xHatPos0: 0
-        yHatPos0: 0
-        xHatSize0: 0
-        yHatSize0: 0
+        hatPos:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        hatSize:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
         hatRot: 0
-        xHatPos1: 0
-        yHatPos1: 0
-        xHatSize1: 0
-        yHatSize1: 0
-        xHatPos2: 0
-        yHatPos2: 0
-        xHatSize2: 0
-        yHatSize2: 0
-    equippedItem:
-      i_instanceID: -1
-      i_name: 
-      i_rarity: 0
-      i_timedEffects: []
-      i_passiveEffects: []
-      i_coinCost: 0
-      i_sprite:
+    item:
+      instanceID: -1
+      name: 
+      type: -1
+      rarity: -1
+      coinCost: 0
+      canBeFished: 0
+      maxStackCount: 1
+      fishedData:
+        hookedPos: {x: 0, y: 0}
+        scale: 0
+        hookedRot: 0
+        chanceToCatch: 0
+      flavor: Choco
+      tEffects: []
+      pEffects: []
+      sprite:
         sprite: {fileID: 0}
     u_traits: []
+    u_talent:
+      t_name: 
+      t_infos: []
+      t_isGood: 0
     u_deathInfo:
       nameOfKiller: 
       causeOfDeath: 0
-      enemyType: 0
+      combatType: 0
+  combatMods: 
+  defending: 0
+  stunned: 0
+  charging: 0
   summoner:
     u_name: 
-    u_expCap: 25
-    u_exp: 0
-    u_level: 0
-    u_bluntExp: 0
-    u_edgedExp: 0
-    u_summonedExp: 0
+    u_type: 0
     u_sprite:
       headIndex: 0
       faceIndex: 0
       bodyIndex: 0
+      layerOffset: 0
       color: {r: 1, g: 1, b: 1, a: 1}
     u_baseMaxHealth: 0
     u_health: 100
@@ -752,95 +768,115 @@ MonoBehaviour:
     u_power: 0
     u_defence: 0
     u_critChance: 0
+    u_missChance: 1
     u_bleedCount: 0
+    u_isLeader: 0
     u_instanceID: -1
-    equippedWeapon:
-      w_instanceID: -1
-      w_name: 
-      w_rarity: 0
-      w_element: 0
-      w_wornAmount: 0
-      w_attributes: 
-      w_specialUsage: 0
-      w_specialUsageAmount: 0
-      w_attackType: 0
-      w_power: 0
-      w_speedMod: 0
-      w_coinCost: 0
-      w_sprite:
+    weapon:
+      instanceID: -1
+      name: 
+      type: -1
+      rarity: -1
+      coinCost: 0
+      canBeFished: 0
+      maxStackCount: 1
+      fishedData:
+        hookedPos: {x: 0, y: 0}
+        scale: 0
+        hookedRot: 0
+        chanceToCatch: 0
+      flavor: Choco
+      wornAmount: 3
+      attributes: 
+      sUsage: 0
+      sCosts: []
+      sUsageAmount: 0
+      sUsageChance: 0
+      aType: -1
+      power: 0
+      speedMod: 0
+      sprite:
         sprite: {fileID: 0}
-        equippedX: 0
-        equippedY: 0
-        equippedRot: 0
-        equippedXSize: 0
-        equippedYSize: 0
-    equippedArmor:
-      a_instanceID: -1
-      a_name: 
-      a_rarity: 0
-      a_wornAmount: 0
-      a_attributes: 
-      a_defence: 0
-      a_speedMod: 0
-      a_coinCost: 0
-      a_sprite:
+        pos: {x: 0, y: 0}
+        size: {x: 0, y: 0}
+        rot: 0
+    armor:
+      instanceID: -1
+      name: 
+      type: -1
+      rarity: -1
+      coinCost: 0
+      canBeFished: 0
+      maxStackCount: 1
+      fishedData:
+        hookedPos: {x: 0, y: 0}
+        scale: 0
+        hookedRot: 0
+        chanceToCatch: 0
+      flavor: Choco
+      wornAmount: 3
+      attributes: 
+      defence: 0
+      speedMod: 0
+      sprite:
         sprite: {fileID: 0}
         equippedSprite: {fileID: 0}
         equippedShoulder: {fileID: 0}
         equippedHat: {fileID: 0}
-        xPos0: 0
-        yPos0: 0
-        xSize0: 0
-        ySize0: 0
-        xPos1: 0
-        yPos1: 0
-        xSize1: 0
-        ySize1: 0
-        xPos2: 0
-        yPos2: 0
-        xSize2: 0
-        ySize2: 0
-        xShoulderPos0: 0
-        yShoulderPos0: 0
-        xShoulderSize0: 0
-        yShoulderSize0: 0
+        pos:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        size:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        shoulderPos:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        shoulderSize:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
         shoulderRot: 0
-        xShoulderPos1: 0
-        yShoulderPos1: 0
-        xShoulderSize1: 0
-        yShoulderSize1: 0
-        xShoulderPos2: 0
-        yShoulderPos2: 0
-        xShoulderSize2: 0
-        yShoulderSize2: 0
         hatInfrontOfHead: 1
-        xHatPos0: 0
-        yHatPos0: 0
-        xHatSize0: 0
-        yHatSize0: 0
+        hatPos:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        hatSize:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
         hatRot: 0
-        xHatPos1: 0
-        yHatPos1: 0
-        xHatSize1: 0
-        yHatSize1: 0
-        xHatPos2: 0
-        yHatPos2: 0
-        xHatSize2: 0
-        yHatSize2: 0
-    equippedItem:
-      i_instanceID: -1
-      i_name: 
-      i_rarity: 0
-      i_timedEffects: []
-      i_passiveEffects: []
-      i_coinCost: 0
-      i_sprite:
+    item:
+      instanceID: -1
+      name: 
+      type: -1
+      rarity: -1
+      coinCost: 0
+      canBeFished: 0
+      maxStackCount: 1
+      fishedData:
+        hookedPos: {x: 0, y: 0}
+        scale: 0
+        hookedRot: 0
+        chanceToCatch: 0
+      flavor: Choco
+      tEffects: []
+      pEffects: []
+      sprite:
         sprite: {fileID: 0}
     u_traits: []
+    u_talent:
+      t_name: 
+      t_infos: []
+      t_isGood: 0
     u_deathInfo:
       nameOfKiller: 
       causeOfDeath: 0
-      enemyType: 0
+      combatType: 0
 --- !u!114 &2737049258412808083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -895,9 +931,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b50cf52fd2f3020489dae1d0b81e3fc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infos:
-  - dicken
+  info: <b><u>Information
   hideWhenMenuOpen: 1
+  hideWhenCoveredByMapFog: 0
 --- !u!1 &2737049258616092093
 GameObject:
   m_ObjectHideFlags: 0

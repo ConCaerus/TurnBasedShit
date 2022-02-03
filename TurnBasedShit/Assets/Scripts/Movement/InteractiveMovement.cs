@@ -24,15 +24,19 @@ public abstract class InteractiveMovement : UnitMovement {
         else if(shouldDeinteract() && FindObjectOfType<TransitionCanvas>().loaded)
             deinteract();
 
-        if(shouldMove() && canMove && FindObjectOfType<TransitionCanvas>().loaded) {
-            isMoving = true;
-            move();
-            unit.GetComponent<UnitSpriteHandler>().setWalkingAnim(true);
+        if(unit.GetComponent<UnitSpriteHandler>().initialized) {
+            if(shouldMove() && canMove && FindObjectOfType<TransitionCanvas>().loaded) {
+                isMoving = true;
+                move();
+                unit.GetComponent<UnitSpriteHandler>().setWalkingAnim(true);
+            }
+            else {
+                isMoving = false;
+                unit.GetComponent<UnitSpriteHandler>().setWalkingAnim(false);
+            }
         }
-        else {
-            isMoving = false;
-            unit.GetComponent<UnitSpriteHandler>().setWalkingAnim(false);
-        }
+        else
+            unit.GetComponent<UnitSpriteHandler>().setReference(Party.getLeaderStats(), true);
 
         if(!movingDown && !shouldMove() && canMoveAlongY()) {
             flip(true);

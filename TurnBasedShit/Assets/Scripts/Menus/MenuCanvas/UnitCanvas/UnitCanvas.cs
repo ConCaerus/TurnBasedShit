@@ -237,6 +237,21 @@ public class UnitCanvas : MonoBehaviour {
     }
 
 
+    public void setUnitEquipment(Collectable c) {
+        switch(c.type) {
+            case Collectable.collectableType.weapon:
+                setUnitWeapon((Weapon)c);
+                return;
+
+            case Collectable.collectableType.armor:
+                setUnitArmor((Armor)c);
+                return;
+
+            case Collectable.collectableType.item:
+                setUnitItem((Item)c);
+                return;
+        }
+    }
     public void setUnitWeapon(Weapon w) {
         if(w == null || w.isEmpty()) {
             shownUnit.weapon = null;

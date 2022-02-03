@@ -11,7 +11,7 @@ public static class GameVariables {
     public static float getExpForEnemy(GameInfo.region lvl) {
         return 10.0f * (1 + (int)lvl);
     }
-    public static float getExpForEnemy(EnemyUnitInstance.type t) {
+    public static float getExpForEnemy(GameInfo.combatUnitType t) {
         return getExpForEnemy(GameInfo.getRegionForEnemyType(t));
     }
 
@@ -25,10 +25,17 @@ public static class GameVariables {
         return chanceOutOfHundred(20);
     }
     public static bool chanceCureBleed() {
-        return chanceOutOfHundred(25);
+        return chanceOutOfHundred(100);
     }
     public static bool chanceStun() {
-        return chanceOutOfHundred(15);
+        return chanceOutOfHundred(getStunChance());
+    }
+    public static int getStunChance() {
+        return 15;
+    }
+
+    public static bool chanceHellEnemyIsDeadPlayer() {
+        return chanceOutOfHundred(25);
     }
 
     public static bool chanceWeaponDrop() {

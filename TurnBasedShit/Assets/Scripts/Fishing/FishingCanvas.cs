@@ -167,7 +167,7 @@ public class FishingCanvas : MonoBehaviour {
 
     void addSpoils() {
         var col = calcCaughtFish();
-        Inventory.addCollectable(col);
+        Inventory.addCollectable(col, FindObjectOfType<PresetLibrary>());
 
         FindObjectOfType<Bobber>().showSpoils(col);
     }

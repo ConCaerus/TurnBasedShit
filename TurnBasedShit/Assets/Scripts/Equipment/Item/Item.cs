@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 [System.Serializable]
 public class Item : Collectable {
@@ -100,14 +101,20 @@ public class Item : Collectable {
                             enemy.GetComponent<SummonedUnitInstance>().stats = enemy.GetComponent<EnemyUnitInstance>().stats;
                             enemy.GetComponent<SummonedUnitInstance>().combatStats = enemy.GetComponent<EnemyUnitInstance>().combatStats;
                             enemy.GetComponent<SummonedUnitInstance>().combatStats.isPlayerUnit = true;
+
                             enemy.GetComponent<EnemyUnitInstance>().selfDestruct();
 
                             enemy.GetComponent<UnitClass>().combatStats.attackingTarget = null;
 
                             var spot = unit.GetComponent<PlayerUnitInstance>().getNextSummonSpotForUnit();
-                            enemy.transform.position = spot.transform.position;
                             enemy.transform.SetParent(spot.transform);
-                            enemy.transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+                            if(enemy.GetComponent<UnitClass>().stats.u_type != GameInfo.combatUnitType.deadUnit)
+                                enemy.transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+                            else
+                                enemy.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+                            enemy.transform.localScale = enemy.GetComponent<UnitClass>().combatStats.normalSize;
+                            enemy.transform.DOLocalMove(enemy.GetComponent<UnitClass>().combatStats.normalPos, .15f);
+                            spot.GetComponent<CombatSpot>().setColor();
                         }
                         break;
                 }

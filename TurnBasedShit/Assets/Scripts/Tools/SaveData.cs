@@ -64,7 +64,9 @@ public static class SaveData {
     public static void createSaveDataForSave(PresetLibrary lib, TransitionCanvas tc) {
         //  Inventory
         Inventory.clear(true);
+        Collection.clear();
         Graveyard.clear();
+        MapLocationHolder.clear();
         Party.clear(true);
 
 
@@ -72,27 +74,18 @@ public static class SaveData {
         lib.addStartingUnits();
         Debug.Log("Added starting units: " + Time.realtimeSinceStartup.ToString("0.00"));
 
-        tc.loadCircle.GetComponent<CircularSlider>().setValue(.3f);
-
         //  Towns
         Map.populateTowns(lib);
         Debug.Log("Town Shit: " + Time.realtimeSinceStartup.ToString("0.00"));
 
-        tc.loadCircle.GetComponent<CircularSlider>().setValue(.6f);
-
         //  MapLocations
         GameInfo.setCurrentRegion(GameInfo.region.grassland);
         Map.createFogTexture();
-        MapLocationHolder.clear();
         MapLocationHolder.populateMapLocations(lib);
         Debug.Log("Location Shit: " + Time.realtimeSinceStartup.ToString("0.00"));
 
         //  Quests
         ActiveQuests.clear(true);
-
-        //  rest
-
-        tc.loadCircle.GetComponent<CircularSlider>().setValue(1f);
     }
 
     public static void deleteCurrentSave() {

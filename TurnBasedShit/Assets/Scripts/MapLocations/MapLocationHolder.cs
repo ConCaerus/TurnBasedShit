@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class MapLocationHolder {
-    const string holderTag = "InventoryHolderTag";
+    const string holderTag = "MapLocationHolderTag";
 
     public static ObjectHolder getHolder() {
         var data = SaveData.getString(holderTag);

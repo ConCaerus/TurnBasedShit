@@ -39,10 +39,10 @@ public class TurnOrderCanvas : MonoBehaviour {
             yield return new WaitForSeconds(speed);
 
             var prev = slots[i];
-            slots[i] = Instantiate(FindObjectOfType<PresetLibrary>().getProfileForUnit(newUnit).gameObject, slots[i].transform.parent);
+            slots[i] = Instantiate(FindObjectOfType<PresetLibrary>().getCombatUnitProfile(newUnit.stats.u_type).gameObject, slots[i].transform.parent);
             Destroy(prev.gameObject);
 
-            if(newUnit.combatStats.isPlayerUnit) {
+            if(newUnit.stats.u_type == GameInfo.combatUnitType.player || newUnit.stats.u_type == GameInfo.combatUnitType.deadUnit) {
                 slots[i].transform.GetChild(0).GetComponent<Image>().color = newUnit.stats.u_sprite.color;
                 var backgroundColor = newUnit.stats.u_sprite.color * 2.0f;
                 slots[i].GetComponent<Image>().color = new Color(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1.0f);

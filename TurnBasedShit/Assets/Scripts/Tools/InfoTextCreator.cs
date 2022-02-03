@@ -67,14 +67,14 @@ public static class InfoTextCreator {
                         temp += "-" + Mathf.Abs(i.modAmount).ToString("0.0") + "Max Health";
                     break;
 
-                case UnitTrait.modifierType.stunsSelf:
+                case UnitTrait.modifierType.stunsSelfChance:
                     if(i.modAmount > 0.0f)
                         temp += "+" + i.modAmount.ToString("0.0") + "% Self Stun Chance";
                     else
                         temp += "-" + Mathf.Abs(i.modAmount).ToString("0.0") + "% Self Stun Chance";
                     break;
 
-                case UnitTrait.modifierType.stunsTarget:
+                case UnitTrait.modifierType.stunsTargetChance:
                     if(i.modAmount > 0.0f)
                         temp += "+" + i.modAmount.ToString("0.0") + "% Target Stun Chance";
                     else

@@ -4,39 +4,37 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class MapPartyInfoSlot : Slot {
-    [SerializeField] TextMeshProUGUI levelText, nameText;
+public class MapPartyInfoSlot : SlotObject {
     [SerializeField] Slider healthSlider, expSlider;
-    [SerializeField] Image headImage, faceImage;
 
 
-    public override void updateInfo(int slotIndex) {
+    public void updateInfo(int slotIndex) {
         if(slotIndex >= Party.getHolder().getObjectCount<UnitStats>()) {
-            levelText.gameObject.SetActive(false);
-            nameText.gameObject.SetActive(false);
+            texts[0].gameObject.SetActive(false);
+            texts[1].gameObject.SetActive(false);
             healthSlider.gameObject.SetActive(false);
             expSlider.gameObject.SetActive(false);
-            headImage.gameObject.SetActive(false);
-            faceImage.gameObject.SetActive(false);
+            images[0].gameObject.SetActive(false);
+            images[1].gameObject.SetActive(false);
             return;
         }
 
         var unit = Party.getHolder().getObject<UnitStats>(slotIndex);
 
-        nameText.text = unit.u_name;
-        levelText.text = unit.u_level.ToString();
+        texts[1].text = unit.u_name;
+        texts[0].text = unit.u_level.ToString();
 
         healthSlider.maxValue = unit.getModifiedMaxHealth();
         healthSlider.value = unit.u_health;
         expSlider.maxValue = unit.u_expCap;
         expSlider.value = unit.u_exp;
 
-        headImage.sprite = FindObjectOfType<PresetLibrary>().getUnitHeadSprite(unit.u_sprite.headIndex);
-        headImage.color = unit.u_sprite.color;
-        headImage.SetNativeSize();
-        headImage.transform.localScale = new Vector3(.35f, .35f);
-        faceImage.sprite = FindObjectOfType<PresetLibrary>().getUnitFace(unit.u_sprite.faceIndex);
-        faceImage.SetNativeSize();
-        faceImage.transform.localScale = Vector3.one;
+        images[0].sprite = FindObjectOfType<PresetLibrary>().getUnitHeadSprite(unit.u_sprite.headIndex);
+        images[0].color = unit.u_sprite.color;
+        images[0].SetNativeSize();
+        images[0].transform.localScale = new Vector3(.35f, .35f);
+        images[1].sprite = FindObjectOfType<PresetLibrary>().getUnitFace(unit.u_sprite.faceIndex);
+        images[1].SetNativeSize();
+        images[1].transform.localScale = Vector3.one;
     }
 }

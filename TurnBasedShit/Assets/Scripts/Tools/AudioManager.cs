@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour {
-    [SerializeField] AudioSource player;
+    [SerializeField] AudioSource effectPlayer, musicPlayer;
     [SerializeField] AudioClip levelUpSound, tatterSound;
 
 
@@ -22,12 +22,18 @@ public class AudioManager : MonoBehaviour {
 
         if(randomize)
             randomizePitch();
-        player.PlayOneShot(clip);
+        effectPlayer.PlayOneShot(clip);
         playedClips.Add(clip);
+    }
+    public void playMusic(AudioClip clip, bool repeat) {
+        if(!repeat)
+            effectPlayer.PlayOneShot(clip);
+        else 
+            StartCoroutine(musicRepeater(clip));
     }
 
     public void randomizePitch() {
-        player.pitch = Random.Range(0.6f, 1.25f);
+        effectPlayer.pitch = Random.Range(0.6f, 1.25f);
     }
 
     IEnumerator refreshPlaylist() {
@@ -35,6 +41,13 @@ public class AudioManager : MonoBehaviour {
 
         playedClips.Clear();
         StartCoroutine(refreshPlaylist());
+    }
+    IEnumerator musicRepeater(AudioClip clip) {
+        musicPlayer.PlayOneShot(clip);
+
+        yield return new WaitForSeconds(clip.length);
+
+        StartCoroutine(musicRepeater(clip));
     }
 
     //  specific players

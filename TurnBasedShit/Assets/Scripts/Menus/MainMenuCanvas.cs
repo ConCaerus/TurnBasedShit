@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 public class MainMenuCanvas : MonoBehaviour {
     [SerializeField] GameObject menuCanvas, savesCanvas;
     [SerializeField] GameObject nameInputCanvas;
+    [SerializeField] AudioClip music;
 
 
     public bool createNewSave { get; set; }
@@ -16,6 +17,10 @@ public class MainMenuCanvas : MonoBehaviour {
         menuCanvas.SetActive(true);
         savesCanvas.SetActive(false);
         nameInputCanvas.SetActive(false);
+    }
+
+    private void Start() {
+        FindObjectOfType<AudioManager>().playMusic(music, true);
     }
 
     public void quit() {

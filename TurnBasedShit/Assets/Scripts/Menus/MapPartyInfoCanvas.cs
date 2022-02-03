@@ -14,7 +14,9 @@ public class MapPartyInfoCanvas : MonoBehaviour {
 
     private void Start() {
         for(int i = 0; i < slots.transform.childCount; i++) {
-            slots.transform.GetChild(i).GetComponent<Slot>().updateInfo(i);
+            slots.transform.GetChild(i).GetComponent<MapPartyInfoSlot>().updateInfo(i);
+            if(i < Party.getHolder().getObjectCount<UnitStats>())
+                slots.transform.GetChild(i).GetComponent<MapPartyInfoSlot>().setInfo(Party.getHolder().getObject<UnitStats>(i).u_name);
         }
         transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>().text = ">";
     }

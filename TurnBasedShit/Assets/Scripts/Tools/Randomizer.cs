@@ -19,7 +19,7 @@ public static class Randomizer {
         int tCount = Random.Range(0, 4);
         for(int i = 0; i < tCount; i++)
             u.u_traits.Add(lib.getRandomUnusedUnitTrait(stats));
-        if(GameVariables.chanceUnitHasTalent() || true)
+        if(GameVariables.chanceUnitHasTalent())
             u.u_talent = lib.getRandomUnitTalent();
 
         return u;

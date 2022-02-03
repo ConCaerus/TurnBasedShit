@@ -745,7 +745,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   combatStats:
     hurtSound: {fileID: 8300000, guid: 55c8b6125c1524144b74ea1571ed81c1, type: 3}
-    dieSound: {fileID: 8300000, guid: 5665238162eda3c4e8090423e9059acf, type: 3}
+    dieSound: {fileID: 8300000, guid: 6d2327a64c670584d9da94c9e0faa9a6, type: 3}
     missSound: {fileID: 8300000, guid: 484b5b1384ddf4d47bb1e82d4183095a, type: 3}
     attackingTarget: {fileID: 0}
     bloodParticles: {fileID: 2915087688519792205, guid: 4fdf5a70cefb9dc409fa113f55c33321,
@@ -760,6 +760,7 @@ MonoBehaviour:
     normalPos: {x: 0, y: 0}
   stats:
     u_name: Rock Crawler
+    u_type: 4
     u_expCap: 75
     u_exp: 0
     u_level: 4
@@ -899,7 +900,7 @@ MonoBehaviour:
     u_deathInfo:
       nameOfKiller: 
       causeOfDeath: 0
-      enemyType: 0
+      combatType: 0
   defending: 0
   stunned: 0
   charging: 0
@@ -915,7 +916,6 @@ MonoBehaviour:
   chanceToDropUsable: 0
   unusableDrop: {fileID: 0}
   chanceToDropUnusable: 0
-  enemyType: 3
 --- !u!114 &6686938965271102055
 MonoBehaviour:
   m_ObjectHideFlags: 0

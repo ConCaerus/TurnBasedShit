@@ -27,7 +27,7 @@ public static class Inventory {
     }
 
 
-    public static void addCollectable(Collectable col) {
+    public static void addCollectable(Collectable col, PresetLibrary lib) {
         if(col == null || col.isEmpty())
             return;
 
@@ -37,6 +37,8 @@ public static class Inventory {
         var holder = getHolder();
         holder.addObject<Collectable>(col);
         saveHolder(holder);
+
+        Collection.addCollectable(col, lib);
     }
     public static void overrideCollectable(int index, Collectable col) {
         if(col == null || index == -1)

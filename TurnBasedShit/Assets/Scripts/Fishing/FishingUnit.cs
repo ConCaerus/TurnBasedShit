@@ -22,7 +22,7 @@ public class FishingUnit : MonoBehaviour {
 
 
     public void setVisuals() {
-        GetComponent<UnitSpriteHandler>().updateVisuals();
+        GetComponent<UnitSpriteHandler>().updateVisuals(false);
         GetComponent<UnitSpriteHandler>().setFishingAnim(true);
 
         StartCoroutine(addRod());
@@ -39,7 +39,7 @@ public class FishingUnit : MonoBehaviour {
         WeaponSpriteHolder sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(we);
         rod.transform.localPosition = new Vector3(0.31f, 0.76f);   //  from the animation
         rod.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-        rod.transform.localScale = new Vector3(sprite.equippedXSize, sprite.equippedYSize);
+        rod.transform.localScale = sprite.size;
 
         if(currentRod != null)
             Destroy(currentRod.transform.parent.gameObject);

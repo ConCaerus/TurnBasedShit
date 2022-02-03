@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class MenuCanvas : MonoBehaviour {
     [SerializeField] GameObject menuObj;
-    [SerializeField] GameObject unitCanvas, questCanvas, townCanvas, inventoryCanvas, graveyardCanvas, optionsCanvas;
+    [SerializeField] GameObject unitCanvas, questCanvas, townCanvas, inventoryCanvas, graveyardCanvas, optionsCanvas, collectionCanvas;
 
     bool showing = false;
 
@@ -47,16 +47,18 @@ public class MenuCanvas : MonoBehaviour {
                 inventoryTab();
                 break;
             case 2:
-                questTab();
+                collectionTab();
                 break;
             case 3:
-                townTab();
+                questTab();
                 break;
             case 4:
+                townTab();
+                break;
+            case 5:
                 graveyardTab();
                 break;
-
-            case 5:
+            case 6:
                 optionsTab();
                 break;
         }
@@ -73,6 +75,8 @@ public class MenuCanvas : MonoBehaviour {
             FindObjectOfType<TownMenuCanvas>().updateSlots();
         else if(FindObjectOfType<InventoryCanvas>() != null)
             StartCoroutine(FindObjectOfType<InventoryCanvas>().populateSlots());
+        else if(FindObjectOfType<CollectionCanvas>() != null)
+            FindObjectOfType<CollectionCanvas>().populateSlots();
         else if(FindObjectOfType<GraveyardMenuCanvas>() != null)
             FindObjectOfType<GraveyardMenuCanvas>().createSlots();
 
@@ -107,7 +111,6 @@ public class MenuCanvas : MonoBehaviour {
     public void hardHide() {
         foreach(var i in FindObjectsOfType<InfoBearer>()) {
             if(i.GetComponent<Collider2D>() == null) {
-                Debug.Log(i.name);
                 continue;
             }
             if(i.hideWhenMenuOpen)
@@ -123,69 +126,61 @@ public class MenuCanvas : MonoBehaviour {
 
 
     //  tabs
-    public void unitTab() {
-        SaveData.setInt(openTag, 0);
-        unitCanvas.SetActive(true);
+    void closeAllTabs() {
+        unitCanvas.SetActive(false);
         questCanvas.SetActive(false);
         townCanvas.SetActive(false);
         inventoryCanvas.SetActive(false);
         graveyardCanvas.SetActive(false);
         optionsCanvas.SetActive(false);
+        collectionCanvas.SetActive(false);
+    }
+    public void unitTab() {
+        SaveData.setInt(openTag, 0);
+        closeAllTabs();
+        unitCanvas.SetActive(true);
 
         FindObjectOfType<UnitCanvas>().setup();
     }
     public void inventoryTab() {
         SaveData.setInt(openTag, 1);
+        closeAllTabs();
         inventoryCanvas.SetActive(true);
-        townCanvas.SetActive(false);
-        unitCanvas.SetActive(false);
-        questCanvas.SetActive(false);
-        graveyardCanvas.SetActive(false);
-        optionsCanvas.SetActive(false);
 
         StartCoroutine(FindObjectOfType<InventoryCanvas>().populateSlots());
     }
-    public void questTab() {
+    public void collectionTab() {
         SaveData.setInt(openTag, 2);
+        closeAllTabs();
+        collectionCanvas.SetActive(true);
+
+        FindObjectOfType<CollectionCanvas>().populateSlots();
+    }
+    public void questTab() {
+        SaveData.setInt(openTag, 3);
+        closeAllTabs();
         questCanvas.SetActive(true);
-        unitCanvas.SetActive(false);
-        townCanvas.SetActive(false);
-        inventoryCanvas.SetActive(false);
-        graveyardCanvas.SetActive(false);
-        optionsCanvas.SetActive(false);
 
         FindObjectOfType<QuestCanvas>().updateMenu();
     }
     public void townTab() {
-        SaveData.setInt(openTag, 3);
+        SaveData.setInt(openTag, 4);
+        closeAllTabs();
         townCanvas.SetActive(true);
-        unitCanvas.SetActive(false);
-        questCanvas.SetActive(false);
-        inventoryCanvas.SetActive(false);
-        graveyardCanvas.SetActive(false);
-        optionsCanvas.SetActive(false);
 
         FindObjectOfType<TownMenuCanvas>().updateSlots();
     }
     public void graveyardTab() {
-        SaveData.setInt(openTag, 4);
+        SaveData.setInt(openTag, 5);
+        closeAllTabs();
         graveyardCanvas.SetActive(true);
-        inventoryCanvas.SetActive(false);
-        questCanvas.SetActive(false);
-        townCanvas.SetActive(false);
-        unitCanvas.SetActive(false);
-        optionsCanvas.SetActive(false);
 
         FindObjectOfType<GraveyardMenuCanvas>().createSlots();
     }
     public void optionsTab() {
-        SaveData.setInt(openTag, 5);
+        SaveData.setInt(openTag, 6);
+        closeAllTabs();
         optionsCanvas.SetActive(true);
-        graveyardCanvas.SetActive(false);
-        inventoryCanvas.SetActive(false);
-        questCanvas.SetActive(false);
-        townCanvas.SetActive(false);
-        unitCanvas.SetActive(false);
     }
 
     public void addNewRunOnOpen(func f) {

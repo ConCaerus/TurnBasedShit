@@ -5,7 +5,7 @@ using DG.Tweening;
 
 public class CombatHighlightObject : MonoBehaviour {
     float startAnimTime = 0.15f;
-    float startScale = 0.5f;
+    float startScale = 1.0f;
     public bool finishedAnim = false;
 
     float endAnimTime = 0.15f;
@@ -35,13 +35,9 @@ public class CombatHighlightObject : MonoBehaviour {
             GetComponentsInChildren<SpriteRenderer>()[i].gameObject.transform.localPosition = Vector2.zero;
             GetComponentsInChildren<SpriteRenderer>()[i].gameObject.transform.DOLocalMove(temp, startAnimTime);
         }
-        transform.DOScale(startScale, startAnimTime * 0.75f);
+        transform.DOScale(startScale, startAnimTime);
 
-        yield return new WaitForSeconds(startAnimTime * 0.75f);
-
-        transform.DOScale(0.5f, startAnimTime * 0.25f);
-
-        yield return new WaitForSeconds(startAnimTime * 0.25f);
+        yield return new WaitForSeconds(startAnimTime);
 
         finishedAnim = true;
     }

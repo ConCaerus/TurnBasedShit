@@ -6,10 +6,6 @@ using UnityEngine;
 public class ObjectHolder {
     public int instanceID = -1;
 
-    public enum changes {
-        add, over, remove
-    }
-
     //  tages
     string tag<T>(int index) { return "Object Holder: " + instanceID.ToString() + " " + typeof(T) + " index: " + index.ToString(); }
     string countTag<T>() { return "Object Holder: " + instanceID.ToString() + " " + typeof(T) + " count"; }

@@ -6,6 +6,7 @@ using DG.Tweening;
 public class PlayerUnitInstance : UnitClass {
     private void Awake() {
         combatStats.isPlayerUnit = true;
+        GetComponentInChildren<UnitSpriteHandler>().setReference(stats, true);
     }
 
     private void Start() {
@@ -16,12 +17,6 @@ public class PlayerUnitInstance : UnitClass {
 
     private void Update() {
         attackingLogic();
-
-        if((Vector2)transform.localPosition != combatStats.normalPos)
-            transform.localPosition = combatStats.normalPos;
-
-        if(Input.GetKeyDown(KeyCode.Space))
-            Debug.Log(combatStats.normalPos + "       " + (Vector2)transform.localPosition);
     }
 
 
@@ -41,7 +36,7 @@ public class PlayerUnitInstance : UnitClass {
     void attackingLogic() {
         if(FindObjectOfType<TurnOrderSorter>().playingUnit != gameObject)
             attackAnim = null;
-        if(FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject && combatStats.attackingTarget == null) {
+        if(FindObjectOfType<TurnOrderSorter>().playingUnit == gameObject && (combatStats.attackingTarget == null || combatStats.attackingTarget == gameObject)) {
             setAttackingTarget();
         }
 
@@ -67,16 +62,16 @@ public class PlayerUnitInstance : UnitClass {
 
 
     void useWeaponSpecialUse() {
-        //  wants to heal but no target
-        if(stats.weapon.sUsage == Weapon.specialUsage.healing && combatStats.attackingTarget == null)
-            return;
-        if(stats.weapon.sUsage == Weapon.specialUsage.healing && combatStats.attackingTarget != null) {
-            stats.weapon.applySpecailUsage(stats, combatStats.attackingTarget.GetComponent<UnitClass>());
+        if(stats.weapon.sUsage != Weapon.specialUsage.summoning && combatStats.attackingTarget != null) {
+            if(!stats.weapon.applySpecailUsage(this, combatStats.attackingTarget.GetComponent<UnitClass>())) {
+                FindObjectOfType<DamageTextCanvas>().showFailedTextForUnit(gameObject);
+            }
+            FindObjectOfType<PartyObject>().saveParty();
             FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
         }
 
         //  summon
-        if(stats.weapon.sUsage == Weapon.specialUsage.summoning && roomToSummon()) {
+        else if(stats.weapon.sUsage == Weapon.specialUsage.summoning && roomToSummon()) {
             var obj = Instantiate(FindObjectOfType<PresetLibrary>().getSummonForWeapon(stats.weapon).gameObject);
             obj.GetComponent<SummonedUnitInstance>().summoner = stats;
             getNextSummonSpotForUnit().GetComponent<CombatSpot>().unit = obj.gameObject;
@@ -104,7 +99,6 @@ public class PlayerUnitInstance : UnitClass {
     }
 
     public GameObject getNextSummonSpotForUnit() {
-        Debug.Log(getSummonCount() - 1);
         return FindObjectOfType<SummonSpotSpawner>().getCombatSpotAtIndexForUnit(gameObject, getSummonCount() - 1);
     }
 
@@ -121,12 +115,12 @@ public class PlayerUnitInstance : UnitClass {
     public bool addWeaponTypeExpOnKill(float ex) {
         if(stats.weapon.aType == Weapon.attackType.blunt) {
             int temp = stats.getBluntLevel();
-            stats.u_bluntExp += ex;
+            stats.addBluntExp(ex);
             return temp != stats.getBluntLevel();
         }
         else if(stats.weapon.aType == Weapon.attackType.edged) {
             int temp = stats.getEdgedLevel();
-            stats.u_edgedExp += ex;
+            stats.addEdgedExp(ex);
             return temp != stats.getEdgedLevel();
         }
         return false;
@@ -134,7 +128,6 @@ public class PlayerUnitInstance : UnitClass {
 
     public void updateSprites() {
         GetComponentInChildren<UnitSpriteHandler>().setReference(stats, true);
-        GetComponentInChildren<UnitSpriteHandler>().updateVisuals();
         foreach(var i in FindObjectsOfType<CombatSpot>()) {
             if(i.unit == gameObject) {
                 i.setColor();
@@ -151,9 +144,15 @@ public class PlayerUnitInstance : UnitClass {
             }
         }
 
-        FindObjectOfType<SummonSpotSpawner>().updateSpots();
         combatStats.normalPos = GetComponentInChildren<UnitSpriteHandler>().getCombatNormalPos();
         transform.localPosition = combatStats.normalPos;
         transform.localScale = combatStats.normalSize;
+
+        StartCoroutine(posChecker());
+    }
+
+    IEnumerator posChecker() {
+        yield return new WaitForEndOfFrame();
+        transform.localPosition = combatStats.normalPos;
     }
 }

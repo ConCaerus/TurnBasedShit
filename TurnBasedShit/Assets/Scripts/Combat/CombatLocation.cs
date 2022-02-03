@@ -27,8 +27,16 @@ public class CombatLocation {
 
             int enemyCount = Random.Range(minNumberOfEnemies, maxNumberOfEnemies + 1);
             for(int e = 0; e < enemyCount; e++) {
-                temp.enemyIndexes.Add(lib.getRandomEnemyIndex(diff));
+                var enemy = lib.getRandomEnemyIndex(diff);
+                if(lib.getEnemy(enemy).GetComponent<UnitClass>().stats.u_type == GameInfo.combatUnitType.deadUnit && Graveyard.getHolder().getObjectCount<UnitStats>() == 0)
+                    continue;
+                temp.enemyIndexes.Add(enemy);
+                if(lib.getEnemy(enemy).GetComponent<UnitClass>().stats.u_type == GameInfo.combatUnitType.deadUnit) {
+                    temp.graveyardIndexes.Add(Random.Range(0, Graveyard.getHolder().getObjectCount<UnitStats>()));
+                }
             }
+
+
             waves.Add(temp);
         }
     }
@@ -38,21 +46,21 @@ public class CombatLocation {
         waves.Add(wave);
     }
 
-    
 
-    public void receiveSpoils() {
+
+    public void receiveSpoils(PresetLibrary lib) {
         Inventory.addCoins(coins);
 
         foreach(var i in spoils.getObjects<Weapon>())
-            Inventory.addCollectable(i);
+            Inventory.addCollectable(i, lib);
         foreach(var i in spoils.getObjects<Armor>())
-            Inventory.addCollectable(i);
+            Inventory.addCollectable(i, lib);
         foreach(var i in spoils.getObjects<Item>())
-            Inventory.addCollectable(i);
+            Inventory.addCollectable(i, lib);
         foreach(var i in spoils.getObjects<Usable>())
-            Inventory.addCollectable(i);
+            Inventory.addCollectable(i, lib);
         foreach(var i in spoils.getObjects<Unusable>())
-            Inventory.addCollectable(i);
+            Inventory.addCollectable(i, lib);
         foreach(var i in spoils.getObjects<UnitStats>())
             Party.addUnit(i);
     }
@@ -61,5 +69,6 @@ public class CombatLocation {
 [System.Serializable]
 public class Wave {
     public List<int> enemyIndexes = new List<int>();
+    public List<int> graveyardIndexes = new List<int>();
     public List<int> bossIndexes = new List<int>();
 }

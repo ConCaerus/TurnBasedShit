@@ -20,6 +20,10 @@ public static class GameInfo {
         almostImpossible, rare, normal, easy,
     }
 
+    public enum combatUnitType {
+        player, slime, groundBird, stumpSpider, rockCrawler, chicken, deadUnit, turtle
+    }
+
 
     const string stateTag = "Current Game State";
 
@@ -46,6 +50,10 @@ public static class GameInfo {
     public const string nextTownMemberID = "Next Town Member ID";
 
     public const string nextQuestID = "Next Quest ID";
+
+    public const string combatTutorialStatus = "Combat Tutorial Status";
+    public const string mapTutorialStatus = "Map Tutorial Status";
+    public const string townTutorialStatus = "Town Tutorial Status";
 
 
     public static void clearEverything() {
@@ -173,16 +181,18 @@ public static class GameInfo {
     public static region getRandomReg() {
         return (region)Random.Range(0, 5);
     }
-    public static region getRegionForEnemyType(EnemyUnitInstance.type t) {
+    public static region getRegionForEnemyType(combatUnitType t) {
         switch(t) {
-            case EnemyUnitInstance.type.groundBird:
+            case combatUnitType.groundBird:
                 return region.grassland;
-            case EnemyUnitInstance.type.slime:
+            case combatUnitType.slime:
                 return region.swamp;
-            case EnemyUnitInstance.type.stumpSpider:
+            case combatUnitType.stumpSpider:
                 return region.forest;
-            case EnemyUnitInstance.type.rockCrawler:
+            case combatUnitType.rockCrawler:
                 return region.mountains;
+            case combatUnitType.deadUnit:
+                return region.hell;
         }
         return (region)(-1);
     }
@@ -281,13 +291,33 @@ public static class GameInfo {
     public static void clearQuestInstanceIDQueue() {
         SaveData.deleteKey(nextQuestID);
     }
+
+    //  tutorial status
+    public static bool hasCompletedCombatTutorial() {
+        return SaveData.getInt(combatTutorialStatus) != 0;
+    }
+    public static void completeCombatTutorial() {
+        SaveData.setInt(combatTutorialStatus, 1);
+    }
+    public static bool hasCompletedMapTutorial() {
+        return SaveData.getInt(mapTutorialStatus) != 0;
+    }
+    public static void completeMapTutorial() {
+        SaveData.setInt(mapTutorialStatus, 1);
+    }
+    public static bool hasCompletedTownTutorial() {
+        return SaveData.getInt(townTutorialStatus) != 0;
+    }
+    public static void completeTownTutorial() {
+        SaveData.setInt(townTutorialStatus, 1);
+    }
 }
 
 [System.Serializable]
 public class DeathInfo {
     public string nameOfKiller;
     public killCause causeOfDeath;
-    public EnemyUnitInstance.type enemyType;
+    public GameInfo.combatUnitType combatType;
 
     [System.Serializable]
     public enum killCause {
@@ -299,9 +329,9 @@ public class DeathInfo {
 
         if(cause == killCause.murdered && killer != null) {
             if(killer.GetComponent<EnemyUnitInstance>() != null)
-                enemyType = killer.GetComponent<EnemyUnitInstance>().enemyType;
+                combatType = killer.GetComponent<EnemyUnitInstance>().stats.u_type;
             else
-                enemyType = (EnemyUnitInstance.type)(-1);
+                combatType = (GameInfo.combatUnitType)(-1);
 
             nameOfKiller = killer.GetComponent<UnitClass>().stats.u_name;
         }

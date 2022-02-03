@@ -19,8 +19,6 @@ public class TownMemberInstance : MonoBehaviour {
         if(reference.hasQuest) {
             GetComponentInChildren<DialogBox>().runWhenDoneAndAccepted = acceptQuest;
             GetComponentInChildren<DialogBox>().setName(reference.name);
-            Debug.Log(reference.isNPC + " " + reference.name);
-            Debug.Log(reference.getQuest());
             GetComponentInChildren<DialogBox>().setDialog(DialogLibrary.getDialogForTownMember(reference));
         }
         gameObject.name = reference.name;

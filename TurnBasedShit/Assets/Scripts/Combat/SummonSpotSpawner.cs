@@ -11,8 +11,6 @@ public class SummonSpotSpawner : MonoBehaviour {
 
     [SerializeField] float spotOffset = 1.75f;
 
-    int lastKnownUnitCount = 0;
-
     private void Start() {
         StartCoroutine(FindObjectOfType<TransitionCanvas>().runAfterLoading(delegate { updateSpots(); }));
     }
@@ -25,7 +23,7 @@ public class SummonSpotSpawner : MonoBehaviour {
                 continue;
             }
             var unit = i.transform.parent.GetComponent<CombatSpot>().unit.GetComponent<UnitClass>();
-            if(unit == null || unit.stats.weapon == null || unit.stats.weapon.isEmpty() || unit.stats.weapon.sUsage != Weapon.specialUsage.summoning || i.transform.parent.childCount != unit.stats.getSummonedLevel())
+            if(unit == null || unit.stats.weapon == null || unit.stats.weapon.isEmpty() || (unit.stats.weapon.sUsage != Weapon.specialUsage.summoning && unit.stats.weapon.sUsage != Weapon.specialUsage.convertTarget) || i.transform.parent.childCount != unit.stats.getSummonedLevel())
                 hideSpot(i.gameObject);
             else
                 temp.Add(i.gameObject);
@@ -41,7 +39,7 @@ public class SummonSpotSpawner : MonoBehaviour {
                 continue;
             var stats = i.unit.GetComponent<UnitClass>().stats;
             //  makes sure that the unit is able to summon something before adding
-            if((stats.weapon != null && !stats.weapon.isEmpty() && stats.weapon.sUsage == Weapon.specialUsage.summoning) || (stats.item != null && !stats.item.isEmpty() && stats.item.getTimedMod(Item.timedEffectTypes.chanceEnemyTurnsIntoSummon) > 0.0f))
+            if((stats.weapon != null && !stats.weapon.isEmpty() && (stats.weapon.sUsage == Weapon.specialUsage.summoning || stats.weapon.sUsage == Weapon.specialUsage.convertTarget)) || (stats.item != null && !stats.item.isEmpty() && stats.item.getTimedMod(Item.timedEffectTypes.chanceEnemyTurnsIntoSummon) > 0.0f))
                 spots.Add(i);
         }
 

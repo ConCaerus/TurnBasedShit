@@ -453,7 +453,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   combatStats:
     hurtSound: {fileID: 8300000, guid: a34773faaf7c9a24ca77541ba1e855e5, type: 3}
-    dieSound: {fileID: 8300000, guid: 5665238162eda3c4e8090423e9059acf, type: 3}
+    dieSound: {fileID: 8300000, guid: 9fe2e7770c27c82469dfedf515dba343, type: 3}
     missSound: {fileID: 8300000, guid: 484b5b1384ddf4d47bb1e82d4183095a, type: 3}
     attackingTarget: {fileID: 0}
     bloodParticles: {fileID: 2915087688519792205, guid: 4fdf5a70cefb9dc409fa113f55c33321,
@@ -468,6 +468,7 @@ MonoBehaviour:
     normalPos: {x: 0, y: 0}
   stats:
     u_name: Ground Bird
+    u_type: 2
     u_expCap: 25
     u_exp: 0
     u_level: 2
@@ -607,7 +608,7 @@ MonoBehaviour:
     u_deathInfo:
       nameOfKiller: 
       causeOfDeath: 0
-      enemyType: 0
+      combatType: 0
   defending: 0
   stunned: 0
   charging: 0
@@ -623,7 +624,6 @@ MonoBehaviour:
   chanceToDropUsable: 0
   unusableDrop: {fileID: 0}
   chanceToDropUnusable: 0
-  enemyType: 1
 --- !u!114 &2268679967223299726
 MonoBehaviour:
   m_ObjectHideFlags: 0

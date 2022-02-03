@@ -124,6 +124,7 @@ GameObject:
   - component: {fileID: 9027472898659216014}
   - component: {fileID: 1925524823023979873}
   - component: {fileID: 6289770404196288678}
+  - component: {fileID: 340745369033114470}
   m_Layer: 0
   m_Name: HeadAnim
   m_TagString: Untagged
@@ -186,7 +187,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 921474463
   m_SortingLayer: 2
-  m_SortingOrder: 2
+  m_SortingOrder: 3
   m_Sprite: {fileID: 1947896252910339220, guid: 589fd9954d6285a4e89483743597ba5e,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -218,6 +219,20 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &340745369033114470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6825927066422280755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10659806b73e0f5419a98a397fe97568, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  face: {fileID: 8661194540925703529}
+  hat: {fileID: 5892885233809044641}
 --- !u!1 &8661194540925703529
 GameObject:
   m_ObjectHideFlags: 0
@@ -288,7 +303,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 921474463
   m_SortingLayer: 2
-  m_SortingOrder: 3
+  m_SortingOrder: 4
   m_Sprite: {fileID: 9221632912473160712, guid: 589fd9954d6285a4e89483743597ba5e,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

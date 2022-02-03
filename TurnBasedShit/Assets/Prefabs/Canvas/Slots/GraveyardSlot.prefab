@@ -284,6 +284,8 @@ GameObject:
   - component: {fileID: 7976603574908622782}
   - component: {fileID: 4650875080910807586}
   - component: {fileID: 7555557810716448172}
+  - component: {fileID: 6771768795024574381}
+  - component: {fileID: 6523865585821476408}
   m_Layer: 5
   m_Name: GraveyardSlot
   m_TagString: Untagged
@@ -307,10 +309,10 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 120}
-  m_SizeDelta: {x: -20, y: 50}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1016, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1405964295558103826
 CanvasRenderer:
@@ -432,3 +434,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sound: {fileID: 8300000, guid: 5fd13a94499375b47ade8a604f21d0fe, type: 3}
+--- !u!114 &6771768795024574381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4572787218034622832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bc2b3444ef492f44a8ae34a30f7dc68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  images: []
+  texts:
+  - {fileID: 8794291780663885776}
+  - {fileID: 8135059406146820767}
+  info: {fileID: 6523865585821476408}
+--- !u!114 &6523865585821476408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4572787218034622832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b50cf52fd2f3020489dae1d0b81e3fc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  info: <b><u>Information
+  hideWhenMenuOpen: 0
+  hideWhenCoveredByMapFog: 0

@@ -6,7 +6,7 @@ using TMPro;
 public class RoundCounterCanvas : MonoBehaviour {
     [SerializeField] TextMeshProUGUI roundCounter, waveCounter;
 
-    int roundCount = 0, waveCount = 0;
+    public int roundCount = 0, waveCount = 0;
 
 
     public void resetCount() {

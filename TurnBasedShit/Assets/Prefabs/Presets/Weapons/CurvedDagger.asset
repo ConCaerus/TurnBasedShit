@@ -28,15 +28,13 @@ MonoBehaviour:
     flavor: Great for slicing.
     wornAmount: 3
     attributes: 
-    sUsage: 0
+    sUsage: 3
     sUsageAmount: 0
     aType: 1
     power: 5
     speedMod: -2
     sprite:
       sprite: {fileID: 21300000, guid: 8d269c34fef512d40a82735577bcc52b, type: 3}
-      equippedX: 0.56
-      equippedY: 0.22
-      equippedRot: -117.5
-      equippedXSize: -0.35
-      equippedYSize: 0.35
+      pos: {x: 0, y: 0}
+      size: {x: 0, y: 0}
+      rot: 0

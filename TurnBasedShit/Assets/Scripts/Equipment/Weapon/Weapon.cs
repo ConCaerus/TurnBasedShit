@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using DG.Tweening;
 
 [System.Serializable]
 public class Weapon : Collectable {
@@ -14,19 +15,31 @@ public class Weapon : Collectable {
         blunt, edged
     }
     public enum specialUsage {
-        none, healing, summoning
+        healing, summoning, convertTarget
+    }
+    public enum specialUsageCostType {
+        health, stun, bleed
     }
 
+    [System.Serializable]
+    public struct specialUsageCost {
+        public specialUsageCostType costType;
+        public float costAmount;
+    }
+
+    //  if your add to this remember to add it to the setEqualsTo func
     public GameInfo.wornState wornAmount = GameInfo.wornState.perfect;
     public List<attribute> attributes = new List<attribute>();
-    public specialUsage sUsage = specialUsage.none;
+    public specialUsage sUsage = (specialUsage)(-1);
+    public List<specialUsageCost> sCosts = new List<specialUsageCost>();
     public float sUsageAmount = 0.0f;
+    public float sUsageChance = 0.0f;
 
     public attackType aType = (attackType)(-1);
     public float power = 0.0f;
     public float speedMod = 0.0f;
 
-    [SerializeField] WeaponSpriteHolder sprite = new WeaponSpriteHolder();
+    public WeaponSpriteHolder sprite = new WeaponSpriteHolder();
 
 
 
@@ -46,23 +59,83 @@ public class Weapon : Collectable {
             else if(i == attribute.Stun) {
                 if(attackedUnit.GetComponent<UnitClass>().isStunned())
                     continue;
-                attackedUnit.GetComponent<UnitClass>().setStunned(GameVariables.chanceStun());
+                attackedUnit.GetComponent<UnitClass>().chanceGettingStunned(GameVariables.getStunChance());
             }
         }
     }
 
-    public void applySpecailUsage(UnitStats weilder, UnitClass affectedObject) {
-        if(sUsage == specialUsage.none)
-            return;
-        if(sUsage == specialUsage.healing) {
-            var healAmount = sUsageAmount * weilder.getCritMult();
+    public bool applySpecailUsage(UnitClass weilder, UnitClass affectedObject) {
+        bool succeeded = GameVariables.chanceOutOfHundred((int)sUsageChance);
+        //  usage
+        switch(sUsage) {
+            case specialUsage.healing:
+                if(succeeded) {
+                    var healAmount = sUsageAmount * weilder.stats.getCritMult();
 
-            //  apply item effects
-            if(weilder.item != null && !weilder.item.isEmpty()) {
-                healAmount += healAmount * weilder.item.getPassiveMod(Item.passiveEffectTypes.modHealGiven);
-            }
-            affectedObject.addHealth(healAmount);
+                    //  apply item effects
+                    if(weilder.stats.item != null && !weilder.stats.item.isEmpty()) {
+                        healAmount += healAmount * weilder.stats.item.getPassiveMod(Item.passiveEffectTypes.modHealGiven);
+                    }
+                    affectedObject.addHealth(healAmount);
+                }
+                break;
+
+            case specialUsage.convertTarget:
+                if(succeeded) {
+                    //  not a valid unit type
+                    if(affectedObject == null || affectedObject.combatStats.isPlayerUnit)
+                        break;
+
+                    //  cant take another summon
+                    if(!weilder.GetComponent<PlayerUnitInstance>().roomToSummon())
+                        break;
+
+                    //  takes the chance
+                    var enemy = affectedObject.gameObject;
+                    //  creates a summon class for the enemy
+                    enemy.AddComponent<SummonedUnitInstance>();
+                    enemy.GetComponent<SummonedUnitInstance>().summoner = weilder.stats;
+                    enemy.GetComponent<SummonedUnitInstance>().stats = enemy.GetComponent<EnemyUnitInstance>().stats;
+                    enemy.GetComponent<SummonedUnitInstance>().combatStats = enemy.GetComponent<EnemyUnitInstance>().combatStats;
+                    enemy.GetComponent<SummonedUnitInstance>().combatStats.isPlayerUnit = true;
+
+                    enemy.GetComponent<EnemyUnitInstance>().selfDestruct();
+
+                    enemy.GetComponent<UnitClass>().combatStats.attackingTarget = null;
+
+                    var spot = weilder.GetComponent<PlayerUnitInstance>().getNextSummonSpotForUnit();
+                    enemy.transform.SetParent(spot.transform);
+                    if(enemy.GetComponent<UnitClass>().stats.u_type != GameInfo.combatUnitType.deadUnit)
+                        enemy.transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+                    else
+                        enemy.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+                    enemy.transform.localScale = enemy.GetComponent<UnitClass>().combatStats.normalSize;
+                    enemy.transform.DOLocalMove(enemy.GetComponent<UnitClass>().combatStats.normalPos, .15f);
+                    spot.GetComponent<CombatSpot>().setColor();
+                }
+                break;
         }
+
+        //  cost
+        if(succeeded) {
+            foreach(var i in sCosts) {
+                switch(i.costType) {
+                    case specialUsageCostType.health:
+                        weilder.addHealth(-i.costAmount);
+                        break;
+
+                    case specialUsageCostType.stun:
+                        weilder.chanceGettingStunned(100.0f);
+                        break;
+
+                    case specialUsageCostType.bleed:
+                        weilder.stats.u_bleedCount += (int)i.costAmount;
+                        break;
+                }
+            }
+        }
+
+        return succeeded;
     }
 
     public int getPowerAttCount() {
@@ -87,9 +160,12 @@ public class Weapon : Collectable {
         attributes = other.attributes;
         sprite = other.sprite;
         sUsage = other.sUsage;
+        sCosts = other.sCosts;
         sUsageAmount = other.sUsageAmount;
+        sUsageChance = other.sUsageChance;
         wornAmount = other.wornAmount;
         aType = other.aType;
+
     }
 
 
@@ -115,11 +191,6 @@ public class Weapon : Collectable {
 
         return (attribute)index;
     }
-
-
-    public WeaponSpriteHolder getSpriteHolder() {
-        return sprite;
-    }
 }
 
 
@@ -127,6 +198,7 @@ public class Weapon : Collectable {
 public class WeaponSpriteHolder {
     public Sprite sprite;
 
-    public float equippedX, equippedY, equippedRot;
-    public float equippedXSize, equippedYSize;
+    public Vector2 pos = new Vector2();
+    public Vector2 size = new Vector2();
+    public float rot;
 }

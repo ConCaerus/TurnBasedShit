@@ -4,7 +4,7 @@ using UnityEngine;
 
 [System.Serializable]
 public class EnemyUnitInstance : UnitClass {
-    public Weapon.attackType weakTo;
+    public Weapon.attackType weakTo = (Weapon.attackType)(-1);
     [SerializeField] AnimationClip idle;
 
     public WeaponPreset weaponDrop;
@@ -19,42 +19,49 @@ public class EnemyUnitInstance : UnitClass {
     public int chanceToDropUnusable;
 
 
-    public type enemyType;
-
-    [System.Serializable]
-    public enum type {
-        slime, groundBird, stumpSpider, rockCrawler
-    }
-
-
     private void Awake() {
         combatStats.isPlayerUnit = false;
+        if(GetComponentInChildren<UnitSpriteHandler>() != null)
+            GetComponentInChildren<UnitSpriteHandler>().setReference(stats, true);
     }
 
     public override void setAttackingAnim() {
-        if(GetComponent<Animator>() != null) {
+        if(stats.u_type == GameInfo.combatUnitType.deadUnit) {
+            GetComponentInChildren<UnitSpriteHandler>().setAnimSpeed(1.0f);
+            GetComponentInChildren<UnitSpriteHandler>().triggerAttackAnim();
+        }
+        else if(GetComponent<Animator>() != null) {
             GetComponent<Animator>().speed = 1.0f;
             GetComponent<Animator>().SetTrigger("attack");
         }
     }
     public override void setDefendingAnim() {
-        if(GetComponent<Animator>() != null) {
+        if(stats.u_type == GameInfo.combatUnitType.deadUnit) {
+            GetComponentInChildren<UnitSpriteHandler>().setAnimSpeed(1.0f);
+            GetComponentInChildren<UnitSpriteHandler>().triggerDefendAnim();
+        }
+        else if(GetComponent<Animator>() != null) {
             GetComponent<Animator>().speed = 1.0f;
             GetComponent<Animator>().SetTrigger("defend");
         }
     }
 
     public bool isIdle() {
+        if(stats.u_type == GameInfo.combatUnitType.deadUnit)
+            return GetComponentInChildren<UnitSpriteHandler>().isAnimIdle();
         return GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip == idle;
     }
 
     public IEnumerator combatTurn() {
+        if(gameObject != FindObjectOfType<TurnOrderSorter>().playingUnit)
+            yield return 0;
         if(combatStats.attackingTarget == null)
             calcNextAttackingTarget();
 
         yield return new WaitForSeconds(1f);
 
-        attack(combatStats.attackingTarget);
+        if(gameObject == FindObjectOfType<TurnOrderSorter>().playingUnit)
+            attack(combatStats.attackingTarget);
     }
 
 
@@ -155,9 +162,5 @@ public class EnemyUnitInstance : UnitClass {
             loc.spoils.addObject<Collectable>(FindObjectOfType<PresetLibrary>().getUnusable(unusableDrop.preset));
             GameInfo.setCombatDetails(loc);
         }
-    }
-
-    public void selfDestruct() {
-        Destroy(this);
     }
 }

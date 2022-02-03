@@ -5,15 +5,16 @@ using UnityEngine;
 [System.Serializable]
 public class UnitStats {
     public string u_name = "";
+    public GameInfo.combatUnitType u_type;
 
-    public float u_expCap = 25.0f;
-    public float u_exp = 0.0f;
-    public int u_level = 1;
+    public float u_expCap { get; private set; } = 25.0f;
+    public float u_exp { get; private set; } = 0.0f;
+    public int u_level { get; private set; } = 1;
     const int maxLevel = 6;
-    public float u_skillExpCap = 100.0f;
-    public float u_bluntExp;
-    public float u_edgedExp;
-    public float u_summonedExp;
+    public float u_skillExpCap { get; private set; } = 100.0f;
+    public float u_bluntExp { get; private set; }
+    public float u_edgedExp { get; private set; }
+    public float u_summonedExp { get; private set; }
 
     public UnitSpriteInfo u_sprite = new UnitSpriteInfo();
 
@@ -143,12 +144,15 @@ public class UnitStats {
             dmg += (0.1f * dmg) * armor.getPowerAttCount();
         }
 
+        var dmgType = (Weapon.attackType)(-1);
+        if(weapon != null && !weapon.isEmpty())
+            dmgType = weapon.aType;
         //  Traits modify damage
         foreach(var i in u_traits) {    //  adds whatever the trait's power mod is times the base damage
-            dmg += i.getDamageGivenMod() * baseDmg;
+            dmg += i.getDamageGivenMod(dmgType) * baseDmg;
         }
         if(u_talent != null)
-            dmg += u_talent.getDamageGivenMod() * baseDmg;
+            dmg += u_talent.getDamageGivenMod(dmgType) * baseDmg;
 
         //  levels modify damage
         dmg *= getLevelDamageMult();
@@ -283,6 +287,34 @@ public class UnitStats {
         return cost;
     }
 
+    public void addSummonExp(float exp) {
+        if(u_talent != null)
+            exp *= u_talent.getSummonExpMod();
+
+        foreach(var i in u_traits)
+            exp *= i.getSummonExpMod();
+
+        u_summonedExp += exp;
+    }
+    public void addBluntExp(float exp) {
+        if(u_talent != null)
+            exp *= u_talent.getBluntExpMod();
+
+        foreach(var i in u_traits)
+            exp *= i.getBluntExpMod();
+
+        u_bluntExp += exp;
+    }
+    public void addEdgedExp(float exp) {
+        if(u_talent != null)
+            exp *= u_talent.getEdgedExpMod();
+
+        foreach(var i in u_traits)
+            exp *= i.getEdgedExpMod();
+
+        u_edgedExp += exp;
+    }
+
     public bool canLevelUp() {
         return u_exp >= u_expCap;
     }
@@ -302,14 +334,14 @@ public class UnitStats {
         return Mathf.FloorToInt(u_summonedExp / u_skillExpCap) + 1;
     }
 
-    public void die(DeathInfo.killCause cause, GameObject killer = null) {
+    public void die(DeathInfo.killCause cause, PresetLibrary lib, GameObject killer = null) {
         //  add equipped things back into the inventory
         if(weapon != null && !weapon.isEmpty())
-            Inventory.addCollectable(weapon);
+            Inventory.addCollectable(weapon, lib);
         if(armor != null && !armor.isEmpty())
-            Inventory.addCollectable(armor);
+            Inventory.addCollectable(armor, lib);
         if(item != null && !item.isEmpty())
-            Inventory.addCollectable(item);
+            Inventory.addCollectable(item, lib);
 
         weapon = null;
         armor = null;

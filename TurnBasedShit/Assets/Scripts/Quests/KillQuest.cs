@@ -5,10 +5,10 @@ using UnityEngine;
 [System.Serializable]
 public class KillQuest : Quest {
     public int howManyToKill;
-    public EnemyUnitInstance.type enemyType;
+    public GameInfo.combatUnitType enemyType;
 
 
-    public KillQuest(int c, EnemyUnitInstance.type type, bool setID) {
+    public KillQuest(int c, GameInfo.combatUnitType type, bool setID) {
         if(setID)
             instanceID = GameInfo.getNextQuestInstanceID();
 

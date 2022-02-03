@@ -9,7 +9,7 @@ using UnityEngine.Experimental.Rendering.Universal;
 public class BattleOptionsCanvas : MonoBehaviour {
     [SerializeField] GameObject chooseTargetText;
     [SerializeField] GameObject attackButton, defendButton, chargeButton, specialButton;
-    [SerializeField] GameObject speedButton;
+    [SerializeField] GameObject speedButton, pauseButton;
 
     public int battleState = 0;
     bool showing = false, showingChooseTargetText = false;
@@ -76,7 +76,7 @@ public class BattleOptionsCanvas : MonoBehaviour {
             chargeButton.GetComponent<InfoBearer>().setInfo("Charge");
         }
 
-        if(unit.stats.weapon != null && !unit.stats.weapon.isEmpty() && unit.stats.weapon.sUsage != Weapon.specialUsage.none) {
+        if(unit.stats.weapon != null && !unit.stats.weapon.isEmpty() && unit.stats.weapon.sUsage != (Weapon.specialUsage)(-1)) {
             specialButton.GetComponent<Button>().interactable = true;
             specialButton.GetComponentInChildren<Light2D>().enabled = true;
 
@@ -84,6 +84,8 @@ public class BattleOptionsCanvas : MonoBehaviour {
                 specialButton.GetComponent<InfoBearer>().setInfo("Heal");
             else if(unit.stats.weapon.sUsage == Weapon.specialUsage.summoning)
                 specialButton.GetComponent<InfoBearer>().setInfo("Summon");
+            else if(unit.stats.weapon.sUsage == Weapon.specialUsage.convertTarget)
+                specialButton.GetComponent<InfoBearer>().setInfo("Convert");
         }
         else {
             specialButton.GetComponent<Button>().interactable = false;
@@ -131,7 +133,7 @@ public class BattleOptionsCanvas : MonoBehaviour {
         yield return new WaitForSeconds(1.0f);
 
         unit.charging = false;
-        unit.setStunned(false);
+        unit.setUnstunned();
         FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
     }
 
@@ -251,18 +253,34 @@ public class BattleOptionsCanvas : MonoBehaviour {
             case ">":
                 Time.timeScale = 2.0f;
                 speedButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = ">>";
+                pauseButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "||";
                 break;
 
             case ">>":
                 Time.timeScale = 4.0f;
                 speedButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = ">>>";
+                pauseButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "||";
                 break;
 
             case ">>>":
                 Time.timeScale = 1.0f;
                 speedButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = ">";
+                pauseButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "||";
                 break;
 
+        }
+    }
+    public void pause() {
+        if(Time.timeScale != 0) {
+            Time.timeScale = 0;
+            pauseButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = ">";
+        }
+        else {
+            //  cycle through all of the speed states utill time is set to what it was before the pause
+            nextSpeedState();
+            nextSpeedState();
+            nextSpeedState();
+            pauseButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "||";
         }
     }
 }

@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 2457729459066249755}
   - component: {fileID: 2457729459066249752}
   - component: {fileID: 1233604047855384963}
+  - component: {fileID: 2535097338780761049}
   m_Layer: 0
   m_Name: Body0
   m_TagString: Untagged
@@ -137,6 +138,24 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &2535097338780761049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2457729459066249754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc415699647fab44f8daed4eee6e0eab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rArm: {fileID: 2507551178449430452}
+  lArm: {fileID: 9084552387629628982}
+  weapon: {fileID: 8686200552485050264}
+  armor: {fileID: 4391241807833755467}
+  rArmor: {fileID: 8515267018001779076}
+  lArmor: {fileID: 8142851920635248543}
 --- !u!1 &2507551178449430452
 GameObject:
   m_ObjectHideFlags: 0
@@ -404,7 +423,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 921474463
   m_SortingLayer: 2
-  m_SortingOrder: 5
+  m_SortingOrder: 3
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -682,7 +701,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 921474463
   m_SortingLayer: 2
-  m_SortingOrder: 4
+  m_SortingOrder: 2
   m_Sprite: {fileID: 566289804404761724, guid: 589fd9954d6285a4e89483743597ba5e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

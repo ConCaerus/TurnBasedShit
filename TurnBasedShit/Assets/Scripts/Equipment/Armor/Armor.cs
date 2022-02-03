@@ -14,7 +14,7 @@ public class Armor : Collectable {
     public float defence;
     public float speedMod;
 
-    [SerializeField] ArmorSpriteHolder sprite;
+    public ArmorSpriteHolder sprite { get; private set; }
 
     //  this function is applied by the defending unit while the weapon class has its function called by the attacker
     public int applyAttributes(GameObject weilder, GameObject attacker, GameObject turnTaker) {
@@ -97,11 +97,6 @@ public class Armor : Collectable {
 
         return (attribute)index;
     }
-
-
-    public ArmorSpriteHolder getSpriteHolder() {
-        return sprite;
-    }
 }
 
 
@@ -109,82 +104,39 @@ public class Armor : Collectable {
 public class ArmorSpriteHolder {
     public Sprite sprite, equippedSprite, equippedShoulder, equippedHat;
 
-    public float xPos0, yPos0, xSize0, ySize0;
-    public float xPos1, yPos1, xSize1, ySize1;
-    public float xPos2, yPos2, xSize2, ySize2;
+    //  main
+    public Vector2[] pos = new Vector2[3];
+    public Vector2[] size = new Vector2[3];
 
-    public float xShoulderPos0, yShoulderPos0, xShoulderSize0, yShoulderSize0, shoulderRot;
-    public float xShoulderPos1, yShoulderPos1, xShoulderSize1, yShoulderSize1;
-    public float xShoulderPos2, yShoulderPos2, xShoulderSize2, yShoulderSize2;
+    //  shoulders
+    public Vector2[] shoulderPos = new Vector2[3];
+    public Vector2[] shoulderSize = new Vector2[3];
+    public float shoulderRot;
 
+    //  hat
     public bool hatInfrontOfHead = true;
-    public float xHatPos0, yHatPos0, xHatSize0, yHatSize0, hatRot;
-    public float xHatPos1, yHatPos1, xHatSize1, yHatSize1;
-    public float xHatPos2, yHatPos2, xHatSize2, yHatSize2;
+    public Vector2[] hatPos = new Vector2[3];
+    public Vector2[] hatSize = new Vector2[3];
+    public float hatRot;
 
     public Vector2 getRelevantPos(int bodyIndex) {
-        if(bodyIndex == 0)
-            return new Vector2(xPos0, yPos0);
-        else if(bodyIndex == 1)
-            return new Vector2(xPos1, yPos1);
-        else if(bodyIndex == 2)
-            return new Vector2(xPos2, yPos2);
-
-        return Vector2.zero;
+        return pos[bodyIndex];
     }
-
     public Vector2 getRelevantSize(int bodyIndex) {
-        if(bodyIndex == 0)
-            return new Vector2(xSize0, ySize0);
-        else if(bodyIndex == 1)
-            return new Vector2(xSize1, ySize1);
-        else if(bodyIndex == 2)
-            return new Vector2(xSize2, ySize2);
-
-        return Vector2.zero;
+        return size[bodyIndex];
     }
 
     public Vector2 getRelevantShoulderPos(int bodyIndex) {
-        if(bodyIndex == 0)
-            return new Vector2(xShoulderPos0, yShoulderPos0);
-        else if(bodyIndex == 1)
-            return new Vector2(xShoulderPos1, yShoulderPos1);
-        else if(bodyIndex == 2)
-            return new Vector2(xShoulderPos2, yShoulderPos2);
-
-        return Vector2.zero;
+        return shoulderPos[bodyIndex];
     }
-
     public Vector2 getRelevantShoulderSize(int bodyIndex) {
-        if(bodyIndex == 0)
-            return new Vector2(xShoulderSize0, yShoulderSize0);
-        else if(bodyIndex == 1)
-            return new Vector2(xShoulderSize1, yShoulderSize1);
-        else if(bodyIndex == 2)
-            return new Vector2(xShoulderSize2, yShoulderSize2);
-
-        return Vector2.zero;
+        return shoulderSize[bodyIndex];
     }
 
-    public Vector2 getRelevantHatPos(int bodyIndex) {
-        if(bodyIndex == 0)
-            return new Vector2(xHatPos0, yHatPos0);
-        else if(bodyIndex == 1)
-            return new Vector2(xHatPos1, yHatPos1);
-        else if(bodyIndex == 2)
-            return new Vector2(xHatPos2, yHatPos2);
-
-        return Vector2.zero;
+    public Vector2 getRelevantHatPos(int headIndex) {
+        return hatPos[headIndex];
     }
-
-    public Vector2 getRelevantHatSize(int bodyIndex) {
-        if(bodyIndex == 0)
-            return new Vector2(xHatSize0, yHatSize0);
-        else if(bodyIndex == 1)
-            return new Vector2(xHatSize1, yHatSize1);
-        else if(bodyIndex == 2)
-            return new Vector2(xHatSize2, yHatSize2);
-
-        return Vector2.zero;
+    public Vector2 getRelevantHatSize(int headIndex) {
+        return hatSize[headIndex];
     }
 }

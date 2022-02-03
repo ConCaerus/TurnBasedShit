@@ -19,17 +19,15 @@ public abstract class UnitMovement : MonoBehaviour {
 
     protected Coroutine anim = null;
 
-    private void Awake() {
+    private void Start() {
         DOTween.Init();
         canMove = true;
         unit.GetComponent<UnitSpriteHandler>().setReference(Party.getLeaderStats(), true);
-        unit.GetComponentInChildren<UnitSpriteHandler>().showFace();
         setVisuals();
     }
 
     public void setVisuals() {
         unit.GetComponent<UnitSpriteHandler>().setReference(Party.getLeaderStats(), true);
-        unit.GetComponent<UnitSpriteHandler>().updateVisuals();
     }
 
     public abstract bool showWeapon();
@@ -50,11 +48,7 @@ public abstract class UnitMovement : MonoBehaviour {
 
     protected IEnumerator toggleFaceDuringFlip(bool state) {
         yield return new WaitForSeconds(flipSpeed / 2.0f);
-
-        if(state)
-            GetComponentInChildren<UnitSpriteHandler>().showFace();
-        else
-            GetComponentInChildren<UnitSpriteHandler>().hideFace();
+        GetComponentInChildren<UnitSpriteHandler>().setShowingFace(state);
     }
 
 

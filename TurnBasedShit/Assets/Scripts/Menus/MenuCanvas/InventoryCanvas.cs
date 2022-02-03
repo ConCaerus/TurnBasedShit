@@ -26,14 +26,6 @@ public class InventoryCanvas : MonoBehaviour {
     private void Update() {
         if(slot.run()) {
             updateInfo();
-            if(getSelectedCollectable() != null) {
-                itemNameText.text = getSelectedCollectable().name;
-                flavorText.text = getSelectedCollectable().flavor;
-            }
-            else {
-                itemNameText.text = "";
-                flavorText.text = "";
-            }
         }
     }
 
@@ -44,7 +36,7 @@ public class InventoryCanvas : MonoBehaviour {
             case 0:
                 for(int i = 0; i < Inventory.getHolder().getObjectCount<Weapon>(); i++) {
                     var obj = makeSlot(i, Inventory.getHolder().getObject<Weapon>(i), InfoTextCreator.createForCollectable(Inventory.getHolder().getObject<Weapon>(i)));
-                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
+                    obj.GetComponent<SlotObject>().setText(0, "");
                     yield return new WaitForSeconds(waitTime);
                 }
                 slot.deleteSlotsAfterIndex(Inventory.getHolder().getObjectCount<Weapon>());
@@ -54,7 +46,7 @@ public class InventoryCanvas : MonoBehaviour {
             case 1:
                 for(int i = 0; i < Inventory.getHolder().getObjectCount<Armor>(); i++) {
                     var obj = makeSlot(i, Inventory.getHolder().getObject<Armor>(i), InfoTextCreator.createForCollectable(Inventory.getHolder().getObject<Armor>(i)));
-                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
+                    obj.GetComponent<SlotObject>().setText(0, "");
                     yield return new WaitForSeconds(waitTime);
                 }
                 slot.deleteSlotsAfterIndex(Inventory.getHolder().getObjectCount<Armor>());
@@ -64,7 +56,7 @@ public class InventoryCanvas : MonoBehaviour {
             case 2:
                 for(int i = 0; i < Inventory.getHolder().getObjectCount<Item>(); i++) {
                     var obj = makeSlot(i, Inventory.getHolder().getObject<Item>(i), InfoTextCreator.createForCollectable(Inventory.getHolder().getObject<Item>(i)));
-                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
+                    obj.GetComponent<SlotObject>().setText(0, "");
                     yield return new WaitForSeconds(waitTime);
                 }
                 slot.deleteSlotsAfterIndex(Inventory.getHolder().getObjectCount<Item>());
@@ -210,8 +202,8 @@ public class InventoryCanvas : MonoBehaviour {
 
     GameObject makeSlot(int i, Collectable c, string info) {
         var obj = slot.createSlot(i, Color.white, info);
-        obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getGenericSpriteForCollectable(c);
-        obj.transform.GetComponent<Image>().color = FindObjectOfType<PresetLibrary>().getRarityColor(c.rarity);
+        obj.GetComponent<SlotObject>().setImage(1, FindObjectOfType<PresetLibrary>().getGenericSpriteForCollectable(c));
+        obj.GetComponent<SlotObject>().setImageColor(0, FindObjectOfType<PresetLibrary>().getRarityColor(c.rarity));
 
         return obj;
     }
@@ -295,7 +287,7 @@ public class InventoryCanvas : MonoBehaviour {
         Inventory.removeCollectable(w);
 
         if(uWeapon != null && !uWeapon.isEmpty())
-            Inventory.addCollectable(uWeapon);
+            Inventory.addCollectable(uWeapon, FindObjectOfType<PresetLibrary>());
 
         Party.overrideUnitOfSameInstance(shownUnit);
     }
@@ -307,7 +299,7 @@ public class InventoryCanvas : MonoBehaviour {
         Inventory.removeCollectable(a);
 
         if(uArmor != null && !uArmor.isEmpty())
-            Inventory.addCollectable(uArmor);
+            Inventory.addCollectable(uArmor, FindObjectOfType<PresetLibrary>());
 
         Party.overrideUnitOfSameInstance(shownUnit);
     }
@@ -319,7 +311,7 @@ public class InventoryCanvas : MonoBehaviour {
         Inventory.removeCollectable(i);
 
         if(uItem != null && !uItem.isEmpty())
-            Inventory.addCollectable(uItem);
+            Inventory.addCollectable(uItem, FindObjectOfType<PresetLibrary>());
 
         Party.overrideUnitOfSameInstance(shownUnit);
     }

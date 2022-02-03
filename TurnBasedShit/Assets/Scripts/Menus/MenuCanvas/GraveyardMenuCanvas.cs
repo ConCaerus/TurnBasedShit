@@ -23,10 +23,10 @@ public class GraveyardMenuCanvas : MonoBehaviour {
 
             if(Graveyard.getHolder().getObject<UnitStats>(i).u_deathInfo.causeOfDeath == DeathInfo.killCause.murdered) {
                 obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Killed by ";
-                if(Graveyard.getHolder().getObject<UnitStats>(i).u_deathInfo.enemyType == (EnemyUnitInstance.type)(-1))
+                if(Graveyard.getHolder().getObject<UnitStats>(i).u_deathInfo.combatType == (GameInfo.combatUnitType)(-1))
                     obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text += "a teammate named " + Graveyard.getHolder().getObject<UnitStats>(i).u_deathInfo.nameOfKiller;
                 else
-                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text += "a " + Graveyard.getHolder().getObject<UnitStats>(i).u_deathInfo.enemyType.ToString() + " named " + Graveyard.getHolder().getObject<UnitStats>(i).u_deathInfo.nameOfKiller;
+                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text += "a " + Graveyard.getHolder().getObject<UnitStats>(i).u_deathInfo.combatType.ToString() + " named " + Graveyard.getHolder().getObject<UnitStats>(i).u_deathInfo.nameOfKiller;
             }
         }
     }

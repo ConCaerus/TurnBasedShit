@@ -14,6 +14,9 @@ public class TurnOrderSorter : MonoBehaviour {
         FindObjectOfType<MenuCanvas>().addNewRunOnClose(updatePlayerUnits);
     }
 
+    private void Update() {
+    }
+
     public void resetList() {
         unitsInPlay.Clear();
         playingUnit = null;
@@ -142,7 +145,7 @@ public class TurnOrderSorter : MonoBehaviour {
 
         //  resets round if needed
         if(unitsInPlay.Count == 0) {
-            FindObjectOfType<UnitBattleMech>().resetBattleRound();
+            FindObjectOfType<UnitBattleMech>().nextBattleRound();
 
             //  trigger items
             foreach(var i in unitsInPlay) {
@@ -154,34 +157,53 @@ public class TurnOrderSorter : MonoBehaviour {
         }
 
         //  sets next to unit with most speed
-        var next = unitsInPlay[0];
+        GameObject next = null;
         foreach(var i in unitsInPlay) {
             if(i != null) {
-                if(i.GetComponent<UnitClass>().getSpeed() > next.GetComponent<UnitClass>().getSpeed())
-                    next = i.gameObject;
+                if(next == null || i.GetComponent<UnitClass>().getSpeed() > next.GetComponent<UnitClass>().getSpeed()) {    //  meets speed requ
+                    bool viable = true;
+                    if(i.GetComponent<UnitClass>().combatMods != null && i.GetComponent<UnitClass>().combatMods.Length > 0) {
+                        //  checks if unit is viable to play
+                        foreach(var m in i.GetComponent<UnitClass>().combatMods) {
+                            if(m == UnitClass.combatModifier.onlyAttackOnEvenRounds && FindObjectOfType<RoundCounterCanvas>().roundCount % 2 != 0) {    //  can only attack on even rounds
+                                viable = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    if(viable)
+                        next = i.gameObject;
+                }
             }
         }
 
-        //  sets playing unit to next
-        playingUnit = next;
-        playingUnit.GetComponent<UnitClass>().prepareUnitForNextRound();
-        FindObjectOfType<BattleOptionsCanvas>().runCombatOptions();
 
-        //  flair
-        foreach(var i in FindObjectsOfType<CombatSpot>())
-            i.setColor();
-        FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
-
-        //  triggers
-        if(playingUnit.GetComponent<UnitClass>().stats.item != null && !playingUnit.GetComponent<UnitClass>().stats.item.isEmpty()) {
-            playingUnit.GetComponent<UnitClass>().stats.item.triggerUseTime(playingUnit.GetComponent<UnitClass>(), Item.useTimes.beforeTurn);
-            playingUnit.GetComponent<UnitClass>().stats.item.triggerUseTime(playingUnit.GetComponent<UnitClass>(), Item.useTimes.beforeEachTurn);
+        if(next == null) {
+            FindObjectOfType<UnitBattleMech>().nextBattleRound();
         }
+        else {
+            //  sets playing unit to next
+            playingUnit = next;
+            playingUnit.GetComponent<UnitClass>().prepareUnitForNextRound();
+            FindObjectOfType<BattleOptionsCanvas>().runCombatOptions();
 
-        FindObjectOfType<BattleOptionsCanvas>().battleState = 0;
-        FindObjectOfType<TurnOrderCanvas>().updateInfomation(true);
-        FindObjectOfType<BattleOptionsCanvas>().updateButtonInteractability();
+            //  flair
+            foreach(var i in FindObjectsOfType<CombatSpot>())
+                i.setColor();
+            FindObjectOfType<UnitCombatHighlighter>().updateHighlights();
 
-        turnWaiter = null;
+            //  triggers
+            if(playingUnit.GetComponent<UnitClass>().stats.item != null && !playingUnit.GetComponent<UnitClass>().stats.item.isEmpty()) {
+                playingUnit.GetComponent<UnitClass>().stats.item.triggerUseTime(playingUnit.GetComponent<UnitClass>(), Item.useTimes.beforeTurn);
+                playingUnit.GetComponent<UnitClass>().stats.item.triggerUseTime(playingUnit.GetComponent<UnitClass>(), Item.useTimes.beforeEachTurn);
+            }
+
+            FindObjectOfType<BattleOptionsCanvas>().battleState = 0;
+            FindObjectOfType<TurnOrderCanvas>().updateInfomation(true);
+            FindObjectOfType<BattleOptionsCanvas>().updateButtonInteractability();
+
+            turnWaiter = null;
+        }
     }
 }

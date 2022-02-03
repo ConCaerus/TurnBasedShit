@@ -9,9 +9,9 @@ public class DebuggerWindow : EditorWindow {
     int invCount = 0;
     [SerializeField] WeaponPreset weaponToAdd;
     [SerializeField] ArmorPreset armorToAdd;
+    [SerializeField] ItemPreset itemToAdd;
     [SerializeField] UsablePreset usableToAdd;
     [SerializeField] UnusablePreset unusableToAdd;
-    [SerializeField] ItemPreset itemToAdd;
 
     [MenuItem("Window/Debugger")]
     public static void showWindow() {
@@ -155,27 +155,27 @@ public class DebuggerWindow : EditorWindow {
         for(int j = 0; j < count; j++) {
             if(weaponToAdd != null) {
                 Weapon w = FindObjectOfType<PresetLibrary>().getWeapon(weaponToAdd.preset);
-                Inventory.addCollectable(w);
+                Inventory.addCollectable(w, FindObjectOfType<PresetLibrary>());
             }
 
             if(armorToAdd != null) {
                 Armor a = FindObjectOfType<PresetLibrary>().getArmor(armorToAdd.preset);
-                Inventory.addCollectable(a);
+                Inventory.addCollectable(a, FindObjectOfType<PresetLibrary>());
             }
 
             if(usableToAdd != null) {
                 Usable c = FindObjectOfType<PresetLibrary>().getUsable(usableToAdd.preset);
-                Inventory.addCollectable(c);
+                Inventory.addCollectable(c, FindObjectOfType<PresetLibrary>());
             }
 
             if(unusableToAdd != null) {
                 Unusable c = FindObjectOfType<PresetLibrary>().getUnusable(unusableToAdd.preset);
-                Inventory.addCollectable(c);
+                Inventory.addCollectable(c, FindObjectOfType<PresetLibrary>());
             }
 
             if(itemToAdd != null) {
                 Item i = FindObjectOfType<PresetLibrary>().getItem(itemToAdd.preset);
-                Inventory.addCollectable(i);
+                Inventory.addCollectable(i, FindObjectOfType<PresetLibrary>());
             }
         }
 

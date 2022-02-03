@@ -2461,8 +2461,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   combatStats:
-    hurtSound: {fileID: 8300000, guid: f15719dcce204794099a0a4467591b7d, type: 3}
-    dieSound: {fileID: 8300000, guid: 5665238162eda3c4e8090423e9059acf, type: 3}
+    hurtSound: {fileID: 8300000, guid: a958869f37cca0740b645bdd5cd203fa, type: 3}
+    dieSound: {fileID: 8300000, guid: d0981af2bef3a9640a0ef8e9d06b562d, type: 3}
     missSound: {fileID: 8300000, guid: 484b5b1384ddf4d47bb1e82d4183095a, type: 3}
     attackingTarget: {fileID: 0}
     bloodParticles: {fileID: 2915087688519792205, guid: 4fdf5a70cefb9dc409fa113f55c33321,
@@ -2477,6 +2477,7 @@ MonoBehaviour:
     normalPos: {x: 0, y: 0}
   stats:
     u_name: Stump Spider
+    u_type: 3
     u_expCap: 25
     u_exp: 0
     u_level: 2
@@ -2616,7 +2617,7 @@ MonoBehaviour:
     u_deathInfo:
       nameOfKiller: 
       causeOfDeath: 0
-      enemyType: 0
+      combatType: 0
   defending: 0
   stunned: 0
   charging: 0
@@ -2632,7 +2633,6 @@ MonoBehaviour:
   chanceToDropUsable: 0
   unusableDrop: {fileID: 0}
   chanceToDropUnusable: 0
-  enemyType: 2
 --- !u!114 &6282617046680874179
 MonoBehaviour:
   m_ObjectHideFlags: 0

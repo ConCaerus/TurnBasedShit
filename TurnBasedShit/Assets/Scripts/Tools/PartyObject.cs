@@ -69,6 +69,13 @@ public class PartyObject : MonoBehaviour {
         }
         return null;
     }
+    public List<GameObject> getInstantiatedMembers() {
+        var temp = new List<GameObject>();
+        foreach(var i in FindObjectsOfType<PlayerUnitInstance>()) {
+            temp.Add(i.gameObject);
+        }
+        return temp;
+    }
 
 
     public void repositionUnit(GameObject unit) {
