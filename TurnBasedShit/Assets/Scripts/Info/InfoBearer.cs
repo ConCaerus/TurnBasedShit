@@ -5,8 +5,10 @@ using UnityEngine;
 public class InfoBearer : MonoBehaviour {
     [SerializeField] string info = "<b><u>Information";
 
+    public bool showNoMatterMenuState = false;
     public bool hideWhenMenuOpen = true;
     public bool hideWhenCoveredByMapFog = false;
+    public Collectable optionsCollectableReference = null;
 
 
     public delegate void func();
@@ -14,7 +16,7 @@ public class InfoBearer : MonoBehaviour {
 
 
     private void OnMouseEnter() {
-        if(hideWhenMenuOpen && FindObjectOfType<MenuCanvas>().isOpen())
+        if(hideWhenMenuOpen && !showNoMatterMenuState && FindObjectOfType<MenuCanvas>().isOpen())
             return;
         if(hideWhenCoveredByMapFog && !FindObjectOfType<MapFogTexture>().isPositionCleared(transform.position))
             return;
@@ -27,7 +29,8 @@ public class InfoBearer : MonoBehaviour {
     }
 
     private void OnMouseExit() {
-        FindObjectOfType<InfoCanvas>().startHiding();
+        FindObjectOfType<InfoCanvas>().hideInfo();
+        FindObjectOfType<InfoCanvas>().resetShownInfo();
 
         if(mouseExitFunc != null)
             mouseExitFunc();

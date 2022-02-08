@@ -6,7 +6,7 @@ using UnityEngine;
 public abstract class Collectable {
     [System.Serializable]
     public enum collectableType {
-        weapon, armor, item, usable, unusable
+        Weapon, Armor, Item, Usable, Unusable
     }
 
     public int instanceID = -1;
@@ -20,14 +20,16 @@ public abstract class Collectable {
     public FishedLootData fishedData = null;
 
     public string flavor = "Choco";
+    [TextArea]
+    public string description = "Collectable thing";
 
     public bool isTheSameInstanceAs(Collectable other) {
-        if(other == null || other.instanceID == -1)
+        if(other == null || other.isEmpty())
             return false;
         return other.instanceID == instanceID;
     }
     public bool isEmpty() {
-        return instanceID == -1 || string.IsNullOrEmpty(name);
+        return instanceID == -1 && string.IsNullOrEmpty(name);
     }
 
     public bool isTheSameTypeAs(Collectable other) {
@@ -45,6 +47,7 @@ public abstract class Collectable {
         fishedData = other.fishedData;
         maxStackCount = other.maxStackCount;
         flavor = other.flavor;
+        description = other.description;
 
         if(takeInstanceID)
             instanceID = other.instanceID;

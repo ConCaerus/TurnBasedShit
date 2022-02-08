@@ -34,7 +34,7 @@ public class TownMemberMovement : MonoBehaviour {
     }
 
     private void Update() {
-        if(FindObjectOfType<TransitionCanvas>().loaded && canMove) {
+        if(FindObjectOfType<TransitionCanvas>().loaded) {
             if(canMove) {
                 move();
                 unit.GetComponent<UnitSpriteHandler>().setWalkingAnim(true);
@@ -113,6 +113,7 @@ public class TownMemberMovement : MonoBehaviour {
         canMove = true;
 
         //  stop moving if looking at player
+        //  looks at all other members to see if they are interacting with the player
         bool interactingWithAnother = false;
         foreach(var i in FindObjectsOfType<TownMemberInstance>()) {
             if(i.interacting) {
@@ -120,12 +121,15 @@ public class TownMemberMovement : MonoBehaviour {
                 break;
             }
         }
+
+        //  if no one else is interacting, check if the player is looking at this member
         if(!interactingWithAnother) {
             float offset = FindObjectOfType<LocationMovement>().transform.position.x - transform.position.x;
+            //  while in range, and the player is facing towards this member stop moving
             while(Mathf.Abs(offset) < distToStop && (offset == 0.0f || (offset < 0.0f && FindObjectOfType<LocationMovement>().movingRight) || (offset > 0.0f && !FindObjectOfType<LocationMovement>().movingRight))) {
                 canMove = false;
 
-
+                //  checks again if the player is interacting with another member
                 foreach(var i in FindObjectsOfType<TownMemberInstance>()) {
                     if(i.interacting) {
                         interactingWithAnother = true;
@@ -133,9 +137,11 @@ public class TownMemberMovement : MonoBehaviour {
                     }
                 }
 
+                //  breaks if so
                 if(interactingWithAnother)
                     break;
 
+                //  flips to look at the player
                 if(movingDir == FindObjectOfType<LocationMovement>().movingRight)
                     flip();
 

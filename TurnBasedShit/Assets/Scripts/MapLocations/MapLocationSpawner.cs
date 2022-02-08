@@ -6,11 +6,9 @@ using UnityEngine.EventSystems;
 
 public class MapLocationSpawner : MonoBehaviour {
     public GameObject bridgePreset;
-    public GameObject bossLocationPreset, rescueLocationPreset, townLocationPreset, upgradeLocationPreset, pickupLocationPreset, fishingLocationPreset, eyeLocationPreset;
+    public GameObject bossLocationPreset, rescueLocationPreset, townLocationPreset, upgradeLocationPreset, pickupLocationPreset, fishingLocationPreset, eyeLocationPreset, lootLocationPreset;
 
     List<GameObject> currentIcons = new List<GameObject>();
-
-    float distToInteract = 1.0f;
 
 
 
@@ -109,6 +107,19 @@ public class MapLocationSpawner : MonoBehaviour {
             //  positioning and scaling
             var obj = Instantiate(eyeLocationPreset.gameObject);
             obj.transform.position = MapLocationHolder.getHolder().getObject<EyeLocation>(i).pos;
+            obj.transform.SetParent(transform.GetChild(0));
+            obj.transform.localScale = Vector3.one / 2.0f;
+
+            currentIcons.Add(obj);
+        }
+
+        //  loot
+        for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<LootLocation>(); i++) {
+            if(MapLocationHolder.getHolder().getObject<LootLocation>(i).region != GameInfo.getCurrentRegion())
+                continue;
+            //  positioning and scaling
+            var obj = Instantiate(lootLocationPreset.gameObject);
+            obj.transform.position = MapLocationHolder.getHolder().getObject<LootLocation>(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
 

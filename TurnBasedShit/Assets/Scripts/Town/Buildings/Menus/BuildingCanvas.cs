@@ -78,6 +78,7 @@ public abstract class BuildingCanvas : MonoBehaviour {
             slots.transform.GetChild(i).GetChild(0).gameObject.SetActive(true);
             slots.transform.GetChild(i).GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnitHeadSprite(Party.getHolder().getObject<UnitStats>(i).u_sprite.headIndex);
             slots.transform.GetChild(i).GetChild(0).GetComponent<Image>().SetNativeSize();
+            slots.transform.GetChild(i).GetChild(1).gameObject.SetActive(true);
             slots.transform.GetChild(i).GetChild(1).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getUnitFace(Party.getHolder().getObject<UnitStats>(i).u_sprite.faceIndex);
             slots.transform.GetChild(i).GetChild(1).GetComponent<Image>().SetNativeSize();
             slots.transform.GetChild(i).GetChild(0).GetComponent<Image>().color = Party.getHolder().getObject<UnitStats>(i).u_sprite.color;

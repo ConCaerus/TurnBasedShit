@@ -8,13 +8,13 @@ public class Armor : Collectable {
     public enum attribute {
         Turtle, Reflex, Power
     }
-    public GameInfo.wornState wornAmount = GameInfo.wornState.perfect;
+    public GameInfo.wornState wornAmount = GameInfo.wornState.Perfect;
     public List<attribute> attributes = new List<attribute>();
 
     public float defence;
     public float speedMod;
 
-    public ArmorSpriteHolder sprite { get; private set; }
+    public ArmorSpriteHolder sprite;
 
     //  this function is applied by the defending unit while the weapon class has its function called by the attacker
     public int applyAttributes(GameObject weilder, GameObject attacker, GameObject turnTaker) {
@@ -59,7 +59,7 @@ public class Armor : Collectable {
     }
 
     public override void setEqualTo(Collectable col, bool takeID) {
-        if(col.type != collectableType.armor || col == null)
+        if(col.type != collectableType.Armor || col == null)
             return;
 
         var other = (Armor)col;

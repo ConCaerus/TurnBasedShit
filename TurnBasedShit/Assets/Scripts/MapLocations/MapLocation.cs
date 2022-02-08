@@ -9,7 +9,7 @@ public abstract class MapLocation {
 
     [Serializable]
     public enum locationType {
-        town, pickup, upgrade, rescue, nest, boss, fishing, eye, bridge
+        town, pickup, upgrade, rescue, boss, fishing, eye, bridge, loot
     }
 
 
@@ -22,10 +22,11 @@ public abstract class MapLocation {
 
     public abstract void enterLocation(TransitionCanvas tc);
 
-    public bool isEqualTo(MapLocation other) {  //  two locations shouldn't have the same position and the same region so this should be enough
+    public bool isEqualTo(MapLocation other) {  
         if(other == null)
             return false;
 
+        //  two locations shouldn't have the same position and the same region so this should be enough
         return pos == other.pos && type == other.type && region == other.region;
     }
 }

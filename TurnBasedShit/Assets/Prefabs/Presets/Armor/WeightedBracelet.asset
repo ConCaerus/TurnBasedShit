@@ -26,6 +26,7 @@ MonoBehaviour:
       hookedRot: 0
       chanceToCatch: 0
     flavor: Packs a punch.
+    description: Collectable thing
     wornAmount: 3
     attributes: 0200000002000000
     defence: 0
@@ -36,42 +37,30 @@ MonoBehaviour:
       equippedShoulder: {fileID: 21300000, guid: 429f3b8b8d5259a4499f7d09648fb7f8,
         type: 3}
       equippedHat: {fileID: 0}
-      xPos0: 0
-      yPos0: 0
-      xSize0: 0
-      ySize0: 0
-      xPos1: 0
-      yPos1: 0
-      xSize1: 0
-      ySize1: 0
-      xPos2: 0
-      yPos2: 0
-      xSize2: 0
-      ySize2: 0
-      xShoulderPos0: 0.032
-      yShoulderPos0: -0.091
-      xShoulderSize0: 0.35
-      yShoulderSize0: 0.35
-      shoulderRot: 6.325
-      xShoulderPos1: -0.02
-      yShoulderPos1: -0.027
-      xShoulderSize1: 0.35
-      yShoulderSize1: 0.35
-      xShoulderPos2: 0.068
-      yShoulderPos2: -0.125
-      xShoulderSize2: 0.35
-      yShoulderSize2: 0.35
+      pos:
+      - {x: 0, y: 0}
+      - {x: 0, y: 0}
+      - {x: 0, y: 0}
+      size:
+      - {x: 0, y: 0}
+      - {x: 0, y: 0}
+      - {x: 0, y: 0}
+      shoulderPos:
+      - {x: 0.016, y: -0.062}
+      - {x: -0.037, y: -0.048}
+      - {x: 0.027, y: -0.053}
+      shoulderSize:
+      - {x: 0.3162802, y: 0.3162802}
+      - {x: 0.30414975, y: 0.30414975}
+      - {x: 0.38411057, y: 0.38411057}
+      shoulderRot: 2.702154
       hatInfrontOfHead: 1
-      xHatPos0: 0
-      yHatPos0: 0
-      xHatSize0: 0
-      yHatSize0: 0
+      hatPos:
+      - {x: 0, y: 0}
+      - {x: 0, y: 0}
+      - {x: 0, y: 0}
+      hatSize:
+      - {x: 0, y: 0}
+      - {x: 0, y: 0}
+      - {x: 0, y: 0}
       hatRot: 0
-      xHatPos1: 0
-      yHatPos1: 0
-      xHatSize1: 0
-      yHatSize1: 0
-      xHatPos2: 0
-      yHatPos2: 0
-      xHatSize2: 0
-      yHatSize2: 0

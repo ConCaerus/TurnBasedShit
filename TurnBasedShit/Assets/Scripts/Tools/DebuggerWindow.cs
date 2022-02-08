@@ -123,7 +123,7 @@ public class DebuggerWindow : EditorWindow {
         if(GUILayout.Button("Clear Locations"))
             MapLocationHolder.clear();
         if(GUILayout.Button("+Upgrade"))
-            MapLocationHolder.addLocation(FindObjectOfType<PresetLibrary>().createUpgradeLocation(GameInfo.getCurrentRegion()));
+            MapLocationHolder.addLocation(FindObjectOfType<PresetLibrary>().createUpgradeLocation(GameInfo.getCurrentRegion(), true));
 
         GUILayout.EndHorizontal();
         GUILayout.BeginHorizontal();
@@ -152,32 +152,30 @@ public class DebuggerWindow : EditorWindow {
 
 
     public void addAndResetEquippmentToAdd(int count = 0) {
+        var temp = new List<Collectable>();
         for(int j = 0; j < count; j++) {
             if(weaponToAdd != null) {
-                Weapon w = FindObjectOfType<PresetLibrary>().getWeapon(weaponToAdd.preset);
-                Inventory.addCollectable(w, FindObjectOfType<PresetLibrary>());
+                temp.Add(FindObjectOfType<PresetLibrary>().getWeapon(weaponToAdd.preset));
             }
 
             if(armorToAdd != null) {
-                Armor a = FindObjectOfType<PresetLibrary>().getArmor(armorToAdd.preset);
-                Inventory.addCollectable(a, FindObjectOfType<PresetLibrary>());
+                temp.Add(FindObjectOfType<PresetLibrary>().getArmor(armorToAdd.preset));
             }
 
             if(usableToAdd != null) {
-                Usable c = FindObjectOfType<PresetLibrary>().getUsable(usableToAdd.preset);
-                Inventory.addCollectable(c, FindObjectOfType<PresetLibrary>());
+                temp.Add(FindObjectOfType<PresetLibrary>().getUsable(usableToAdd.preset));
             }
 
             if(unusableToAdd != null) {
-                Unusable c = FindObjectOfType<PresetLibrary>().getUnusable(unusableToAdd.preset);
-                Inventory.addCollectable(c, FindObjectOfType<PresetLibrary>());
+                temp.Add(FindObjectOfType<PresetLibrary>().getUnusable(unusableToAdd.preset));
             }
 
             if(itemToAdd != null) {
-                Item i = FindObjectOfType<PresetLibrary>().getItem(itemToAdd.preset);
-                Inventory.addCollectable(i, FindObjectOfType<PresetLibrary>());
+                temp.Add(FindObjectOfType<PresetLibrary>().getItem(itemToAdd.preset));
             }
         }
+
+        Inventory.addCollectables(temp, FindObjectOfType<PresetLibrary>(), FindObjectOfType<FullInventoryCanvas>());
 
         weaponToAdd = null;
         armorToAdd = null;

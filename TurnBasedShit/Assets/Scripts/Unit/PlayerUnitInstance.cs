@@ -113,12 +113,12 @@ public class PlayerUnitInstance : UnitClass {
 
     //  returns true if the level increased
     public bool addWeaponTypeExpOnKill(float ex) {
-        if(stats.weapon.aType == Weapon.attackType.blunt) {
+        if(stats.weapon.aType == Weapon.attackType.Blunt) {
             int temp = stats.getBluntLevel();
             stats.addBluntExp(ex);
             return temp != stats.getBluntLevel();
         }
-        else if(stats.weapon.aType == Weapon.attackType.edged) {
+        else if(stats.weapon.aType == Weapon.attackType.Edged) {
             int temp = stats.getEdgedLevel();
             stats.addEdgedExp(ex);
             return temp != stats.getEdgedLevel();

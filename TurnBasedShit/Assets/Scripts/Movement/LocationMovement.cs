@@ -14,10 +14,10 @@ public abstract class LocationMovement : InteractiveMovement {
     }
 
     public override bool shouldInteract() {
-        return Input.GetKey(KeyCode.W);
+        return Input.GetKeyDown(KeyCode.W);
     }
     public override bool shouldDeinteract() {
-        return Input.GetKey(KeyCode.S);
+        return Input.GetKeyDown(KeyCode.S);
     }
 
     public override bool outOfBounds() {

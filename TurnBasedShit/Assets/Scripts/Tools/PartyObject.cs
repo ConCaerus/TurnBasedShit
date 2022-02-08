@@ -99,6 +99,7 @@ public class PartyObject : MonoBehaviour {
 //  Actual Party Script
 public static class Party {
     const string holderTag = "PartyHolderTag";
+    const int maxPartySize = 5;
 
     public static ObjectHolder getHolder() {
         var data = SaveData.getString(holderTag);
@@ -126,6 +127,9 @@ public static class Party {
             saveHolder(new ObjectHolder());
 
         var holder = getHolder();
+        if(holder.getObjectCount<UnitStats>() >= maxPartySize)
+            return;
+
         holder.addObject<UnitStats>(col);
         saveHolder(holder);
     }
@@ -153,6 +157,44 @@ public static class Party {
         var holder = getHolder();
         holder.removeObject<UnitStats>(index);
         saveHolder(holder);
+    }
+
+    public static Weapon getWeaponInParty(int index) {
+        foreach(var i in getHolder().getObjects<UnitStats>()) {
+            if(i.weapon != null && !i.weapon.isEmpty()) {
+                if(index == 0)
+                    return i.weapon;
+                index--;
+            }
+        }
+        return null;
+    }
+    public static Armor getArmorInParty(int index) {
+        foreach(var i in getHolder().getObjects<UnitStats>()) {
+            if(i.armor != null && !i.armor.isEmpty()) {
+                if(index == 0)
+                    return i.armor;
+                index--;
+            }
+        }
+        return null;
+    }
+
+    public static int getWeaponCountInParty() {
+        int count = 0;
+        foreach(var i in getHolder().getObjects<UnitStats>()) {
+            if(i.weapon != null && !i.weapon.isEmpty())
+                count++;
+        }
+        return count;
+    }
+    public static int getArmorCountInParty() {
+        int count = 0;
+        foreach(var i in getHolder().getObjects<UnitStats>()) {
+            if(i.armor != null && !i.armor.isEmpty())
+                count++;
+        }
+        return count;
     }
 
 

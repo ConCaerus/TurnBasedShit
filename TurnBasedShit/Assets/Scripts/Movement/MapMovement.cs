@@ -42,6 +42,7 @@ public class MapMovement : InteractiveMovement {
 
             var temp = Instantiate(sideUnitPreset.gameObject, transform.parent);
             temp.GetComponentInChildren<UnitSpriteHandler>().setReference(Party.getHolder().getObject<UnitStats>(i), true);
+            temp.GetComponent<MapSideUnitMovement>().referenceStats = Party.getHolder().getObject<UnitStats>(i);
             temp.GetComponent<MapSideUnitMovement>().moveSpeed = moveSpeed / 1.25f;
             temp.transform.localScale = new Vector3(0.25f, 0.25f, 1.0f);
             temp.transform.position = last + offset;
@@ -63,8 +64,12 @@ public class MapMovement : InteractiveMovement {
             else {
                 sideUnits[i].GetComponent<MapSideUnitMovement>().isMoving = false;
                 if(!isMoving) {
-                    if(!sideUnits[i].GetComponentInChildren<UnitSpriteHandler>().isFaceShown())
-                        sideUnits[i].GetComponent<MapSideUnitMovement>().flip(true);
+                    if(sideUnits[i].GetComponentInChildren<UnitSpriteHandler>().initialized) {
+                        if(!sideUnits[i].GetComponentInChildren<UnitSpriteHandler>().isFaceShown())
+                            sideUnits[i].GetComponent<MapSideUnitMovement>().flip(true);
+                    }
+                    else
+                        sideUnits[i].GetComponentInChildren<UnitSpriteHandler>().setReference(sideUnits[i].GetComponent<MapSideUnitMovement>().referenceStats, true);
                 }
             }
             target = sideUnits[i];
@@ -129,6 +134,8 @@ public class MapMovement : InteractiveMovement {
 
         if(loc.type == MapLocation.locationType.eye)
             ((EyeLocation)loc).activate(FindObjectOfType<MapFogTexture>(), FindObjectOfType<MapLocationSpawner>());
+        else if(loc.type == MapLocation.locationType.loot)
+            ((LootLocation)loc).activate(FindObjectOfType<MapLocationSpawner>(), FindObjectOfType<MapLootCanvas>(), FindObjectOfType<PresetLibrary>(), FindObjectOfType<FullInventoryCanvas>());
         else
             loc.enterLocation(FindObjectOfType<TransitionCanvas>());
     }

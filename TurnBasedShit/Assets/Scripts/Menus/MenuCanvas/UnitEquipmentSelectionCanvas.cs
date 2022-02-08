@@ -243,17 +243,17 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
         switch(getState()) {
             case 0:
                 if(FindObjectOfType<UnitCanvas>().shownUnit.weapon != null && !FindObjectOfType<UnitCanvas>().shownUnit.weapon.isEmpty())
-                    Inventory.addCollectable(FindObjectOfType<UnitCanvas>().shownUnit.weapon, FindObjectOfType<PresetLibrary>());
+                    Inventory.addSingleCollectable(FindObjectOfType<UnitCanvas>().shownUnit.weapon, FindObjectOfType<PresetLibrary>(), FindObjectOfType<FullInventoryCanvas>());
                 break;
 
             case 1:
                 if(FindObjectOfType<UnitCanvas>().shownUnit.armor != null && !FindObjectOfType<UnitCanvas>().shownUnit.armor.isEmpty())
-                    Inventory.addCollectable(FindObjectOfType<UnitCanvas>().shownUnit.armor, FindObjectOfType<PresetLibrary>());
+                    Inventory.addSingleCollectable(FindObjectOfType<UnitCanvas>().shownUnit.armor, FindObjectOfType<PresetLibrary>(), FindObjectOfType<FullInventoryCanvas>());
                 break;
 
             case 2:
                 if(FindObjectOfType<UnitCanvas>().shownUnit.item != null && !FindObjectOfType<UnitCanvas>().shownUnit.item.isEmpty())
-                    Inventory.addCollectable(FindObjectOfType<UnitCanvas>().shownUnit.item, FindObjectOfType<PresetLibrary>());
+                    Inventory.addSingleCollectable(FindObjectOfType<UnitCanvas>().shownUnit.item, FindObjectOfType<PresetLibrary>(), FindObjectOfType<FullInventoryCanvas>());
                 break;
         }
 
@@ -272,7 +272,7 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
                 if(unitWeapon == null || unitWeapon.isEmpty())
                     return;
 
-                Inventory.addCollectable(unitWeapon, FindObjectOfType<PresetLibrary>());
+                Inventory.addSingleCollectable(unitWeapon, FindObjectOfType<PresetLibrary>(), FindObjectOfType<FullInventoryCanvas>());
                 FindObjectOfType<UnitCanvas>().setUnitWeapon(null);
                 break;
 
@@ -281,7 +281,7 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
                 if(unitArmor == null || unitArmor.isEmpty())
                     return;
 
-                Inventory.addCollectable(unitArmor, FindObjectOfType<PresetLibrary>());
+                Inventory.addSingleCollectable(unitArmor, FindObjectOfType<PresetLibrary>(), FindObjectOfType<FullInventoryCanvas>());
                 FindObjectOfType<UnitCanvas>().setUnitArmor(null);
                 break;
 
@@ -290,7 +290,7 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
                 if(unitItem == null || unitItem.isEmpty())
                     return;
 
-                Inventory.addCollectable(unitItem, FindObjectOfType<PresetLibrary>());
+                Inventory.addSingleCollectable(unitItem, FindObjectOfType<PresetLibrary>(), FindObjectOfType<FullInventoryCanvas>());
                 FindObjectOfType<UnitCanvas>().setUnitItem(null);
                 break;
         }

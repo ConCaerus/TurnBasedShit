@@ -11,10 +11,10 @@ public static class GameInfo {
         grassland, forest, swamp, mountains, hell
     }
     public enum rarity {
-        common, uncommon, unusual, rare, legendary
+        Common, Uncommon, Unusual, Rare, Legendary
     }
     public enum wornState {
-        old, used, normal, perfect
+        Old, Used, Normal, Perfect
     }
     public enum fishCatchRate {
         almostImpossible, rare, normal, easy,
@@ -101,10 +101,6 @@ public static class GameInfo {
         var data = JsonUtility.ToJson(loc);
         SaveData.setString(currentMapLocation, data);
     }
-    public static void setCurrentLocationAsNest(NestLocation loc) {
-        var data = JsonUtility.ToJson(loc);
-        SaveData.setString(currentMapLocation, data);
-    }
     public static void setCurrentLocationAsBoss(BossLocation loc) {
         var data = JsonUtility.ToJson(loc);
         SaveData.setString(currentMapLocation, data);
@@ -129,10 +125,6 @@ public static class GameInfo {
     public static RescueLocation getCurrentLocationAsRescue() {
         var data = SaveData.getString(currentMapLocation);
         return JsonUtility.FromJson<RescueLocation>(data);
-    }
-    public static NestLocation getCurrentLocationAsNest() {
-        var data = SaveData.getString(currentMapLocation);
-        return JsonUtility.FromJson<NestLocation>(data);
     }
     public static BossLocation getCurrentLocationAsBoss() {
         var data = SaveData.getString(currentMapLocation);
@@ -214,6 +206,22 @@ public static class GameInfo {
         return index;
     }
 
+    public static int getNextCollectableInstanceID(Collectable c) {
+        switch(c.type) {
+            case Collectable.collectableType.Weapon:
+                return getNextWeaponInstanceID();
+            case Collectable.collectableType.Armor:
+                return getNextArmorInstanceID();
+            case Collectable.collectableType.Item:
+                return getNextItemInstanceID();
+            case Collectable.collectableType.Usable:
+                return getNextUsableInstanceID();
+            case Collectable.collectableType.Unusable:
+                return getNextUnusableInstanceID();
+        }
+        Debug.LogError("fuck you");
+        return -1;
+    }
     public static int getNextWeaponInstanceID() {
         int index = SaveData.getInt(nextWeaponID);
         SaveData.setInt(nextWeaponID, index + 1);

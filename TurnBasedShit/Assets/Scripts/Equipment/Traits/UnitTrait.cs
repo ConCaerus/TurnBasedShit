@@ -12,8 +12,14 @@ public class UnitTrait {
     }
 
     [System.Serializable]
-    public struct TraitInfo {
+    public enum conditionType {
+        naked
+    }
+
+    [System.Serializable]
+    public struct traitInfo {
         public modifierType modType;
+        public conditionType condition;
         public float modAmount;
     }
 
@@ -21,7 +27,7 @@ public class UnitTrait {
 
 
     public string t_name;
-    public List<TraitInfo> t_infos = new List<TraitInfo>();
+    public List<traitInfo> t_infos = new List<traitInfo>();
     public bool t_isGood;
 
 
@@ -44,7 +50,7 @@ public class UnitTrait {
         foreach(var i in t_infos) {
             if(i.modType == modifierType.damageTaken)
                 temp += i.modAmount;
-            else if(i.modType == modifierType.bluntDmgGiven && type == Weapon.attackType.blunt)
+            else if(i.modType == modifierType.bluntDmgGiven && type == Weapon.attackType.Blunt)
                 temp += i.modAmount;
         }
 

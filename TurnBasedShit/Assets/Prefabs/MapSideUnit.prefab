@@ -51,6 +51,130 @@ MonoBehaviour:
   movingDown: 1
   canMove: 1
   isMoving: 0
+  referenceStats:
+    u_name: 
+    u_type: 0
+    u_sprite:
+      headIndex: 0
+      faceIndex: 0
+      bodyIndex: 0
+      layerOffset: 0
+      color: {r: 1, g: 1, b: 1, a: 1}
+    u_baseMaxHealth: 0
+    u_health: 100
+    u_speed: 0
+    u_power: 0
+    u_defence: 0
+    u_critChance: 0
+    u_missChance: 1
+    u_bleedCount: 0
+    u_isLeader: 0
+    u_instanceID: -1
+    weapon:
+      instanceID: -1
+      name: 
+      type: -1
+      rarity: -1
+      coinCost: 0
+      canBeFished: 0
+      maxStackCount: 1
+      fishedData:
+        hookedPos: {x: 0, y: 0}
+        scale: 0
+        hookedRot: 0
+        chanceToCatch: 0
+      flavor: Choco
+      wornAmount: 3
+      attributes: 
+      sUsage: -1
+      sCosts: []
+      sUsageAmount: 0
+      sUsageChance: 0
+      aType: -1
+      power: 0
+      speedMod: 0
+      sprite:
+        sprite: {fileID: 0}
+        pos: {x: 0, y: 0}
+        size: {x: 0, y: 0}
+        rot: 0
+    armor:
+      instanceID: -1
+      name: 
+      type: -1
+      rarity: -1
+      coinCost: 0
+      canBeFished: 0
+      maxStackCount: 1
+      fishedData:
+        hookedPos: {x: 0, y: 0}
+        scale: 0
+        hookedRot: 0
+        chanceToCatch: 0
+      flavor: Choco
+      wornAmount: 3
+      attributes: 
+      defence: 0
+      speedMod: 0
+      sprite:
+        sprite: {fileID: 0}
+        equippedSprite: {fileID: 0}
+        equippedShoulder: {fileID: 0}
+        equippedHat: {fileID: 0}
+        pos:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        size:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        shoulderPos:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        shoulderSize:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        shoulderRot: 0
+        hatInfrontOfHead: 1
+        hatPos:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        hatSize:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        hatRot: 0
+    item:
+      instanceID: -1
+      name: 
+      type: -1
+      rarity: -1
+      coinCost: 0
+      canBeFished: 0
+      maxStackCount: 1
+      fishedData:
+        hookedPos: {x: 0, y: 0}
+        scale: 0
+        hookedRot: 0
+        chanceToCatch: 0
+      flavor: Choco
+      tEffects: []
+      pEffects: []
+      sprite:
+        sprite: {fileID: 0}
+    u_traits: []
+    u_talent:
+      t_name: 
+      t_infos: []
+      t_isGood: 0
+    u_deathInfo:
+      nameOfKiller: 
+      causeOfDeath: 0
+      combatType: 0
 --- !u!1001 &3317135340747744996
 PrefabInstance:
   m_ObjectHideFlags: 0

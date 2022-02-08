@@ -346,7 +346,7 @@ public class Town {
                 }
                 else if(b.GetComponent<ChurchInstance>() != null) {
                     b.GetComponent<ChurchInstance>().reference.orderInTown = index;
-                    b.GetComponent<ChurchInstance>().reference.setEqualTo(Randomizer.randomizeBuilding(b.GetComponent<ChurchInstance>().reference));
+                    b.GetComponent<ChurchInstance>().reference.setEqualTo(Randomizer.randomizeBuilding(b.GetComponent<ChurchInstance>().reference, lib));
                     holder.addObject<Building>(b.GetComponent<ChurchInstance>().reference);
                 }
                 else if(b.GetComponent<ShopInstance>() != null) {
@@ -380,7 +380,7 @@ public class Town {
             }
             else if(b.GetComponent<ChurchInstance>() != null) {
                 b.GetComponent<ChurchInstance>().reference.orderInTown = index;
-                b.GetComponent<ChurchInstance>().reference.setEqualTo(Randomizer.randomizeBuilding(b.GetComponent<ChurchInstance>().reference));
+                b.GetComponent<ChurchInstance>().reference.setEqualTo(Randomizer.randomizeBuilding(b.GetComponent<ChurchInstance>().reference, lib));
                 holder.addObject<Building>(b.GetComponent<ChurchInstance>().reference);
             }
             else if(b.GetComponent<ShopInstance>() != null) {

@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 public class TransitionCanvas : MonoBehaviour {
     [SerializeField] GameObject background;
 
+    Coroutine shower = null, hider = null, sceneLoader = null;
+
     float transitionTime = 0.5f;
 
     public bool loaded = false;
@@ -24,11 +26,21 @@ public class TransitionCanvas : MonoBehaviour {
 
 
     public void showBackground() {
-        StartCoroutine(showBackgroundObject());
+        if(hider != null)
+            StopCoroutine(hider);
+        if(shower != null)
+            return;
+        background.transform.localPosition = new Vector3(0.0f, -1000.0f, 0.0f);
+        shower = StartCoroutine(showBackgroundObject());
     }
 
     public void hideBackground() {
-        StartCoroutine(hideBackgroundObject());
+        if(shower != null)
+            StopCoroutine(shower);
+        if(hider != null)
+            return;
+        background.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
+        hider = StartCoroutine(hideBackgroundObject());
     }
 
 
@@ -37,20 +49,22 @@ public class TransitionCanvas : MonoBehaviour {
 
         loaded = false;
         background.SetActive(true);
-        background.transform.localPosition = new Vector3(0.0f, -1000.0f, 0.0f);
+        background.transform.DOKill();
         background.transform.DOLocalMoveY(0.0f, transitionTime);
+        shower = null;
     }
 
     IEnumerator hideBackgroundObject() {
         yield return new WaitForEndOfFrame();
 
         background.SetActive(true);
-        background.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
+        background.transform.DOKill();
         background.transform.DOLocalMoveY(-1000.0f, transitionTime);
 
         yield return new WaitForSeconds(transitionTime);
         background.SetActive(false);
         loaded = true;
+        hider = null;
     }
 
     IEnumerator loadSceneAfterBackgroundShown(string name, bool autoProgress = true) {
@@ -79,11 +93,19 @@ public class TransitionCanvas : MonoBehaviour {
     }
 
     public void loadSceneWithTransition(string name, bool autoProgress = true) {
-        StartCoroutine(loadSceneAfterBackgroundShown(name, autoProgress));
+        if(sceneLoader != null) {
+            Debug.LogError("Already loading another scene");
+            return;
+        }
+        sceneLoader = StartCoroutine(loadSceneAfterBackgroundShown(name, autoProgress));
     }
 
     public void loadSceneWithFunction(func funcToRun) {
-        StartCoroutine(runFuncAfterBackgroundShown(funcToRun));
+        if(sceneLoader != null) {
+            Debug.LogError("Already loading another scene");
+            return;
+        }
+        sceneLoader = StartCoroutine(runFuncAfterBackgroundShown(funcToRun));
     }
 
     public float getTransitionTime() {

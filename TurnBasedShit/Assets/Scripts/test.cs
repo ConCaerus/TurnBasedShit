@@ -6,6 +6,9 @@ using UnityEngine.UI;
 public class test : MonoBehaviour {
 
     private void Start() {
-        Debug.Log(JsonUtility.FromJson<Vector2>(JsonUtility.ToJson(new Vector2(10.0f, 2.5f))));
+        GetComponent<InfoBearer>().optionsCollectableReference = FindObjectOfType<PresetLibrary>().getRandomCollectable();
+        while(GetComponent<InfoBearer>().optionsCollectableReference.type == Collectable.collectableType.Weapon || 
+            GetComponent<InfoBearer>().optionsCollectableReference.type == Collectable.collectableType.Armor)
+            GetComponent<InfoBearer>().optionsCollectableReference = FindObjectOfType<PresetLibrary>().getRandomCollectable();
     }
 }

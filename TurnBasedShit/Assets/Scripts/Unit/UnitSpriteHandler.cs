@@ -33,12 +33,6 @@ public class UnitSpriteHandler : MonoBehaviour {
 
 
     public void updateVisuals(bool showWeapon) {
-        StartCoroutine(waitToUpdate(showWeapon));
-    }
-
-    IEnumerator waitToUpdate(bool showWeapon) {
-        yield return new WaitForEndOfFrame();
-
         for(int i = transform.childCount - 1; i >= 0; i--)
             Destroy(transform.GetChild(i).gameObject);
 

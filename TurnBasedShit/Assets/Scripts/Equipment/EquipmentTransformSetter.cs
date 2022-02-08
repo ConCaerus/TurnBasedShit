@@ -18,13 +18,14 @@ public class EquipmentTransformSetter : MonoBehaviour {
     [Range(0, 2)]
     public int armorHeadIndex;
 
-    public void setTransform() {
+    public bool setTransform() {
         if(wePreset != null && arPreset == null && weaponObj != null && weaponObj.GetComponent<SpriteRenderer>().sprite != null) {  //  weapon 
             wePreset.preset.sprite.pos = weaponObj.transform.localPosition;
             wePreset.preset.sprite.size = weaponObj.transform.localScale;
             wePreset.preset.sprite.rot = weaponObj.transform.localRotation.eulerAngles.z;
 
             weaponObj.GetComponent<SpriteRenderer>().sprite = null;
+            return true;
         }
 
         else if(arPreset != null && wePreset == null) { //  armor
@@ -51,15 +52,9 @@ public class EquipmentTransformSetter : MonoBehaviour {
 
                 hatObj.GetComponent<SpriteRenderer>().sprite = null;
             }
+            return true;
         }
-
-        else if(arPreset != null && wePreset != null) { //  errors
-            Debug.LogError("Can only set one transform at a time");
-            return;
-        }
-
-        arPreset = null;
-        wePreset = null;
+        return false;
     }
     public void veiwForAll() {
         clearSprites();

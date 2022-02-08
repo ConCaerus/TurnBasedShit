@@ -10,9 +10,15 @@ public class SlotMenu : MonoBehaviour {
     public GameObject slotPreset;
 
     List<GameObject> slots = new List<GameObject>();
-    int selectedSlotIndex = -1;
+    List<int> selectedSlotIndexes = new List<int>();
+
+    public bool canSelectMultiple = false;
 
     bool initialized = false;
+
+    public delegate void funcWithIndex(int slotIndex, bool wasSelected);
+    funcWithIndex runOnSelect = null;
+
 
     void init() {
         int count = GetComponentInChildren<GridLayoutGroup>().constraintCount;
@@ -47,10 +53,26 @@ public class SlotMenu : MonoBehaviour {
         //  returns true if selected slot changed
         if(Input.GetMouseButtonDown(0)) {
             for(int i = 0; i < slots.Count; i++) {
-                if(slots[i].gameObject == EventSystem.current.currentSelectedGameObject)
-                    selectedSlotIndex = i;
-                else if(slots[i].GetComponent<SlotObject>() != null && slots[i].GetComponent<SlotObject>().button.gameObject == EventSystem.current.currentSelectedGameObject)
-                    selectedSlotIndex = i;
+                bool selected = slots[i].gameObject == EventSystem.current.currentSelectedGameObject || 
+                     (slots[i].GetComponent<SlotObject>() != null && slots[i].GetComponent<SlotObject>().button.gameObject == EventSystem.current.currentSelectedGameObject);
+                if(selected) {
+                    bool wasSelected = false;
+                    if(!canSelectMultiple) {
+                        if(selectedSlotIndexes.Count == 0)
+                            selectedSlotIndexes.Add(0);
+                        selectedSlotIndexes[0] = i;
+                    }
+                    else {
+                        if(selectedSlotIndexes.Contains(i))
+                            selectedSlotIndexes.Remove(i);
+                        else {
+                            selectedSlotIndexes.Add(i);
+                            wasSelected = true;
+                        }
+                    }
+                    if(runOnSelect != null)
+                        runOnSelect(i, wasSelected);
+                }
             }
             return true;
         }
@@ -58,17 +80,40 @@ public class SlotMenu : MonoBehaviour {
     }
 
     public int getSelectedSlotIndex() {
-        return selectedSlotIndex;
+        if(selectedSlotIndexes == null || selectedSlotIndexes.Count == 0 || !initialized)
+            return -1;
+        return selectedSlotIndexes[0];
+    }
+    public List<int> getSelectedSlotIndexes() {
+        selectedSlotIndexes.Sort();
+        return selectedSlotIndexes;
     }
     public void setSelectedSlotIndex(int i) {
-        if(i == -1)
-            Debug.Log("fuck");
-        selectedSlotIndex = i;
+        if(selectedSlotIndexes.Count == 0)
+            selectedSlotIndexes.Add(0);
+        selectedSlotIndexes[0] = i;
+    }
+    public void resetSelectedSlotIndexes() {
+        selectedSlotIndexes.Clear();
+    }
+    public void setAllSelectedSlotIndexes() {
+        selectedSlotIndexes = new List<int>();
+        for(int i = 0; i < slots.Count; i++)
+            selectedSlotIndexes.Add(i);
     }
     public GameObject getSelectedSlot() {
+        if(getSelectedSlotIndex() < 0 || getSelectedSlotIndex() > slots.Count - 1 || slots.Count <= selectedSlotIndexes[0])
+            return null;
+        return slots[selectedSlotIndexes[0]];
+    }
+    public List<GameObject> getSelectedSlots() {
         if(getSelectedSlotIndex() < 0 || getSelectedSlotIndex() > slots.Count - 1)
             return null;
-        return slots[selectedSlotIndex];
+
+        var temp = new List<GameObject>();
+        for(int i = 0; i < selectedSlotIndexes.Count; i++)
+            temp.Add(slots[selectedSlotIndexes[i]]);
+        return temp;
     }
     public GameObject getEventSelectedSlot() {
         for(int i = 0; i < slots.Count; i++) {
@@ -81,8 +126,13 @@ public class SlotMenu : MonoBehaviour {
     }
 
 
+    public void setRunOnSelect(funcWithIndex f) {
+        runOnSelect = f;
+    }
+
+
     //  instantiates a new slot object at the end of the list
-    public GameObject instantiateNewSlot(Color slotColor) {
+    public GameObject instantiateNewSlot(Color slotColor, string mousedOverInfo = "") {
         if(!initialized)
             init();
 
@@ -99,11 +149,20 @@ public class SlotMenu : MonoBehaviour {
 
         transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.x, size);
 
+        //  collider
+        if(obj.GetComponent<BoxCollider2D>() != null) {
+            obj.GetComponent<BoxCollider2D>().offset = new Vector2(0.0f, 0.0f);
+            obj.GetComponent<BoxCollider2D>().size = GetComponentInChildren<GridLayoutGroup>().cellSize;
+        }
+
         //  color
         if(obj.GetComponent<SlotObject>() != null)
             obj.GetComponent<SlotObject>().setImageColor(0, slotColor);
         else
             obj.GetComponent<Image>().color = slotColor;
+
+        if(obj.GetComponent<InfoBearer>() != null)
+            obj.GetComponent<InfoBearer>().setInfo(mousedOverInfo);
 
         return obj;
     }
@@ -112,7 +171,7 @@ public class SlotMenu : MonoBehaviour {
     //  recycles slot object at index, if no existing slot at the index, creats a new slot object
     public GameObject createSlot(int index, Color slotColor, string mousedOverInfo = "") {
         if(index >= slots.Count)
-            return instantiateNewSlot(slotColor);
+            return instantiateNewSlot(slotColor, mousedOverInfo);
         GameObject obj;
         obj = slots[index];
 

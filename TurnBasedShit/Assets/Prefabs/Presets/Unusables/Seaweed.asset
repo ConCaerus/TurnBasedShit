@@ -17,7 +17,7 @@ MonoBehaviour:
     name: Seaweed
     type: 4
     rarity: 0
-    coinCost: 1
+    coinCost: 0
     canBeFished: 1
     maxStackCount: 20
     fishedData:
@@ -26,5 +26,6 @@ MonoBehaviour:
       hookedRot: 180
       chanceToCatch: 3
     flavor: Better luck next time.
+    description: Does not serve a purpose.
     sprite:
       sprite: {fileID: 21300000, guid: 4b244ce214fcf4641a35dfe813110462, type: 3}

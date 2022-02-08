@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MapSideUnitMovement : UnitMovement {
+    public UnitStats referenceStats;
 
 
     private void Update() {
-        if(isMoving)
-            GetComponentInChildren<UnitSpriteHandler>().setWalkingAnim(true);
-        else
-            GetComponentInChildren<UnitSpriteHandler>().setWalkingAnim(false);
+        if(GetComponentInChildren<UnitSpriteHandler>().initialized) {
+            if(isMoving)
+                GetComponentInChildren<UnitSpriteHandler>().setWalkingAnim(true);
+            else
+                GetComponentInChildren<UnitSpriteHandler>().setWalkingAnim(false);
+        }
     }
 
     public void moveToPoint(Vector2 point) {

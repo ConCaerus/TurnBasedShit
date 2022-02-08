@@ -8,7 +8,7 @@ public class Unusable : Collectable {
     [SerializeField] UnusableSpriteHolder sprite;
 
     public override void setEqualTo(Collectable col, bool takeInstanceID) {
-        if(col.type != collectableType.unusable || col == null)
+        if(col.type != collectableType.Unusable || col == null)
             return;
 
         var other = (Unusable)col;

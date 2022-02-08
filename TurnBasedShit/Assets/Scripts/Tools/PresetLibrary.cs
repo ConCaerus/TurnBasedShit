@@ -384,6 +384,10 @@ public class PresetLibrary : MonoBehaviour {
             if(i.preset.rarity == lvl)
                 temp.Add(i.preset);
         }
+
+        foreach(var i in temp) {
+            i.instanceID = GameInfo.getNextCollectableInstanceID(i);
+        }
         return temp;
     }
     public Weapon getWeapon(string name) {
@@ -690,33 +694,57 @@ public class PresetLibrary : MonoBehaviour {
 
         return loc;
     }
-    public BossLocation createBossLocation(GameInfo.region reg) {
+    public BossLocation createBossLocation(GameInfo.region reg, bool addToMap) {
         var boss = getRandomBoss(reg);
-        return new BossLocation(Map.getRandPos(), boss, reg, this);
+        var temp = new BossLocation(Map.getRandPos(), boss, reg, this);
+        if(addToMap)
+            MapLocationHolder.addLocation(temp);
+        return temp;
     }
-    public PickupLocation createPickupLocation(GameInfo.region reg) {
+    public PickupLocation createPickupLocation(GameInfo.region reg, bool addToMap) {
         var pos = Map.getRandPos();
-        return new PickupLocation(pos, getRandomCollectable(reg), reg, this);
+        var temp = new PickupLocation(pos, getRandomCollectable(reg), reg, this);
+        if(addToMap)
+            MapLocationHolder.addLocation(temp);
+        return temp;
     }
-    public RescueLocation createRescueLocation(GameInfo.region reg) {
-        return new RescueLocation(Map.getRandPos(), GameInfo.getRandomReg(), this);
+    public RescueLocation createRescueLocation(GameInfo.region reg, bool addToMap) {
+        var temp = new RescueLocation(Map.getRandPos(), reg, this);
+        if(addToMap)
+            MapLocationHolder.addLocation(temp);
+        return temp;
     }
-    public UpgradeLocation createUpgradeLocation(GameInfo.region reg) {
-        return new UpgradeLocation(Map.getRandPos(), reg, Random.Range(0, 2));
+    public UpgradeLocation createUpgradeLocation(GameInfo.region reg, bool addToMap) {
+        var temp = new UpgradeLocation(Map.getRandPos(), reg, Random.Range(0, 2));
+        if(addToMap)
+            MapLocationHolder.addLocation(temp);
+        return temp;
     }
-    public NestLocation createRandomNestLocation(GameInfo.region reg) {
+    public FishingLocation createFishingLocation(GameInfo.region reg, bool addToMap) {
         var pos = Map.getRandPos();
-        return new NestLocation(pos, Random.Range(1, 4), reg, this);
+        var temp = new FishingLocation(pos, getRandomFishInRegion(reg));
+        if(addToMap)
+            MapLocationHolder.addLocation(temp);
+        return temp;
     }
-    public FishingLocation createFishingLocation(GameInfo.region reg) {
+    public EyeLocation createEyeLocation(GameInfo.region reg, bool addToMap) {
+        var temp = new EyeLocation(Map.getRandPos(), reg);
+        if(addToMap)
+            MapLocationHolder.addLocation(temp);
+        return temp;
+    }
+    public BridgeLocation createBridgeLocation(float yPos, bool advancing, GameInfo.region reg, bool addToMap) {
+        var temp = new BridgeLocation(yPos, advancing, reg);
+        if(addToMap)
+            MapLocationHolder.addLocation(temp);
+        return temp;
+    }
+    public LootLocation createLootLocation(GameInfo.region reg, bool addToMap) {
         var pos = Map.getRandPos();
-        return new FishingLocation(pos, getRandomFishInRegion(reg));
-    }
-    public EyeLocation createEyeLocation(GameInfo.region reg) {
-        return new EyeLocation(Map.getRandPos(), reg);
-    }
-    public BridgeLocation createBridgeLocation(float yPos, bool advancing, GameInfo.region reg) {
-        return new BridgeLocation(yPos, advancing, reg);
+        var temp = new LootLocation(pos, reg, this);
+        if(addToMap)
+            MapLocationHolder.addLocation(temp);
+        return temp;
     }
 
     public Unusable getRandomFishInRegion(GameInfo.region diff = (GameInfo.region)(-1)) {
@@ -739,15 +767,11 @@ public class PresetLibrary : MonoBehaviour {
 
 
     public BossFightQuest createRandomBossFightQuest(bool setID, bool createMapLocation, GameInfo.region reg) {
-        var loc = createBossLocation(reg);
-        if(createMapLocation)
-            MapLocationHolder.addLocation(loc);
+        var loc = createBossLocation(reg, createMapLocation);
         return new BossFightQuest(loc, setID);
     }
     public PickupQuest createRandomPickupQuest(bool setID, bool createMapLocation, GameInfo.region reg) {
-        var loc = createPickupLocation(reg);
-        if(createMapLocation)
-            MapLocationHolder.addLocation(loc);
+        var loc = createPickupLocation(reg, createMapLocation);
         return new PickupQuest(loc, setID);
     }
     public KillQuest createRandomKillQuest(bool setID, GameInfo.region reg) {
@@ -813,9 +837,7 @@ public class PresetLibrary : MonoBehaviour {
         return new FishingQuest(getRandomFishInRegion(reg), setID);
     }
     public RescueQuest createRandomRescueQuest(bool setID, bool createMapLocation, GameInfo.region reg) {
-        var loc = createRescueLocation(reg);
-        if(createMapLocation)
-            MapLocationHolder.addLocation(loc);
+        var loc = createRescueLocation(reg, createMapLocation);
         return new RescueQuest(loc, setID);
     }
 
@@ -828,15 +850,15 @@ public class PresetLibrary : MonoBehaviour {
 
     public Sprite getGenericSpriteForCollectable(Collectable c) {
         switch(c.type) {
-            case Collectable.collectableType.weapon:
+            case Collectable.collectableType.Weapon:
                 return getWeaponSprite((Weapon)c).sprite;
-            case Collectable.collectableType.armor:
+            case Collectable.collectableType.Armor:
                 return getArmorSprite((Armor)c).sprite;
-            case Collectable.collectableType.item:
+            case Collectable.collectableType.Item:
                 return getItemSprite((Item)c).sprite;
-            case Collectable.collectableType.usable:
+            case Collectable.collectableType.Usable:
                 return getUsableSprite((Usable)c).sprite;
-            case Collectable.collectableType.unusable:
+            case Collectable.collectableType.Unusable:
                 return getUnusableSprite((Unusable)c).sprite;
             default:
                 return null;

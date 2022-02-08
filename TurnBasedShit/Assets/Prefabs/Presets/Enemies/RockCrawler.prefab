@@ -761,13 +761,6 @@ MonoBehaviour:
   stats:
     u_name: Rock Crawler
     u_type: 4
-    u_expCap: 75
-    u_exp: 0
-    u_level: 4
-    u_skillExpCap: 100
-    u_bluntExp: 0
-    u_edgedExp: 0
-    u_summonedExp: 0
     u_sprite:
       headIndex: 0
       faceIndex: 0
@@ -801,17 +794,17 @@ MonoBehaviour:
       wornAmount: 3
       attributes: 
       sUsage: 0
+      sCosts: []
       sUsageAmount: 0
+      sUsageChance: 0
       aType: -1
       power: 0
       speedMod: 0
       sprite:
         sprite: {fileID: 0}
-        equippedX: 0
-        equippedY: 0
-        equippedRot: 0
-        equippedXSize: 0
-        equippedYSize: 0
+        pos: {x: 0, y: 0}
+        size: {x: 0, y: 0}
+        rot: 0
     armor:
       instanceID: -1
       name: 
@@ -835,45 +828,33 @@ MonoBehaviour:
         equippedSprite: {fileID: 0}
         equippedShoulder: {fileID: 0}
         equippedHat: {fileID: 0}
-        xPos0: 0
-        yPos0: 0
-        xSize0: 0
-        ySize0: 0
-        xPos1: 0
-        yPos1: 0
-        xSize1: 0
-        ySize1: 0
-        xPos2: 0
-        yPos2: 0
-        xSize2: 0
-        ySize2: 0
-        xShoulderPos0: 0
-        yShoulderPos0: 0
-        xShoulderSize0: 0
-        yShoulderSize0: 0
+        pos:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        size:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        shoulderPos:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        shoulderSize:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
         shoulderRot: 0
-        xShoulderPos1: 0
-        yShoulderPos1: 0
-        xShoulderSize1: 0
-        yShoulderSize1: 0
-        xShoulderPos2: 0
-        yShoulderPos2: 0
-        xShoulderSize2: 0
-        yShoulderSize2: 0
         hatInfrontOfHead: 1
-        xHatPos0: 0
-        yHatPos0: 0
-        xHatSize0: 0
-        yHatSize0: 0
+        hatPos:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        hatSize:
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
         hatRot: 0
-        xHatPos1: 0
-        yHatPos1: 0
-        xHatSize1: 0
-        yHatSize1: 0
-        xHatPos2: 0
-        yHatPos2: 0
-        xHatSize2: 0
-        yHatSize2: 0
     item:
       instanceID: -1
       name: 
@@ -901,6 +882,7 @@ MonoBehaviour:
       nameOfKiller: 
       causeOfDeath: 0
       combatType: 0
+  combatMods: 
   defending: 0
   stunned: 0
   charging: 0

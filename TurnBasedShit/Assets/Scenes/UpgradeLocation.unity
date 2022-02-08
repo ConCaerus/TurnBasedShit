@@ -2062,13 +2062,12 @@ MonoBehaviour:
   canMove: 1
   isMoving: 0
   interactDist: 1
-  interactString: W
-  interactText: {fileID: 0}
   rightMost: 10
   leftMost: -7
   door: {fileID: 2035672369}
   buildingOjbects:
   - {fileID: 1757360009}
+  doorSound: {fileID: 0}
   destination: 1
   interactFunc:
     m_PersistentCalls:

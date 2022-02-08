@@ -239,15 +239,15 @@ public class UnitCanvas : MonoBehaviour {
 
     public void setUnitEquipment(Collectable c) {
         switch(c.type) {
-            case Collectable.collectableType.weapon:
+            case Collectable.collectableType.Weapon:
                 setUnitWeapon((Weapon)c);
                 return;
 
-            case Collectable.collectableType.armor:
+            case Collectable.collectableType.Armor:
                 setUnitArmor((Armor)c);
                 return;
 
-            case Collectable.collectableType.item:
+            case Collectable.collectableType.Item:
                 setUnitItem((Item)c);
                 return;
         }

@@ -156,7 +156,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 2128709355}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.28346002
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -276,7 +276,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0.0000019073486}
-  m_SizeDelta: {x: -18.154297, y: -76.21186}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4311494788802031295
 CanvasRenderer:
@@ -374,6 +374,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotPreset: {fileID: 2409199764669834413, guid: cb78dab596cb2bb47893dcb8718fbc6a,
     type: 3}
+  canSelectMultiple: 0
 --- !u!1 &4311494789541593899
 GameObject:
   m_ObjectHideFlags: 0
@@ -409,7 +410,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 47.01544}
   m_SizeDelta: {x: 346, y: 194.03088}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4311494789541593896

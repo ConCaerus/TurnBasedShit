@@ -19,8 +19,6 @@ public class MenuCanvas : MonoBehaviour {
     private void Start() {
         GetComponent<Canvas>().worldCamera = Camera.main;
         hardHide();
-
-        openRecentTab();
     }
 
     private void Update() {
@@ -29,6 +27,7 @@ public class MenuCanvas : MonoBehaviour {
                 hide();
             }
             else {
+                openRecentTab();
                 show();
                 if(Input.GetKeyDown(KeyCode.Escape))
                     optionsTab();
@@ -74,7 +73,7 @@ public class MenuCanvas : MonoBehaviour {
         else if(FindObjectOfType<TownMenuCanvas>() != null)
             FindObjectOfType<TownMenuCanvas>().updateSlots();
         else if(FindObjectOfType<InventoryCanvas>() != null)
-            StartCoroutine(FindObjectOfType<InventoryCanvas>().populateSlots());
+            FindObjectOfType<InventoryCanvas>().populateSlots();
         else if(FindObjectOfType<CollectionCanvas>() != null)
             FindObjectOfType<CollectionCanvas>().populateSlots();
         else if(FindObjectOfType<GraveyardMenuCanvas>() != null)
@@ -87,10 +86,12 @@ public class MenuCanvas : MonoBehaviour {
         GetComponent<Animator>().Play("MenuOpenAnim");
 
         foreach(var i in FindObjectsOfType<InfoBearer>()) {
-            if(i.hideWhenMenuOpen)
-                i.GetComponent<Collider2D>().enabled = false;
-            else
-                i.GetComponent<Collider2D>().enabled = true;
+            if(!i.showNoMatterMenuState) {
+                if(i.hideWhenMenuOpen)
+                    i.GetComponent<Collider2D>().enabled = false;
+                else
+                    i.GetComponent<Collider2D>().enabled = true;
+            }
         }
     }
     public void hide() {
@@ -101,22 +102,26 @@ public class MenuCanvas : MonoBehaviour {
             i();
         
         foreach(var i in FindObjectsOfType<InfoBearer>()) {
-            if(i.hideWhenMenuOpen)
-                i.GetComponent<Collider2D>().enabled = true;
-            else
-                i.GetComponent<Collider2D>().enabled = false;
+            if(!i.showNoMatterMenuState) {
+                if(i.hideWhenMenuOpen)
+                    i.GetComponent<Collider2D>().enabled = true;
+                else
+                    i.GetComponent<Collider2D>().enabled = false;
+            }
         }
         showing = false;
     }
     public void hardHide() {
         foreach(var i in FindObjectsOfType<InfoBearer>()) {
-            if(i.GetComponent<Collider2D>() == null) {
-                continue;
+            if(!i.showNoMatterMenuState) {
+                if(i.GetComponent<Collider2D>() == null) {
+                    continue;
+                }
+                if(i.hideWhenMenuOpen)
+                    i.GetComponent<Collider2D>().enabled = true;
+                else
+                    i.GetComponent<Collider2D>().enabled = false;
             }
-            if(i.hideWhenMenuOpen)
-                i.GetComponent<Collider2D>().enabled = true;
-            else
-                i.GetComponent<Collider2D>().enabled = false;
         }
         GetComponent<Animator>().StopPlayback();
         GetComponent<Animator>().Play("MenuIdle");
@@ -147,7 +152,7 @@ public class MenuCanvas : MonoBehaviour {
         closeAllTabs();
         inventoryCanvas.SetActive(true);
 
-        StartCoroutine(FindObjectOfType<InventoryCanvas>().populateSlots());
+        FindObjectOfType<InventoryCanvas>().populateSlots();
     }
     public void collectionTab() {
         SaveData.setInt(openTag, 2);

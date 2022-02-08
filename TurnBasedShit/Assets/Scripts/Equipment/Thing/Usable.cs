@@ -64,7 +64,7 @@ public class Usable : Collectable {
     }
 
     public override void setEqualTo(Collectable col, bool takeInstanceID) {
-        if(col.type != collectableType.usable)
+        if(col.type != collectableType.Usable)
             return;
 
         var other = (Usable)col;

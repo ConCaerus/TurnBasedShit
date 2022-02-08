@@ -51,9 +51,16 @@ public static class Randomizer {
 
         return temp;
     }
-    public static ChurchBuilding randomizeBuilding(ChurchBuilding ch) {
+    public static ChurchBuilding randomizeBuilding(ChurchBuilding ch, PresetLibrary lib) {
         var temp = new ChurchBuilding();
         temp.setEqualTo(ch);
+        temp.priceToRemove = Random.Range(2, 6);
+        temp.priceToAdd = Random.Range(5, 11);
+
+        int traitCount = Random.Range(3, 11);
+        for(int i = 0; i < traitCount; i++)
+            temp.availableTraits.Add(lib.getRandomGoodUnitTrait());
+
         return temp;
     }
     public static ShopBuilding randomizeBuilding(ShopBuilding shop) {

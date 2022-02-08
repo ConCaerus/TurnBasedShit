@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 508ea45ff48af2444b1d7573c3a39463, type: 3}
-  m_Name: Farming Clothes
+  m_Name: FarmingClothes
   m_EditorClassIdentifier: 
   preset:
     instanceID: -1
@@ -26,6 +26,7 @@ MonoBehaviour:
       hookedRot: 0
       chanceToCatch: 0
     flavor: Cheap clothing used for working in feilds.
+    description: Collectable thing
     wornAmount: 3
     attributes: 
     defence: 5
@@ -38,42 +39,30 @@ MonoBehaviour:
         type: 3}
       equippedHat: {fileID: -8533060038214281519, guid: ef2f769bd8718eb44aa73973a7020cde,
         type: 3}
-      xPos0: 0.001
-      yPos0: 0.003
-      xSize0: 0.924
-      ySize0: 0.891
-      xPos1: 0
-      yPos1: 0.05
-      xSize1: 0.9625
-      ySize1: 0.6093
-      xPos2: 0.04
-      yPos2: 0.03
-      xSize2: 1.023
-      ySize2: 0.9213
-      xShoulderPos0: -0.077
-      yShoulderPos0: 0.113
-      xShoulderSize0: 0.8336
-      yShoulderSize0: 0.9
-      shoulderRot: 39.685
-      xShoulderPos1: -0.088
-      yShoulderPos1: 0.066
-      xShoulderSize1: 0.75
-      yShoulderSize1: 0.75
-      xShoulderPos2: -0.065
-      yShoulderPos2: 0.127
-      xShoulderSize2: 1.0119
-      yShoulderSize2: 0.9
+      pos:
+      - {x: 0.025, y: -0.013}
+      - {x: 0.006, y: 0.04}
+      - {x: 0.044, y: -0.004}
+      size:
+      - {x: 0.9090977, y: 0.9090977}
+      - {x: 0.79992616, y: 0.5999447}
+      - {x: 1.0175374, y: 0.94161886}
+      shoulderPos:
+      - {x: -0.095, y: 0.167}
+      - {x: -0.096, y: 0.111}
+      - {x: -0.038, y: 0.11}
+      shoulderSize:
+      - {x: 0.6998995, y: 0.6998995}
+      - {x: 0.61795557, y: 0.61795557}
+      - {x: 0.8922421, y: 0.8922421}
+      shoulderRot: 37.16267
       hatInfrontOfHead: 1
-      xHatPos0: -0.07
-      yHatPos0: 0.283
-      xHatSize0: 0.85
-      yHatSize0: 0.85
+      hatPos:
+      - {x: -0.058, y: 0.317}
+      - {x: -0.084, y: 0.217}
+      - {x: -0.053, y: 0.291}
+      hatSize:
+      - {x: 0.9179658, y: 0.9179658}
+      - {x: 0.8341805, y: 0.8341805}
+      - {x: 0.7767963, y: 0.7767963}
       hatRot: 0
-      xHatPos1: -0.161
-      yHatPos1: 0.237
-      xHatSize1: 0.75
-      yHatSize1: 0.75
-      xHatPos2: -0.059
-      yHatPos2: 0.302
-      xHatSize2: 0.85
-      yHatSize2: 0.85

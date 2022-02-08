@@ -51,7 +51,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f6e50924b55b4ac4e9b8e18962cbc87c, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -221,7 +221,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f6e50924b55b4ac4e9b8e18962cbc87c, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -382,7 +382,7 @@ Animator:
   m_GameObject: {fileID: 7834671402515498645}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 72f1ee5a997157949838bbcb1d78e225, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -442,7 +442,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f6e50924b55b4ac4e9b8e18962cbc87c, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -525,7 +525,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f6e50924b55b4ac4e9b8e18962cbc87c, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -659,6 +659,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3334738622998220081, guid: 2c3221da1c3295740ba38b0c7bb4b6c3,
         type: 3}
+    - target: {fileID: 3838951662555235325, guid: 2c757f62bb898be40b3d00e373049010,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3838951662555235325, guid: 2c757f62bb898be40b3d00e373049010,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7452276450506034967, guid: 2c757f62bb898be40b3d00e373049010,
         type: 3}
       propertyPath: m_RootOrder
@@ -740,6 +750,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -6134790877199949146, guid: 2c3221da1c3295740ba38b0c7bb4b6c3,
         type: 3}
+    - target: {fileID: 3838951662555235325, guid: 2c757f62bb898be40b3d00e373049010,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3838951662555235325, guid: 2c757f62bb898be40b3d00e373049010,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7452276450506034967, guid: 2c757f62bb898be40b3d00e373049010,
         type: 3}
       propertyPath: m_RootOrder
@@ -821,6 +841,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -5706717110274306039, guid: 2c3221da1c3295740ba38b0c7bb4b6c3,
         type: 3}
+    - target: {fileID: 3838951662555235325, guid: 2c757f62bb898be40b3d00e373049010,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3838951662555235325, guid: 2c757f62bb898be40b3d00e373049010,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7452276450506034967, guid: 2c757f62bb898be40b3d00e373049010,
         type: 3}
       propertyPath: m_RootOrder
@@ -902,6 +932,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 262019434342110170, guid: 2c3221da1c3295740ba38b0c7bb4b6c3,
         type: 3}
+    - target: {fileID: 3838951662555235325, guid: 2c757f62bb898be40b3d00e373049010,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3838951662555235325, guid: 2c757f62bb898be40b3d00e373049010,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7452276450506034967, guid: 2c757f62bb898be40b3d00e373049010,
         type: 3}
       propertyPath: m_RootOrder

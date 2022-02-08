@@ -50,35 +50,35 @@ public static class Collection {
     public static bool hasCollectable(Collectable col) {
         var holder = getHolder();
         switch(col.type) {
-            case Collectable.collectableType.weapon:
+            case Collectable.collectableType.Weapon:
                 foreach(var i in holder.getObjects<Weapon>()) {
                     if(i.isTheSameTypeAs(col))
                         return true;
                 }
                 break;
 
-            case Collectable.collectableType.armor:
+            case Collectable.collectableType.Armor:
                 foreach(var i in holder.getObjects<Armor>()) {
                     if(i.isTheSameTypeAs(col))
                         return true;
                 }
                 break;
 
-            case Collectable.collectableType.item:
+            case Collectable.collectableType.Item:
                 foreach(var i in holder.getObjects<Item>()) {
                     if(i.isTheSameTypeAs(col))
                         return true;
                 }
                 break;
 
-            case Collectable.collectableType.usable:
+            case Collectable.collectableType.Usable:
                 foreach(var i in holder.getObjects<Usable>()) {
                     if(i.isTheSameTypeAs(col))
                         return true;
                 }
                 break;
 
-            case Collectable.collectableType.unusable:
+            case Collectable.collectableType.Unusable:
                 foreach(var i in holder.getObjects<Unusable>()) {
                     if(i.isTheSameTypeAs(col))
                         return true;

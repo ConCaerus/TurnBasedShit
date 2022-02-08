@@ -14,8 +14,41 @@ public class EquipmentPresetEditor : Editor {
         var eq = (EquipmentTransformSetter)target;
 
         GUILayout.Label("Save info");
-        if(GUILayout.Button("Set Transform"))
-            eq.setTransform();
+        if(GUILayout.Button("Set Transform")) {
+            if(eq.wePreset != null && eq.arPreset == null) {
+                var existingSO = AssetDatabase.LoadAssetAtPath(AssetDatabase.GetAssetPath(eq.wePreset.GetInstanceID()), typeof(ScriptableObject));
+                Debug.Log(AssetDatabase.GetAssetPath(eq.wePreset.GetInstanceID()));
+
+                //  make changes
+                //  returns out if an error did happen
+                if(!eq.setTransform())
+                    return;
+
+                //  override and save changes
+                EditorUtility.SetDirty(existingSO);
+            }
+            else if(eq.wePreset == null && eq.arPreset != null) {
+                var existingSO = AssetDatabase.LoadAssetAtPath(AssetDatabase.GetAssetPath(eq.arPreset.GetInstanceID()), typeof(ScriptableObject));
+                Debug.Log(AssetDatabase.GetAssetPath(eq.arPreset.GetInstanceID()));
+
+                //  make changes
+                //  returns out if an error did happen
+                if(!eq.setTransform())
+                    return;
+
+                //  override and save changes
+                EditorUtility.SetDirty(existingSO);
+            }
+            else {
+                Debug.Log("Only change one preset's transform at a time");
+                return;
+            }
+            AssetDatabase.SaveAssets();
+
+            //  resets all variables
+            eq.arPreset = null;
+            eq.wePreset = null;
+        }
 
         GUILayout.Label("Sprites");
         GUILayout.BeginHorizontal();

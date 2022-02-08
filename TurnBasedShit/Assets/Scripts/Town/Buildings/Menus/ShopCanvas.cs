@@ -7,7 +7,8 @@ using DG.Tweening;
 
 public class ShopCanvas : MonoBehaviour {
     [SerializeField] GameObject canvas;
-    [SerializeField] TextMeshProUGUI coinCounter, nameText, toggleText, sellReductionText, transactionText;
+    [SerializeField] CoinCount coinCount;
+    [SerializeField] TextMeshProUGUI nameText, toggleText, sellReductionText, transactionText;
     [SerializeField] TextMeshProUGUI costText;
     float showTime = 0.15f;
 
@@ -33,10 +34,11 @@ public class ShopCanvas : MonoBehaviour {
         }
         currentTown = GameInfo.getCurrentLocationAsTown().town;
         currentShop = GameInfo.getCurrentLocationAsTown().town.holder.getObject<ShopBuilding>(0);
-        updateInfo();
         createSlots();
+        updateInfo();
 
         hideCanvas();
+        coinCount.updateCount(false);
     }
 
     private void Update() {
@@ -46,7 +48,6 @@ public class ShopCanvas : MonoBehaviour {
     }
 
     public void updateInfo() {
-        coinCounter.text = Inventory.getCoinCount().ToString();
         if(shopState == 0) {
             sellReductionText.enabled = false;
             toggleText.text = "Sell";
@@ -304,7 +305,7 @@ public class ShopCanvas : MonoBehaviour {
                     var sPrice = statsInSlot.determineCost();
 
                     if(Inventory.getCoinCount() >= sPrice) {
-                        Inventory.addCoins(-sPrice);
+                        Inventory.addCoins(-sPrice, coinCount, true);
                         Party.addUnit(statsInSlot);
                         ShopInventory.removeUnit(townIndex, slot.getSelectedSlotIndex());
                     }
@@ -312,8 +313,8 @@ public class ShopCanvas : MonoBehaviour {
 
                 var cPrice = getBuyPrice(currentCol.coinCost);
                 if(Inventory.getCoinCount() >= cPrice && currentCol != null && !currentCol.isEmpty()) {
-                    Inventory.addCoins(-cPrice);
-                    Inventory.addCollectable(currentCol, FindObjectOfType<PresetLibrary>());
+                    Inventory.addCoins(-cPrice, coinCount, true);
+                    Inventory.addSingleCollectable(currentCol, FindObjectOfType<PresetLibrary>(), FindObjectOfType<FullInventoryCanvas>());
                     ShopInventory.removeCollectable(townIndex, currentCol);
                 }
             }
@@ -338,13 +339,13 @@ public class ShopCanvas : MonoBehaviour {
 
                 else if(slotState == 5) {
                     var stats = Party.getHolder().getObject<UnitStats>(slot.getSelectedSlotIndex());
-                    Inventory.addCoins(getSellPrice(stats.determineCost()));
+                    Inventory.addCoins(getSellPrice(stats.determineCost()), coinCount, true);
                     Party.removeUnit(slot.getSelectedSlotIndex());
                     ShopInventory.addUnit(townIndex, stats);
                 }
 
                 if(currentCol != null && !currentCol.isEmpty()) {
-                    Inventory.addCoins(getSellPrice(currentCol.coinCost));
+                    Inventory.addCoins(getSellPrice(currentCol.coinCost), coinCount, true);
                     Inventory.removeCollectable(currentCol);
                     ShopInventory.addCollectable(townIndex, currentCol);
                 }
@@ -367,6 +368,7 @@ public class ShopCanvas : MonoBehaviour {
         ShopInventory.populateShop(GameInfo.getCurrentLocationAsTown().town.t_instanceID, GameInfo.getCurrentRegion(), FindObjectOfType<PresetLibrary>());
 
         createSlots();
+        coinCount.updateCount(false);
         updateInfo();
     }
 

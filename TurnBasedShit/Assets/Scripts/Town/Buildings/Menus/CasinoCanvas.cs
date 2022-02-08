@@ -7,8 +7,8 @@ using DG.Tweening;
 
 public class CasinoCanvas : MonoBehaviour {
     [SerializeField] GameObject[] machines;
-    [SerializeField] TextMeshProUGUI coinCount, machineNumberText;
-    [SerializeField] Color posCoinColor, negCoinColor;
+    [SerializeField] TextMeshProUGUI machineNumberText;
+    [SerializeField] CoinCount coinCount;
 
     Coroutine costManager;
     [SerializeField] Slider costSlider;
@@ -35,8 +35,9 @@ public class CasinoCanvas : MonoBehaviour {
 
 
     private void Start() {
-        coinCount.text = Inventory.getCoinCount().ToString();
+        coinCount.updateCount(false);
         costSlider.onValueChanged.AddListener(delegate { updateCostSlider(); });
+        costSlider.value = 0.0f;
         updateCostSlider();
         lightUpLever(false);
     }
@@ -104,36 +105,31 @@ public class CasinoCanvas : MonoBehaviour {
         //  7x return
         if(c7 == 3) {
             //Debug.Log("(" + outcome[0] + ", " + outcome[1] + ", " + outcome[2] + "):  7");
-            Inventory.addCoins(cost * 7);
-            StartCoroutine(createCoinChangeText(cost * 7));
+            Inventory.addCoins(cost * 7, coinCount, true);
         }
 
         //  5x return
         else if(c7 == 2 || (c7 == 1 && c3 == 2)) {
             //Debug.Log("(" + outcome[0] + ", " + outcome[1] + ", " + outcome[2] + "):  5");
-            Inventory.addCoins(cost * 5);
-            StartCoroutine(createCoinChangeText(cost * 5));
+            Inventory.addCoins(cost * 5, coinCount, true);
         }
 
         //  triple return
         else if(c7 == 1 || c3 == 3) {
             //Debug.Log("(" + outcome[0] + ", " + outcome[1] + ", " + outcome[2] + "):  3");
-            Inventory.addCoins(cost * 3);
-            StartCoroutine(createCoinChangeText(cost * 3));
+            Inventory.addCoins(cost * 3, coinCount, true);
         }
 
         //  double return
         else if(c7 == 1 || c3 == 2 || c2 == 3 || (c1 == 1 && c2 == 1 && c3 == 1)) {
             //Debug.Log("(" + outcome[0] + ", " + outcome[1] + ", " + outcome[2] + "):  2");
-            Inventory.addCoins(cost * 2);
-            StartCoroutine(createCoinChangeText(cost * 2));
+            Inventory.addCoins(cost * 2, coinCount, true);
         }
 
         //  single return
         else if(c1 == 3) {
             //Debug.Log("(" + outcome[0] + ", " + outcome[1] + ", " + outcome[2] + "):  1");
-            Inventory.addCoins(cost);
-            StartCoroutine(createCoinChangeText(cost));
+            Inventory.addCoins(cost, coinCount, true);
         }
 
 
@@ -146,7 +142,6 @@ public class CasinoCanvas : MonoBehaviour {
 
         keepCostAmountShown();
 
-        coinCount.text = Inventory.getCoinCount().ToString();
         spinning = false;
     }
 
@@ -167,6 +162,7 @@ public class CasinoCanvas : MonoBehaviour {
     }
 
     public void showCanvas() {
+        costSlider.value = 0.0f;
         transform.GetChild(0).gameObject.SetActive(true);
         transform.GetChild(0).gameObject.transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
         transform.GetChild(0).gameObject.transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f), showTime);
@@ -201,30 +197,6 @@ public class CasinoCanvas : MonoBehaviour {
         transform.GetChild(0).gameObject.SetActive(false);
     }
 
-    public IEnumerator createCoinChangeText(int tex) {
-        var obj = Instantiate(coinCount.gameObject, transform);
-        obj.transform.position = coinCount.gameObject.transform.position;
-        obj.GetComponent<TextMeshProUGUI>().fontSize = coinCount.GetComponent<TextMeshProUGUI>().fontSize / 2.0f;
-
-        if(tex > 0) {
-            obj.GetComponent<TextMeshProUGUI>().color = posCoinColor;
-            obj.GetComponent<TextMeshProUGUI>().text = "+" + tex.ToString();
-        }
-        else {
-            obj.GetComponent<TextMeshProUGUI>().color = negCoinColor;
-            obj.GetComponent<TextMeshProUGUI>().text = tex.ToString();
-        }
-
-
-        float startSpeed = 0.25f;
-        float endSpeed = 0.5f;
-        obj.transform.DOMoveY(obj.transform.position.y - 1.0f, endSpeed + startSpeed);
-
-        yield return new WaitForSeconds(startSpeed);
-
-        obj.GetComponent<TextMeshProUGUI>().DOColor(Color.clear, endSpeed);
-        Destroy(obj.gameObject, endSpeed);
-    }
     IEnumerator manageCostAmount(bool show) {
         if(show) {
             costBackground.transform.DOScale(new Vector3(0.5f, 0.25f, 1.0f), 0.15f);
@@ -260,13 +232,11 @@ public class CasinoCanvas : MonoBehaviour {
             outcome[1] = -1;
             outcome[2] = -1;
 
-            Inventory.addCoins(-cost);
+            Inventory.addCoins(-cost, coinCount, true);
 
             costText.text = cost.ToString();
             costSlider.interactable = false;
 
-            StartCoroutine(createCoinChangeText(-cost));
-            coinCount.text = Inventory.getCoinCount().ToString();
             StartCoroutine(spinAnim());
         }
     }

@@ -49,7 +49,7 @@ public class BattleResultsCanvas : MonoBehaviour {
 
             var obj = slot.instantiateNewSlot(FindObjectOfType<PresetLibrary>().getRarityColor(spoils[i].rarity));
             obj.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getGenericSpriteForCollectable(spoils[i]);
-            obj.GetComponent<InfoBearer>().setInfo(spoils[i].name);
+            obj.GetComponent<SlotObject>().setInfo(spoils[i].name);
             if(spoils[i].maxStackCount == 1)
                 obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
             else {

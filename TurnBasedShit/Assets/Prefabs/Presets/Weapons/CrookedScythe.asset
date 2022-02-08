@@ -26,15 +26,18 @@ MonoBehaviour:
       hookedRot: 0
       chanceToCatch: 0
     flavor: Bleed your enemies dry.
+    description: Collectable thing
     wornAmount: 3
     attributes: 01000000010000000100000001000000
     sUsage: 3
+    sCosts: []
     sUsageAmount: 0
+    sUsageChance: 0
     aType: 1
     power: 25
     speedMod: -5
     sprite:
       sprite: {fileID: 21300000, guid: b0ddd35f8c9eade49b12a77ca610bf8f, type: 3}
-      pos: {x: 0, y: 0}
-      size: {x: 0, y: 0}
-      rot: 0
+      pos: {x: 0.816, y: 0.43}
+      size: {x: 0.6521665, y: 0.6521665}
+      rot: 336.77383

@@ -60,6 +60,8 @@ public class BuildingSpawner : MonoBehaviour {
     void spawnBuildings() {
         for(int i = 0; i < reference.holder.getObjectCount<Building>(); i++) {
             Vector2 pos = startingPoint + new Vector2(buildingBuffer * i, 0.0f);
+            if(reference.getBuidingTypeWithOrder(i) == (Building.type)(-1))
+                continue;
             var obj = Instantiate(FindObjectOfType<PresetLibrary>().getBuilding(reference.getBuidingTypeWithOrder(i)).gameObject, transform);
             obj.transform.localPosition = pos;
 

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 508ea45ff48af2444b1d7573c3a39463, type: 3}
-  m_Name: Simple Shirt
+  m_Name: SimpleShirt
   m_EditorClassIdentifier: 
   preset:
     instanceID: -1
@@ -26,6 +26,7 @@ MonoBehaviour:
       hookedRot: 0
       chanceToCatch: 0
     flavor: Cheap and scratchy.
+    description: Collectable thing
     wornAmount: 3
     attributes: 
     defence: 1
@@ -36,42 +37,30 @@ MonoBehaviour:
       equippedShoulder: {fileID: 21300000, guid: a8f6b81c04aab7848913679040562d59,
         type: 3}
       equippedHat: {fileID: 0}
-      xPos0: 0.091
-      yPos0: 0.263
-      xSize0: 0.4445
-      ySize0: 0.4396
-      xPos1: 0.095
-      yPos1: 0.184
-      xSize1: 0.4331
-      ySize1: 0.3199
-      xPos2: 0.101
-      yPos2: 0.262
-      xSize2: 0.5763
-      ySize2: 0.552
-      xShoulderPos0: -0.098
-      yShoulderPos0: 0.183
-      xShoulderSize0: 0.819
-      yShoulderSize0: 0.787
-      shoulderRot: -2.731
-      xShoulderPos1: -0.085
-      yShoulderPos1: 0.106
-      xShoulderSize1: 0.75
-      yShoulderSize1: 0.75
-      xShoulderPos2: -0.051
-      yShoulderPos2: 0.189
-      xShoulderSize2: 1.011
-      yShoulderSize2: 0.9
+      pos:
+      - {x: 0.081, y: 0.303}
+      - {x: 0.075, y: 0.235}
+      - {x: 0.09, y: 0.301}
+      size:
+      - {x: 0.41367579, y: 0.41367579}
+      - {x: 0.4300494, y: 0.32253712}
+      - {x: 0.5489687, y: 0.5080101}
+      shoulderPos:
+      - {x: -0.103, y: 0.216}
+      - {x: -0.09, y: 0.145}
+      - {x: -0.054, y: 0.212}
+      shoulderSize:
+      - {x: 0.59659916, y: 0.59659916}
+      - {x: 0.5681078, y: 0.5681078}
+      - {x: 0.7774412, y: 0.7774412}
+      shoulderRot: 357.20538
       hatInfrontOfHead: 1
-      xHatPos0: 0
-      yHatPos0: 0
-      xHatSize0: 0
-      yHatSize0: 0
+      hatPos:
+      - {x: 0, y: 0}
+      - {x: 0, y: 0}
+      - {x: 0, y: 0}
+      hatSize:
+      - {x: 0, y: 0}
+      - {x: 0, y: 0}
+      - {x: 0, y: 0}
       hatRot: 0
-      xHatPos1: 0
-      yHatPos1: 0
-      xHatSize1: 0
-      yHatSize1: 0
-      xHatPos2: 0
-      yHatPos2: 0
-      xHatSize2: 0
-      yHatSize2: 0

@@ -12,7 +12,7 @@ public class Weapon : Collectable {
     }
 
     public enum attackType {
-        blunt, edged
+        Blunt, Edged
     }
     public enum specialUsage {
         healing, summoning, convertTarget
@@ -28,7 +28,7 @@ public class Weapon : Collectable {
     }
 
     //  if your add to this remember to add it to the setEqualsTo func
-    public GameInfo.wornState wornAmount = GameInfo.wornState.perfect;
+    public GameInfo.wornState wornAmount = GameInfo.wornState.Perfect;
     public List<attribute> attributes = new List<attribute>();
     public specialUsage sUsage = (specialUsage)(-1);
     public List<specialUsageCost> sCosts = new List<specialUsageCost>();
@@ -39,7 +39,7 @@ public class Weapon : Collectable {
     public float power = 0.0f;
     public float speedMod = 0.0f;
 
-    public WeaponSpriteHolder sprite = new WeaponSpriteHolder();
+    public WeaponSpriteHolder sprite;
 
 
 
@@ -149,7 +149,7 @@ public class Weapon : Collectable {
     }
 
     public override void setEqualTo(Collectable col, bool takeID) {
-        if(col == null || col.type != collectableType.weapon)   //  don't check if isEmpty
+        if(col == null || col.type != collectableType.Weapon)   //  don't check if isEmpty
             return;
         var other = (Weapon)col;
         if(other == null)
@@ -198,7 +198,7 @@ public class Weapon : Collectable {
 public class WeaponSpriteHolder {
     public Sprite sprite;
 
-    public Vector2 pos = new Vector2();
-    public Vector2 size = new Vector2();
-    public float rot;
+    [SerializeField] public Vector2 pos;
+    [SerializeField] public Vector2 size;
+    [SerializeField] public float rot;
 }

@@ -13,7 +13,8 @@ public class Item : Collectable {
     //  effects the item has
     [System.Serializable]
     public enum passiveEffectTypes {
-        modPower, modSpeed, modDefence, modHealGiven, modSummonDamageGiven, modEdgedDamageGiven, modBluntDamageGiven, modChanceToBeAttacked, extraTurn, modMissChance, healInsteadOfDamage
+        modPower, modSpeed, modDefence, modHealGiven, modSummonDamageGiven, modEdgedDamageGiven, modBluntDamageGiven, 
+        modChanceToBeAttacked, extraTurn, modMissChance, healInsteadOfDamage, modEnemyChanceToMiss
     }
 
     [System.Serializable]
@@ -123,7 +124,7 @@ public class Item : Collectable {
     }
 
     public override void setEqualTo(Collectable col, bool takeID) {
-        if(col.type != collectableType.item || col == null)
+        if(col.type != collectableType.Item || col == null)
             return;
 
         var other = (Item)col;

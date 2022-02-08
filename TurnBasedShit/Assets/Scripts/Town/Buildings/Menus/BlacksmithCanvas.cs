@@ -8,11 +8,12 @@ using TMPro;
 public class BlacksmithCanvas : MonoBehaviour {
     public bool isShowing = false;
 
-    [SerializeField] SlotMenu inventoryWeapons, inventoryArmor, partyWeapons, partyArmor;
+    [SerializeField] SlotMenu slot;
 
-    [SerializeField] GameObject selectedEquipment;
+    [SerializeField] GameObject mainSlot;
 
-    [SerializeField] TextMeshProUGUI nameText, costText, coinText;
+    [SerializeField] TextMeshProUGUI nameText, costText, wornText;
+    [SerializeField] CoinCount coinCount;
 
     BlacksmithBuilding reference;
 
@@ -21,151 +22,124 @@ public class BlacksmithCanvas : MonoBehaviour {
         GameInfo.setCurrentLocationAsTown(MapLocationHolder.getRandomTownLocationWithBuilding(Building.type.Blacksmith));
         reference = GameInfo.getCurrentLocationAsTown().town.holder.getObject<BlacksmithBuilding>(0);
         transform.GetChild(0).transform.localScale = new Vector3(0.0f, 0.0f);
+        coinCount.updateCount(false);
 
-        updateInfo();
+        for(int i = 0; i < Inventory.getHolder().getObjectCount<Weapon>(); i++) {
+            var obj = Inventory.getHolder().getObject<Weapon>(i);
+            obj.wornAmount = GameInfo.wornState.Old;
+            Inventory.overrideCollectable(i, obj);
+        }
     }
 
     private void Update() {
-        if(inventoryWeapons.run())
-            updateInfo();
-        if(inventoryArmor.run())
-            updateInfo();
-        if(partyWeapons.run())
-            updateInfo();
-        if(partyArmor.run())
+        if(slot.run())
             updateInfo();
     }
 
-    void updateSlots() {
-        inventoryWeapons.destroySlots();
-        inventoryArmor.destroySlots();
-        partyWeapons.destroySlots();
-        partyArmor.destroySlots();
+    void populateSlots() {
+        slot.destroySlots();
 
         int slotIndex = 0;
+        for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
+            if(Party.getHolder().getObject<UnitStats>(i).weapon != null && !Party.getHolder().getObject<UnitStats>(i).weapon.isEmpty()) {
+                var temp = slot.createSlot(slotIndex, Color.white);
+                temp.GetComponent<SlotObject>().setImage(1, FindObjectOfType<PresetLibrary>().getWeaponSprite(Party.getHolder().getObject<UnitStats>(i).weapon).sprite);
+                temp.GetComponent<SlotObject>().setImageColor(0, Party.getHolder().getObject<UnitStats>(i).u_sprite.color);
+                temp.GetComponent<SlotObject>().setInfo(Party.getHolder().getObject<UnitStats>(i).u_name + "'s Weapon");
+                if(Party.getHolder().getObject<UnitStats>(i).weapon.wornAmount == GameInfo.wornState.Perfect)
+                    temp.GetComponent<SlotObject>().setInteractibility(false);
+                slotIndex++;
+            }
+        }
+
+        for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
+            if(Party.getHolder().getObject<UnitStats>(i).armor != null && !Party.getHolder().getObject<UnitStats>(i).armor.isEmpty()) {
+                var temp = slot.createSlot(slotIndex, Color.white);
+                temp.GetComponent<SlotObject>().setImage(1, FindObjectOfType<PresetLibrary>().getArmorSprite(Party.getHolder().getObject<UnitStats>(i).armor).sprite);
+                temp.GetComponent<SlotObject>().setImageColor(0, Party.getHolder().getObject<UnitStats>(i).u_sprite.color);
+                temp.GetComponent<SlotObject>().setInfo(Party.getHolder().getObject<UnitStats>(i).u_name + "'s Armor");
+                if(Party.getHolder().getObject<UnitStats>(i).armor.wornAmount == GameInfo.wornState.Perfect)
+                    temp.GetComponent<SlotObject>().setInteractibility(false);
+                slotIndex++;
+            }
+        }
+
         for(int i = 0; i < Inventory.getHolder().getObjectCount<Weapon>(); i++) {
-            if(Inventory.getHolder().getObject<Weapon>(i).wornAmount != GameInfo.wornState.perfect) {
-                var temp = inventoryWeapons.createSlot(slotIndex, Color.white);
-                temp.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getHolder().getObject<Weapon>(i)).sprite;
-                slotIndex++;
-            }
+            var temp = slot.createSlot(slotIndex, Color.white);
+            temp.GetComponent<SlotObject>().setImage(1, FindObjectOfType<PresetLibrary>().getWeaponSprite(Inventory.getHolder().getObject<Weapon>(i)).sprite);
+            temp.GetComponent<SlotObject>().setImageColor(0, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getHolder().getObject<Weapon>(i).rarity));
+            temp.GetComponent<SlotObject>().setInfo(Inventory.getHolder().getObject<Weapon>(i).name);
+            if(Inventory.getHolder().getObject<Weapon>(i).wornAmount == GameInfo.wornState.Perfect)
+                temp.GetComponent<SlotObject>().setInteractibility(false);
+            slotIndex++;
         }
 
-        slotIndex = 0;
-        for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
-            if(Party.getHolder().getObject<UnitStats>(i).weapon != null && !Party.getHolder().getObject<UnitStats>(i).weapon.isEmpty() && Party.getHolder().getObject<UnitStats>(i).weapon.wornAmount != GameInfo.wornState.perfect) {
-                var temp = partyWeapons.createSlot(slotIndex, Color.white);
-                temp.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(Party.getHolder().getObject<UnitStats>(i).weapon).sprite;
-                slotIndex++;
-            }
-        }
-
-        slotIndex = 0;
         for(int i = 0; i < Inventory.getHolder().getObjectCount<Armor>(); i++) {
-            if(Inventory.getHolder().getObject<Armor>(i).wornAmount != GameInfo.wornState.perfect) {
-                var temp = inventoryArmor.createSlot(slotIndex, Color.white);
-                temp.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getHolder().getObject<Armor>(i)).sprite;
-                slotIndex++;
-            }
+            var temp = slot.createSlot(slotIndex, Color.white);
+            temp.GetComponent<SlotObject>().setImage(1, FindObjectOfType<PresetLibrary>().getArmorSprite(Inventory.getHolder().getObject<Armor>(i)).sprite);
+            temp.GetComponent<SlotObject>().setImageColor(0, FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getHolder().getObject<Armor>(i).rarity));
+            temp.GetComponent<SlotObject>().setInfo(Inventory.getHolder().getObject<Armor>(i).name);
+            if(Inventory.getHolder().getObject<Armor>(i).wornAmount == GameInfo.wornState.Perfect)
+                temp.GetComponent<SlotObject>().setInteractibility(false);
+            slotIndex++;
         }
-
-        slotIndex = 0;
-        for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
-            if(Party.getHolder().getObject<UnitStats>(i).armor != null && !Party.getHolder().getObject<UnitStats>(i).armor.isEmpty() && Party.getHolder().getObject<UnitStats>(i).armor.wornAmount != GameInfo.wornState.perfect) {
-                var temp = partyArmor.createSlot(slotIndex, Color.white);
-                temp.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(Party.getHolder().getObject<UnitStats>(i).armor).sprite;
-                slotIndex++;
-            }
-        }
-
-        updateInfo();
     }
 
     public void updateInfo() {
-        coinText.text = Inventory.getCoinCount().ToString() + "c";
-        if(getCurrentlyUsingMenu() == null || getCurrentlyUsingMenu().getSelectedSlotIndex() == -1) {
-            resetInfo();
+        resetInfo();
+        if(slot.getSelectedSlotIndex() < 0)
             return;
-        }
+        var col = getSelectedCollectable();
+        if(col == null)
+            return;
 
-        if(getCurrentlyUsingMenu() == inventoryWeapons) {
-            int slotIndex = 0;
-            for(int i = 0; i < Inventory.getHolder().getObjectCount<Weapon>(); i++) {
-                if(Inventory.getHolder().getObject<Weapon>(i).wornAmount != GameInfo.wornState.perfect) {
-                    if(slotIndex == getCurrentlyUsingMenu().getSelectedSlotIndex()) {
-                        setWeaponInfo(Inventory.getHolder().getObject<Weapon>(i));
-                        return;
-                    }
-                    slotIndex++;
-                }
-            }
-        }
+        mainSlot.GetComponent<SlotObject>().setImage(1, FindObjectOfType<PresetLibrary>().getGenericSpriteForCollectable(col));
+        mainSlot.GetComponent<SlotObject>().setImageColor(0, FindObjectOfType<PresetLibrary>().getRarityColor(col.rarity));
+        mainSlot.GetComponent<SlotObject>().setInfo(col.name);
+        nameText.text = col.name;
+        costText.text = col.type == Collectable.collectableType.Weapon ? costText.text = getCost(col.rarity, ((Weapon)col).wornAmount).ToString("0") : getCost(col.rarity, ((Armor)col).wornAmount).ToString("0");
+        costText.text += "c";
+        wornText.text = col.type == Collectable.collectableType.Weapon ? ((Weapon)col).wornAmount.ToString() : ((Armor)col).wornAmount.ToString();
+    }
 
-        else if(getCurrentlyUsingMenu() == partyWeapons) {
-            int slotIndex = 0;
-            for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
-                if(Party.getHolder().getObject<UnitStats>(i).weapon != null && !Party.getHolder().getObject<UnitStats>(i).weapon.isEmpty() && Party.getHolder().getObject<UnitStats>(i).weapon.wornAmount != GameInfo.wornState.perfect) {
-                    if(slotIndex == getCurrentlyUsingMenu().getSelectedSlotIndex()) {
-                        setWeaponInfo(Party.getHolder().getObject<UnitStats>(i).weapon);
-                        return;
-                    }
-                    slotIndex++;
-                }
-            }
-        }
 
-        else if(getCurrentlyUsingMenu() == inventoryArmor) {
-            int slotIndex = 0;
-            for(int i = 0; i < Inventory.getHolder().getObjectCount<Armor>(); i++) {
-                if(Inventory.getHolder().getObject<Armor>(i).wornAmount != GameInfo.wornState.perfect) {
-                    if(slotIndex == getCurrentlyUsingMenu().getSelectedSlotIndex()) {
-                        setArmorInfo(Inventory.getHolder().getObject<Armor>(i));
-                        return;
-                    }
-                    slotIndex++;
-                }
-            }
-        }
-
-        else if(getCurrentlyUsingMenu() == partyArmor) {
-            int slotIndex = 0;
-            for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
-                if(Party.getHolder().getObject<UnitStats>(i).armor != null && !Party.getHolder().getObject<UnitStats>(i).armor.isEmpty() && Party.getHolder().getObject<UnitStats>(i).armor.wornAmount != GameInfo.wornState.perfect) {
-                    if(slotIndex == getCurrentlyUsingMenu().getSelectedSlotIndex()) {
-                        setArmorInfo(Party.getHolder().getObject<UnitStats>(i).armor);
-                        return;
-                    }
-                    slotIndex++;
-                }
-            }
-        }
+    Collectable getSelectedCollectable() {
+        int index = slot.getSelectedSlotIndex();
+        if(index < 0)
+            return null;
+        if(index >= Party.getWeaponCountInParty())
+            index -= Party.getWeaponCountInParty();
+        else
+            return Party.getWeaponInParty(index);
+        if(index >= Party.getArmorCountInParty())
+            index -= Party.getArmorCountInParty();
+        else
+            return Party.getArmorInParty(index);
+        if(index >= Inventory.getHolder().getObjectCount<Weapon>())
+            index -= Inventory.getHolder().getObjectCount<Weapon>();
+        else
+            return Inventory.getHolder().getObject<Weapon>(index);
+        if(index < Inventory.getHolder().getObjectCount<Armor>())
+            return Inventory.getHolder().getObject<Armor>(index);
+        return null;
     }
 
     void resetInfo() {
-        selectedEquipment.transform.GetChild(0).GetComponent<Image>().sprite = null;
+        mainSlot.GetComponent<SlotObject>().setImage(1, null);
+        mainSlot.GetComponent<SlotObject>().setImageColor(0, Color.gray);
+        mainSlot.GetComponent<SlotObject>().setInfo("");
         nameText.text = "";
         costText.text = "0c";
     }
 
-    void setWeaponInfo(Weapon we) {
-        selectedEquipment.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(we).sprite;
-        nameText.text = we.name;
-        costText.text = getCost(we.rarity, we.wornAmount).ToString("0") + "c";
-    }
-    void setArmorInfo(Armor ar) {
-        selectedEquipment.transform.GetChild(0).GetComponent<Image>().sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(ar).sprite;
-        nameText.text = ar.name;
-        costText.text = getCost(ar.rarity, ar.wornAmount).ToString("0") + "c";
-    }
-
     int getCost(GameInfo.region rar, GameInfo.wornState state) {
-        return ((((int)rar) + 1) * reference.chargeRate) * ((int)GameInfo.wornState.perfect - (int)state);
+        return ((((int)rar) + 1) * reference.chargeRate) * ((int)GameInfo.wornState.Perfect - (int)state);
     }
 
 
     public void show() {
         transform.GetChild(0).DOScale(1.0f, 0.15f);
-        updateSlots();
+        populateSlots();
         isShowing = true;
     }
     public void hide(bool deinteractWalker) {
@@ -175,109 +149,59 @@ public class BlacksmithCanvas : MonoBehaviour {
             FindObjectOfType<LocationMovement>().deinteract();
     }
 
-    SlotMenu getCurrentlyUsingMenu() {
-        if(inventoryWeapons.getSelectedSlotIndex() != -1)
-            return inventoryWeapons;
-        if(inventoryArmor.getSelectedSlotIndex() != -1)
-            return inventoryArmor;
-        if(partyWeapons.getSelectedSlotIndex() != -1)
-            return partyWeapons;
-        if(partyArmor.getSelectedSlotIndex() != -1)
-            return partyArmor;
-        return null;
-    }
-
     public void repairEquipment() {
-        if(getCurrentlyUsingMenu() == null || getCurrentlyUsingMenu().getSelectedSlotIndex() == -1) {
+        //  find the right piece of equipment and run this code
+        var col = getSelectedCollectable();
+
+        //  party shit
+        foreach(var i in Party.getHolder().getObjects<UnitStats>()) {
+            if(col.type == Collectable.collectableType.Weapon) {
+                if(i.weapon != null && !i.weapon.isEmpty() && i.weapon.isTheSameInstanceAs(col)) {
+                    if(getCost(col.rarity, i.weapon.wornAmount) > Inventory.getCoinCount())
+                        return;
+                    Inventory.addCoins(-getCost(col.rarity, i.weapon.wornAmount), coinCount, true);
+                    var temp = i.weapon;
+                    temp.wornAmount = GameInfo.wornState.Perfect;
+                    Party.overrideUnitOfSameInstance(i);
+                    populateSlots();
+                    return;
+                }
+            }
+            else if(col.type == Collectable.collectableType.Armor) {
+                if(i.armor != null && !i.armor.isEmpty() && i.armor.isTheSameInstanceAs(col)) {
+                    if(getCost(col.rarity, i.armor.wornAmount) > Inventory.getCoinCount())
+                        return;
+                    Inventory.addCoins(-getCost(col.rarity, i.armor.wornAmount), coinCount, true);
+                    var temp = i.armor;
+                    temp.wornAmount = GameInfo.wornState.Perfect;
+                    Party.overrideUnitOfSameInstance(i);
+                    populateSlots();
+                    return;
+                }
+            }
+        }
+
+        //  Inventory shit
+        if(!Inventory.hasCollectable(col))
             return;
+        var index = Inventory.getHolder().getCollectableIndex(col);
+        if(col.type == Collectable.collectableType.Weapon) {
+            if(getCost(col.rarity, ((Weapon)col).wornAmount) > Inventory.getCoinCount())
+                return;
+            Inventory.addCoins(-getCost(col.rarity, ((Weapon)col).wornAmount), coinCount, true);
+            var temp = (Weapon)col;
+            temp.wornAmount = GameInfo.wornState.Perfect;
+        }
+        else if(col.type == Collectable.collectableType.Armor) {
+            if(getCost(col.rarity, ((Armor)col).wornAmount) > Inventory.getCoinCount())
+                return;
+            Inventory.addCoins(-getCost(col.rarity, ((Armor)col).wornAmount), coinCount, true);
+            var temp = (Armor)col;
+            temp.wornAmount = GameInfo.wornState.Perfect;
         }
 
-        if(getCurrentlyUsingMenu() == inventoryWeapons) {
-            int slotIndex = 0;
-            for(int i = 0; i < Inventory.getHolder().getObjectCount<Weapon>(); i++) {
-                if(Inventory.getHolder().getObject<Weapon>(i).wornAmount != GameInfo.wornState.perfect) {
-                    if(slotIndex == getCurrentlyUsingMenu().getSelectedSlotIndex()) {
-                        var temp = Inventory.getHolder().getObject<Weapon>(i);
-                        if(getCost(temp.rarity, temp.wornAmount) > Inventory.getCoinCount())
-                            return;
-                        Inventory.addCoins(-getCost(temp.rarity, temp.wornAmount));
-
-                        temp.wornAmount = GameInfo.wornState.perfect;
-                        Inventory.overrideCollectable(i, temp);
-
-                        updateSlots();
-                        return;
-                    }
-                    slotIndex++;
-                }
-            }
-        }
-
-        else if(getCurrentlyUsingMenu() == partyWeapons) {
-            int slotIndex = 0;
-            for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
-                if(Party.getHolder().getObject<UnitStats>(i).weapon != null && !Party.getHolder().getObject<UnitStats>(i).weapon.isEmpty() && Party.getHolder().getObject<UnitStats>(i).weapon.wornAmount != GameInfo.wornState.perfect) {
-                    if(slotIndex == getCurrentlyUsingMenu().getSelectedSlotIndex()) {
-                        var temp = Party.getHolder().getObject<UnitStats>(i).weapon;
-                        if(getCost(temp.rarity, temp.wornAmount) > Inventory.getCoinCount())
-                            return;
-                        Inventory.addCoins(-getCost(temp.rarity, temp.wornAmount));
-
-                        temp.wornAmount = GameInfo.wornState.perfect;
-                        var unit = Party.getHolder().getObject<UnitStats>(i);
-                        unit.weapon.setEqualTo(temp, true);
-                        Party.overrideUnitOfSameInstance(unit);
-
-                        updateSlots();
-                        return;
-                    }
-                    slotIndex++;
-                }
-            }
-        }
-
-        else if(getCurrentlyUsingMenu() == inventoryArmor) {
-            int slotIndex = 0;
-            for(int i = 0; i < Inventory.getHolder().getObjectCount<Armor>(); i++) {
-                if(Inventory.getHolder().getObject<Armor>(i).wornAmount != GameInfo.wornState.perfect) {
-                    if(slotIndex == getCurrentlyUsingMenu().getSelectedSlotIndex()) {
-                        var temp = Inventory.getHolder().getObject<Armor>(i);
-                        if(getCost(temp.rarity, temp.wornAmount) > Inventory.getCoinCount())
-                            return;
-                        Inventory.addCoins(-getCost(temp.rarity, temp.wornAmount));
-
-                        temp.wornAmount = GameInfo.wornState.perfect;
-                        Inventory.overrideCollectable(i, temp);
-
-                        updateSlots();
-                        return;
-                    }
-                    slotIndex++;
-                }
-            }
-        }
-
-        else if(getCurrentlyUsingMenu() == partyArmor) {
-            int slotIndex = 0;
-            for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
-                if(Party.getHolder().getObject<UnitStats>(i).armor != null && !Party.getHolder().getObject<UnitStats>(i).armor.isEmpty() && Party.getHolder().getObject<UnitStats>(i).armor.wornAmount != GameInfo.wornState.perfect) {
-                    if(slotIndex == getCurrentlyUsingMenu().getSelectedSlotIndex()) {
-                        var temp = Party.getHolder().getObject<UnitStats>(i).armor;
-                        if(getCost(temp.rarity, temp.wornAmount) > Inventory.getCoinCount())
-                            return;
-                        Inventory.addCoins(-getCost(temp.rarity, temp.wornAmount));
-
-                        temp.wornAmount = GameInfo.wornState.perfect;
-                        var unit = Party.getHolder().getObject<UnitStats>(i);
-                        unit.armor.setEqualTo(temp, true);
-                        Party.overrideUnitOfSameInstance(unit);
-
-                        updateSlots();
-                        return;
-                    }
-                    slotIndex++;
-                }
-            }
-        }
+        //  NOTE: this doesn't run if the collectable is in the party because of the returns
+        Inventory.overrideCollectable(index, col);
+        populateSlots();
     }
 }

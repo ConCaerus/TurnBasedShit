@@ -31,19 +31,19 @@ public class UnitBattleMech : MonoBehaviour {
                 var col = FindObjectOfType<PresetLibrary>().getRandomCollectable();
 
                 switch(col.type) {
-                    case Collectable.collectableType.weapon:
+                    case Collectable.collectableType.Weapon:
                         loc.spoils.addObject<Weapon>((Weapon)col);
                         break;
-                    case Collectable.collectableType.armor:
+                    case Collectable.collectableType.Armor:
                         loc.spoils.addObject<Armor>((Armor)col);
                         break;
-                    case Collectable.collectableType.item:
+                    case Collectable.collectableType.Item:
                         loc.spoils.addObject<Item>((Item)col);
                         break;
-                    case Collectable.collectableType.usable:
+                    case Collectable.collectableType.Usable:
                         loc.spoils.addObject<Usable>((Usable)col);
                         break;
-                    case Collectable.collectableType.unusable:
+                    case Collectable.collectableType.Unusable:
                         loc.spoils.addObject<Unusable>((Unusable)col);
                         break;
                 }
@@ -83,7 +83,7 @@ public class UnitBattleMech : MonoBehaviour {
         //  player killed all enemies and the battle is over
         else if(FindObjectsOfType<EnemyUnitInstance>().Length == 0) {
             showBattleResults();
-            GameInfo.getCombatDetails().receiveSpoils(FindObjectOfType<PresetLibrary>());
+            GameInfo.getCombatDetails().receiveSpoils(FindObjectOfType<PresetLibrary>(), FindObjectOfType<FullInventoryCanvas>());
             battleResultsCanvas.GetComponent<BattleResultsCanvas>().showCombatLocationEquipment();
         }
 

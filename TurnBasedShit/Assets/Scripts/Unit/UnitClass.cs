@@ -236,7 +236,7 @@ public abstract class UnitClass : MonoBehaviour {
         defendAnim = StartCoroutine(defendingAnim());
 
         //  chance worn state decrease
-        if(stats.armor != null && !stats.armor.isEmpty() && stats.armor.wornAmount > GameInfo.wornState.old && GameVariables.chanceEquipmentWornDecrease() && combatStats.isPlayerUnit) {
+        if(stats.armor != null && !stats.armor.isEmpty() && stats.armor.wornAmount > GameInfo.wornState.Old && GameVariables.chanceEquipmentWornDecrease() && combatStats.isPlayerUnit) {
             stats.armor.wornAmount--;
             FindObjectOfType<DamageTextCanvas>().showTatterTextForUnit(gameObject);
         }
@@ -260,7 +260,7 @@ public abstract class UnitClass : MonoBehaviour {
     public void die(DeathInfo.killCause cause, GameObject killer = null) {
         //  things to do with removing the unit from the party and what to do with equippment
         if(combatStats.isPlayerUnit && stats.u_type == GameInfo.combatUnitType.player) {
-            stats.die(cause, FindObjectOfType<PresetLibrary>(), killer);
+            stats.die(cause, FindObjectOfType<PresetLibrary>(), FindObjectOfType<FullInventoryCanvas>(), killer);
             FindObjectOfType<SummonSpotSpawner>().updateSpots();
         }
         else if(!combatStats.isPlayerUnit) {
@@ -390,7 +390,8 @@ public abstract class UnitClass : MonoBehaviour {
         int bluntLvlBefore = stats.getBluntLevel();
         int edgedLvlBefore = stats.getEdgedLevel();
         int lvlBefore = stats.u_level;
-        bool miss = GameVariables.chanceOutOfHundred(stats.getModifiedMissChance());
+        var missChance = stats.getModifiedMissChance() + defender.GetComponent<UnitClass>().stats.getModToAttackersMiss();
+        bool miss = GameVariables.chanceOutOfHundred(missChance);
 
         //  damage logic
         if(!miss) {
@@ -446,7 +447,7 @@ public abstract class UnitClass : MonoBehaviour {
         }
 
         //  chance worn state decrease
-        if(stats.weapon != null && !stats.weapon.isEmpty() && stats.weapon.wornAmount > GameInfo.wornState.old && GameVariables.chanceEquipmentWornDecrease() && combatStats.isPlayerUnit) {
+        if(stats.weapon != null && !stats.weapon.isEmpty() && stats.weapon.wornAmount > GameInfo.wornState.Old && GameVariables.chanceEquipmentWornDecrease() && combatStats.isPlayerUnit) {
             FindObjectOfType<DamageTextCanvas>().showTatterTextForUnit(gameObject);
             stats.weapon.wornAmount--;
         }

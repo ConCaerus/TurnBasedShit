@@ -120,6 +120,7 @@ public class TownMovement : LocationMovement {
     }
 
     public IEnumerator exitBuilding() {
+        GetComponentInChildren<UnitSpriteHandler>().setReference(Party.getLeaderStats(), false);
         GetComponentInChildren<UnitSpriteHandler>().setShowingFace(false);
         float time = 0.25f;
         unit.transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);

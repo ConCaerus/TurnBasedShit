@@ -6,6 +6,7 @@ using UnityEditor;
 //  Actual Inventory Script
 public static class Inventory {
     const string coinCount = "Coin Count";
+    const string maxCapacity = "Inventory Max Capacity";
     const string holderTag = "InventoryHolderTag";
 
     public static ObjectHolder getHolder() {
@@ -21,24 +22,34 @@ public static class Inventory {
     public static void clear(bool clearInstanceQueue) {
         saveHolder(new ObjectHolder());
         clearCoins();
+        resetCapacity();
 
         if(clearInstanceQueue)
             GameInfo.clearInventoryInstanceIDQueue();
     }
 
-
-    public static void addCollectable(Collectable col, PresetLibrary lib) {
-        if(col == null || col.isEmpty())
-            return;
-
+    //  use this function first because if the inventory is full, it will show all of the collectables trying to be added
+    public static void addCollectables(List<Collectable> cols, PresetLibrary lib, FullInventoryCanvas fic) {
         if(getHolder() == null)
             saveHolder(new ObjectHolder());
-
         var holder = getHolder();
-        holder.addObject<Collectable>(col);
-        saveHolder(holder);
 
-        Collection.addCollectable(col, lib);
+        //  not enough space
+        if(holder.getCollectables().Count + cols.Count > getMaxCapacity()) {
+            fic.show(cols);
+            return;
+        }
+
+        foreach(var i in cols) {
+            if(i != null && !i.isEmpty()) {
+                holder.addObject<Collectable>(i);
+                Collection.addCollectable(i, lib);
+            }
+        }
+        saveHolder(holder);
+    }
+    public static void addSingleCollectable(Collectable col, PresetLibrary lib, FullInventoryCanvas fic) {
+        addCollectables(new List<Collectable> { col }, lib, fic);
     }
     public static void overrideCollectable(int index, Collectable col) {
         if(col == null || index == -1)
@@ -55,16 +66,49 @@ public static class Inventory {
         saveHolder(holder);
     }
 
-    public static void createDefaultInventory() {
+    public static bool hasCollectable(Collectable col) {
+        foreach(var i in getHolder().getCollectables()) {
+            if(col.isTheSameInstanceAs(i))
+                return true;
+        }
+        return false;
+    }
 
+    public static void resetCapacity() {
+        SaveData.setInt(maxCapacity, 25);
+    }
+    public static void addCapacity(int amount) {
+        SaveData.setInt(maxCapacity, SaveData.getInt(maxCapacity) + amount);
+    }
+    public static int getMaxCapacity() {
+        return SaveData.getInt(maxCapacity);
+    }
+    public static int getFilledCapacity() {
+        var holder = getHolder();
+        int count = 0;
+        count += holder.getObjectCount<Weapon>();
+        count += holder.getObjectCount<Armor>();
+        count += holder.getObjectCount<Item>();
+        count += getUniqueUsables().Count;
+        count += getUniqueUnusables().Count;
+        return count;
+    }
+    public static bool hasAvailableSpace() {
+        return getMaxCapacity() - getFilledCapacity() > 0;
     }
 
     public static void clearCoins() {
         SaveData.deleteKey(coinCount);
     }
-    public static void addCoins(int count) {
+    public static void addCoins(int count, CoinCount counter = null, bool smoothlyUpdateCoint = false) {
         int temp = SaveData.getInt(coinCount);
         SaveData.setInt(coinCount, temp + count);
+
+        if(counter != null) {
+            counter.updateCount(smoothlyUpdateCoint);
+            if(count != 0)
+                counter.createCoinChangeText(count);
+        }
     }
     public static int getCoinCount() {
         return SaveData.getInt(coinCount);

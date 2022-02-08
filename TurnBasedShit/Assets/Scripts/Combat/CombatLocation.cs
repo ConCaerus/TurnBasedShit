@@ -48,19 +48,10 @@ public class CombatLocation {
 
 
 
-    public void receiveSpoils(PresetLibrary lib) {
+    public void receiveSpoils(PresetLibrary lib, FullInventoryCanvas fic) {
         Inventory.addCoins(coins);
+        Inventory.addCollectables(spoils.getCollectables(), lib, fic);
 
-        foreach(var i in spoils.getObjects<Weapon>())
-            Inventory.addCollectable(i, lib);
-        foreach(var i in spoils.getObjects<Armor>())
-            Inventory.addCollectable(i, lib);
-        foreach(var i in spoils.getObjects<Item>())
-            Inventory.addCollectable(i, lib);
-        foreach(var i in spoils.getObjects<Usable>())
-            Inventory.addCollectable(i, lib);
-        foreach(var i in spoils.getObjects<Unusable>())
-            Inventory.addCollectable(i, lib);
         foreach(var i in spoils.getObjects<UnitStats>())
             Party.addUnit(i);
     }

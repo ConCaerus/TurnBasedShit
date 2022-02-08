@@ -52,23 +52,23 @@ public class ObjectHolder {
         if(thing == null || thing.isEmpty())
             return;
         switch(thing.type) {
-            case Collectable.collectableType.weapon:
+            case Collectable.collectableType.Weapon:
                 addObject<Weapon>((Weapon)thing);
                 return;
 
-            case Collectable.collectableType.armor:
+            case Collectable.collectableType.Armor:
                 addObject<Armor>((Armor)thing);
                 return;
 
-            case Collectable.collectableType.item:
+            case Collectable.collectableType.Item:
                 addObject<Item>((Item)thing);
                 return;
 
-            case Collectable.collectableType.usable:
+            case Collectable.collectableType.Usable:
                 addObject<Usable>((Usable)thing);
                 return;
 
-            case Collectable.collectableType.unusable:
+            case Collectable.collectableType.Unusable:
                 addObject<Unusable>((Unusable)thing);
                 return;
         }
@@ -155,6 +155,9 @@ public class ObjectHolder {
             case MapLocation.locationType.bridge:
                 addObject<BridgeLocation>((BridgeLocation)thing);
                 return;
+            case MapLocation.locationType.loot:
+                addObject<LootLocation>((LootLocation)thing);
+                return;
         }
     }
 
@@ -182,7 +185,7 @@ public class ObjectHolder {
     }
     public void overrideCollectableOfSameInstance(Collectable thing) {
         switch(thing.type) {
-            case Collectable.collectableType.weapon:
+            case Collectable.collectableType.Weapon:
                 var ws = getObjects<Weapon>();
                 for(int i = 0; i < ws.Count; i++) {
                     if(ws[i].isTheSameInstanceAs(thing)) {
@@ -193,7 +196,7 @@ public class ObjectHolder {
                 }
                 return;
 
-            case Collectable.collectableType.armor:
+            case Collectable.collectableType.Armor:
                 var ass = getObjects<Armor>();
                 for(int i = 0; i < ass.Count; i++) {
                     if(ass[i].isTheSameInstanceAs(thing)) {
@@ -204,7 +207,7 @@ public class ObjectHolder {
                 }
                 return;
 
-            case Collectable.collectableType.item:
+            case Collectable.collectableType.Item:
                 var iss = getObjects<Item>();
                 for(int i = 0; i < iss.Count; i++) {
                     if(iss[i].isTheSameInstanceAs(thing)) {
@@ -215,7 +218,7 @@ public class ObjectHolder {
                 }
                 return;
 
-            case Collectable.collectableType.usable:
+            case Collectable.collectableType.Usable:
                 var us = getObjects<Usable>();
                 for(int i = 0; i < us.Count; i++) {
                     if(us[i].isTheSameInstanceAs(thing)) {
@@ -226,7 +229,7 @@ public class ObjectHolder {
                 }
                 return;
 
-            case Collectable.collectableType.unusable:
+            case Collectable.collectableType.Unusable:
                 var uns = getObjects<Unusable>();
                 for(int i = 0; i < uns.Count; i++) {
                     if(uns[i].isTheSameInstanceAs(thing)) {
@@ -331,29 +334,32 @@ public class ObjectHolder {
             case MapLocation.locationType.bridge:
                 overrideObject<BridgeLocation>(index, (BridgeLocation)thing);
                 return;
+            case MapLocation.locationType.loot:
+                overrideObject<LootLocation>(index, (LootLocation)thing);
+                return;
         }
     }
     void overrideCollectable(int index, Collectable thing) {
         if(thing == null || thing.isEmpty())
             return;
         switch(thing.type) {
-            case Collectable.collectableType.weapon:
+            case Collectable.collectableType.Weapon:
                 overrideObject<Weapon>(index, (Weapon)thing);
                 return;
 
-            case Collectable.collectableType.armor:
+            case Collectable.collectableType.Armor:
                 overrideObject<Armor>(index, (Armor)thing);
                 return;
 
-            case Collectable.collectableType.item:
+            case Collectable.collectableType.Item:
                 overrideObject<Item>(index, (Item)thing);
                 return;
 
-            case Collectable.collectableType.usable:
+            case Collectable.collectableType.Usable:
                 overrideObject<Usable>(index, (Usable)thing);
                 return;
 
-            case Collectable.collectableType.unusable:
+            case Collectable.collectableType.Unusable:
                 overrideObject<Unusable>(index, (Unusable)thing);
                 return;
         }
@@ -436,6 +442,9 @@ public class ObjectHolder {
             case MapLocation.locationType.bridge:
                 overrideObject<BridgeLocation>(index, (BridgeLocation)thing);
                 return;
+            case MapLocation.locationType.loot:
+                overrideObject<LootLocation>(index, (LootLocation)thing);
+                return;
         }
     }
 
@@ -462,23 +471,23 @@ public class ObjectHolder {
 
         int index = getCollectableIndex(thing);
         switch((thing).type) {
-            case Collectable.collectableType.weapon:
+            case Collectable.collectableType.Weapon:
                 removeObject<Weapon>(index);
                 break;
 
-            case Collectable.collectableType.armor:
+            case Collectable.collectableType.Armor:
                 removeObject<Armor>(index);
                 break;
 
-            case Collectable.collectableType.item:
+            case Collectable.collectableType.Item:
                 removeObject<Item>(index);
                 break;
 
-            case Collectable.collectableType.usable:
+            case Collectable.collectableType.Usable:
                 removeObject<Usable>(index);
                 break;
 
-            case Collectable.collectableType.unusable:
+            case Collectable.collectableType.Unusable:
                 removeObject<Unusable>(index);
                 break;
         }
@@ -570,6 +579,9 @@ public class ObjectHolder {
             case MapLocation.locationType.bridge:
                 removeObject<BridgeLocation>(index);
                 return;
+            case MapLocation.locationType.loot:
+                removeObject<LootLocation>(index);
+                return;
         }
     }
 
@@ -648,6 +660,8 @@ public class ObjectHolder {
             mls.Add(i);
         foreach(var i in getObjects<BridgeLocation>())
             mls.Add(i);
+        foreach(var i in getObjects<LootLocation>())
+            mls.Add(i);
         return mls;
     }
 
@@ -667,35 +681,35 @@ public class ObjectHolder {
             return -1;
 
         switch(thing.type) {
-            case Collectable.collectableType.weapon:
+            case Collectable.collectableType.Weapon:
                 for(int i = 0; i < getObjectCount<Weapon>(); i++) {
                     if(getObject<Weapon>(i).isTheSameInstanceAs(thing))
                         return i;
                 }
                 break;
 
-            case Collectable.collectableType.armor:
+            case Collectable.collectableType.Armor:
                 for(int i = 0; i < getObjectCount<Armor>(); i++) {
                     if(getObject<Armor>(i).isTheSameInstanceAs(thing))
                         return i;
                 }
                 break;
 
-            case Collectable.collectableType.item:
+            case Collectable.collectableType.Item:
                 for(int i = 0; i < getObjectCount<Item>(); i++) {
                     if(getObject<Item>(i).isTheSameInstanceAs(thing))
                         return i;
                 }
                 break;
 
-            case Collectable.collectableType.usable:
+            case Collectable.collectableType.Usable:
                 for(int i = 0; i < getObjectCount<Usable>(); i++) {
                     if(getObject<Usable>(i).isTheSameInstanceAs(thing))
                         return i;
                 }
                 break;
 
-            case Collectable.collectableType.unusable:
+            case Collectable.collectableType.Unusable:
                 for(int i = 0; i < getObjectCount<Unusable>(); i++) {
                     if(getObject<Unusable>(i).isTheSameInstanceAs(thing))
                         return i;
@@ -854,6 +868,12 @@ public class ObjectHolder {
                         return i;
                 }
                 break;
+            case MapLocation.locationType.loot:
+                for(int i = 0; i < getObjectCount<LootLocation>(); i++) {
+                    if(getObject<LootLocation>(i).isEqualTo((LootLocation)thing))
+                        return i;
+                }
+                break;
         }
 
         return -1;
@@ -909,6 +929,7 @@ public class ObjectHolder {
         count += getObjectCount<FishingLocation>();
         count += getObjectCount<EyeLocation>();
         count += getObjectCount<BridgeLocation>();
+        count += getObjectCount<LootLocation>();
         return count;
     }
 

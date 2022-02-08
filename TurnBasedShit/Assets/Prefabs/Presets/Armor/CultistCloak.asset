@@ -26,6 +26,7 @@ MonoBehaviour:
       hookedRot: 0
       chanceToCatch: 0
     flavor: Cultists' choice.
+    description: Collectable thing
     wornAmount: 3
     attributes: 
     defence: 25
@@ -38,42 +39,30 @@ MonoBehaviour:
         type: 3}
       equippedHat: {fileID: -3462175434678403907, guid: af98eec13ce920244b412a35fce3ac85,
         type: 3}
-      xPos0: 0.04
-      yPos0: -0.09
-      xSize0: 1
-      ySize0: 1
-      xPos1: 0.01
-      yPos1: -0.04
-      xSize1: 1
-      ySize1: 0.75
-      xPos2: 0.02
-      yPos2: 0
-      xSize2: 1.1
-      ySize2: 1.1
-      xShoulderPos0: 0.04
-      yShoulderPos0: -0.15
-      xShoulderSize0: 0.9
-      yShoulderSize0: 0.9
-      shoulderRot: 0
-      xShoulderPos1: 0.02
-      yShoulderPos1: -0.13
-      xShoulderSize1: 0.75
-      yShoulderSize1: 0.75
-      xShoulderPos2: 0.12
-      yShoulderPos2: -0.12
-      xShoulderSize2: 1.1
-      yShoulderSize2: 0.9
+      pos:
+      - {x: 0.025, y: -0.082}
+      - {x: 0.03, y: -0.053}
+      - {x: -0.003, y: -0.087}
+      size:
+      - {x: 0.95694494, y: 0.95694494}
+      - {x: 0.8662553, y: 0.6496916}
+      - {x: 1.0555292, y: 0.9767762}
+      shoulderPos:
+      - {x: 0.035, y: -0.127}
+      - {x: 0.003, y: -0.085}
+      - {x: 0.076, y: -0.166}
+      shoulderSize:
+      - {x: 0.8474796, y: 0.8474796}
+      - {x: 0.65047956, y: 0.65047956}
+      - {x: 0.92941886, y: 0.92941886}
+      shoulderRot: 356.73663
       hatInfrontOfHead: 0
-      xHatPos0: -0.02
-      yHatPos0: 0.12
-      xHatSize0: 0.85
-      yHatSize0: 0.85
+      hatPos:
+      - {x: -0.024, y: 0.347}
+      - {x: -0.016, y: 0.391}
+      - {x: -0.033, y: 0.311}
+      hatSize:
+      - {x: 0.9179658, y: 0.9179658}
+      - {x: 0.92509925, y: 0.92509925}
+      - {x: 0.88272303, y: 0.88272303}
       hatRot: 0
-      xHatPos1: -0.005
-      yHatPos1: 0.13
-      xHatSize1: 0.75
-      yHatSize1: 0.75
-      xHatPos2: -0.01
-      yHatPos2: 0.09
-      xHatSize2: 0.85
-      yHatSize2: 0.85

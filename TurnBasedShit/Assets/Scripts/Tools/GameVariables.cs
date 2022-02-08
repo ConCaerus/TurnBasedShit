@@ -7,6 +7,9 @@ public static class GameVariables {
     public static int getMaxPlayerUnitNameLength() {
         return 18;
     }
+    public static int getMaxWeaponArmorAttributeCount() {
+        return 10;
+    }
 
     public static float getExpForEnemy(GameInfo.region lvl) {
         return 10.0f * (1 + (int)lvl);

@@ -37,6 +37,7 @@ public class UnitStats {
     public Armor armor;
     public Item item;
 
+    public int maxTraitCount { get; private set; } = 8;
     public List<UnitTrait> u_traits = new List<UnitTrait>();
     public UnitTalent u_talent = null;
 
@@ -124,9 +125,9 @@ public class UnitStats {
         float baseMult = 1.25f;
         if(weapon == null || weapon.isEmpty())
             return 1.0f;
-        if(weapon.aType == Weapon.attackType.blunt && getBluntLevel() > 0)
+        if(weapon.aType == Weapon.attackType.Blunt && getBluntLevel() > 0)
             return baseMult * (getBluntLevel() / 2.0f);
-        if(weapon.aType == Weapon.attackType.edged && getEdgedLevel() > 0)
+        if(weapon.aType == Weapon.attackType.Edged && getEdgedLevel() > 0)
             return baseMult * (getEdgedLevel() / 2.0f);
         return 1.0f;
     }
@@ -161,9 +162,9 @@ public class UnitStats {
         if(item != null && !item.isEmpty()) {   //  adds whatever the item's power mod is times the base damage
             dmg += item.getPassiveMod(Item.passiveEffectTypes.modPower) * baseDmg;
 
-            if(weapon.aType == Weapon.attackType.edged)
+            if(weapon.aType == Weapon.attackType.Edged)
                 dmg += item.getPassiveMod(Item.passiveEffectTypes.modEdgedDamageGiven) * baseDmg;
-            else if(weapon.aType == Weapon.attackType.blunt)
+            else if(weapon.aType == Weapon.attackType.Blunt)
                 dmg += item.getPassiveMod(Item.passiveEffectTypes.modBluntDamageGiven) * baseDmg;
         }
 
@@ -264,6 +265,12 @@ public class UnitStats {
             temp += (int)item.getPassiveMod(Item.passiveEffectTypes.modMissChance);
         return temp;
     }
+    public int getModToAttackersMiss() {
+        int temp = 0;
+        if(item != null && !item.isEmpty())
+            temp += (int)item.getPassiveMod(Item.passiveEffectTypes.modEnemyChanceToMiss);
+        return temp;
+    }
 
     public bool hasTrait(UnitTrait t) {
         foreach(var i in u_traits) {
@@ -334,14 +341,14 @@ public class UnitStats {
         return Mathf.FloorToInt(u_summonedExp / u_skillExpCap) + 1;
     }
 
-    public void die(DeathInfo.killCause cause, PresetLibrary lib, GameObject killer = null) {
+    public void die(DeathInfo.killCause cause, PresetLibrary lib, FullInventoryCanvas fic, GameObject killer = null) {
         //  add equipped things back into the inventory
         if(weapon != null && !weapon.isEmpty())
-            Inventory.addCollectable(weapon, lib);
+            Inventory.addSingleCollectable(weapon, lib, fic);
         if(armor != null && !armor.isEmpty())
-            Inventory.addCollectable(armor, lib);
+            Inventory.addSingleCollectable(armor, lib, fic);
         if(item != null && !item.isEmpty())
-            Inventory.addCollectable(item, lib);
+            Inventory.addSingleCollectable(item, lib, fic);
 
         weapon = null;
         armor = null;

@@ -26,6 +26,7 @@ MonoBehaviour:
       hookedRot: 0
       chanceToCatch: 0
     flavor: For the gentleman adventurer.
+    description: Collectable thing
     wornAmount: 3
     attributes: 01000000
     defence: 10
@@ -36,42 +37,30 @@ MonoBehaviour:
       equippedShoulder: {fileID: 21300000, guid: cd591ea5de4e1b54cab82ccf39015b52,
         type: 3}
       equippedHat: {fileID: 21300000, guid: 90bef587cb61eb54aa127070eb470864, type: 3}
-      xPos0: 0.108
-      yPos0: 0.279
-      xSize0: 0.8231
-      ySize0: 0.8141
-      xPos1: 0.117
-      yPos1: 0.245
-      xSize1: 0.8333
-      ySize1: 0.577
-      xPos2: 0.158
-      yPos2: 0.378
-      xSize2: 0.951
-      ySize2: 0.912
-      xShoulderPos0: -0.032
-      yShoulderPos0: 0.162
-      xShoulderSize0: -0.824
-      yShoulderSize0: 0.824
-      shoulderRot: 36.82
-      xShoulderPos1: -0.06
-      yShoulderPos1: 0.117
-      xShoulderSize1: -0.7117
-      yShoulderSize1: 0.7117
-      xShoulderPos2: -0.013
-      yShoulderPos2: 0.176
-      xShoulderSize2: -0.9353
-      yShoulderSize2: 0.9353
+      pos:
+      - {x: 0.103, y: 0.316}
+      - {x: 0.106, y: 0.255}
+      - {x: 0.137, y: 0.349}
+      size:
+      - {x: 0.8905236, y: 0.8905236}
+      - {x: 0.830114, y: 0.62258565}
+      - {x: 0.9611537, y: 0.88944197}
+      shoulderPos:
+      - {x: -0.09, y: 0.123}
+      - {x: -0.108, y: 0.1}
+      - {x: -0.064, y: 0.136}
+      shoulderSize:
+      - {x: 0.8399599, y: 0.8399599}
+      - {x: 0.6869929, y: 0.6869929}
+      - {x: 0.9198063, y: 0.9198063}
+      shoulderRot: 357.20538
       hatInfrontOfHead: 1
-      xHatPos0: -0.03
-      yHatPos0: 0.54
-      xHatSize0: 0.85
-      yHatSize0: 0.85
-      hatRot: 0
-      xHatPos1: -0.04
-      yHatPos1: 0.47
-      xHatSize1: 0.75
-      yHatSize1: 0.75
-      xHatPos2: -0.04
-      yHatPos2: 0.56
-      xHatSize2: 0.85
-      yHatSize2: 0.85
+      hatPos:
+      - {x: -0.209, y: 0.494}
+      - {x: -0.219, y: 0.433}
+      - {x: -0.209, y: 0.498}
+      hatSize:
+      - {x: 0.9179658, y: 0.9179658}
+      - {x: 0.8341805, y: 0.8341805}
+      - {x: 0.73795646, y: 0.73795646}
+      hatRot: 19.642118

@@ -4,8 +4,10 @@ using UnityEngine;
 
 [System.Serializable]
 public class ChurchBuilding : Building {
-    public int priceToRemove;
-    public int priceToAdd;
+    public int priceToRemove = 2;
+    public int priceToAdd = 5;
+
+    public List<UnitTrait> availableTraits = new List<UnitTrait>();
 
     public ChurchBuilding() {
         b_type = type.Church;
