@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MapSideUnitMovement : UnitMovement {
-    public UnitStats referenceStats;
-
 
     private void Update() {
         if(GetComponentInChildren<UnitSpriteHandler>().initialized) {

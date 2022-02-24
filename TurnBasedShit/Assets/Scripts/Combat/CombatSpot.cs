@@ -7,6 +7,8 @@ public class CombatSpot : MonoBehaviour {
     public GameObject unit = null;
     float speed = 0.25f;
 
+    [SerializeField] Color enemyColor, bossColor;
+
     public bool isPlayerSpot() {
         return transform.position.x < 0.0f;
     }
@@ -22,6 +24,10 @@ public class CombatSpot : MonoBehaviour {
             GetComponent<SpriteRenderer>().DOColor(new Color(col.r, col.g, col.b, 1.0f), speed);
             return;
         }
-        GetComponent<SpriteRenderer>().DOColor(Color.white, speed);
+        if(unit.GetComponent<BossUnitInstance>() != null) {
+            GetComponent<SpriteRenderer>().DOColor(bossColor, speed);
+            return;
+        }
+        GetComponent<SpriteRenderer>().DOColor(enemyColor, speed);
     }
 }

@@ -16,5 +16,11 @@ MonoBehaviour:
     t_name: Sickly
     t_infos:
     - modType: 3
+      condition: 0
       modAmount: -25
+    passiveMods:
+    - conditions: 
+      amount: 0.85
+      type: 3
+    timedMods: []
     t_isGood: 0

@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 508ea45ff48af2444b1d7573c3a39463, type: 3}
-  m_Name: CultistCloak
+  m_Name: ReapersCloak
   m_EditorClassIdentifier: 
   preset:
     instanceID: -1
-    name: Cultist Cloak
+    name: Reaper's Cloak
     type: 1
     rarity: 4
     coinCost: 50
@@ -26,7 +26,8 @@ MonoBehaviour:
       hookedRot: 0
       chanceToCatch: 0
     flavor: Cultists' choice.
-    description: Collectable thing
+    description: Clothing worn by the Reaper himself. Looks like it's made of simple
+      cloth but serves as great protection.
     wornAmount: 3
     attributes: 
     defence: 25

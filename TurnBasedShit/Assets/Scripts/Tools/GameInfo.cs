@@ -21,7 +21,7 @@ public static class GameInfo {
     }
 
     public enum combatUnitType {
-        player, slime, groundBird, stumpSpider, rockCrawler, chicken, deadUnit, turtle
+        player, slime, groundBird, stumpSpider, rockCrawler, chicken, deadUnit, turtle, spiderLeg, spiderHead
     }
 
 
@@ -173,7 +173,7 @@ public static class GameInfo {
     public static region getRandomReg() {
         return (region)Random.Range(0, 5);
     }
-    public static region getRegionForEnemyType(combatUnitType t) {
+    public static region getRegionForEnemyType(combatUnitType t) {  //  needs to be this way
         switch(t) {
             case combatUnitType.groundBird:
                 return region.grassland;
@@ -185,6 +185,9 @@ public static class GameInfo {
                 return region.mountains;
             case combatUnitType.deadUnit:
                 return region.hell;
+            case combatUnitType.spiderHead:
+            case combatUnitType.spiderLeg:
+                return region.grassland;
         }
         return (region)(-1);
     }

@@ -22,7 +22,7 @@ public class InfoBearer : MonoBehaviour {
             return;
         if(string.IsNullOrEmpty(info))
             return;
-        FindObjectOfType<InfoCanvas>().startShowing(this);
+        FindObjectOfType<InfoCanvas>().showInfo(this);
 
         if(mouseOverFunc != null)
             mouseOverFunc();
@@ -44,7 +44,7 @@ public class InfoBearer : MonoBehaviour {
             info = st;
 
         if(FindObjectOfType<InfoCanvas>().shownInfo == this)
-            FindObjectOfType<InfoCanvas>().startShowing(this);
+            FindObjectOfType<InfoCanvas>().showInfo(this);
     }
     public string getInfo() {
         return info;

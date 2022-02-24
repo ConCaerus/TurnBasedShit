@@ -150,6 +150,38 @@ public class BattleOptionsCanvas : MonoBehaviour {
         thing.GetComponent<Animator>().StopPlayback();
         thing.GetComponent<Animator>().SetFloat("moddedSpeed", 1.0f);
 
+        var pu = FindObjectOfType<TurnOrderSorter>().playingUnit;
+        var du = FindObjectOfType<TurnOrderSorter>().playingUnit.GetComponent<UnitClass>().combatStats.attackingTarget;
+
+        if(thing == attackButton && pu.GetComponentInChildren<CombatCards>().state != CombatCards.cardState.attacking) {
+            pu.GetComponentInChildren<CombatCards>().showCards(CombatCards.cardState.attacking,
+                new List<StatModifier.useTimeType>() { StatModifier.useTimeType.beforeEveryTurn, StatModifier.useTimeType.beforeAttacking, StatModifier.useTimeType.beforeTurn,
+                StatModifier.useTimeType.afterKill, StatModifier.useTimeType.afterTurn, StatModifier.useTimeType.afterEveryTurn});
+            if(du != null) {
+                du.GetComponentInChildren<CombatCards>().showCards(CombatCards.cardState.defending,
+                    new List<StatModifier.useTimeType>() { StatModifier.useTimeType.beforeDefending, StatModifier.useTimeType.beforeDying });
+            }
+        }
+        else if(thing == defendButton && pu.GetComponentInChildren<CombatCards>().state != CombatCards.cardState.defending) {
+            pu.GetComponentInChildren<CombatCards>().showCards(CombatCards.cardState.defending,
+                new List<StatModifier.useTimeType>() { StatModifier.useTimeType.beforeEveryTurn, StatModifier.useTimeType.beforeDefending, StatModifier.useTimeType.beforeTurn,
+                StatModifier.useTimeType.afterEveryTurn, StatModifier.useTimeType.afterTurn});
+        }
+        else if(thing == chargeButton && pu.GetComponentInChildren<CombatCards>().state != CombatCards.cardState.charging) {
+            pu.GetComponentInChildren<CombatCards>().showCards(CombatCards.cardState.charging,
+                new List<StatModifier.useTimeType>() { StatModifier.useTimeType.beforeEveryTurn, StatModifier.useTimeType.beforeAttacking, StatModifier.useTimeType.beforeTurn,
+                StatModifier.useTimeType.afterKill, StatModifier.useTimeType.afterTurn, StatModifier.useTimeType.afterEveryTurn});
+            if(du != null) {
+                du.GetComponentInChildren<CombatCards>().showCards(CombatCards.cardState.defending,
+                    new List<StatModifier.useTimeType>() { StatModifier.useTimeType.beforeDefending, StatModifier.useTimeType.beforeDying });
+            }
+        }
+        else if(thing == specialButton && pu.GetComponentInChildren<CombatCards>().state != CombatCards.cardState.special) {
+            pu.GetComponentInChildren<CombatCards>().showCards(CombatCards.cardState.special,
+                new List<StatModifier.useTimeType>() { StatModifier.useTimeType.beforeEveryTurn, StatModifier.useTimeType.beforeTurn,
+                StatModifier.useTimeType.afterEveryTurn, StatModifier.useTimeType.afterTurn});
+        }
+
         thing.GetComponent<RectTransform>().DOKill();
         thing.GetComponent<RectTransform>().DORotate(new Vector3(0.0f, 0.0f, Random.Range(-25.0f, 25.0f)), 0.15f);
     }

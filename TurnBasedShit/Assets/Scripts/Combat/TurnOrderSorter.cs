@@ -23,7 +23,7 @@ public class TurnOrderSorter : MonoBehaviour {
 
         foreach(var i in FindObjectsOfType<UnitClass>()) {
             if(i.stats.item != null && !i.stats.item.isEmpty()) {
-                for(int s = 0; s < i.stats.item.getPassiveMod(Item.passiveEffectTypes.extraTurn); s++)
+                for(int s = 0; s < i.stats.item.getPassiveMod(StatModifier.passiveModifierType.addExtraTurn, i.stats, false); s++)
                     unitsInPlay.Add(i.gameObject);
             }
             unitsInPlay.Add(i.gameObject);
@@ -72,7 +72,7 @@ public class TurnOrderSorter : MonoBehaviour {
 
                 //  add extra turns for the unit
                 if(pool[nextIndex].GetComponent<UnitClass>().stats.item != null && !pool[nextIndex].GetComponent<UnitClass>().stats.item.isEmpty() && pool[nextIndex] != playingUnit) {
-                    for(int i = 0; i < pool[nextIndex].GetComponent<UnitClass>().stats.item.getPassiveMod(Item.passiveEffectTypes.extraTurn); i++) {
+                    for(int i = 0; i < pool[nextIndex].GetComponent<UnitClass>().stats.item.getPassiveMod(StatModifier.passiveModifierType.addExtraTurn, pool[nextIndex].GetComponent<UnitClass>().stats, false); i++) {
                         sorted.Add(pool[nextIndex]);
                         num--;
 
@@ -116,12 +116,16 @@ public class TurnOrderSorter : MonoBehaviour {
             yield return new WaitForEndOfFrame();
 
 
+        //  cleans up flair
+        foreach(var i in FindObjectsOfType<CombatCards>())
+            i.hideCards();
+
         //  removes current unit from list
         if(playingUnit != null) {
             //  trigger items
             if(playingUnit.GetComponent<UnitClass>().stats.item != null && !playingUnit.GetComponent<UnitClass>().stats.item.isEmpty()) {
-                playingUnit.GetComponent<UnitClass>().stats.item.triggerUseTime(playingUnit.GetComponent<UnitClass>(), Item.useTimes.afterTurn);
-                playingUnit.GetComponent<UnitClass>().stats.item.triggerUseTime(playingUnit.GetComponent<UnitClass>(), Item.useTimes.afterEachTurn);
+                playingUnit.GetComponent<UnitClass>().stats.item.triggerUseTime(playingUnit.GetComponent<UnitClass>(), StatModifier.useTimeType.afterTurn);
+                playingUnit.GetComponent<UnitClass>().stats.item.triggerUseTime(playingUnit.GetComponent<UnitClass>(), StatModifier.useTimeType.afterEveryTurn);
             }
 
             //  resets unit after turn, and removes it from the list of playing units
@@ -150,7 +154,7 @@ public class TurnOrderSorter : MonoBehaviour {
             //  trigger items
             foreach(var i in unitsInPlay) {
                 if(i.GetComponent<UnitClass>().stats.item != null && !i.GetComponent<UnitClass>().stats.item.isEmpty()) {
-                    i.GetComponent<UnitClass>().stats.item.triggerUseTime(i.GetComponent<UnitClass>(), Item.useTimes.afterRound);
+                    i.GetComponent<UnitClass>().stats.item.triggerUseTime(i.GetComponent<UnitClass>(), StatModifier.useTimeType.afterRound);
                 }
             }
             yield return 0;
@@ -195,8 +199,8 @@ public class TurnOrderSorter : MonoBehaviour {
 
             //  triggers
             if(playingUnit.GetComponent<UnitClass>().stats.item != null && !playingUnit.GetComponent<UnitClass>().stats.item.isEmpty()) {
-                playingUnit.GetComponent<UnitClass>().stats.item.triggerUseTime(playingUnit.GetComponent<UnitClass>(), Item.useTimes.beforeTurn);
-                playingUnit.GetComponent<UnitClass>().stats.item.triggerUseTime(playingUnit.GetComponent<UnitClass>(), Item.useTimes.beforeEachTurn);
+                playingUnit.GetComponent<UnitClass>().stats.item.triggerUseTime(playingUnit.GetComponent<UnitClass>(), StatModifier.useTimeType.beforeTurn);
+                playingUnit.GetComponent<UnitClass>().stats.item.triggerUseTime(playingUnit.GetComponent<UnitClass>(), StatModifier.useTimeType.beforeEveryTurn);
             }
 
             FindObjectOfType<BattleOptionsCanvas>().battleState = 0;

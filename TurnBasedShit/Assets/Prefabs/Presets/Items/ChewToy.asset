@@ -31,5 +31,10 @@ MonoBehaviour:
     pEffects:
     - effect: 4
       effectAmount: 0.15
+    passiveMods:
+    - conditions: 
+      amount: 1.15
+      type: 4
+    timedMods: []
     sprite:
       sprite: {fileID: 21300000, guid: b91d01b3266a81a47846fe00e2885875, type: 3}

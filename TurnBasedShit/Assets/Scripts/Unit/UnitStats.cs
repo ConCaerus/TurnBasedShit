@@ -93,7 +93,7 @@ public class UnitStats {
         u_power += Random.Range(0.0f, 2.0f);
         u_defence += Random.Range(0.0f, 2.0f);
 
-        u_critChance = Mathf.Clamp(u_critChance + Random.Range(0.0f, 0.2f), 0.0f, 100.0f);
+        u_critChance = Mathf.Clamp(u_critChance + Random.Range(0.0f, 2f), 0.0f, 100.0f);
     }
 
     //  modifying stats
@@ -115,6 +115,48 @@ public class UnitStats {
         u_exp += ex;
         return canLevelUp();
     }
+
+    public List<UnitTrait> getTraitsAndTalent() {
+        var temp = new List<UnitTrait>();
+        if(u_talent != null)
+            temp.Add(u_talent);
+        foreach(var i in u_traits)
+            temp.Add(i);
+        return temp;
+    }
+    public List<StatModifier.passiveMod> getAllPassiveMods() {
+        var temp = new List<StatModifier.passiveMod>();
+        if(u_talent != null) {
+            foreach(var i in u_talent.passiveMods)
+                temp.Add(i);
+        }
+        foreach(var i in u_traits) {
+            foreach(var t in i.passiveMods)
+                temp.Add(t);
+        }
+        if(item != null && !item.isEmpty()) {
+            foreach(var i in item.passiveMods)
+                temp.Add(i);
+        }
+        return temp;
+    }
+    public List<StatModifier.timedMod> getAllTimedMods() {
+        var temp = new List<StatModifier.timedMod>();
+        if(u_talent != null) {
+            foreach(var i in u_talent.timedMods)
+                temp.Add(i);
+        }
+        foreach(var i in u_traits) {
+            foreach(var t in i.timedMods)
+                temp.Add(t);
+        }
+        if(item != null && !item.isEmpty()) {
+            foreach(var i in item.timedMods)
+                temp.Add(i);
+        }
+        return temp;
+    }
+
 
     //  Attack amount
     public float getBasePower() {
@@ -150,22 +192,22 @@ public class UnitStats {
             dmgType = weapon.aType;
         //  Traits modify damage
         foreach(var i in u_traits) {    //  adds whatever the trait's power mod is times the base damage
-            dmg += i.getDamageGivenMod(dmgType) * baseDmg;
+            dmg += i.getPassiveMod(StatModifier.passiveModifierType.modPower, this, false) * baseDmg;
         }
         if(u_talent != null)
-            dmg += u_talent.getDamageGivenMod(dmgType) * baseDmg;
+            dmg += u_talent.getPassiveMod(StatModifier.passiveModifierType.modPower, this, false) * baseDmg;
 
         //  levels modify damage
         dmg *= getLevelDamageMult();
 
         //  Items modify damage
         if(item != null && !item.isEmpty()) {   //  adds whatever the item's power mod is times the base damage
-            dmg += item.getPassiveMod(Item.passiveEffectTypes.modPower) * baseDmg;
+            dmg += item.getPassiveMod(StatModifier.passiveModifierType.modPower, this, false) * baseDmg;
 
             if(weapon.aType == Weapon.attackType.Edged)
-                dmg += item.getPassiveMod(Item.passiveEffectTypes.modEdgedDamageGiven) * baseDmg;
+                dmg += item.getPassiveMod(StatModifier.passiveModifierType.modEdgedPower, this, false) * baseDmg;
             else if(weapon.aType == Weapon.attackType.Blunt)
-                dmg += item.getPassiveMod(Item.passiveEffectTypes.modBluntDamageGiven) * baseDmg;
+                dmg += item.getPassiveMod(StatModifier.passiveModifierType.modBluntPower, this, false) * baseDmg;
         }
 
         //  equipment pair modify damage
@@ -197,14 +239,14 @@ public class UnitStats {
 
         //  Trigger Traits
         foreach(var i in u_traits) {
-            temp -= i.getDamageTakenMod();
+            temp -= i.getPassiveMod(StatModifier.passiveModifierType.modDefence, this, false);
         }
         if(u_talent != null)
-            temp -= u_talent.getDamageTakenMod();
+            temp -= u_talent.getPassiveMod(StatModifier.passiveModifierType.modDefence, this, false);
 
         //  have item reduce damage
         if(item != null && !item.isEmpty())
-            temp -= item.getPassiveMod(Item.passiveEffectTypes.modDefence);
+            temp -= item.getPassiveMod(StatModifier.passiveModifierType.modDefence, this, false);
 
         //  Have Armor reduce damage
         if(armor != null && !armor.isEmpty()) { //  takes off 10% of damage for every tolken of turtle
@@ -230,9 +272,9 @@ public class UnitStats {
         float temp = u_baseMaxHealth;
 
         foreach(var i in u_traits)
-            temp += i.getMaxHealthMod();
+            temp *= i.getPassiveMod(StatModifier.passiveModifierType.modMaxHealth, this, true);
         if(u_talent != null)
-            temp += u_talent.getMaxHealthMod();
+            temp *= u_talent.getPassiveMod(StatModifier.passiveModifierType.modMaxHealth, this, true);
 
         return temp;
     }
@@ -243,11 +285,11 @@ public class UnitStats {
         if(armor != null && !armor.isEmpty())
             temp += armor.speedMod;
         if(item != null && !item.isEmpty())
-            temp += item.getPassiveMod(Item.passiveEffectTypes.modSpeed);
+            temp += item.getPassiveMod(StatModifier.passiveModifierType.modSpeed, this, false);
         foreach(var i in u_traits)
-            temp += i.getSpeedMod();
+            temp += i.getPassiveMod(StatModifier.passiveModifierType.modSpeed, this, false);
         if(u_talent != null)
-            temp += u_talent.getSpeedMod();
+            temp += u_talent.getPassiveMod(StatModifier.passiveModifierType.modSpeed, this, false);
 
         return temp;
     }
@@ -262,13 +304,13 @@ public class UnitStats {
     public int getModifiedMissChance() {
         var temp = u_missChance;
         if(item != null && !item.isEmpty())
-            temp += (int)item.getPassiveMod(Item.passiveEffectTypes.modMissChance);
+            temp += (int)item.getPassiveMod(StatModifier.passiveModifierType.missChance, this, false);
         return temp;
     }
     public int getModToAttackersMiss() {
         int temp = 0;
         if(item != null && !item.isEmpty())
-            temp += (int)item.getPassiveMod(Item.passiveEffectTypes.modEnemyChanceToMiss);
+            temp += (int)item.getPassiveMod(StatModifier.passiveModifierType.modEnemyMissChance, this, false);
         return temp;
     }
 
@@ -296,28 +338,28 @@ public class UnitStats {
 
     public void addSummonExp(float exp) {
         if(u_talent != null)
-            exp *= u_talent.getSummonExpMod();
+            exp *= u_talent.getPassiveMod(StatModifier.passiveModifierType.summonExpMod, this, true);
 
         foreach(var i in u_traits)
-            exp *= i.getSummonExpMod();
+            exp *= i.getPassiveMod(StatModifier.passiveModifierType.summonExpMod, this, true);
 
         u_summonedExp += exp;
     }
     public void addBluntExp(float exp) {
         if(u_talent != null)
-            exp *= u_talent.getBluntExpMod();
+            exp *= u_talent.getPassiveMod(StatModifier.passiveModifierType.bluntExpMod, this, true);
 
         foreach(var i in u_traits)
-            exp *= i.getBluntExpMod();
+            exp *= i.getPassiveMod(StatModifier.passiveModifierType.bluntExpMod, this, true);
 
         u_bluntExp += exp;
     }
     public void addEdgedExp(float exp) {
         if(u_talent != null)
-            exp *= u_talent.getEdgedExpMod();
+            exp *= u_talent.getPassiveMod(StatModifier.passiveModifierType.edgedExpMod, this, true);
 
         foreach(var i in u_traits)
-            exp *= i.getEdgedExpMod();
+            exp *= i.getPassiveMod(StatModifier.passiveModifierType.edgedExpMod, this, true);
 
         u_edgedExp += exp;
     }

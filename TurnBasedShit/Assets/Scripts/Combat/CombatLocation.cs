@@ -12,11 +12,25 @@ public class CombatLocation {
     public ObjectHolder spoils = new ObjectHolder();
 
     public GameInfo.region reg;
+    public bool isBoss = false;
+
 
     public CombatLocation(GameInfo.region diff, PresetLibrary lib, int numberOfWaves = 2, int minNumberOfEnemies = 2, int maxNumberOfEnemies = 4) {
         createWaves(diff, lib, numberOfWaves, minNumberOfEnemies, maxNumberOfEnemies);
     }
 
+    public void addBossesToWave(int waveIndex, List<GameInfo.combatUnitType> bosses, PresetLibrary lib) {
+        while(waveIndex >= waves.Count)
+            waves.Add(new Wave());
+
+        var temp = new Wave();
+        for(int i = 0; i < bosses.Count; i++) {
+            var index = lib.getBossIndex(bosses[i]);
+            temp.bossIndexes.Add(index);
+        }
+
+        waves[waveIndex] = temp;
+    }
     public void createWaves(GameInfo.region diff, PresetLibrary lib, int numberOfWaves, int minNumberOfEnemies = 2, int maxNumberOfEnemies = 4) {
         waves.Clear();
         addWaves(diff, lib, numberOfWaves, minNumberOfEnemies, maxNumberOfEnemies);
@@ -45,8 +59,13 @@ public class CombatLocation {
         waves.Clear();
         waves.Add(wave);
     }
+    public void clearWaves() {
+        waves.Clear();
+    }
 
-
+    public bool isEmpty() {
+        return waves == null || waves.Count == 0 || (waves[0].enemyIndexes.Count == 0 && waves[0].bossIndexes.Count == 0 && waves[0].graveyardIndexes.Count == 0);
+    }
 
     public void receiveSpoils(PresetLibrary lib, FullInventoryCanvas fic) {
         Inventory.addCoins(coins);

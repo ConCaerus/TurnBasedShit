@@ -108,11 +108,11 @@ public class EnemyUnitInstance : UnitClass {
             moddedChance += 0.15f;
 
         foreach(var t in stats.u_traits)  //  apply traits n' shit
-            moddedChance += t.getChanceToBeAttackedMod() * 100.0f;
+            moddedChance += t.getPassiveMod(StatModifier.passiveModifierType.modAttackedChance, stats, false);
 
 
         if(stats.item != null && !stats.item.isEmpty()) //  item shit
-            moddedChance += stats.item.getPassiveMod(Item.passiveEffectTypes.modChanceToBeAttacked) * defaultChancePerUnit;
+            moddedChance += stats.item.getPassiveMod(StatModifier.passiveModifierType.modAttackedChance, stats, false) * defaultChancePerUnit;
 
         return moddedChance;
     }

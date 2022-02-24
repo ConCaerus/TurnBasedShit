@@ -97,6 +97,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   info: <b><u>Information
+  showNoMatterMenuState: 0
   hideWhenMenuOpen: 1
   hideWhenCoveredByMapFog: 0
 --- !u!114 &5633519469114204461
@@ -140,7 +141,7 @@ MonoBehaviour:
     u_speed: 0
     u_power: 0
     u_defence: 0
-    u_critChance: 0
+    u_critChance: 1
     u_missChance: 1
     u_bleedCount: 0
     u_isLeader: 0
@@ -159,6 +160,7 @@ MonoBehaviour:
         hookedRot: 0
         chanceToCatch: 0
       flavor: Choco
+      description: Collectable thing
       wornAmount: 3
       attributes: 
       sUsage: 0
@@ -187,6 +189,7 @@ MonoBehaviour:
         hookedRot: 0
         chanceToCatch: 0
       flavor: Choco
+      description: Collectable thing
       wornAmount: 3
       attributes: 
       defence: 0
@@ -237,14 +240,16 @@ MonoBehaviour:
         hookedRot: 0
         chanceToCatch: 0
       flavor: Choco
-      tEffects: []
-      pEffects: []
+      description: Collectable thing
+      passiveMods: []
+      timedMods: []
       sprite:
         sprite: {fileID: 0}
     u_traits: []
     u_talent:
       t_name: 
-      t_infos: []
+      passiveMods: []
+      timedMods: []
       t_isGood: 0
     u_deathInfo:
       nameOfKiller: 

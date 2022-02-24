@@ -80,7 +80,7 @@ public class PlayerUnitInstance : UnitClass {
 
             //  apply item modifiers to summon
             if(stats.item != null && !stats.item.isEmpty()) {
-                obj.GetComponent<UnitClass>().combatStats.tempPowerMod += stats.item.getPassiveMod(Item.passiveEffectTypes.modSummonDamageGiven);
+                obj.GetComponent<UnitClass>().combatStats.tempPowerMod += stats.item.getPassiveMod( StatModifier.passiveModifierType.modSummonPower, stats, false);
             }
 
             FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
@@ -137,7 +137,8 @@ public class PlayerUnitInstance : UnitClass {
         }
 
         //  if not summoning, kill all summoned shit
-        if((stats.weapon == null || stats.weapon.isEmpty() || stats.weapon.sUsage != Weapon.specialUsage.summoning) && (stats.item == null || stats.item.isEmpty() || stats.item.getTimedMod(Item.timedEffectTypes.chanceEnemyTurnsIntoSummon) == 0.0f)) {
+        if((stats.weapon == null || stats.weapon.isEmpty() || stats.weapon.sUsage != Weapon.specialUsage.summoning) && (stats.item == null || stats.item.isEmpty() || 
+            stats.item.getTimedMod(StatModifier.timedModifierType.chanceEnemyTurnsIntoSummon, this, false) == 0.0f)) {
             foreach(var i in FindObjectsOfType<SummonedUnitInstance>()) {
                 if(i.summoner.isTheSameInstanceAs(stats))
                     i.die(DeathInfo.killCause.murdered);

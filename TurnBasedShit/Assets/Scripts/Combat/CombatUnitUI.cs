@@ -13,7 +13,9 @@ public class CombatUnitUI : MonoBehaviour {
     TextMeshProUGUI bleedCount;
     Vector2 bleedCountPos;
 
-    [SerializeField] float yOffset;
+    public CombatCards combatCards;
+
+    [SerializeField] Vector2 offset;
     public Vector2 highlightOffset, stunOffset, bleedOffset;
     float sliderSpeed = 0.5f, highlightedHeight = 0.25f;
     float[] moveSpeeds = new float[4];
@@ -62,6 +64,7 @@ public class CombatUnitUI : MonoBehaviour {
         equipmentSlots[2] = uiObj.transform.GetChild(4).gameObject;
         bleedCount = uiObj.transform.GetChild(6).gameObject.GetComponent<TextMeshProUGUI>();
         bleedCountPos = bleedCount.transform.localPosition;
+        combatCards = uiObj.transform.GetChild(7).gameObject.GetComponent<CombatCards>();
 
         for(int i = 0; i < equipmentSlots.Length; i++) {
             equipmentSlotsPos[i] = equipmentSlots[i].transform.localPosition;
@@ -92,9 +95,9 @@ public class CombatUnitUI : MonoBehaviour {
     void positionUIObj() {
         Vector2 target;
         if(FindObjectOfType<UnitCombatHighlighter>().isUnitInList(gameObject))
-            target = transform.position + new Vector3(0.0f, yOffset + highlightedHeight, 0.0f);
+            target = transform.position + new Vector3(offset.x, offset.y + highlightedHeight, 0.0f);
         else
-            target = transform.position + new Vector3(0.0f, yOffset, 0.0f);
+            target = transform.position + new Vector3(offset.x, offset.y, 0.0f);
         uiObj.transform.position = Vector2.Lerp(uiObj.transform.position, target, moveSpeeds[0] * Time.deltaTime);
     }
 

@@ -158,7 +158,7 @@ public class UnitCombatHighlighter : MonoBehaviour {
         var index = highlights.IndexOf(h);
 
         //  resets the unit's animation speed
-        if(FindObjectOfType<TransitionCanvas>().loaded) {
+        if(FindObjectOfType<TransitionCanvas>().loaded && unit != null) {
             if(unit.GetComponentInChildren<UnitSpriteHandler>() != null)
                 unit.GetComponentInChildren<UnitSpriteHandler>().setAnimSpeed(1.0f);
             if(unit.GetComponent<Animator>() != null)

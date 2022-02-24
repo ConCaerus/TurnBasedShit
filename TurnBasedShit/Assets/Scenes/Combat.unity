@@ -2049,6 +2049,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unit: {fileID: 0}
+  enemyColor: {r: 0.8392157, g: 0.62352943, b: 0.62352943, a: 1}
+  bossColor: {r: 0.74509805, g: 0.3137255, b: 0.3137255, a: 1}
 --- !u!4 &262471925 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 887548811993387711, guid: 6f959ac54191f764f81fc8386b7be1ec,
@@ -2333,6 +2335,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unit: {fileID: 0}
+  enemyColor: {r: 0.8392157, g: 0.62352943, b: 0.62352943, a: 1}
+  bossColor: {r: 0.74509805, g: 0.3137255, b: 0.3137255, a: 1}
 --- !u!1 &311803167
 GameObject:
   m_ObjectHideFlags: 0
@@ -2465,6 +2469,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unit: {fileID: 0}
+  enemyColor: {r: 0.8392157, g: 0.62352943, b: 0.62352943, a: 1}
+  bossColor: {r: 0.74509805, g: 0.3137255, b: 0.3137255, a: 1}
 --- !u!1001 &327965979
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2957,6 +2963,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   info: <b><u>Charge Attack
+  showNoMatterMenuState: 0
   hideWhenMenuOpen: 1
   hideWhenCoveredByMapFog: 0
 --- !u!95 &397881406
@@ -8022,6 +8029,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unit: {fileID: 0}
+  enemyColor: {r: 0.8392157, g: 0.62352943, b: 0.62352943, a: 1}
+  bossColor: {r: 0.74509805, g: 0.3137255, b: 0.3137255, a: 1}
 --- !u!4 &891168976 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8362895250061342393, guid: 2bb9018ae8b5e3d448e0ec093b1749aa,
@@ -8293,6 +8302,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   info: <b><u>Attack
+  showNoMatterMenuState: 0
   hideWhenMenuOpen: 1
   hideWhenCoveredByMapFog: 0
 --- !u!95 &907468104
@@ -10009,6 +10019,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unit: {fileID: 0}
+  enemyColor: {r: 0.8392157, g: 0.62352943, b: 0.62352943, a: 1}
+  bossColor: {r: 0.74509805, g: 0.3137255, b: 0.3137255, a: 1}
 --- !u!1 &1168605090
 GameObject:
   m_ObjectHideFlags: 0
@@ -10773,6 +10785,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1596302803263805173, guid: 70b493c46368f5c4aaa82e74c1ca148a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2264439825746764043, guid: 70b493c46368f5c4aaa82e74c1ca148a,
         type: 3}
       propertyPath: m_RootOrder
@@ -10866,6 +10883,11 @@ PrefabInstance:
     - target: {fileID: 3310908081420718900, guid: 70b493c46368f5c4aaa82e74c1ca148a,
         type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3310908081420718900, guid: 70b493c46368f5c4aaa82e74c1ca148a,
+        type: 3}
+      propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4955219214360784546, guid: 70b493c46368f5c4aaa82e74c1ca148a,
@@ -11450,6 +11472,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   info: <b><u>Special
+  showNoMatterMenuState: 0
   hideWhenMenuOpen: 1
   hideWhenCoveredByMapFog: 0
 --- !u!95 &1337847344
@@ -11951,6 +11974,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unit: {fileID: 0}
+  enemyColor: {r: 0.8392157, g: 0.62352943, b: 0.62352943, a: 1}
+  bossColor: {r: 0.74509805, g: 0.3137255, b: 0.3137255, a: 1}
 --- !u!1 &1420302734
 GameObject:
   m_ObjectHideFlags: 0
@@ -11994,7 +12019,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9047c8031f6698e428e97dc7788c5d88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showingSpeed: 0.15
 --- !u!1 &1422976874
 GameObject:
   m_ObjectHideFlags: 0
@@ -13930,6 +13954,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unit: {fileID: 0}
+  enemyColor: {r: 0.8392157, g: 0.62352943, b: 0.62352943, a: 1}
+  bossColor: {r: 0.74509805, g: 0.3137255, b: 0.3137255, a: 1}
 --- !u!1 &1582428617
 GameObject:
   m_ObjectHideFlags: 0
@@ -14432,6 +14458,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unit: {fileID: 0}
+  enemyColor: {r: 0.8392157, g: 0.62352943, b: 0.62352943, a: 1}
+  bossColor: {r: 0.74509805, g: 0.3137255, b: 0.3137255, a: 1}
 --- !u!1 &1649271320
 GameObject:
   m_ObjectHideFlags: 0
@@ -15106,6 +15134,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unit: {fileID: 0}
+  enemyColor: {r: 0.8392157, g: 0.62352943, b: 0.62352943, a: 1}
+  bossColor: {r: 0.74509805, g: 0.3137255, b: 0.3137255, a: 1}
 --- !u!4 &1725888480 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4086567360224674468, guid: 13cd0df0c53596441b58b4e9f7d9b43b,
@@ -16060,6 +16090,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   info: <b><u>Defend
+  showNoMatterMenuState: 0
   hideWhenMenuOpen: 1
   hideWhenCoveredByMapFog: 0
 --- !u!95 &1778971705
@@ -16273,6 +16304,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unit: {fileID: 0}
+  enemyColor: {r: 0.8392157, g: 0.62352943, b: 0.62352943, a: 1}
+  bossColor: {r: 0.74509805, g: 0.3137255, b: 0.3137255, a: 1}
 --- !u!1 &1792176239
 GameObject:
   m_ObjectHideFlags: 0

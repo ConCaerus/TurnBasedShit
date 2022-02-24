@@ -16,7 +16,17 @@ MonoBehaviour:
     t_name: Hard Hitter
     t_infos:
     - modType: 0
+      condition: 0
       modAmount: 0.05
     - modType: 5
+      condition: 0
       modAmount: 5
+    passiveMods:
+    - conditions: 
+      amount: 1.05
+      type: 0
+    - conditions: 
+      amount: 5
+      type: 19
+    timedMods: []
     t_isGood: 1

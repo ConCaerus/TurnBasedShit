@@ -35,9 +35,20 @@ public static class InfoTextCreator {
         return temp;
     }
 
+    public static string createForCombatCardWeapon(Weapon we) {
+        return we.name + ": " + (we.power >= 0f ? "+" : "-") + we.power.ToString("0.0");
+    }
+    public static string createForCombatCardArmor(Armor ar) {
+        return ar.name  + (ar.getPowerAttCount() > 0f ? ": x" + ar.getPowerAttCount().ToString() : "");
+    }
+    public static string createForCombatCardItem(Item it) {
+        return it.name;
+    }
+
     public static string createForUnitTrait(UnitTrait trait) {
         string temp = "";
-        foreach(var i in trait.t_infos) {
+        /*  TODO: fuck bitches
+        foreach(var i in trait.passiveMods) {
             switch(i.modType) {
                 case UnitTrait.modifierType.damageGiven:
                     if(i.modAmount > 0.0f)
@@ -96,7 +107,7 @@ public static class InfoTextCreator {
                     break;
             }
             temp += "\n";
-        }
+        }*/
         return temp;
     }
 

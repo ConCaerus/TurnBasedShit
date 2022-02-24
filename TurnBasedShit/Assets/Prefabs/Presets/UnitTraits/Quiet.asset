@@ -16,5 +16,11 @@ MonoBehaviour:
     t_name: Quiet
     t_infos:
     - modType: 6
+      condition: 0
       modAmount: -0.15
+    passiveMods:
+    - conditions: 
+      amount: 0.85
+      type: 12
+    timedMods: []
     t_isGood: 1

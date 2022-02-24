@@ -121,6 +121,7 @@ MonoBehaviour:
         hookedRot: 0
         chanceToCatch: 0
       flavor: Choco
+      description: Collectable thing
       wornAmount: 3
       attributes: 
       sUsage: 0
@@ -149,6 +150,7 @@ MonoBehaviour:
         hookedRot: 0
         chanceToCatch: 0
       flavor: Choco
+      description: Collectable thing
       wornAmount: 3
       attributes: 
       defence: 0
@@ -199,19 +201,20 @@ MonoBehaviour:
         hookedRot: 0
         chanceToCatch: 0
       flavor: Choco
-      tEffects: []
-      pEffects: []
+      description: Collectable thing
+      passiveMods: []
+      timedMods: []
       sprite:
         sprite: {fileID: 0}
     u_traits:
     - t_name: Thin Skinned
-      t_infos:
-      - modType: 1
-        modAmount: -0.15
+      passiveMods: []
+      timedMods: []
       t_isGood: 0
     u_talent:
       t_name: 
-      t_infos: []
+      passiveMods: []
+      timedMods: []
       t_isGood: 0
     u_deathInfo:
       nameOfKiller: 
@@ -239,7 +242,7 @@ MonoBehaviour:
     type: 3}
   bleedPreset: {fileID: 4363930972011218595, guid: 624a67cfc305b324f85d0e188ddb6c04,
     type: 3}
-  yOffset: 1
+  offset: {x: 0, y: 0.63}
   highlightOffset: {x: 0.053, y: 0.745}
   stunOffset: {x: 0, y: 2.75}
   bleedOffset: {x: -0.29, y: 0.24}
@@ -257,6 +260,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   info: <b><u>Information
+  showNoMatterMenuState: 0
   hideWhenMenuOpen: 1
   hideWhenCoveredByMapFog: 0
 --- !u!1001 &954274707321897296

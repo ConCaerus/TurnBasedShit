@@ -37,9 +37,11 @@ public class SummonSpotSpawner : MonoBehaviour {
         foreach(var i in FindObjectsOfType<CombatSpot>()) {
             if(!i.isPlayerSpot() || i.unit == null)
                 continue;
-            var stats = i.unit.GetComponent<UnitClass>().stats;
+            var unit = i.unit.GetComponent<UnitClass>();
+            var stats = unit.stats;
             //  makes sure that the unit is able to summon something before adding
-            if((stats.weapon != null && !stats.weapon.isEmpty() && (stats.weapon.sUsage == Weapon.specialUsage.summoning || stats.weapon.sUsage == Weapon.specialUsage.convertTarget)) || (stats.item != null && !stats.item.isEmpty() && stats.item.getTimedMod(Item.timedEffectTypes.chanceEnemyTurnsIntoSummon) > 0.0f))
+            if((stats.weapon != null && !stats.weapon.isEmpty() && (stats.weapon.sUsage == Weapon.specialUsage.summoning || stats.weapon.sUsage == Weapon.specialUsage.convertTarget)) || 
+                (stats.item != null && !stats.item.isEmpty() && stats.item.getTimedMod(StatModifier.timedModifierType.chanceEnemyTurnsIntoSummon, unit, false) > 0.0f))
                 spots.Add(i);
         }
 

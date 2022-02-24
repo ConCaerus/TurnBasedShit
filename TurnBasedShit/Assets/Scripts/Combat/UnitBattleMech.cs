@@ -9,11 +9,16 @@ public class UnitBattleMech : MonoBehaviour {
 
     [SerializeField] ParticleSystem bloodParticles;
 
+    public delegate void func(int roundIndex);
+    List<func> runOnRoundReset = new List<func>();
+
     int waveIndex = 0;
 
     bool battleEnded = false;
 
     private void Awake() {
+        var loc = FindObjectOfType<PresetLibrary>().createBossLocation(GameInfo.getCurrentRegion(), false).combatLocation;
+        GameInfo.setCombatDetails(loc);
         GameInfo.currentGameState = GameInfo.state.combat;
     }
 
@@ -25,7 +30,7 @@ public class UnitBattleMech : MonoBehaviour {
     }
 
     void setUp() {
-        if(GameInfo.getCombatDetails() == null || GameInfo.getCombatDetails().waves == null || GameInfo.getCombatDetails().waves.Count == 0 || GameInfo.getCombatDetails().waves[0].enemyIndexes.Count == 0) {
+        if(GameInfo.getCombatDetails() == null || GameInfo.getCombatDetails().isEmpty()) {
             var loc = FindObjectOfType<PresetLibrary>().createCombatLocation(GameInfo.getCurrentRegion());
             for(int i = 0; i < 10; i++) {
                 var col = FindObjectOfType<PresetLibrary>().getRandomCollectable();
@@ -65,6 +70,12 @@ public class UnitBattleMech : MonoBehaviour {
     public void nextBattleRound() {
         FindObjectOfType<TurnOrderSorter>().resetList();
         FindObjectOfType<RoundCounterCanvas>().incrementAndUpdateRoundCount();
+
+        foreach(var i in runOnRoundReset)
+            i(FindObjectOfType<RoundCounterCanvas>().roundCount);
+    }
+    public void addRunOnRoundReset(func f) {
+        runOnRoundReset.Add(f);
     }
 
 

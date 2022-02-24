@@ -22,12 +22,14 @@ public abstract class UnitMovement : MonoBehaviour {
     private void Start() {
         DOTween.Init();
         canMove = true;
-        unit.GetComponent<UnitSpriteHandler>().setReference(Party.getLeaderStats(), true);
+        if(GetComponent<MapSideUnitMovement>() == null)
+            unit.GetComponent<UnitSpriteHandler>().setReference(Party.getLeaderStats(), true);
         setVisuals();
     }
 
     public void setVisuals() {
-        unit.GetComponent<UnitSpriteHandler>().setReference(Party.getLeaderStats(), true);
+        if(GetComponent<MapSideUnitMovement>() == null)
+            unit.GetComponent<UnitSpriteHandler>().setReference(Party.getLeaderStats(), true);
     }
 
     public abstract bool showWeapon();

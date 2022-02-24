@@ -101,12 +101,15 @@ public class PresetLibrary : MonoBehaviour {
     public GameObject getEnemy(int index) {
         return enemies[index].gameObject;
     }
-    public GameObject getEnemy(string name) {
+    public GameObject getEnemy(GameInfo.combatUnitType type) {
         foreach(var i in enemies) {
-            if(i.GetComponent<UnitClass>().stats.u_name == name)
+            if(i.GetComponent<UnitClass>().stats.u_type == type)
                 return i;
         }
         return null;
+    }
+    public GameObject getBoss(int index) {
+        return bosses[index];
     }
     public GameObject getRandomEnemy(GameInfo.region diff = (GameInfo.region)(-1)) {
         GameObject enemy = null;
@@ -179,9 +182,16 @@ public class PresetLibrary : MonoBehaviour {
         }
         return Random.Range(0, enemies.Length);
     }
-    public int getBossIndex(GameObject boss) {
+    public int getEnemyIndex(GameInfo.combatUnitType enemy) {
+        for(int i = 0; i < enemies.Length; i++) {
+            if(enemies[i].GetComponent<UnitClass>().stats.u_type == enemy)
+                return i;
+        }
+        return -1;
+    }
+    public int getBossIndex(GameInfo.combatUnitType boss) {
         for(int i = 0; i < bosses.Length; i++) {
-            if(bosses[i] == boss)
+            if(bosses[i].GetComponent<UnitClass>().stats.u_type == boss)
                 return i;
         }
         return -1;
@@ -693,6 +703,26 @@ public class PresetLibrary : MonoBehaviour {
         loc.coins += (int)Random.Range(loc.coins * -0.1f, loc.coins * 0.1f);   //  randomizes it
 
         return loc;
+    }
+    public CombatLocation createCombatLocationForBoss(GameInfo.combatUnitType bossType) {
+        var temp = new CombatLocation(GameInfo.getRegionForEnemyType(bossType), this);
+        temp.isBoss = true;
+
+        switch(bossType) {
+            case GameInfo.combatUnitType.spiderLeg:
+            case GameInfo.combatUnitType.spiderHead:
+                for(int i = 0; i < 10; i++) {
+                    if(i == 4) {
+                        temp.addBossesToWave(i, new List<GameInfo.combatUnitType>() { GameInfo.combatUnitType.spiderHead }, this);
+                        continue;
+                    }
+                    temp.addBossesToWave(i, new List<GameInfo.combatUnitType>() { GameInfo.combatUnitType.spiderLeg }, this);
+                }
+
+                return temp;
+        }
+
+        return null;
     }
     public BossLocation createBossLocation(GameInfo.region reg, bool addToMap) {
         var boss = getRandomBoss(reg);

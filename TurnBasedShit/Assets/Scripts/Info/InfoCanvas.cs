@@ -26,7 +26,7 @@ public class InfoCanvas : MonoBehaviour {
         optionsObj = transform.GetChild(1).gameObject;
         infoWindow = transform.GetChild(2).gameObject;
         GetComponent<Canvas>().worldCamera = Camera.main;
-        infoText = transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
+        infoText = infoObj.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
         hideInfo();
         hideOptions();
         hideInfoWindow();
@@ -73,8 +73,16 @@ public class InfoCanvas : MonoBehaviour {
         positionInfoBox();
         infoText.text = info;
     }
+    void applyInfoTextAndResizeBox(string info) {
+        infoText.GetComponent<TextMeshProUGUI>().text = info;
+        //infoText.autoSizeTextContainer = true;
+        var size = new Vector2(infoText.preferredWidth > 200 ? 200 : infoText.preferredWidth, infoText.preferredHeight);
+        infoObj.GetComponent<RectTransform>().sizeDelta = size;
+        infoObj.transform.position = new Vector2(GameInfo.getMousePos().x + infoObj.GetComponent<RectTransform>().sizeDelta.x * 2.0f, GameInfo.getMousePos().y);
+    }
 
-    public void startShowing(InfoBearer ib) {
+
+    public void showInfo(InfoBearer ib) {
         if(optionsShown)
             return;
         if(infoShower != null) {
@@ -128,9 +136,11 @@ public class InfoCanvas : MonoBehaviour {
         infoShower = null;
 
         infoObj.GetComponent<Image>().DOComplete();
+        infoObj.transform.GetChild(0).GetComponent<Image>().DOComplete();
         infoText.GetComponent<TextMeshProUGUI>().DOComplete();
 
         infoObj.GetComponent<Image>().DOColor(Color.clear, 0.15f);
+        infoObj.transform.GetChild(0).GetComponent<Image>().DOColor(Color.clear, 0.15f);
         infoText.GetComponent<TextMeshProUGUI>().DOColor(Color.clear, 0.15f);
 
         infoShown = false;
@@ -151,9 +161,7 @@ public class InfoCanvas : MonoBehaviour {
 
 
     IEnumerator waitToShow(string info) {
-        infoText.GetComponent<LayoutElement>().preferredWidth = 200.0f;
         setAndPositionInfo(info);
-
 
         if(!infoShown) {
             yield return new WaitForSeconds(waitTimeForInfo);
@@ -161,13 +169,15 @@ public class InfoCanvas : MonoBehaviour {
         else
             yield return new WaitForEndOfFrame();
 
-        if(infoText.textBounds.size.x < 200.0f && infoText.textInfo.lineCount == 1)
-            infoText.GetComponent<LayoutElement>().preferredWidth = infoText.textBounds.size.x;
+        applyInfoTextAndResizeBox(info);
+            
 
         if(!infoShown) {
             infoObj.GetComponent<Image>().color = Color.clear;
+            infoObj.transform.GetChild(0).GetComponent<Image>().color = Color.clear;
             infoText.GetComponent<TextMeshProUGUI>().color = Color.clear;
-            infoObj.GetComponent<Image>().DOColor(Color.black, 0.1f);
+            infoObj.GetComponent<Image>().DOColor(new Color(1f, 1f, 1f, .75f), 0.1f);
+            infoObj.transform.GetChild(0).GetComponent<Image>().DOColor(Color.black, 0.1f);
             infoText.GetComponent<TextMeshProUGUI>().DOColor(Color.white, 0.1f);
             infoShown = true;
 

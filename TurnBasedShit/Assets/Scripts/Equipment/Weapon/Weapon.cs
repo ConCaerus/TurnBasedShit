@@ -74,7 +74,7 @@ public class Weapon : Collectable {
 
                     //  apply item effects
                     if(weilder.stats.item != null && !weilder.stats.item.isEmpty()) {
-                        healAmount += healAmount * weilder.stats.item.getPassiveMod(Item.passiveEffectTypes.modHealGiven);
+                        healAmount += healAmount * weilder.stats.item.getPassiveMod(StatModifier.passiveModifierType.modHealthGiven, weilder.stats, false);
                     }
                     affectedObject.addHealth(healAmount);
                 }

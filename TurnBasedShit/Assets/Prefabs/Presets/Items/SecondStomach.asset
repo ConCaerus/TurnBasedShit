@@ -27,11 +27,17 @@ MonoBehaviour:
       chanceToCatch: 0
     flavor: For the hungriest of adventurers.
     description: Never fight on an empty second stomach. After killing an enemy,
-      defence is raised.
+      some health is restored.
     tEffects:
     - effect: 3
       time: 7
       effectAmount: 0.2
     pEffects: []
+    passiveMods: []
+    timedMods:
+    - conditions: 
+      amount: 10
+      type: 0
+      useTimes: 07000000
     sprite:
       sprite: {fileID: 21300000, guid: e44ac80f3f1e1ae4c9c63bdbe4ff7dca, type: 3}

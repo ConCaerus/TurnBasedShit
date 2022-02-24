@@ -77,8 +77,10 @@ public abstract class UnitClass : MonoBehaviour {
             }
         }
 
-        combatStats.normalSize = new Vector3(1.0f, 1.0f);
-        combatStats.normalPos = new Vector3(0.0f, combatStats.spotOffset);
+        if(GetComponent<BossUnitInstance>() == null) {
+            combatStats.normalSize = new Vector3(1.0f, 1.0f);
+            combatStats.normalPos = new Vector3(0.0f, combatStats.spotOffset);
+        }
 
         if(GetComponentInChildren<UnitSpriteHandler>() != null)
             combatStats.normalPos = GetComponentInChildren<UnitSpriteHandler>().getCombatNormalPos();
@@ -150,13 +152,13 @@ public abstract class UnitClass : MonoBehaviour {
 
         //  non value based traits after turn
         foreach(var i in stats.u_traits) {
-            if(!stunned && i.shouldStunSelf()) {
+            if(!stunned && GameVariables.chanceOutOfHundred((int)i.getPassiveMod(StatModifier.passiveModifierType.stunSelfChance, stats, false))) {
                 stunned = true;
                 break;
             }
         }
         if(stats.u_talent != null && !stunned)
-            stunned = stats.u_talent.shouldStunSelf();
+            stunned = GameVariables.chanceOutOfHundred((int)stats.u_talent.getPassiveMod(StatModifier.passiveModifierType.stunSelfChance, stats, false));
 
         defending = b;
     }
@@ -168,10 +170,10 @@ public abstract class UnitClass : MonoBehaviour {
     }
     public void chanceGettingStunned(float chance) {
         if(stats.u_talent != null)
-            chance *= stats.u_talent.getGetStunnedMod();
+            chance *= stats.u_talent.getPassiveMod(StatModifier.passiveModifierType.modBecomeStunned, stats, true);
 
         foreach(var i in stats.u_traits)
-            chance *= i.getGetStunnedMod();
+            chance *= i.getPassiveMod(StatModifier.passiveModifierType.modBecomeStunned, stats, true);
 
         stunned = GameVariables.chanceOutOfHundred((int)chance);
     }
@@ -188,7 +190,7 @@ public abstract class UnitClass : MonoBehaviour {
         transform.DOComplete();
         //  triggers
         if(stats.item != null && !stats.item.isEmpty())
-            stats.item.triggerUseTime(this, Item.useTimes.beforeAttacking);
+            stats.item.triggerUseTime(this, StatModifier.useTimeType.beforeAttacking);
 
         //  triggers
         stats.weapon.applyAttributes(gameObject, defender);
@@ -201,7 +203,7 @@ public abstract class UnitClass : MonoBehaviour {
     public void defend(GameObject attacker, float dmg) {
         //  triggers
         if(stats.item != null && !stats.item.isEmpty())
-            stats.item.triggerUseTime(this, Item.useTimes.beforeDefending);
+            stats.item.triggerUseTime(this, StatModifier.useTimeType.beforeDefending);
 
 
         //  if defender is an enemy, check if it's weak or strong to the attack
@@ -266,7 +268,7 @@ public abstract class UnitClass : MonoBehaviour {
         else if(!combatStats.isPlayerUnit) {
             //  triggers items
             if(stats.item != null && !stats.item.isEmpty())
-                stats.item.triggerUseTime(killer.GetComponent<UnitClass>(), Item.useTimes.afterKill);
+                stats.item.triggerUseTime(killer.GetComponent<UnitClass>(), StatModifier.useTimeType.afterKill);
 
 
             //  add exp
@@ -290,9 +292,9 @@ public abstract class UnitClass : MonoBehaviour {
             int chanceMod = 0;
             if(killer != null) {
                 foreach(var i in killer.GetComponent<UnitClass>().stats.u_traits)
-                    chanceMod += i.getEnemyDropChanceMod();
+                    chanceMod += (int)i.getPassiveMod(StatModifier.passiveModifierType.modEnemyDropChance, stats, false);
                 if(killer.GetComponent<UnitClass>().stats.u_talent != null)
-                    chanceMod += killer.GetComponent<UnitClass>().stats.u_talent.getEnemyDropChanceMod();
+                    chanceMod += (int)killer.GetComponent<UnitClass>().stats.u_talent.getPassiveMod(StatModifier.passiveModifierType.modEnemyDropChance, stats, false);
             }
             GetComponent<EnemyUnitInstance>().chanceWeaponDrop(chanceMod);
             GetComponent<EnemyUnitInstance>().chanceArmorDrop(chanceMod);
@@ -397,15 +399,20 @@ public abstract class UnitClass : MonoBehaviour {
         if(!miss) {
             var dmg = stats.getDamageGiven(FindObjectOfType<PresetLibrary>()) + combatStats.tempPowerMod;
             //  check if other modifications to damage
-            if(stats.item != null && !stats.item.isEmpty() && stats.item.getPassiveMod(Item.passiveEffectTypes.healInsteadOfDamage) != 0.0f) {
-                dmg *= stats.item.getPassiveMod(Item.passiveEffectTypes.healInsteadOfDamage);
+            if(stats.item != null && !stats.item.isEmpty() && stats.item.getPassiveMod(StatModifier.passiveModifierType.healInsteadOfDamage, stats, false) != 0.0f) {
+                dmg *= stats.item.getPassiveMod(StatModifier.passiveModifierType.healInsteadOfDamage, stats, true);
                 defender.GetComponent<UnitClass>().addHealth(dmg);
             }
 
             //  actually deal damage to defender
             else {
                 if(charging) {
-                    dmg *= 2.0f;
+                    var chargedMod = 2.0f;
+                    if(stats.u_talent != null)
+                        chargedMod += stats.u_talent.getPassiveMod(StatModifier.passiveModifierType.addChargedPower, stats, false);
+                    foreach(var i in stats.u_traits)
+                        chargedMod += i.getPassiveMod(StatModifier.passiveModifierType.addChargedPower, stats, false);
+                    dmg *= chargedMod;
                 }
                 defender.GetComponent<UnitClass>().defend(gameObject, dmg);
             }
@@ -432,17 +439,17 @@ public abstract class UnitClass : MonoBehaviour {
 
         //  non value based traits in attack
         foreach(var i in stats.u_traits) {
-            if(!stunned && i.shouldStunSelf()) {
+            if(!stunned && GameVariables.chanceOutOfHundred(Mathf.FloorToInt(i.getPassiveMod(StatModifier.passiveModifierType.stunSelfChance, stats, false)))) {
                 stunned = true;
             }
-            if(defender != null && !defender.GetComponent<UnitClass>().isStunned() && i.shouldStunTarget())
+            if(defender != null && !defender.GetComponent<UnitClass>().isStunned() && GameVariables.chanceOutOfHundred((int)i.getPassiveMod(StatModifier.passiveModifierType.stunTargetChance, stats, false)))
                 defender.GetComponent<UnitClass>().stunned = true;
         }
         if(stats.u_talent != null) {
-            if(!stunned && stats.u_talent.shouldStunSelf()) {
+            if(!stunned && GameVariables.chanceOutOfHundred(Mathf.FloorToInt(stats.u_talent.getPassiveMod(StatModifier.passiveModifierType.stunSelfChance, stats, false)))) {
                 stunned = true;
             }
-            if(defender != null && !defender.GetComponent<UnitClass>().isStunned() && stats.u_talent.shouldStunTarget())
+            if(defender != null && !defender.GetComponent<UnitClass>().isStunned() && GameVariables.chanceOutOfHundred((int)stats.u_talent.getPassiveMod(StatModifier.passiveModifierType.stunTargetChance, stats, false)))
                 defender.GetComponent<UnitClass>().stunned = true;
         }
 

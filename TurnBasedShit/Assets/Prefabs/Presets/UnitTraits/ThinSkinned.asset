@@ -16,5 +16,11 @@ MonoBehaviour:
     t_name: Thin Skinned
     t_infos:
     - modType: 1
+      condition: 0
       modAmount: -0.15
+    passiveMods:
+    - conditions: 
+      amount: 0.85
+      type: 1
+    timedMods: []
     t_isGood: 0

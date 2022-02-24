@@ -10,14 +10,11 @@ public class MapMovement : InteractiveMovement {
     Vector2 lastAteAtPos;
     float distToEat = 10.0f;
 
-    GameInfo.region currentDiff;
-
     public GameObject closestIcon = null;
 
 
     private void Start() {
         transform.position = GameInfo.getCurrentMapPos();
-        currentDiff = GameInfo.getCurrentRegion();
         GameInfo.currentGameState = GameInfo.state.map;
         createSideUnitObjects();
         lastAteAtPos = transform.position;
@@ -41,8 +38,7 @@ public class MapMovement : InteractiveMovement {
 
 
             var temp = Instantiate(sideUnitPreset.gameObject, transform.parent);
-            temp.GetComponentInChildren<UnitSpriteHandler>().setReference(Party.getHolder().getObject<UnitStats>(i), true);
-            temp.GetComponent<MapSideUnitMovement>().referenceStats = Party.getHolder().getObject<UnitStats>(i);
+            Debug.Log(Party.getHolder().getObject<UnitStats>(i).u_name);
             temp.GetComponent<MapSideUnitMovement>().moveSpeed = moveSpeed / 1.25f;
             temp.transform.localScale = new Vector3(0.25f, 0.25f, 1.0f);
             temp.transform.position = last + offset;
@@ -50,6 +46,8 @@ public class MapMovement : InteractiveMovement {
             sideUnits.Add(temp.gameObject);
             sideUnitIndexes.Add(i);
         }
+
+        setSideUnitVisuals();
     }
 
 
@@ -68,8 +66,6 @@ public class MapMovement : InteractiveMovement {
                         if(!sideUnits[i].GetComponentInChildren<UnitSpriteHandler>().isFaceShown())
                             sideUnits[i].GetComponent<MapSideUnitMovement>().flip(true);
                     }
-                    else
-                        sideUnits[i].GetComponentInChildren<UnitSpriteHandler>().setReference(sideUnits[i].GetComponent<MapSideUnitMovement>().referenceStats, true);
                 }
             }
             target = sideUnits[i];
