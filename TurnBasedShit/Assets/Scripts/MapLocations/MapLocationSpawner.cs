@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 public class MapLocationSpawner : MonoBehaviour {
     public GameObject bridgePreset;
     public GameObject bossLocationPreset, rescueLocationPreset, townLocationPreset, upgradeLocationPreset, pickupLocationPreset, fishingLocationPreset, eyeLocationPreset, lootLocationPreset;
+    public GameObject merchantPreset;
 
     List<GameObject> currentIcons = new List<GameObject>();
 
@@ -139,6 +140,17 @@ public class MapLocationSpawner : MonoBehaviour {
 
             if(!MapLocationHolder.getHolder().getObject<BridgeLocation>(i).advancing)
                 obj.transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+
+            currentIcons.Add(obj);
+        }
+
+
+        //  merchant
+        for(int i = 0; i < Random.Range(1, 4); i++) {
+            var obj = Instantiate(merchantPreset.gameObject);
+            obj.transform.position = Map.getRandPos();
+            obj.transform.SetParent(transform.GetChild(0));
+            obj.transform.localScale = Vector3.one / 2.0f;
 
             currentIcons.Add(obj);
         }

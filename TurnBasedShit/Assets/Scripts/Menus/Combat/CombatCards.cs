@@ -12,6 +12,48 @@ public class CombatCards : MonoBehaviour {
 
     List<cardInfo> cards = new List<cardInfo>();
 
+    //  weapon atts
+    List<Weapon.attribute> attackWeAtts = new List<Weapon.attribute>() {
+        Weapon.attribute.Power, Weapon.attribute.Bleed, Weapon.attribute.Stun, Weapon.attribute.LifeSteal
+    };
+    List<Weapon.attribute> defendWeAtts = new List<Weapon.attribute>() {
+    };
+    List<Weapon.attribute> chargeWeAtts = new List<Weapon.attribute>() {
+    };
+    List<Weapon.attribute> specialWeAtts = new List<Weapon.attribute>() {
+    };
+
+    //  armor atts
+    List<Armor.attribute> attackArAtts = new List<Armor.attribute>() {
+        Armor.attribute.Power
+    };
+    List<Armor.attribute> defendArAtts = new List<Armor.attribute>() {
+        Armor.attribute.Reflex, Armor.attribute.Turtle
+    };
+    List<Armor.attribute> chargeArAtts = new List<Armor.attribute>() {
+    };
+    List<Armor.attribute> specialArAtts = new List<Armor.attribute>() {
+    };
+
+    //  passive mods
+    List<StatModifier.passiveModifierType> attackPMods = new List<StatModifier.passiveModifierType>() {
+        StatModifier.passiveModifierType.allWeaponExpMod, StatModifier.passiveModifierType.bluntExpMod, StatModifier.passiveModifierType.edgedExpMod,
+        StatModifier.passiveModifierType.healInsteadOfDamage, StatModifier.passiveModifierType.missChance, StatModifier.passiveModifierType.modBluntPower, StatModifier.passiveModifierType.modEdgedPower,
+        StatModifier.passiveModifierType.modEnemyDropChance, StatModifier.passiveModifierType.modPower, StatModifier.passiveModifierType.stunSelfChance, StatModifier.passiveModifierType.stunTargetChance
+    };
+    List<StatModifier.passiveModifierType> defendPMods = new List<StatModifier.passiveModifierType>() {
+        StatModifier.passiveModifierType.modBluntDefence, StatModifier.passiveModifierType.modDefence, StatModifier.passiveModifierType.modEdgedDefence, StatModifier.passiveModifierType.modMaxHealth
+    };
+    List<StatModifier.passiveModifierType> chargePMods = new List<StatModifier.passiveModifierType>() {   //  add this array to attackMods
+        StatModifier.passiveModifierType.addChargedPower
+    };
+    List<StatModifier.passiveModifierType> specialPMods = new List<StatModifier.passiveModifierType>() {
+        StatModifier.passiveModifierType.modHealthGiven, StatModifier.passiveModifierType.modSummonDefence, StatModifier.passiveModifierType.modSummonMaxHealth, StatModifier.passiveModifierType.modSummonPower,
+        StatModifier.passiveModifierType.modSummonSpeed, StatModifier.passiveModifierType.modSummonDefence, StatModifier.passiveModifierType.summonExpMod
+    };
+
+    //  dont check for timed mods because fuck doing that
+
     public enum cardState {
         attacking, defending, special, charging
     }
@@ -39,101 +81,115 @@ public class CombatCards : MonoBehaviour {
         state = (cardState)(-1);
     }
 
+    //  big boi
     List<cardInfo> createCardInfo(cardState state, List<StatModifier.useTimeType> relevantTimes) {
         var temp = new List<cardInfo>();
         var unit = GetComponentInParent<UnitClass>();
-        switch(state) {
-            case cardState.attacking:
-                //  adds for the initial weapon that the unit uses to attack
-                if(unit.stats.weapon != null && !unit.stats.weapon.isEmpty()) {
-                    var t = new cardInfo();
-                    t.color = goodColor;
-                    t.profText = "W";
-                    if(unit.stats.u_type == GameInfo.combatUnitType.player || unit.stats.u_type == GameInfo.combatUnitType.deadUnit)
-                        t.sprite = FindObjectOfType<PresetLibrary>().getWeaponSprite(unit.stats.weapon).sprite;
-                    else
-                        t.infoText = InfoTextCreator.createForCombatCardWeapon(unit.stats.weapon);
-                    temp.Add(t);
+
+        //  weapon shit
+        if(unit.stats.weapon != null && !unit.stats.isEmpty()) {
+            var relevantAtts = state == cardState.attacking ? attackWeAtts : state == cardState.defending ? defendWeAtts : state == cardState.charging ? chargeWeAtts : specialWeAtts;
+
+            if(state == cardState.attacking || state == cardState.charging) {
+                var t = new cardInfo();
+                t.color = goodColor;
+                t.profText = "W";
+                if(unit.stats.u_type == GameInfo.combatUnitType.player || unit.stats.u_type == GameInfo.combatUnitType.deadUnit) {
+                    t.sprite = FindObjectOfType<PresetLibrary>().getGenericSpriteForCollectable(unit.stats.weapon);
+                    t.infoText = InfoTextCreator.createForCombatCardWeapon(unit.stats.weapon);
                 }
+                temp.Add(t);
+            }
 
-                if(unit.stats.armor != null && !unit.stats.armor.isEmpty() && unit.stats.armor.getPowerAttCount() != 0) {
-                    var t = new cardInfo();
-                    t.color = goodColor;
-                    t.profText = "A";
-                    if(unit.stats.u_type == GameInfo.combatUnitType.player || unit.stats.u_type == GameInfo.combatUnitType.deadUnit)
-                        t.sprite = FindObjectOfType<PresetLibrary>().getArmorSprite(unit.stats.armor).sprite;
-                    else
-                        t.infoText = InfoTextCreator.createForCombatCardArmor(unit.stats.armor);
-                    temp.Add(t);
+            foreach(var i in unit.stats.weapon.attributes) {
+                if(!relevantAtts.Contains(i))
+                    continue;
+
+                var c = new cardInfo();
+                c.profText = "A";
+                c.sprite = FindObjectOfType<PresetLibrary>().getGenericSpriteForCollectable(unit.stats.weapon);
+                c.color = goodColor;
+                c.infoText = InfoTextCreator.createForWeaponAtt(unit.stats.weapon, i);
+            }
+        }
+
+        //  armor shit
+        if(unit.stats.armor != null && !unit.stats.armor.isEmpty()) {
+            var relevantAtts = state == cardState.attacking ? attackArAtts : state == cardState.defending ? defendArAtts : state == cardState.charging ? chargeArAtts : specialArAtts;
+
+            if(state == cardState.defending) {
+                var t = new cardInfo();
+                t.color = goodColor;
+                t.profText = "A";
+                if(unit.stats.u_type == GameInfo.combatUnitType.player || unit.stats.u_type == GameInfo.combatUnitType.deadUnit) {
+                    t.sprite = FindObjectOfType<PresetLibrary>().getGenericSpriteForCollectable(unit.stats.armor);
+                    t.infoText = InfoTextCreator.createForCombatCardArmor(unit.stats.armor);
                 }
+                temp.Add(t);
+            }
 
-                //  check for item shit
+            foreach(var i in unit.stats.armor.attributes) {
+                if(!relevantAtts.Contains(i))
+                    continue;
 
-                //  goes through all of the passive mods of all of the traits, talent, and item's passive modifiers
-                foreach(var i in unit.stats.getAllPassiveMods()) {
-                    //  specific for weapon attack type
-                    if(unit.stats.weapon != null && !unit.stats.weapon.isEmpty()) {
-                        switch(unit.stats.weapon.aType) {
-                            case Weapon.attackType.Edged:
-                                if(i.getMod(StatModifier.passiveModifierType.edgedExpMod, unit.stats, false) != 0f) {
-                                    var t = new cardInfo();
-                                    t.color = i.getMod(StatModifier.passiveModifierType.edgedExpMod, unit.stats, false) > 0f ? goodColor : badColor;
-                                    t.profText = "P";
-                                    temp.Add(t);
-                                }
-                                if(i.getMod(StatModifier.passiveModifierType.modEdgedPower, unit.stats, false) != 0f) {
-                                    var t = new cardInfo();
-                                    t.color = i.getMod(StatModifier.passiveModifierType.modEdgedPower, unit.stats, false) > 0f ? goodColor : badColor;
-                                    t.profText = "P";
-                                    temp.Add(t);
-                                }
-                                break;
+                var c = new cardInfo();
+                c.profText = "A";
+                c.sprite = FindObjectOfType<PresetLibrary>().getGenericSpriteForCollectable(unit.stats.armor);
+                c.color = goodColor;
+                c.infoText = InfoTextCreator.createForArmorAtt(unit.stats.armor, i);
+            }
+        }
 
-                            case Weapon.attackType.Blunt:
-                                if(i.getMod(StatModifier.passiveModifierType.bluntExpMod, unit.stats, false) != 0f) {
-                                    var t = new cardInfo();
-                                    t.color = i.getMod(StatModifier.passiveModifierType.bluntExpMod, unit.stats, false) > 0f ? goodColor : badColor;
-                                    t.profText = "P";
-                                    temp.Add(t);
-                                }
-                                if(i.getMod(StatModifier.passiveModifierType.modBluntPower, unit.stats, false) != 0f) {
-                                    var t = new cardInfo();
-                                    t.color = i.getMod(StatModifier.passiveModifierType.modBluntPower, unit.stats, false) > 0f ? goodColor : badColor;
-                                    t.profText = "P";
-                                    temp.Add(t);
-                                }
-                                break;
-                        }
-                    }
 
-                    if(i.getMod(StatModifier.passiveModifierType.modPower, unit.stats, false) != 0f) {
-                        var t = new cardInfo();
-                        t.color = i.getMod(StatModifier.passiveModifierType.modPower, unit.stats, false) > 0f ? goodColor : badColor;
-                        t.profText = "T";
-                        temp.Add(t);
-                    }
-                }
+        var relevantPassives = state == cardState.attacking ? attackPMods : state == cardState.defending ? defendPMods : state == cardState.charging ? chargePMods : specialPMods;
 
-                //  goes through all of the timed modifiers
-                foreach(var i in unit.stats.getAllTimedMods()) {
-                    foreach(var t in relevantTimes) {
-                        if(i.useTimes.Contains(t) && i.getMod(StatModifier.timedModifierType.addPower, unit, false) != 0f) {
-                            var te = new cardInfo();
-                            te.color = i.useTimes.Contains(t) && i.getMod(StatModifier.timedModifierType.addPower, unit, false) > 0f ? goodColor : badColor;
-                            temp.Add(te);
-                        }
-                    }
-                }
-                break;
+        //  check for item shit
+        if(unit.stats.item != null && !unit.stats.item.isEmpty()) {
+            foreach(var i in unit.stats.item.passiveMods) {
+                if(!relevantPassives.Contains(i.type))
+                    continue;
 
-            case cardState.defending:
-                break;
+                var info = InfoTextCreator.createForCombatCardItemPassive(unit.stats.item, unit.stats, i.type);
+                if(string.IsNullOrEmpty(info))
+                    continue;
 
-            case cardState.charging:
-                break;
+                var t = new cardInfo();
+                t.sprite = FindObjectOfType<PresetLibrary>().getGenericSpriteForCollectable(unit.stats.item);
+                t.color = i.good ? goodColor : badColor;
+                t.infoText = info;
+            }
+        }
 
-            case cardState.special:
-                break;
+        //  traits shit
+        foreach(var tr in unit.stats.u_traits) {
+            foreach(var i in tr.passiveMods) {
+                if(!relevantPassives.Contains(i.type))
+                    continue;
+
+                var info = InfoTextCreator.createForTraitPassive(tr, unit.stats, i.type);
+                if(string.IsNullOrEmpty(info))
+                    continue;
+
+                var t = new cardInfo();
+                t.profText = "t";
+                t.color = i.good ? goodColor : badColor;
+                t.infoText = info;
+            }
+        }
+
+        //  talent shit
+        foreach(var i in unit.stats.u_talent.passiveMods) {
+            if(!relevantPassives.Contains(i.type))
+                continue;
+
+            var info = InfoTextCreator.createForTraitPassive(unit.stats.u_talent, unit.stats, i.type);
+            if(string.IsNullOrEmpty(info))
+                continue;
+
+            var t = new cardInfo();
+            t.profText = "T";
+            t.color = i.good ? goodColor : badColor;
+            t.infoText = info;
         }
         return temp;
     }

@@ -32,13 +32,12 @@ public class StatModifier {
      *                  Ex. amount = 0.15f - unit get's 15% of base max health back. This is the exception to all mods should be around 1.0f
      *          
      */
-
     [System.Serializable]
     public enum passiveModifierType {
         //  base stats
         modPower, modDefence, modSpeed, modMaxHealth, modSummonPower, modSummonDefence, modSummonSpeed, modSummonMaxHealth,
         modEdgedPower, modEdgedDefence, modBluntPower, modBluntDefence, modAttackedChance, addExtraTurn, missChance, healInsteadOfDamage, 
-        modEnemyMissChance, modHealthGiven, stunSelfChance, stunTargetChance, modBecomeStunned, modEnemyDropChance, allWeaponExpMod, 
+        modEnemyMissChance, modHealthGiven, stunSelfChance, stunTargetChance, modEnemyDropChance, allWeaponExpMod, 
         bluntExpMod, edgedExpMod, summonExpMod, addChargedPower
     }
 
@@ -67,6 +66,7 @@ public class StatModifier {
     public class mod {
         public List<conditionType> conditions = new List<conditionType>();
         [SerializeField] protected float amount = 1.0f;
+        public bool good;
 
 
         public bool areConditionsMet(UnitStats user) {

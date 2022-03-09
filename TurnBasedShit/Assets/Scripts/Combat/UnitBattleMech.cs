@@ -95,6 +95,7 @@ public class UnitBattleMech : MonoBehaviour {
         else if(FindObjectsOfType<EnemyUnitInstance>().Length == 0) {
             showBattleResults();
             GameInfo.getCombatDetails().receiveSpoils(FindObjectOfType<PresetLibrary>(), FindObjectOfType<FullInventoryCanvas>());
+            GameInfo.completeCombatTutorial();
             battleResultsCanvas.GetComponent<BattleResultsCanvas>().showCombatLocationEquipment();
         }
 

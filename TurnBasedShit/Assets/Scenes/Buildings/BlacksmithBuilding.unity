@@ -381,7 +381,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &222559231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -977,6 +977,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   info: <b><u>Information
+  showNoMatterMenuState: 0
   hideWhenMenuOpen: 0
   hideWhenCoveredByMapFog: 0
 --- !u!114 &494441883
@@ -998,6 +999,7 @@ MonoBehaviour:
   - {fileID: 1277551389}
   info: {fileID: 494441882}
   button: {fileID: 0}
+  col: {fileID: 0}
 --- !u!1 &526483439
 GameObject:
   m_ObjectHideFlags: 0
@@ -2291,11 +2293,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2128709355, guid: 627b88a8a8e96284888f60b555a89eb4, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2128709355, guid: 627b88a8a8e96284888f60b555a89eb4, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2128709355, guid: 627b88a8a8e96284888f60b555a89eb4, type: 3}
       propertyPath: m_AnchorMin.y

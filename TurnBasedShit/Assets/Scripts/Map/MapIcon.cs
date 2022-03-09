@@ -12,13 +12,17 @@ public class MapIcon : MonoBehaviour {
     [SerializeField] bool animated = true;
 
 
-    private void OnTriggerEnter2D(Collider2D collision) {
-        FindObjectOfType<InteractionCanvas>().show(transform.position);
-        FindObjectOfType<MapMovement>().closestIcon = gameObject;
+    private void OnTriggerEnter2D(Collider2D col) {
+        if(col.gameObject.tag == "Player") {
+            FindObjectOfType<InteractionCanvas>().show(transform.position);
+            FindObjectOfType<MapMovement>().closestIcon = gameObject;
+        }
     }
-    private void OnTriggerExit2D(Collider2D collision) {
-        FindObjectOfType<InteractionCanvas>().hide();
-        FindObjectOfType<MapMovement>().closestIcon = null;
+    private void OnTriggerExit2D(Collider2D col) {
+        if(col.gameObject.tag == "Player") {
+            FindObjectOfType<InteractionCanvas>().hide();
+            FindObjectOfType<MapMovement>().closestIcon = null;
+        }
     }
 
     private void Start() {

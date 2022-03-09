@@ -82,6 +82,7 @@ public static class SaveData {
         GameInfo.setCurrentRegion(GameInfo.region.grassland);
         Map.createFogTexture();
         MapLocationHolder.populateMapLocations(lib);
+        MapMerchantManager.createStartingMerchantData(lib);
         Debug.Log("Location Shit: " + Time.realtimeSinceStartup.ToString("0.00"));
 
         //  Quests

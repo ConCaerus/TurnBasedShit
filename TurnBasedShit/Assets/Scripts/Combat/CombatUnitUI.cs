@@ -17,12 +17,13 @@ public class CombatUnitUI : MonoBehaviour {
 
     [SerializeField] Vector2 offset;
     public Vector2 highlightOffset, stunOffset, bleedOffset;
-    float sliderSpeed = 0.5f, highlightedHeight = 0.25f;
+    float sliderSpeed = 0.5f, highlightedHeight = 0.15f;
     float[] moveSpeeds = new float[4];
     float maxMoveSpeed = 25.0f, minMoveSpeed = 10.0f;
 
     //  false for auto, true for modifying
     public bool showingWouldBeHealedValue = false;
+    public bool highlighted = false;
 
     Coroutine lateMover = null, stunMover = null, bleedMover = null;
 
@@ -38,8 +39,12 @@ public class CombatUnitUI : MonoBehaviour {
 
 
     private void LateUpdate() {
-        positionUIObj();
-        updateUIInfo();
+        var target = getPositionTarget();
+        if((Vector2)transform.position != target)
+            positionUIObj(target);
+        if(Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) {
+            updateUIInfo();
+        }
     }
 
     private void Update() {
@@ -92,12 +97,15 @@ public class CombatUnitUI : MonoBehaviour {
     }
 
 
-    void positionUIObj() {
-        Vector2 target;
-        if(FindObjectOfType<UnitCombatHighlighter>().isUnitInList(gameObject))
-            target = transform.position + new Vector3(offset.x, offset.y + highlightedHeight, 0.0f);
-        else
-            target = transform.position + new Vector3(offset.x, offset.y, 0.0f);
+    Vector2 getPositionTarget() {
+        if(GetComponentInChildren<UnitSpriteHandler>() != null) {
+            var origin = GetComponentInChildren<UnitSpriteHandler>().getHeadPosition();
+            return highlighted ? origin + new Vector2(offset.x, offset.y + highlightedHeight) : origin + new Vector2(offset.x, offset.y);
+        }
+        return highlighted ? (Vector2)transform.position + new Vector2(offset.x, offset.y + highlightedHeight) : (Vector2)transform.position + new Vector2(offset.x, offset.y);
+    }
+
+    void positionUIObj(Vector2 target) {
         uiObj.transform.position = Vector2.Lerp(uiObj.transform.position, target, moveSpeeds[0] * Time.deltaTime);
     }
 

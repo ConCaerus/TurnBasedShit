@@ -83,6 +83,7 @@ public class InfoCanvas : MonoBehaviour {
 
 
     public void showInfo(InfoBearer ib) {
+        infoObj.SetActive(true);
         if(optionsShown)
             return;
         if(infoShower != null) {
@@ -93,7 +94,6 @@ public class InfoCanvas : MonoBehaviour {
         }
 
         shownInfo = ib;
-        infoObj.GetComponent<Image>().DOComplete();
         infoText.GetComponent<TextMeshProUGUI>().DOComplete();
 
         infoShower = StartCoroutine(waitToShow(ib.getInfo()));
@@ -121,6 +121,7 @@ public class InfoCanvas : MonoBehaviour {
         hideInfo();
     }
     public void showInfoWindow(Collectable col) {
+        infoWindow.SetActive(true);
         infoWindow.transform.DOScale(1f, .075f);
         hideOptions();
         hideInfo();
@@ -135,11 +136,9 @@ public class InfoCanvas : MonoBehaviour {
             StopCoroutine(infoShower);
         infoShower = null;
 
-        infoObj.GetComponent<Image>().DOComplete();
         infoObj.transform.GetChild(0).GetComponent<Image>().DOComplete();
         infoText.GetComponent<TextMeshProUGUI>().DOComplete();
 
-        infoObj.GetComponent<Image>().DOColor(Color.clear, 0.15f);
         infoObj.transform.GetChild(0).GetComponent<Image>().DOColor(Color.clear, 0.15f);
         infoText.GetComponent<TextMeshProUGUI>().DOColor(Color.clear, 0.15f);
 
@@ -173,10 +172,8 @@ public class InfoCanvas : MonoBehaviour {
             
 
         if(!infoShown) {
-            infoObj.GetComponent<Image>().color = Color.clear;
             infoObj.transform.GetChild(0).GetComponent<Image>().color = Color.clear;
             infoText.GetComponent<TextMeshProUGUI>().color = Color.clear;
-            infoObj.GetComponent<Image>().DOColor(new Color(1f, 1f, 1f, .75f), 0.1f);
             infoObj.transform.GetChild(0).GetComponent<Image>().DOColor(Color.black, 0.1f);
             infoText.GetComponent<TextMeshProUGUI>().DOColor(Color.white, 0.1f);
             infoShown = true;

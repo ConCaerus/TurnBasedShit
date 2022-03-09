@@ -284,6 +284,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   info: <b><u>Boss
+  showNoMatterMenuState: 0
   hideWhenMenuOpen: 1
   hideWhenCoveredByMapFog: 1
 --- !u!114 &8447848547736502915
@@ -309,7 +310,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: -1.53, y: 0}

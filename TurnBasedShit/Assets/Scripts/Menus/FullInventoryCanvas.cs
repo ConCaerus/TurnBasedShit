@@ -41,6 +41,10 @@ public class FullInventoryCanvas : MonoBehaviour {
         transform.GetChild(0).transform.DOScale(0.0f, 0.25f);
     }
 
+    public bool isOpen() {
+        return transform.GetChild(0).gameObject.activeInHierarchy && transform.GetChild(0).localScale.x > 0.0f;
+    }
+
 
     public void updateInvSlotColor(int index, bool wasSelected) {
         invSlot.getSlots()[index].GetComponent<SlotObject>().setImageColor(0, wasSelected ? Color.white : FindObjectOfType<PresetLibrary>().getRarityColor(Inventory.getHolder().getCollectables()[index].rarity));

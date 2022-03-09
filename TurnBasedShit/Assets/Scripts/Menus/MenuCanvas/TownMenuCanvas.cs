@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class TownMenuCanvas : MonoBehaviour {
     [SerializeField] SlotMenu slot;
-    [SerializeField] GameObject townSlotPreset;
     [SerializeField] TextMeshProUGUI countText;
 
     [SerializeField] Color visitedColor, unvisitedColor;
@@ -29,7 +28,7 @@ public class TownMenuCanvas : MonoBehaviour {
             for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<TownLocation>(); i++) {
                 var loc = MapLocationHolder.getHolder().getObject<TownLocation>(i);
                 if(loc.town.visited) {
-                    var obj = slot.replaceSlot(i, townSlotPreset, slot.gameObject.transform.GetChild(0).transform, visitedColor);
+                    var obj = slot.replaceSlot(i, slot.gameObject.transform.GetChild(0).transform, visitedColor);
                     obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = loc.town.t_name;
                     obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = loc.town.townMemberCount.ToString();
                     obj.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = loc.town.getMembersWithActiveQuests().Count.ToString();
@@ -59,7 +58,7 @@ public class TownMenuCanvas : MonoBehaviour {
             for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<TownLocation>(); i++) {
                 var loc = MapLocationHolder.getHolder().getObject<TownLocation>(i);
                 if(loc.town.visited) {
-                    var obj = slot.replaceSlot(count, townSlotPreset, slot.gameObject.transform.GetChild(0).transform, visitedColor);
+                    var obj = slot.replaceSlot(count, slot.gameObject.transform.GetChild(0).transform, visitedColor);
                     obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = loc.town.t_name;
                     obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = loc.town.townMemberCount.ToString();
                     obj.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = loc.town.getMembersWithActiveQuests().Count.ToString();

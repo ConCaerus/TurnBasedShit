@@ -8,7 +8,7 @@ using DG.Tweening;
 public class Weapon : Collectable {
     public const int attributeCount = 4;
     public enum attribute {
-        Power, Bleed, Healing, Stun
+        Power, Bleed, LifeSteal, Stun
     }
 
     public enum attackType {
@@ -52,7 +52,7 @@ public class Weapon : Collectable {
                 attackedUnit.GetComponent<UnitClass>().stats.u_bleedCount++;
             }
 
-            else if(i == attribute.Healing) {
+            else if(i == attribute.LifeSteal) {
                 weilder.GetComponent<UnitClass>().addHealth(weilder.GetComponent<UnitClass>().stats.getModifiedMaxHealth() * 0.05f);
             }
 
@@ -138,13 +138,14 @@ public class Weapon : Collectable {
         return succeeded;
     }
 
-    public int getPowerAttCount() {
+    public int getAttCount(attribute att) {
         int count = 0;
+        if(!attributes.Contains(att))
+            return count;
         foreach(var i in attributes) {
-            if(i == attribute.Power)
+            if(att == i)
                 count++;
         }
-
         return count;
     }
 

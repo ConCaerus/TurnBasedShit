@@ -38,7 +38,6 @@ public class MapMovement : InteractiveMovement {
 
 
             var temp = Instantiate(sideUnitPreset.gameObject, transform.parent);
-            Debug.Log(Party.getHolder().getObject<UnitStats>(i).u_name);
             temp.GetComponent<MapSideUnitMovement>().moveSpeed = moveSpeed / 1.25f;
             temp.transform.localScale = new Vector3(0.25f, 0.25f, 1.0f);
             temp.transform.position = last + offset;
@@ -61,6 +60,7 @@ public class MapMovement : InteractiveMovement {
             }
             else {
                 sideUnits[i].GetComponent<MapSideUnitMovement>().isMoving = false;
+                sideUnits[i].GetComponent<Rigidbody2D>().velocity = Vector2.zero;
                 if(!isMoving) {
                     if(sideUnits[i].GetComponentInChildren<UnitSpriteHandler>().initialized) {
                         if(!sideUnits[i].GetComponentInChildren<UnitSpriteHandler>().isFaceShown())

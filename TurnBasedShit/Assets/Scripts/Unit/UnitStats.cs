@@ -179,12 +179,12 @@ public class UnitStats {
 
         //  Weapon
         if(weapon != null && !weapon.isEmpty()) {   //  adds 10% of dmg for every power tolken in the weapon
-            dmg += (0.1f * dmg) * weapon.getPowerAttCount();
+            dmg += (0.1f * dmg) * weapon.getAttCount(Weapon.attribute.Power);
         }
 
         //  Armor
         if(armor != null && !armor.isEmpty()) { //  adds 10% of dmg for every power tolken in the armor
-            dmg += (0.1f * dmg) * armor.getPowerAttCount();
+            dmg += (0.1f * dmg) * armor.getAttCount(Armor.attribute.Power);
         }
 
         var dmgType = (Weapon.attackType)(-1);
@@ -250,7 +250,7 @@ public class UnitStats {
 
         //  Have Armor reduce damage
         if(armor != null && !armor.isEmpty()) { //  takes off 10% of damage for every tolken of turtle
-            temp -= armor.getTurtleAttCount() * 0.1f;
+            temp -= armor.getAttCount(Armor.attribute.Turtle) * 0.1f;
         }
 
         //  have pair reduce damage

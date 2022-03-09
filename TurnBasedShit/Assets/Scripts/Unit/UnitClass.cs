@@ -170,10 +170,10 @@ public abstract class UnitClass : MonoBehaviour {
     }
     public void chanceGettingStunned(float chance) {
         if(stats.u_talent != null)
-            chance *= stats.u_talent.getPassiveMod(StatModifier.passiveModifierType.modBecomeStunned, stats, true);
+            chance *= stats.u_talent.getPassiveMod(StatModifier.passiveModifierType.stunSelfChance, stats, true);
 
         foreach(var i in stats.u_traits)
-            chance *= i.getPassiveMod(StatModifier.passiveModifierType.modBecomeStunned, stats, true);
+            chance *= i.getPassiveMod(StatModifier.passiveModifierType.stunSelfChance, stats, true);
 
         stunned = GameVariables.chanceOutOfHundred((int)chance);
     }

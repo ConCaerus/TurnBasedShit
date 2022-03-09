@@ -65,7 +65,18 @@ public class MenuCanvas : MonoBehaviour {
 
 
     public void show() {
+        //  player wanted to close other menus, not up this one
+        if(FindObjectOfType<MapMerchantCanvas>() != null && FindObjectOfType<MapMerchantCanvas>().isOpen()) {
+            FindObjectOfType<MapMerchantCanvas>().hide();
+            return;
+        }
+        else if(FindObjectOfType<FullInventoryCanvas>() != null && FindObjectOfType<FullInventoryCanvas>().isOpen()) {
+            FindObjectOfType<FullInventoryCanvas>().done();
+            return;
+        }
+        //  add all of the building canvases here, also any thing's that I missed
         showing = true;
+
         if(FindObjectOfType<UnitCanvas>() != null)
             FindObjectOfType<UnitCanvas>().setup();
         else if(FindObjectOfType<QuestCanvas>() != null)

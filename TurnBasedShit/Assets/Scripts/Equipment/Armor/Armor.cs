@@ -38,22 +38,14 @@ public class Armor : Collectable {
         return temp;
     }
 
-    public int getTurtleAttCount() {
+    public int getAttCount(attribute att) {
         int count = 0;
-        foreach(var i in attributes) {
-            if(i == attribute.Turtle) {
-                count++;
-            }
-        }
-        return count;
-    }
+        if(!attributes.Contains(att))
+            return count;
 
-    public int getPowerAttCount() {
-        int count = 0;
         foreach(var i in attributes) {
-            if(i == attribute.Power) {
+            if(i == att)
                 count++;
-            }
         }
         return count;
     }

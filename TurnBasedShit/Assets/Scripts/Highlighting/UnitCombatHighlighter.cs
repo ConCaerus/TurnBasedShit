@@ -45,7 +45,6 @@ public class UnitCombatHighlighter : MonoBehaviour {
         }
     }
 
-
     public void updateHighlights() {
         if(!FindObjectOfType<TransitionCanvas>().loaded)
             return;
@@ -133,6 +132,7 @@ public class UnitCombatHighlighter : MonoBehaviour {
 
         //  adds the highlight to the list
         highlights.Add(new highlight(obj, unit, type));
+        unit.GetComponentInChildren<CombatUnitUI>().highlighted = true;
     }
 
     public void setHighlightType(GameObject unit, highlightType type) {
@@ -175,6 +175,7 @@ public class UnitCombatHighlighter : MonoBehaviour {
 
         //  removes highlight
         highlights.RemoveAt(index);
+        unit.GetComponentInChildren<CombatUnitUI>().highlighted = false;
     }
 
 
@@ -185,7 +186,6 @@ public class UnitCombatHighlighter : MonoBehaviour {
         }
         return -1;
     }
-
 
     Color getRelevantColor(highlightType type) {
         switch(type) {

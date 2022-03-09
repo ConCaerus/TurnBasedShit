@@ -32,6 +32,7 @@ public abstract class InteractiveMovement : UnitMovement {
             }
             else {
                 isMoving = false;
+                GetComponent<Rigidbody2D>().velocity = Vector2.zero;
                 unit.GetComponent<UnitSpriteHandler>().setWalkingAnim(false);
             }
         }
@@ -50,7 +51,7 @@ public abstract class InteractiveMovement : UnitMovement {
     }
 
     public void move() {
-        var sp = moveSpeed + (Party.getLeaderStats().u_speed / 10.0f);
+        var sp = (moveSpeed + (Party.getLeaderStats().u_speed / 10.0f)) * 100.0f;
         Vector2 target = Vector2.zero;
 
         //  X AXIS
@@ -67,7 +68,8 @@ public abstract class InteractiveMovement : UnitMovement {
             if(movingRight)
                 flip(true);
 
-            target = Vector2.right;
+            //target = Vector2.right;
+            target = Vector2.left;
         }
 
         //  Y AXIS
@@ -89,10 +91,18 @@ public abstract class InteractiveMovement : UnitMovement {
             }
         }
 
-        transform.Translate(target * sp * Time.deltaTime);
-        if(outOfBounds())
-            transform.Translate(-target * sp * Time.deltaTime);
-        transform.position = new Vector3(transform.position.x, transform.position.y, 0.0f);
+        var prevPos = transform.position;
+        var rb = GetComponent<Rigidbody2D>();
+
+        rb.velocity = target * sp * Time.fixedDeltaTime;
+        //transform.Translate(target * sp * Time.deltaTime);
+
+        //  check if outside the bounds of the allowed movement
+        if(outOfBounds()) {
+            transform.position = prevPos;
+        }
+
+        //transform.position = new Vector3(transform.position.x, transform.position.y, 0.0f);
 
         if(anim == null)
             anim = StartCoroutine(walkAnim());

@@ -160,4 +160,7 @@ public class UnitSpriteHandler : MonoBehaviour {
         }
         return Vector2.zero;
     }
+    public Vector2 getHeadPosition() {
+        return head == null ? Vector2.zero : (Vector2)head.transform.position;
+    }
 }

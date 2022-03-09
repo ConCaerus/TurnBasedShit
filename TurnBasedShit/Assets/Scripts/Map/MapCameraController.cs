@@ -9,6 +9,7 @@ public class MapCameraController : MonoBehaviour {
     [SerializeField] float maxIconSize = 0.7f, minIconSize = 0.1f;
 
     bool moveState = false;
+    public bool canZoom = true;
 
     Vector2 moveAnchorPoint;
 
@@ -31,7 +32,7 @@ public class MapCameraController : MonoBehaviour {
             moveToPartyObject();
             moveState = true;
         }
-        if(!FindObjectOfType<MapQuestMenu>().shown && !FindObjectOfType<MenuCanvas>().isOpen() && Input.mouseScrollDelta.y != 0) {
+        if(canZoom && !FindObjectOfType<MapQuestMenu>().shown && !FindObjectOfType<MenuCanvas>().isOpen() && Input.mouseScrollDelta.y != 0) {
             zoom();
         }
     }

@@ -14,7 +14,7 @@ public class MapSideUnitMovement : UnitMovement {
     }
 
     public void moveToPoint(Vector2 point) {
-        var sp = moveSpeed + Vector2.Distance(transform.position, point) / 5.0f;
+        var sp = (moveSpeed + Vector2.Distance(transform.position, point) / 5.0f) * 100.0f;
         Vector2 target = Vector2.zero;
 
         
@@ -49,11 +49,14 @@ public class MapSideUnitMovement : UnitMovement {
             if(movingRight)
                 flip(true);
 
-            target += Vector2.right;
+            //target += Vector2.right;
+            target += Vector2.left;
         }
 
-        transform.Translate(target * sp * Time.deltaTime);
-        transform.position = new Vector3(transform.position.x, transform.position.y, 0.0f);
+        //transform.Translate(target * sp * Time.deltaTime);
+        var rb = GetComponent<Rigidbody2D>();
+        rb.velocity = target * sp * Time.fixedDeltaTime;
+        //transform.position = new Vector3(transform.position.x, transform.position.y, 0.0f);
 
         if(anim == null)
             anim = StartCoroutine(walkAnim());

@@ -242,11 +242,13 @@ MonoBehaviour:
     type: 3}
   bleedPreset: {fileID: 4363930972011218595, guid: 624a67cfc305b324f85d0e188ddb6c04,
     type: 3}
-  offset: {x: 0, y: 0.63}
+  combatCards: {fileID: 0}
+  offset: {x: 0, y: 0.45}
   highlightOffset: {x: 0.053, y: 0.745}
   stunOffset: {x: 0, y: 2.75}
   bleedOffset: {x: -0.29, y: 0.24}
   showingWouldBeHealedValue: 0
+  highlighted: 0
 --- !u!114 &-64006567979406007
 MonoBehaviour:
   m_ObjectHideFlags: 0

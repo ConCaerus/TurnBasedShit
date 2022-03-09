@@ -53,8 +53,8 @@ public class SlotMenu : MonoBehaviour {
         //  returns true if selected slot changed
         if(Input.GetMouseButtonDown(0)) {
             for(int i = 0; i < slots.Count; i++) {
-                bool selected = slots[i].gameObject == EventSystem.current.currentSelectedGameObject || 
-                     (slots[i].GetComponent<SlotObject>() != null && slots[i].GetComponent<SlotObject>().button.gameObject == EventSystem.current.currentSelectedGameObject);
+                bool selected = (EventSystem.current.currentSelectedGameObject != null && slots[i].gameObject == EventSystem.current.currentSelectedGameObject) || 
+                     (slots[i].GetComponent<SlotObject>() != null && slots[i].GetComponent<SlotObject>().button != null && slots[i].GetComponent<SlotObject>().button.gameObject == EventSystem.current.currentSelectedGameObject);
                 if(selected) {
                     bool wasSelected = false;
                     if(!canSelectMultiple) {
@@ -237,7 +237,10 @@ public class SlotMenu : MonoBehaviour {
         slots.Insert(moveToIndex, slot);
         slots.RemoveAt(slotIndex);
     }
-    public GameObject replaceSlot(int index, GameObject slotPreset, Transform holder, Color slotColor) {
+    public GameObject replaceSlot(int index, Transform holder, Color slotColor) {
+        if(index >= slots.Count) {
+            createSlot(slots.Count, slotColor);
+        }
         //  destroy old slot
         Destroy(slots[index].gameObject);
 
