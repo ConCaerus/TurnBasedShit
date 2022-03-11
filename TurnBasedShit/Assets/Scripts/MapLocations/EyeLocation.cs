@@ -11,14 +11,6 @@ public class EyeLocation : MapLocation {
         pos = p;
     }
 
-
-
-    public void activate(MapFogTexture fog, MapLocationSpawner spawner) {
-        fog.clearFogAroundPos(pos, 10.0f, true);
-        MapLocationHolder.removeLocation(this);
-        spawner.removeIconAtPos(pos);
-    }
-
     public override void enterLocation(TransitionCanvas tc) {
     }
 }

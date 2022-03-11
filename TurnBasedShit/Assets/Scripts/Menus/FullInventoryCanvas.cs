@@ -22,14 +22,12 @@ public class FullInventoryCanvas : MonoBehaviour {
 
 
     private void Update() {
-        if(Input.GetKeyDown(KeyCode.Space))
-            show(FindObjectOfType<PresetLibrary>().getAllCollectables(GameInfo.region.grassland));
-
         invSlot.run();
         newInvSlot.run();
     }
 
     public void show(List<Collectable> newList) {
+        transform.GetChild(0).gameObject.SetActive(true);
         transform.GetChild(0).transform.DOScale(1.0f, 0.15f);
         newInvList = newList;
         invSlot.resetSelectedSlotIndexes();

@@ -130,7 +130,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.24128985, y: 0}
@@ -160,10 +160,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   b_type: 1
   reference:
-    orderInTown: 0
+    orderInTown: 1
     b_type: 1
-    sellReduction: 0.14316326
-    priceMod: 0.024856403
+    sellReduction: 0.03459939
+    priceMod: 0.12844825
 --- !u!114 &7076091851056932991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,6 +177,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   info: <b><u>Shop
+  showNoMatterMenuState: 0
   hideWhenMenuOpen: 1
   hideWhenCoveredByMapFog: 0
 --- !u!95 &8323161783765545027

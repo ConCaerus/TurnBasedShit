@@ -48,6 +48,11 @@ public class MapFogTexture : MonoBehaviour {
         fow.Apply(false);
     }
 
+    private void Update() {
+        if(Input.GetKeyDown(KeyCode.E))
+            clearFogAroundPos(transform.position, 10f, true);
+    }
+
 
     public void startingClear() {
         clearFogAroundPos(transform.position, seeingDist * 2.0f, true);
@@ -112,6 +117,8 @@ public class MapFogTexture : MonoBehaviour {
 
         fow.Apply(false);
     }
+
+
     public void saveTexture() {
         Map.saveFogTexture(fow, reg);
     }

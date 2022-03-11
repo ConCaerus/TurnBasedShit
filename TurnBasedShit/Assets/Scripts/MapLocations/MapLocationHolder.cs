@@ -52,6 +52,11 @@ public static class MapLocationHolder {
         holder.removeMapLocation(loc);
         saveHolder(holder);
     }
+    public static void removeLocation<T>(int index) {
+        var holder = getHolder();
+        holder.removeObject<T>(index);
+        saveHolder(holder);
+    }
 
 
     public static void populateMapLocations(PresetLibrary lib) {

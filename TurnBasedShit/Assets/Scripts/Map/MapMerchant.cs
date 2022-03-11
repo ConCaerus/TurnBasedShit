@@ -5,24 +5,24 @@ using UnityEngine;
 public class MapMerchant : MonoBehaviour {
     Rigidbody2D rb;
 
-
     Vector3 target;
 
     public bool moving = false;
-    bool closeToPlayer = false;
+
+    MerchantInfo reference;
 
     private void OnTriggerEnter2D(Collider2D col) {
         if(moving && col.gameObject.tag == "Player") {
             moving = false;
             rb.velocity = Vector3.zero;
             FindObjectOfType<InteractionCanvas>().show(transform.position);
-            closeToPlayer = true;
+            FindObjectOfType<MapMovement>().closestIcon = gameObject;
         }
     }
     private void OnTriggerExit2D(Collider2D col) {
         if(col.gameObject.tag == "Player") {
             moving = true;
-            closeToPlayer = false;
+            FindObjectOfType<MapMovement>().closestIcon = null;
         }
     }
 
@@ -34,12 +34,18 @@ public class MapMerchant : MonoBehaviour {
 
 
     private void Update() {
-        if(Input.GetKeyDown(KeyCode.Space) && closeToPlayer) {
-            FindObjectOfType<MapMerchantCanvas>().show();
-        }
         if(moving && FindObjectOfType<MapCameraController>().canZoom) {
             move();
         }
+    }
+
+
+    public void setReference(MerchantInfo info) {
+        reference = info;
+    }
+
+    public void showCanvas() {
+        FindObjectOfType<MapMerchantCanvas>().show(reference.inv.getCollectables());
     }
 
 

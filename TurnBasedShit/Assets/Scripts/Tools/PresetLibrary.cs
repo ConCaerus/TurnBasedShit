@@ -628,6 +628,21 @@ public class PresetLibrary : MonoBehaviour {
                 return getRandomUnusable(diff);
         }
     }
+    public Collectable getDefaultCollectable(Collectable col) {
+        switch(col.type) {
+            case Collectable.collectableType.Weapon:
+                return getWeapon(col.name);
+            case Collectable.collectableType.Armor:
+                return getArmor(col.name);
+            case Collectable.collectableType.Item:
+                return getItem(col.name);
+            case Collectable.collectableType.Usable:
+                return getUsable(col.name);
+            case Collectable.collectableType.Unusable:
+                return getUnusable(col.name);
+            default: return null;
+        }
+    }
 
     public EquipmentPair getRelevantPair(UnitStats stats) {
         foreach(var i in equipmentPairs) {

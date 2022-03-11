@@ -5,7 +5,6 @@ using DG.Tweening;
 using TMPro;
 
 public abstract class InteractiveMovement : UnitMovement {
-    public abstract bool outOfBounds();
     public abstract bool canMoveAlongY();
 
     public abstract bool shouldInteract();
@@ -32,7 +31,7 @@ public abstract class InteractiveMovement : UnitMovement {
             }
             else {
                 isMoving = false;
-                GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+                GetComponent<Rigidbody2D>().velocity = new Vector2(0.0f, GetComponent<Rigidbody2D>().velocity.y);
                 unit.GetComponent<UnitSpriteHandler>().setWalkingAnim(false);
             }
         }
@@ -51,7 +50,7 @@ public abstract class InteractiveMovement : UnitMovement {
     }
 
     public void move() {
-        var sp = (moveSpeed + (Party.getLeaderStats().u_speed / 10.0f)) * 100.0f;
+        var sp = (moveSpeed + (leaderSpeed / 10.0f)) * 100.0f;
         Vector2 target = Vector2.zero;
 
         //  X AXIS
@@ -91,16 +90,10 @@ public abstract class InteractiveMovement : UnitMovement {
             }
         }
 
-        var prevPos = transform.position;
         var rb = GetComponent<Rigidbody2D>();
 
         rb.velocity = target * sp * Time.fixedDeltaTime;
         //transform.Translate(target * sp * Time.deltaTime);
-
-        //  check if outside the bounds of the allowed movement
-        if(outOfBounds()) {
-            transform.position = prevPos;
-        }
 
         //transform.position = new Vector3(transform.position.x, transform.position.y, 0.0f);
 

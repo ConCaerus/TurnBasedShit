@@ -295,7 +295,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.02090764, y: 0.03136301}
@@ -327,8 +327,9 @@ MonoBehaviour:
   reference:
     orderInTown: 1
     b_type: 2
-    priceToRemove: 0
-    priceToAdd: 0
+    priceToRemove: 5
+    priceToAdd: 8
+    availableTraits: []
 --- !u!114 &-3444701433657171354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -342,6 +343,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   info: <b><u>Church
+  showNoMatterMenuState: 0
   hideWhenMenuOpen: 1
   hideWhenCoveredByMapFog: 0
 --- !u!95 &2928598587700832157

@@ -454,9 +454,7 @@ public class ObjectHolder {
             Debug.LogError("Use specific function instead");
             return;
         }
-        var thing = getObject<T>(index);
-
-        if(thing == null)
+        if(index < 0)
             return;
 
         for(int i = index; i < getObjectCount<T>(); i++) {
@@ -675,7 +673,8 @@ public class ObjectHolder {
         return JsonUtility.FromJson<T>(data);
     }
 
-    //  get index
+    //  get index  
+    //  NOTE: THESE FUNCTIONS DROP FRAMES LIKE A MOTHER FUCKER
     public int getCollectableIndex(Collectable thing) {
         if(thing == null || thing.isEmpty())
             return -1;
@@ -857,11 +856,7 @@ public class ObjectHolder {
                 }
                 break;
             case MapLocation.locationType.eye:
-                for(int i = 0; i < getObjectCount<EyeLocation>(); i++) {
-                    if(getObject<EyeLocation>(i).isEqualTo((EyeLocation)thing))
-                        return i;
-                }
-                break;
+                return getObjects<EyeLocation>().IndexOf((EyeLocation)thing);
             case MapLocation.locationType.bridge:
                 for(int i = 0; i < getObjectCount<BridgeLocation>(); i++) {
                     if(getObject<BridgeLocation>(i).isEqualTo((BridgeLocation)thing))

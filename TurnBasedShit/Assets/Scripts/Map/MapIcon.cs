@@ -6,6 +6,8 @@ using DG.Tweening;
 
 public class MapIcon : MonoBehaviour {
     UnityEngine.Experimental.Rendering.Universal.Light2D lightObj;
+    public MapLocation reference;
+    public int indexInHolder;
 
     protected float enterSpeed = 0.15f, exitSpeed = 0.25f;
 

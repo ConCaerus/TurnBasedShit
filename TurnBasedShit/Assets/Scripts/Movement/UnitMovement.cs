@@ -11,6 +11,7 @@ public abstract class UnitMovement : MonoBehaviour {
 
     public float moveSpeed = 10.0f;
     protected float flipSpeed = 0.15f;
+    protected float leaderSpeed;
 
     public bool movingRight = true;
     public bool movingDown = true;
@@ -22,6 +23,7 @@ public abstract class UnitMovement : MonoBehaviour {
     private void Start() {
         DOTween.Init();
         canMove = true;
+        leaderSpeed = Party.getLeaderStats().u_speed;
         if(GetComponent<MapSideUnitMovement>() == null)
             unit.GetComponent<UnitSpriteHandler>().setReference(Party.getLeaderStats(), true);
         setVisuals();

@@ -15,31 +15,24 @@ public static class MapMerchantManager {
                 var colCount = Random.Range(5, 21);
                 var coinCount = Random.Range(15, 51);
 
-                temp.merchants[i].Add(new MerchantInfo(colCount, coinCount, j, (GameInfo.region)(i), lib));
+                temp.addInfo(new MerchantInfo(colCount, coinCount, j, (GameInfo.region)i, lib));
             }
-            Debug.Log("B4: " + temp.merchants[i].Count);
         }
-
-        temp.fuck = 8;
 
         overrideSavedContainer(temp);
-
-        for(int i = 0; i < getContainer().merchants.Length; i++) {
-            Debug.Log(((GameInfo.region)(i)).ToString() + ": " + getContainer().merchants[i].Count.ToString());
-        }
-        Debug.Log(temp.fuck);
     }
 
 
     public static MerchantInfo getMerchantInRegion(int index, GameInfo.region reg) {
         var data = SaveData.getString(merchantTag);
         var thing = JsonUtility.FromJson<MapMerchantContainer>(data);
-        return thing.merchants[(int)reg][index];
+
+        return thing.getMercsForRegion(reg)[index];
     }
     public static void updateMerchant(MerchantInfo info) {
         var data = SaveData.getString(merchantTag);
         var thing = JsonUtility.FromJson<MapMerchantContainer>(data);
-        thing.merchants[(int)info.region][info.index] = info;
+        thing.overrideInfo(info);
         overrideSavedContainer(thing);
     }
 
@@ -75,9 +68,52 @@ public class MerchantInfo {
 
 [System.Serializable]
 public class MapMerchantContainer {
-    public List<MerchantInfo>[] merchants = new List<MerchantInfo>[5] {
-        new List<MerchantInfo>(), new List<MerchantInfo>(), new List<MerchantInfo>(), new List<MerchantInfo>(), new List<MerchantInfo>()
-    };
+    public List<MerchantInfo> grasslandMercs = new List<MerchantInfo>();
+    public List<MerchantInfo> forestMercs = new List<MerchantInfo>();
+    public List<MerchantInfo> swampMercs = new List<MerchantInfo>();
+    public List<MerchantInfo> mountainMercs = new List<MerchantInfo>();
+    public List<MerchantInfo> hellMercs = new List<MerchantInfo>();
 
-    public int fuck = 0;
+    public void addInfo(MerchantInfo info) {
+        switch(info.region) {
+            case GameInfo.region.grassland:
+                grasslandMercs.Add(info);
+                return;
+            case GameInfo.region.forest:
+                forestMercs.Add(info);
+                return;
+            case GameInfo.region.swamp:
+                swampMercs.Add(info);
+                return;
+            case GameInfo.region.mountains:
+                mountainMercs.Add(info);
+                return;
+            case GameInfo.region.hell:
+                hellMercs.Add(info);
+                return;
+        }
+    }
+
+    public List<MerchantInfo> getMercsForRegion(GameInfo.region reg) {
+        return reg == GameInfo.region.grassland ? grasslandMercs : reg == GameInfo.region.forest ? forestMercs : reg == GameInfo.region.swamp ? swampMercs : reg == GameInfo.region.mountains ? mountainMercs : reg == GameInfo.region.hell ? hellMercs : null;
+    }
+    public void overrideInfo(MerchantInfo info) {
+        switch(info.region) {
+            case GameInfo.region.grassland:
+                grasslandMercs[info.index] = info;
+                return;
+            case GameInfo.region.forest:
+                forestMercs[info.index] = info;
+                return;
+            case GameInfo.region.swamp:
+                swampMercs[info.index] = info;
+                return;
+            case GameInfo.region.mountains:
+                mountainMercs[info.index] = info;
+                return;
+            case GameInfo.region.hell:
+                hellMercs[info.index] = info;
+                return;
+        }
+    }
 }

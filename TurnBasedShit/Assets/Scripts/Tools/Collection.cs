@@ -92,14 +92,12 @@ public static class Collection {
     public static int alreadyHasCollectable(Collectable col, List<Collectable> list) {
         var holder = getHolder();
 
-        var index = list.IndexOf(col);
-        if(index < 0 || index >= list.Count)
-            return -1;
-        foreach(var i in holder.getObject<CollectionInfo>(0).indexes) {
-            if(i == index)
-                return -1;
+        for(int i = 0; i < list.Count; i++) {
+            if(list[i].isTheSameTypeAs(col)) {
+                return holder.getObject<CollectionInfo>(0).indexes.Contains(i) ? -1 : i;
+            }
         }
-        return index;
+        return -1;
     }
 
     public static List<Usable> getUniqueUsables() {

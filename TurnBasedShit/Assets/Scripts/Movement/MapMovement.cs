@@ -98,13 +98,6 @@ public class MapMovement : InteractiveMovement {
     }
 
 
-    public override bool outOfBounds() {
-        bool x = transform.position.x > Map.rightBound() || transform.position.x < Map.leftBound();
-        bool y = transform.position.y > Map.topBound() || transform.position.y < Map.botBound();
-
-        return x || y;
-    }
-
     public override bool canMoveAlongY() {
         return true;
     }
@@ -122,18 +115,30 @@ public class MapMovement : InteractiveMovement {
     public override void interact() {
         if(closestIcon == null)
             return;
-        var loc = MapLocationHolder.getLocationAtPos(closestIcon.transform.position);
-        if(loc == null)
-            return;
-        GameInfo.setCurrentMapPos(closestIcon.transform.position);
-        FindObjectOfType<MapFogTexture>().saveTexture();
+        if(closestIcon.GetComponent<MapMerchant>() != null) {
+            closestIcon.GetComponent<MapMerchant>().showCanvas();
+        }
 
-        if(loc.type == MapLocation.locationType.eye)
-            ((EyeLocation)loc).activate(FindObjectOfType<MapFogTexture>(), FindObjectOfType<MapLocationSpawner>());
-        else if(loc.type == MapLocation.locationType.loot)
-            ((LootLocation)loc).activate(FindObjectOfType<MapLocationSpawner>(), FindObjectOfType<MapLootCanvas>(), FindObjectOfType<PresetLibrary>(), FindObjectOfType<FullInventoryCanvas>());
-        else
-            loc.enterLocation(FindObjectOfType<TransitionCanvas>());
+        else if(closestIcon.GetComponent<MapIcon>() != null) {
+            var loc = closestIcon.GetComponent<MapIcon>().reference;
+            if(loc == null)
+                return;
+
+            if(loc.type == MapLocation.locationType.eye) {
+                FindObjectOfType<MapFogTexture>().clearFogAroundPos(loc.pos, 10f, true);
+                MapLocationHolder.removeLocation<EyeLocation>(closestIcon.GetComponent<MapIcon>().indexInHolder);   //  this
+                FindObjectOfType<MapLocationSpawner>().removeIcon(closestIcon); //  not this
+            }
+            else if(loc.type == MapLocation.locationType.loot) {
+                ((LootLocation)loc).activate(FindObjectOfType<MapLootCanvas>(), FindObjectOfType<PresetLibrary>(), FindObjectOfType<FullInventoryCanvas>());
+                FindObjectOfType<MapLocationSpawner>().removeIcon(closestIcon);
+            }
+            else {
+                GameInfo.setCurrentMapPos(closestIcon.transform.position);
+                FindObjectOfType<MapFogTexture>().saveTexture();
+                loc.enterLocation(FindObjectOfType<TransitionCanvas>());
+            }
+        }
     }
 
     public override void deinteract() {

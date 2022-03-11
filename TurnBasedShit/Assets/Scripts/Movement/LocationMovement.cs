@@ -19,8 +19,4 @@ public abstract class LocationMovement : InteractiveMovement {
     public override bool shouldDeinteract() {
         return Input.GetKeyDown(KeyCode.S);
     }
-
-    public override bool outOfBounds() {
-        return transform.position.x > rightMost || transform.position.x < leftMost;
-    }
 }

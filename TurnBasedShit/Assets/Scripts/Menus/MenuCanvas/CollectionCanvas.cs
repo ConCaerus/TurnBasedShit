@@ -35,8 +35,8 @@ public class CollectionCanvas : MonoBehaviour {
             slots[i].GetComponent<SlotObject>().setInfo(list[i].name);
         }
 
-        slot.resetScrollValue();
         updateInfo();
+        slot.resetScrollValue();
     }
 
 

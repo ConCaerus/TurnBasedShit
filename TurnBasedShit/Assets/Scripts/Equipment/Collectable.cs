@@ -35,7 +35,7 @@ public abstract class Collectable {
     public bool isTheSameTypeAs(Collectable other) {
         if(other == null)
             return false;
-        return name == other.name;
+        return name == other.name && type == other.type;
     }
 
     protected void matchParentValues(Collectable other, bool takeInstanceID) {

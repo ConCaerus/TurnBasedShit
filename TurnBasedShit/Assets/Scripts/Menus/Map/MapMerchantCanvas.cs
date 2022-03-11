@@ -9,14 +9,12 @@ public class MapMerchantCanvas : MonoBehaviour {
     public SlotMenu slot;
 
     public bool buying = true;
+    int filterState = 0;    //  0:all, 1:weapon, 2:armor, 3:item, 4:usable, 5:unusable, 6:unit
 
-    List<Collectable> temp = new List<Collectable>();
+    List<Collectable> inv = new List<Collectable>();
 
 
     private void Start() {
-        for(int i = 0; i < 50; i++) {
-            temp.Add(FindObjectOfType<PresetLibrary>().getRandomCollectable());
-        }
         populateSlots();
         coinCount.updateCount(false);
     }
@@ -27,15 +25,18 @@ public class MapMerchantCanvas : MonoBehaviour {
     }
 
 
-    public void show() {
+    public void show(List<Collectable> merchantInv) {
         //  logic that makes shit work
+        filterState = 0;
+        buying = true;
+        inv = merchantInv;
         FindObjectOfType<MapCameraController>().canZoom = false;
         FindObjectOfType<MapMovement>().canMove = false;
 
         //  animation
         transform.GetChild(0).gameObject.SetActive(true);
         transform.GetChild(0).DOScale(1.0f, .1f);
-        
+
         //  setting up the canvas' information
         populateSlots();
         updateInfo();
@@ -56,19 +57,21 @@ public class MapMerchantCanvas : MonoBehaviour {
 
     void populateSlots() {
         if(buying) {
-            slot.deleteSlotsAfterIndex(temp.Count);
             int index = 0;
-            foreach(var i in temp) {
-                createSlot(index++, i);
+            foreach(var i in inv) {
+                if(shouldAddCol(i))
+                    createSlot(index++, i);
             }
+            slot.deleteSlotsAfterIndex(index);
         }
 
         else {
-            slot.deleteSlotsAfterIndex(Inventory.getHolder().getCollectables().Count);
             int index = 0;
             foreach(var i in Inventory.getHolder().getCollectables()) {
-                createSlot(index++, i);
+                if(shouldAddCol(i))
+                    createSlot(index++, i);
             }
+            slot.deleteSlotsAfterIndex(index);
         }
     }
 
@@ -77,6 +80,12 @@ public class MapMerchantCanvas : MonoBehaviour {
         obj.GetComponent<SlotObject>().setImage(1, FindObjectOfType<PresetLibrary>().getGenericSpriteForCollectable(col));
         obj.GetComponent<SlotObject>().setImageColor(0, FindObjectOfType<PresetLibrary>().getRarityColor(col.rarity));
         return obj;
+    }
+
+    bool shouldAddCol(Collectable col) {
+        return filterState == 0 ? true : filterState == 1 ? col.type == Collectable.collectableType.Weapon : filterState == 2 ? col.type == Collectable.collectableType.Armor :
+               filterState == 3 ? col.type == Collectable.collectableType.Item : filterState == 4 ? col.type == Collectable.collectableType.Usable :
+               filterState == 5 ? col.type == Collectable.collectableType.Unusable : false;
     }
 
     void updateInfo() {
@@ -102,14 +111,21 @@ public class MapMerchantCanvas : MonoBehaviour {
         slot.resetScrollValue();
     }
 
+    public void setFilter(int state) {  //  0: All, 1: Weapon, 2: Armor, 3: Item, 4: Usable, 5: Unusable
+        if(state == filterState)
+            return;
+        filterState = state;
+        populateSlots();
+    }
+
     public void transaction() {
         int index = slot.getSelectedSlotIndex();
         if(index < 0 || index > slot.getSlots().Count || !Inventory.hasAvailableSpace())
             return;
 
         if(buying) {
-            var col = temp[index];
-            temp.RemoveAt(index);
+            var col = inv[index];
+            inv.RemoveAt(index);
             Inventory.addSingleCollectable(col, FindObjectOfType<PresetLibrary>(), FindObjectOfType<FullInventoryCanvas>());
             Inventory.addCoins(-col.coinCost, coinCount, true);
         }
@@ -117,7 +133,7 @@ public class MapMerchantCanvas : MonoBehaviour {
         else {
             var col = Inventory.getHolder().getCollectables()[index];
             Inventory.removeCollectable(col);
-            temp.Add(col);
+            inv.Add(col);
             Inventory.addCoins(col.coinCost, coinCount, true);
         }
 

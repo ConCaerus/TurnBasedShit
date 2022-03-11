@@ -63,6 +63,8 @@ public static class SaveData {
     }
     public static void createSaveDataForSave(PresetLibrary lib, TransitionCanvas tc) {
         //  Inventory
+        var start = Time.realtimeSinceStartup;
+        var startStart = start;
         Inventory.clear(true);
         Collection.clear();
         Graveyard.clear();
@@ -72,21 +74,22 @@ public static class SaveData {
 
         //  Party
         lib.addStartingUnits();
-        Debug.Log("Added starting units: " + Time.realtimeSinceStartup.ToString("0.00"));
+        Debug.Log("Added starting units took: " + (Time.realtimeSinceStartup - start).ToString("0.00") + " second(s)");
+        start = Time.realtimeSinceStartup;
 
         //  Towns
         Map.populateTowns(lib);
-        Debug.Log("Town Shit: " + Time.realtimeSinceStartup.ToString("0.00"));
+        Debug.Log("Town Shit: " + (Time.realtimeSinceStartup - start).ToString("0.00") + " second(s)");
+        start = Time.realtimeSinceStartup;
 
         //  MapLocations
         GameInfo.setCurrentRegion(GameInfo.region.grassland);
         Map.createFogTexture();
         MapLocationHolder.populateMapLocations(lib);
         MapMerchantManager.createStartingMerchantData(lib);
-        Debug.Log("Location Shit: " + Time.realtimeSinceStartup.ToString("0.00"));
-
-        //  Quests
         ActiveQuests.clear(true);
+        Debug.Log("Location Shit: " + (Time.realtimeSinceStartup - start).ToString("0.00") + " second(s)");
+        Debug.Log("Total Time: " + (Time.realtimeSinceStartup - startStart).ToString("0.00") + " second(s)");
     }
 
     public static void deleteCurrentSave() {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using DG.Tweening;
 
 public class MapLocationSpawner : MonoBehaviour {
     public GameObject bridgePreset;
@@ -32,6 +33,8 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.transform.position = MapLocationHolder.getHolder().getObject<BossLocation>(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
+            obj.GetComponent<MapIcon>().reference = MapLocationHolder.getHolder().getObject<BossLocation>(i);
+            obj.GetComponent<MapIcon>().indexInHolder = i;
 
             currentIcons.Add(obj);
         }
@@ -45,6 +48,8 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.transform.position = MapLocationHolder.getHolder().getObject<TownLocation>(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
+            obj.GetComponent<MapIcon>().reference = MapLocationHolder.getHolder().getObject<TownLocation>(i);
+            obj.GetComponent<MapIcon>().indexInHolder = i;
 
             currentIcons.Add(obj);
         }
@@ -58,6 +63,8 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.transform.position = MapLocationHolder.getHolder().getObject<RescueLocation>(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
+            obj.GetComponent<MapIcon>().reference = MapLocationHolder.getHolder().getObject<RescueLocation>(i);
+            obj.GetComponent<MapIcon>().indexInHolder = i;
 
             currentIcons.Add(obj);
         }
@@ -71,6 +78,8 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.transform.position = MapLocationHolder.getHolder().getObject<UpgradeLocation>(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
+            obj.GetComponent<MapIcon>().reference = MapLocationHolder.getHolder().getObject<UpgradeLocation>(i);
+            obj.GetComponent<MapIcon>().indexInHolder = i;
 
             currentIcons.Add(obj);
         }
@@ -84,6 +93,8 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.transform.position = MapLocationHolder.getHolder().getObject<PickupLocation>(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
+            obj.GetComponent<MapIcon>().reference = MapLocationHolder.getHolder().getObject<PickupLocation>(i);
+            obj.GetComponent<MapIcon>().indexInHolder = i;
 
             currentIcons.Add(obj);
         }
@@ -97,6 +108,8 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.transform.position = MapLocationHolder.getHolder().getObject<FishingLocation>(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
+            obj.GetComponent<MapIcon>().reference = MapLocationHolder.getHolder().getObject<FishingLocation>(i);
+            obj.GetComponent<MapIcon>().indexInHolder = i;
 
             currentIcons.Add(obj);
         }
@@ -110,6 +123,8 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.transform.position = MapLocationHolder.getHolder().getObject<EyeLocation>(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
+            obj.GetComponent<MapIcon>().reference = MapLocationHolder.getHolder().getObject<EyeLocation>(i);
+            obj.GetComponent<MapIcon>().indexInHolder = i;
 
             currentIcons.Add(obj);
         }
@@ -123,6 +138,8 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.transform.position = MapLocationHolder.getHolder().getObject<LootLocation>(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
+            obj.GetComponent<MapIcon>().reference = MapLocationHolder.getHolder().getObject<LootLocation>(i);
+            obj.GetComponent<MapIcon>().indexInHolder = i;
 
             currentIcons.Add(obj);
         }
@@ -137,6 +154,8 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.transform.position = MapLocationHolder.getHolder().getObject<BridgeLocation>(i).pos;
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
+            obj.GetComponent<MapIcon>().reference = MapLocationHolder.getHolder().getObject<BridgeLocation>(i);
+            obj.GetComponent<MapIcon>().indexInHolder = i;
 
             if(!MapLocationHolder.getHolder().getObject<BridgeLocation>(i).advancing)
                 obj.transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
@@ -146,8 +165,9 @@ public class MapLocationSpawner : MonoBehaviour {
 
 
         //  merchant
-        for(int i = 0; i < Random.Range(1, 4); i++) {
+        for(int i = 0; i < MapMerchantManager.getContainer().getMercsForRegion(GameInfo.getCurrentRegion()).Count; i++) {
             var obj = Instantiate(merchantPreset.gameObject);
+            obj.GetComponent<MapMerchant>().setReference(MapMerchantManager.getMerchantInRegion(i, GameInfo.getCurrentRegion()));
             obj.transform.position = Map.getRandPos();
             obj.transform.SetParent(transform.GetChild(0));
             obj.transform.localScale = Vector3.one / 2.0f;
@@ -156,7 +176,7 @@ public class MapLocationSpawner : MonoBehaviour {
         }
     }
 
-    public void removeIconAtPos(Vector2 pos) {
+    public void removeIonAtPos(Vector2 pos) {
         foreach(var i in currentIcons) {
             if((Vector2)i.transform.position == pos) {
                 var temp = i.gameObject;
@@ -165,6 +185,19 @@ public class MapLocationSpawner : MonoBehaviour {
                 return;
             }
         }
+    }
+
+    public void removeIcon(GameObject icon) {
+        int index = currentIcons.IndexOf(icon);
+        if(index == -1)
+            return;
+        var obj = currentIcons[index];
+        currentIcons.RemoveAt(index);
+
+        var prev = obj.transform.localScale.x;
+        obj.transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
+        obj.transform.DOPunchScale(new Vector3(prev + .25f, prev + .25f), .25f);
+        Destroy(obj.gameObject, .25f);    //  laggs the game a little, might as well keep
     }
 
     public List<GameObject> getCurrentObjects() {

@@ -40,7 +40,7 @@ public class LootLocation : MapLocation {
     }
 
 
-    public void activate(MapLocationSpawner spawner, MapLootCanvas canvas, PresetLibrary lib, FullInventoryCanvas fic) {
+    public void activate(MapLootCanvas canvas, PresetLibrary lib, FullInventoryCanvas fic) {
         //  show canvas that shows what collectables were just gotted
 
         Inventory.addCollectables(collectables.getCollectables(), lib, fic);
@@ -49,7 +49,6 @@ public class LootLocation : MapLocation {
         canvas.show(collectables.getCollectables(), coins);
 
         MapLocationHolder.removeLocation(this);
-        spawner.removeIconAtPos(pos);
     }
 
     public override void enterLocation(TransitionCanvas tc) {

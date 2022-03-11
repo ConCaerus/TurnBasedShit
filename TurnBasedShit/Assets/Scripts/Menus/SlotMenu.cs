@@ -260,6 +260,10 @@ public class SlotMenu : MonoBehaviour {
     }
 
     public void resetScrollValue() {
+        StartCoroutine(resetWatier());
+    }
+    IEnumerator resetWatier() {
+        yield return new WaitForEndOfFrame();
         transform.GetChild(1).GetComponent<Scrollbar>().value = 1.0f;   //  for some reason, this is top
     }
 
