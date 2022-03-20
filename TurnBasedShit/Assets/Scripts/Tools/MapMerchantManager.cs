@@ -13,9 +13,10 @@ public static class MapMerchantManager {
             var mCount = Random.Range(3, 9);
             for(int j = 0; j < mCount; j++) {
                 var colCount = Random.Range(5, 21);
+                var statsCount = Random.Range(0, 6);
                 var coinCount = Random.Range(15, 51);
 
-                temp.addInfo(new MerchantInfo(colCount, coinCount, j, (GameInfo.region)i, lib));
+                temp.addInfo(new MerchantInfo(colCount, statsCount, coinCount, j, (GameInfo.region)i, lib));
             }
         }
 
@@ -54,11 +55,15 @@ public class MerchantInfo {
     public GameInfo.region region;
     public int index;
 
-    public MerchantInfo(int colCount, int cCount, int ind, GameInfo.region reg, PresetLibrary lib) {
+    public MerchantInfo(int colCount, int unitCount, int cCount, int ind, GameInfo.region reg, PresetLibrary lib) {
         inv = new ObjectHolder();
         for(int i = 0; i < colCount; i++) {
             inv.addObject<Collectable>(lib.getRandomCollectable(reg));
         }
+        for(int i = 0; i < unitCount; i++) {
+            inv.addObject<UnitStats>(lib.createRandomPlayerUnitStats(true));
+        }
+
 
         coinCount = cCount;
         index = ind;

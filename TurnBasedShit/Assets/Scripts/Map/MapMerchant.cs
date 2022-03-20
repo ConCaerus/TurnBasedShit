@@ -45,7 +45,7 @@ public class MapMerchant : MonoBehaviour {
     }
 
     public void showCanvas() {
-        FindObjectOfType<MapMerchantCanvas>().show(reference.inv.getCollectables());
+        FindObjectOfType<MapMerchantCanvas>().show(reference.inv);
     }
 
 

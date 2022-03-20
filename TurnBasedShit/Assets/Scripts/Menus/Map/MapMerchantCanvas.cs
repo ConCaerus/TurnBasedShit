@@ -11,11 +11,11 @@ public class MapMerchantCanvas : MonoBehaviour {
     public bool buying = true;
     int filterState = 0;    //  0:all, 1:weapon, 2:armor, 3:item, 4:usable, 5:unusable, 6:unit
 
-    List<Collectable> inv = new List<Collectable>();
+    ObjectHolder inv = new ObjectHolder();
 
 
     private void Start() {
-        populateSlots();
+        hide();
         coinCount.updateCount(false);
     }
 
@@ -25,7 +25,7 @@ public class MapMerchantCanvas : MonoBehaviour {
     }
 
 
-    public void show(List<Collectable> merchantInv) {
+    public void show(ObjectHolder merchantInv) {
         //  logic that makes shit work
         filterState = 0;
         buying = true;
@@ -58,18 +58,32 @@ public class MapMerchantCanvas : MonoBehaviour {
     void populateSlots() {
         if(buying) {
             int index = 0;
-            foreach(var i in inv) {
-                if(shouldAddCol(i))
+            if(filterState != 6) {  //  add collectables
+                foreach(var i in inv.getCollectables()) {
+                    if(shouldAddCol(i))
+                        createSlot(index++, i);
+                }
+            }
+            if(filterState == 6 || filterState == 0) {
+                foreach(var i in inv.getObjects<UnitStats>()) {
                     createSlot(index++, i);
+                }
             }
             slot.deleteSlotsAfterIndex(index);
         }
 
         else {
             int index = 0;
-            foreach(var i in Inventory.getHolder().getCollectables()) {
-                if(shouldAddCol(i))
+            if(filterState != 6) {
+                foreach(var i in Inventory.getHolder().getCollectables()) {
+                    if(shouldAddCol(i))
+                        createSlot(index++, i);
+                }
+            }
+            if(filterState == 6 || filterState == 0) {
+                foreach(var i in Party.getHolder().getObjects<UnitStats>()) {
                     createSlot(index++, i);
+                }
             }
             slot.deleteSlotsAfterIndex(index);
         }
@@ -79,6 +93,12 @@ public class MapMerchantCanvas : MonoBehaviour {
         var obj = slot.createSlot(index, Color.white);
         obj.GetComponent<SlotObject>().setImage(1, FindObjectOfType<PresetLibrary>().getGenericSpriteForCollectable(col));
         obj.GetComponent<SlotObject>().setImageColor(0, FindObjectOfType<PresetLibrary>().getRarityColor(col.rarity));
+        return obj;
+    }
+    GameObject createSlot(int index, UnitStats stats) {
+        var obj = slot.createSlot(index, Color.white);
+        obj.GetComponent<SlotObject>().setImage(1, FindObjectOfType<PresetLibrary>().getUnitHeadSprite(stats.u_sprite.headIndex));
+        obj.GetComponent<SlotObject>().setImageColor(0, stats.u_sprite.color);
         return obj;
     }
 
@@ -118,25 +138,111 @@ public class MapMerchantCanvas : MonoBehaviour {
         populateSlots();
     }
 
-    public void transaction() {
+    Collectable getSelectedCollectable() {
         int index = slot.getSelectedSlotIndex();
-        if(index < 0 || index > slot.getSlots().Count || !Inventory.hasAvailableSpace())
-            return;
+        if(index < 0 || index > slot.getSlots().Count || filterState == 6)
+            return null;
 
-        if(buying) {
-            var col = inv[index];
-            inv.RemoveAt(index);
-            Inventory.addSingleCollectable(col, FindObjectOfType<PresetLibrary>(), FindObjectOfType<FullInventoryCanvas>());
-            Inventory.addCoins(-col.coinCost, coinCount, true);
+        List<Collectable> cols = buying ? inv.getCollectables() : Inventory.getHolder().getCollectables();
+
+        switch(filterState) {
+            case 0: //  all
+                return index >= cols.Count ? null : cols[index];
+            case 1: //  weapons
+                foreach(var i in cols) {
+                    if(index == 0)
+                        return i;
+                    if(i.type == Collectable.collectableType.Weapon)
+                        index--;
+                }
+                return null;
+            case 2: //  armor
+                foreach(var i in cols) {
+                    if(index == 0)
+                        return i;
+                    if(i.type == Collectable.collectableType.Armor)
+                        index--;
+                }
+                return null;
+            case 3: //  items
+                foreach(var i in cols) {
+                    if(index == 0)
+                        return i;
+                    if(i.type == Collectable.collectableType.Item)
+                        index--;
+                }
+                return null;
+            case 4: //  usables
+                foreach(var i in cols) {
+                    if(index == 0)
+                        return i;
+                    if(i.type == Collectable.collectableType.Usable)
+                        index--;
+                }
+                return null;
+            case 5: //  unusables
+                foreach(var i in cols) {
+                    if(index == 0)
+                        return i;
+                    if(i.type == Collectable.collectableType.Unusable)
+                        index--;
+                }
+                return null;
+            default: return null;
+        }
+    }
+
+    UnitStats getSelectedUnitStats() {
+        int index = slot.getSelectedSlotIndex();
+        if(index < 0 || index > slot.getSlots().Count || (filterState != 0 && filterState != 6))
+            return null;
+
+        return buying ? inv.getObject<UnitStats>(index) : Party.getHolder().getObject<UnitStats>(index);
+    }
+
+    public void transaction() {
+        var col = getSelectedCollectable();
+        if(col != null) {
+            if(buying) {
+                if(Inventory.getCoinCount() < col.coinCost)
+                    return;
+                inv.removeCollectable(col);
+                Inventory.addSingleCollectable(col, FindObjectOfType<PresetLibrary>(), FindObjectOfType<FullInventoryCanvas>());
+                Inventory.addCoins(-col.coinCost, coinCount, true);
+
+                populateSlots();
+                return;
+            }
+            else {
+                Inventory.removeCollectable(col);
+                inv.addObject<Collectable>(col);
+                Inventory.addCoins(col.coinCost, coinCount, true);
+
+                populateSlots();
+                return;
+            }
         }
 
-        else {
-            var col = Inventory.getHolder().getCollectables()[index];
-            Inventory.removeCollectable(col);
-            inv.Add(col);
-            Inventory.addCoins(col.coinCost, coinCount, true);
-        }
+        var unit = getSelectedUnitStats();
+        if(unit != null) {
+            if(buying) {
+                if(Inventory.getCoinCount() < unit.determineCost())
+                    return;
+                inv.removeObject<UnitStats>(inv.getUnitStatsIndex(unit));
+                Party.addUnit(unit);
+                Inventory.addCoins(-unit.determineCost(), coinCount, true);
 
-        populateSlots();
+                populateSlots();
+                return;
+            }
+            else {
+                Party.removeUnit(unit);
+                inv.addObject<UnitStats>(unit);
+                Inventory.addCoins(unit.determineCost(), coinCount, true);
+
+                populateSlots();
+                return;
+            }
+        }
     }
 }
