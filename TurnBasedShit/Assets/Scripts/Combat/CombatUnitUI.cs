@@ -35,12 +35,13 @@ public class CombatUnitUI : MonoBehaviour {
         spawnCanvas();
         hardSetHealthSliders();
         updateUIInfo();
+        positionUIObj(getPositionTarget(), true);
     }
 
 
     private void LateUpdate() {
         var target = getPositionTarget();
-        if((Vector2)transform.position != target)
+        if((Vector2)uiObj.transform.position != target)
             positionUIObj(target);
         if(Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) {
             updateUIInfo();
@@ -105,8 +106,11 @@ public class CombatUnitUI : MonoBehaviour {
         return highlighted ? (Vector2)transform.position + new Vector2(offset.x, offset.y + highlightedHeight) : (Vector2)transform.position + new Vector2(offset.x, offset.y);
     }
 
-    void positionUIObj(Vector2 target) {
-        uiObj.transform.position = Vector2.Lerp(uiObj.transform.position, target, moveSpeeds[0] * Time.deltaTime);
+    void positionUIObj(Vector2 target, bool snap = false) {
+        if(!snap)
+            uiObj.transform.position = Vector2.Lerp(uiObj.transform.position, target, moveSpeeds[0] * Time.deltaTime);
+        else
+            uiObj.transform.position = target;
     }
 
 

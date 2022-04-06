@@ -6,8 +6,8 @@ using UnityEngine;
 public class UnitTrait {
 
     public string t_name;
-    public List<StatModifier.passiveMod> passiveMods = new List<StatModifier.passiveMod>();
-    public List<StatModifier.timedMod> timedMods = new List<StatModifier.timedMod>();
+    public List<StatModifier.passiveMod> pMods = new List<StatModifier.passiveMod>();
+    public List<StatModifier.timedMod> tMods = new List<StatModifier.timedMod>();
     public bool t_isGood;
 
 
@@ -16,7 +16,7 @@ public class UnitTrait {
         float temp = 0.0f;
 
         bool noMatches = true;
-        foreach(var i in passiveMods) {
+        foreach(var i in pMods) {
             if(i.type == mod) {
                 noMatches = false;
                 temp += i.getMod(mod, user, false);
@@ -32,7 +32,7 @@ public class UnitTrait {
         float temp = 0.0f;
 
         bool noMatches = true;
-        foreach(var i in timedMods) {
+        foreach(var i in tMods) {
             if(i.type == mod) {
                 foreach(var t in i.useTimes) {
                     if(time == t) {

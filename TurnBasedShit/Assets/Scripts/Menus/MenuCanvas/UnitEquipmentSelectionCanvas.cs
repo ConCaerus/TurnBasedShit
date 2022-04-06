@@ -13,9 +13,17 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
 
     bool mouseOverX = false;
     protected float populatingWaitTime = 0.035f;
+    int currentIndex = -1;
 
     public bool shown = false;
-    bool mouseOver = false;
+    public bool mouseOver = false;
+
+    private void OnMouseEnter() {
+        mouseOver = true;
+    }
+    private void OnMouseExit() {
+        mouseOver = false;
+    }
 
     private void Awake() {
         GetComponentInParent<InfoBearer>().runOnMouseOver(animateMouseOverSlot);
@@ -29,8 +37,10 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
         if(Input.GetMouseButtonDown(0) && !mouseOverX) {
             if(mouseOver && !shown)
                 startShowing();
-            else if(shown && !mouseOver)
+            else if(shown && !mouseOver && slot.getSelectedSlotIndex() == -1)
                 startHiding();
+            else if(shown && slot.getSelectedSlotIndex() != -1)
+                currentIndex = slot.getSelectedSlotIndex();
         }
     }
 
@@ -150,7 +160,7 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
 
     public void startHiding() {
         transform.parent.GetComponent<BoxCollider2D>().enabled = true;
-        if(slot.getSelectedSlotIndex() != -1) {
+        if(currentIndex != -1) {
             rotateEquipment();
         }
         StartCoroutine(hide());
@@ -163,6 +173,7 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
     }
 
     public void animateMouseOverSlot() {
+        mouseOver = true;
         transform.parent.DOScale(0.55f, 0.15f);
         shownSprite.transform.DOScale(0.85f, 0.15f);
 
@@ -171,6 +182,7 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
         l.transform.DOScale(0.45f, .15f);
     }
     public void animateMouseExitSlot() {
+        mouseOver = false;
         transform.parent.DOScale(0.5f, 0.25f);
         shownSprite.transform.DOScale(0.75f, 0.25f);
 
@@ -203,6 +215,7 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
 
         yield return new WaitForSeconds(FindObjectOfType<UnitCanvas>().equippmentTransitionTime / 2.0f);
 
+        slot.resetSize();
         StartCoroutine(populateSlots());
         shown = true;
     }
@@ -215,6 +228,7 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
 
         yield return new WaitForSeconds(FindObjectOfType<UnitCanvas>().equippmentTransitionTime / 2.0f);
 
+        FindObjectOfType<UnitCanvas>().updateUnitWindow();
         transform.DOScale(new Vector3(0.0f, 0.0f, 0.0f), FindObjectOfType<UnitCanvas>().equippmentTransitionTime / 2.0f);
 
         yield return new WaitForSeconds(FindObjectOfType<UnitCanvas>().equippmentTransitionTime / 2.0f);
@@ -234,7 +248,7 @@ public abstract class UnitEquipmentSelectionCanvas : MonoBehaviour {
 
 
     public void rotateEquipment() {
-        Collectable col = getCollectableInSlot(slot.getSelectedSlotIndex());
+        Collectable col = getCollectableInSlot(currentIndex);
         if(col == null || col.isEmpty())
             return;
 

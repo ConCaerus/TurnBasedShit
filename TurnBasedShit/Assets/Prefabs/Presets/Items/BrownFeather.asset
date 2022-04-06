@@ -27,14 +27,11 @@ MonoBehaviour:
       chanceToCatch: 0
     flavor: Fresh off the bird.
     description: Very light and soft. Increases speed.
-    tEffects: []
-    pEffects:
-    - effect: 1
-      effectAmount: 3
-    passiveMods:
+    pMods:
     - conditions: 
-      amount: 3
+      amount: 1.15
+      good: 1
       type: 2
-    timedMods: []
+    tMods: []
     sprite:
       sprite: {fileID: 21300000, guid: 5c0ca4853b6514544b965cf55dc94590, type: 3}

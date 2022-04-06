@@ -44,6 +44,10 @@ public class SlotMenu : MonoBehaviour {
         initialized = true;
     }
 
+    public void resetSize() {
+        init();
+    }
+
     //  update func
     //  returns true when a change in the selected slot could have occured
     public bool run() {
@@ -55,25 +59,29 @@ public class SlotMenu : MonoBehaviour {
             for(int i = 0; i < slots.Count; i++) {
                 bool selected = (EventSystem.current.currentSelectedGameObject != null && slots[i].gameObject == EventSystem.current.currentSelectedGameObject) || 
                      (slots[i].GetComponent<SlotObject>() != null && slots[i].GetComponent<SlotObject>().button != null && slots[i].GetComponent<SlotObject>().button.gameObject == EventSystem.current.currentSelectedGameObject);
-                if(selected) {
+                if(selected) {  //  a slot was clicked
                     bool wasSelected = false;
-                    if(!canSelectMultiple) {
+                    if(!canSelectMultiple) {    //  if can select multiple slots, add the selected index to the list
                         if(selectedSlotIndexes.Count == 0)
                             selectedSlotIndexes.Add(0);
                         selectedSlotIndexes[0] = i;
                     }
                     else {
-                        if(selectedSlotIndexes.Contains(i))
+                        if(selectedSlotIndexes.Contains(i)) //  if can only select one slot and the clicked slot is already in the list, remove it from the list
                             selectedSlotIndexes.Remove(i);
-                        else {
+                        else {                              //  if selected slot isn't in the list, add it to the list
                             selectedSlotIndexes.Add(i);
                             wasSelected = true;
                         }
                     }
                     if(runOnSelect != null)
                         runOnSelect(i, wasSelected);
+                    return true;    //  returns true when the loop finds the selected slot
                 }
             }
+
+            //  loop ended without finding a selected slot, so no slot was clicked, so clear selected indexes
+            selectedSlotIndexes = new List<int>();
             return true;
         }
         return false;

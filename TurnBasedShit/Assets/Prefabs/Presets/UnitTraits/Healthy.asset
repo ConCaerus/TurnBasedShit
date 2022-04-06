@@ -14,13 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preset:
     t_name: Healthy
-    t_infos:
-    - modType: 3
-      condition: 0
-      modAmount: 25
-    passiveMods:
+    pMods:
     - conditions: 
       amount: 1.15
+      good: 1
       type: 3
-    timedMods: []
+    tMods: []
     t_isGood: 1

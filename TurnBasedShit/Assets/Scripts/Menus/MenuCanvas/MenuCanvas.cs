@@ -98,10 +98,7 @@ public class MenuCanvas : MonoBehaviour {
 
         foreach(var i in FindObjectsOfType<InfoBearer>()) {
             if(!i.showNoMatterMenuState) {
-                if(i.hideWhenMenuOpen)
-                    i.GetComponent<Collider2D>().enabled = false;
-                else
-                    i.GetComponent<Collider2D>().enabled = true;
+                i.GetComponent<Collider2D>().enabled = !i.hideWhenMenuOpen;
             }
         }
     }
@@ -111,13 +108,10 @@ public class MenuCanvas : MonoBehaviour {
 
         foreach(var i in runOnClose)
             i();
-        
+
         foreach(var i in FindObjectsOfType<InfoBearer>()) {
             if(!i.showNoMatterMenuState) {
-                if(i.hideWhenMenuOpen)
-                    i.GetComponent<Collider2D>().enabled = true;
-                else
-                    i.GetComponent<Collider2D>().enabled = false;
+                i.GetComponent<Collider2D>().enabled = i.hideWhenMenuOpen;
             }
         }
         showing = false;
@@ -128,10 +122,7 @@ public class MenuCanvas : MonoBehaviour {
                 if(i.GetComponent<Collider2D>() == null) {
                     continue;
                 }
-                if(i.hideWhenMenuOpen)
-                    i.GetComponent<Collider2D>().enabled = true;
-                else
-                    i.GetComponent<Collider2D>().enabled = false;
+                i.GetComponent<Collider2D>().enabled = i.hideWhenMenuOpen;
             }
         }
         GetComponent<Animator>().StopPlayback();

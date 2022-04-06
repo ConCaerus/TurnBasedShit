@@ -27,8 +27,8 @@ public class MapEventsHandler : MonoBehaviour {
 
     public void triggerAnchorEvents(Vector2 partyPos) {
         //  boss
-        for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<BossLocation>(); i++) {
-            var loc = MapLocationHolder.getHolder().getObject<BossLocation>(i);
+        for(int i = 0; i < MapLocationHolder.getHolder(GameInfo.getCurrentRegion()).getObjectCount<BossLocation>(); i++) {
+            var loc = MapLocationHolder.getHolder(GameInfo.getCurrentRegion()).getObject<BossLocation>(i);
 
             //  Party is over a map location
             if(partyPos == loc.pos) {
@@ -37,8 +37,8 @@ public class MapEventsHandler : MonoBehaviour {
             }
         }
 
-        for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<PickupLocation>(); i++) {
-            var loc = MapLocationHolder.getHolder().getObject<PickupLocation>(i);
+        for(int i = 0; i < MapLocationHolder.getHolder(GameInfo.getCurrentRegion()).getObjectCount<PickupLocation>(); i++) {
+            var loc = MapLocationHolder.getHolder(GameInfo.getCurrentRegion()).getObject<PickupLocation>(i);
 
             if(partyPos == loc.pos) {
                 FindObjectOfType<EnounterCanvas>().showEnemyEncounterAlert(loc);

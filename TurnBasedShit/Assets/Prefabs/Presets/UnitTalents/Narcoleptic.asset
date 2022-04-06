@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preset:
     t_name: Narcoleptic
-    t_infos:
-    - modType: 4
-      modAmount: 10
+    pMods:
+    - conditions: 
+      amount: 0.15
+      good: 0
+      type: 18
+    tMods: []
     t_isGood: 0

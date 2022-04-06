@@ -19,7 +19,7 @@ public class BlacksmithCanvas : MonoBehaviour {
 
 
     private void Start() {
-        GameInfo.setCurrentLocationAsTown(MapLocationHolder.getRandomTownLocationWithBuilding(Building.type.Blacksmith));
+        GameInfo.setCurrentLocationAsTown(MapLocationHolder.getRandomTownLocationWithBuilding(Building.type.Blacksmith, GameInfo.getCurrentRegion()));
         reference = GameInfo.getCurrentLocationAsTown().town.holder.getObject<BlacksmithBuilding>(0);
         transform.GetChild(0).transform.localScale = new Vector3(0.0f, 0.0f);
         coinCount.updateCount(false);

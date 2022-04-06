@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preset:
     t_name: Quick Learner
-    t_infos:
-    - modType: 11
-      modAmount: 0.15
+    pMods:
+    - conditions: 
+      amount: 1.2
+      good: 1
+      type: 21
+    tMods: []
     t_isGood: 1

@@ -51,6 +51,27 @@ public class TurnOrderSorter : MonoBehaviour {
     }
 
     public List<GameObject> getNextPlayers(int num) {
+        var pool = new List<GameObject>();
+        foreach(var i in unitsInPlay)
+            pool.Add(i.gameObject);
+
+        var sorted = new List<GameObject>();
+
+
+        while(num > sorted.Count) {   //  adds the certain number of units to fill in the required num
+            while(pool.Count > 0) {
+                var temp = getNextPlayer(pool);
+                pool.Remove(temp);
+                sorted.Add(temp);
+            }
+
+            foreach(var i in FindObjectsOfType<UnitClass>())
+                pool.Add(i.gameObject);
+        }
+
+        return sorted;
+
+        /*
         var sorted = new List<GameObject>();
 
         List<GameObject> pool = new List<GameObject>();
@@ -90,6 +111,55 @@ public class TurnOrderSorter : MonoBehaviour {
         }
 
         return sorted;
+        */
+    }
+
+    public GameObject getNextPlayer(List<GameObject> pool) {
+        if(pool.Count == 0)
+            return null;
+
+        GameObject next = null;
+        bool hasFirsters = false;
+        bool nextIsLaster = false;
+        foreach(var i in pool) {
+            if(i == null || !unitViableForTurn(i))
+                continue;
+
+            bool laster = false;
+            foreach(var p in i.GetComponent<UnitClass>().stats.getAllPassiveMods()) {     //  check for units with traits that make them take their turn first
+                if(p.type == StatModifier.passiveModifierType.takeFirstTurn) {
+                    hasFirsters = true;
+                    if(next == null || next.GetComponent<UnitClass>().stats.u_speed < i.GetComponent<UnitClass>().stats.u_speed) {
+                        next = i.gameObject;
+                        nextIsLaster = false;
+                    }
+                }
+                if(p.type == StatModifier.passiveModifierType.takeLastTurn) {
+                    laster = true;
+                    if(pool.Count == 1)
+                        return i.gameObject;
+                }
+            }
+
+            if(!hasFirsters) {
+                if(next == null || (i.GetComponent<UnitClass>().getSpeed() > next.GetComponent<UnitClass>().getSpeed()) || !laster && nextIsLaster) {
+                    next = i.gameObject;
+                }
+            }
+        }
+        return next;
+    }
+
+    bool unitViableForTurn(GameObject unit) {
+        if(unit.GetComponent<UnitClass>().combatMods != null && unit.GetComponent<UnitClass>().combatMods.Length > 0) {
+            //  checks if unit is viable to play
+            foreach(var m in unit.GetComponent<UnitClass>().combatMods) {
+                if(m == UnitClass.combatModifier.onlyAttackOnEvenRounds && FindObjectOfType<RoundCounterCanvas>().roundCount % 2 != 0) {    //  can only attack on even rounds
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public void addUnitToList(GameObject unit) {
@@ -161,26 +231,7 @@ public class TurnOrderSorter : MonoBehaviour {
         }
 
         //  sets next to unit with most speed
-        GameObject next = null;
-        foreach(var i in unitsInPlay) {
-            if(i != null) {
-                if(next == null || i.GetComponent<UnitClass>().getSpeed() > next.GetComponent<UnitClass>().getSpeed()) {    //  meets speed requ
-                    bool viable = true;
-                    if(i.GetComponent<UnitClass>().combatMods != null && i.GetComponent<UnitClass>().combatMods.Length > 0) {
-                        //  checks if unit is viable to play
-                        foreach(var m in i.GetComponent<UnitClass>().combatMods) {
-                            if(m == UnitClass.combatModifier.onlyAttackOnEvenRounds && FindObjectOfType<RoundCounterCanvas>().roundCount % 2 != 0) {    //  can only attack on even rounds
-                                viable = false;
-                                break;
-                            }
-                        }
-                    }
-
-                    if(viable)
-                        next = i.gameObject;
-                }
-            }
-        }
+        GameObject next = getNextPlayer(unitsInPlay);
 
 
         if(next == null) {

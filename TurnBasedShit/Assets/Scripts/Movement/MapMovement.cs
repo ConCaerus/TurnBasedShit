@@ -73,21 +73,25 @@ public class MapMovement : InteractiveMovement {
     }
 
     public void eatFood() {
-        if(Vector2.Distance(transform.position, lastAteAtPos) > distToEat) {
-            lastAteAtPos = transform.position;
-            for(int p = 0; p < Party.getHolder().getObjectCount<UnitStats>(); p++) {
-                var food = Inventory.eatFood();
-                if(food == null || food.isEmpty()) {
-                    for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
-                        var stats = Party.getHolder().getObject<UnitStats>(i);
-                        stats.addHealth(-2f);
-                        Party.overrideUnitOfSameInstance(stats);
-                    }
-                    return;
+        if(Vector2.Distance(transform.position, lastAteAtPos) > distToEat)
+            StartCoroutine(eatFoodSpreader());
+    }
+
+    IEnumerator eatFoodSpreader() { //  probably don't need this function, but I don't feel like removing it now so...
+        lastAteAtPos = transform.position;
+        for(int p = 0; p < Party.getHolder().getObjectCount<UnitStats>(); p++) {
+            var food = Inventory.eatFood();
+            if(food == null || food.isEmpty()) {
+                for(int i = 0; i < Party.getHolder().getObjectCount<UnitStats>(); i++) {
+                    var stats = Party.getHolder().getObject<UnitStats>(i);
+                    stats.addHealth(-2f);
+                    Party.overrideUnitOfSameInstance(stats);
+                    yield return new WaitForEndOfFrame();
                 }
-                else
-                    FindObjectOfType<MapCollectCanvas>().showCanvas(false, food);
+                yield break;
             }
+            else
+                FindObjectOfType<MapCollectCanvas>().showCanvas(false, food);
         }
     }
 
@@ -126,7 +130,7 @@ public class MapMovement : InteractiveMovement {
 
             if(loc.type == MapLocation.locationType.eye) {
                 FindObjectOfType<MapFogTexture>().clearFogAroundPos(loc.pos, 10f, true);
-                MapLocationHolder.removeLocation<EyeLocation>(closestIcon.GetComponent<MapIcon>().indexInHolder);   //  this
+                MapLocationHolder.removeLocation<EyeLocation>(closestIcon.GetComponent<MapIcon>().indexInHolder, loc.region);   //  this
                 FindObjectOfType<MapLocationSpawner>().removeIcon(closestIcon); //  not this
             }
             else if(loc.type == MapLocation.locationType.loot) {

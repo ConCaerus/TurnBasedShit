@@ -63,15 +63,22 @@ public static class NameLibrary {
         return first + " " + last;
     }
     public static string getRandomUsableTownName() {
-        if(MapLocationHolder.getHolder().getObjectCount<TownLocation>() >= townNames.Count)
+        var temp = townNames.Count;
+        for(int i = 0; i < 5; i++)
+            temp -= MapLocationHolder.getHolder((GameInfo.region)i).getObjectCount<TownLocation>();
+
+
+        if(temp < 0)
             return townNames[Random.Range(0, townNames.Count)];
 
         var useables = townNames;
-        for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<TownLocation>(); i++) {
-            foreach(var u in useables) {
-                if(u == MapLocationHolder.getHolder().getObject<TownLocation>(i).town.t_name) {
-                    useables.Remove(u);
-                    break;
+        for(int r = 0; r < 5; r++) {
+            for(int i = 0; i < MapLocationHolder.getHolder((GameInfo.region)r).getObjectCount<TownLocation>(); i++) {
+                foreach(var u in useables) {
+                    if(u == MapLocationHolder.getHolder((GameInfo.region)r).getObject<TownLocation>(i).town.t_name) {
+                        useables.Remove(u);
+                        break;
+                    }
                 }
             }
         }

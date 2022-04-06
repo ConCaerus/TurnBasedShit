@@ -11,6 +11,9 @@ public class Armor : Collectable {
     public GameInfo.wornState wornAmount = GameInfo.wornState.Perfect;
     public List<attribute> attributes = new List<attribute>();
 
+    public List<StatModifier.passiveMod> pMods = new List<StatModifier.passiveMod>();
+    public List<StatModifier.timedMod> tMods = new List<StatModifier.timedMod>();
+
     public float defence;
     public float speedMod;
 
@@ -63,6 +66,8 @@ public class Armor : Collectable {
         speedMod = other.speedMod;
         attributes = other.attributes;
         sprite = other.sprite;
+        pMods = other.pMods;
+        tMods = other.tMods;
         wornAmount = other.wornAmount;
     }
 

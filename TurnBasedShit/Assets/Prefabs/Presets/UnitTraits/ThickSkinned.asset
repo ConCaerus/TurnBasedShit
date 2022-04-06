@@ -14,13 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preset:
     t_name: Thick Skinned
-    t_infos:
-    - modType: 1
-      condition: 0
-      modAmount: 0.15
-    passiveMods:
+    pMods:
     - conditions: 
       amount: 1.15
+      good: 1
       type: 1
-    timedMods: []
+    tMods: []
     t_isGood: 1

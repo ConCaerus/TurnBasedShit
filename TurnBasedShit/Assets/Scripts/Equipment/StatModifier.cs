@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
+[System.Serializable]
 public class StatModifier {
 
     /*          NOTE: for fuck's sake, when making these things, if it asks for a modifier's amount anything below 1.0f is negitive impact.
@@ -38,7 +39,7 @@ public class StatModifier {
         modPower, modDefence, modSpeed, modMaxHealth, modSummonPower, modSummonDefence, modSummonSpeed, modSummonMaxHealth,
         modEdgedPower, modEdgedDefence, modBluntPower, modBluntDefence, modAttackedChance, addExtraTurn, missChance, healInsteadOfDamage, 
         modEnemyMissChance, modHealthGiven, stunSelfChance, stunTargetChance, modEnemyDropChance, allWeaponExpMod, 
-        bluntExpMod, edgedExpMod, summonExpMod, addChargedPower
+        bluntExpMod, edgedExpMod, summonExpMod, addChargedPower, takeFirstTurn, takeLastTurn, equipmentNeverTatters
     }
 
 

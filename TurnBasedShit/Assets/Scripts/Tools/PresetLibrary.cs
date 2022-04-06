@@ -826,15 +826,15 @@ public class PresetLibrary : MonoBehaviour {
     public DeliveryQuest createRandomDeliveryQuest(bool setID, GameInfo.region reg) {
         int townInd = 0;
         //  no towns
-        if(MapLocationHolder.getHolder().getObjectCount<TownLocation>() == 0) {
+        if(MapLocationHolder.getHolder(reg).getObjectCount<TownLocation>() == 0) {
             Vector2 pos = Map.getRandPos();
             MapLocationHolder.addLocation(new TownLocation(pos, reg, this));
         }
         else {
-            townInd = Random.Range(0, MapLocationHolder.getHolder().getObjectCount<TownLocation>());
+            townInd = Random.Range(0, MapLocationHolder.getHolder(reg).getObjectCount<TownLocation>());
             if(GameInfo.getCurrentLocationAsTown() != null) {
-                while(MapLocationHolder.getHolder().getObject<TownLocation>(townInd).isEqualTo(GameInfo.getCurrentLocationAsTown()))
-                    townInd = Random.Range(0, MapLocationHolder.getHolder().getObjectCount<TownLocation>());
+                while(MapLocationHolder.getHolder(reg).getObject<TownLocation>(townInd).isEqualTo(GameInfo.getCurrentLocationAsTown()))
+                    townInd = Random.Range(0, MapLocationHolder.getHolder(reg).getObjectCount<TownLocation>());
             }
         }
 
@@ -845,14 +845,14 @@ public class PresetLibrary : MonoBehaviour {
             for(int i = 0; i < Random.Range(1, 4); i++)
                 things.Add(getRandomWeapon());
 
-            return new DeliveryQuest(MapLocationHolder.getHolder().getObject<TownLocation>(townInd), things, setID);
+            return new DeliveryQuest(MapLocationHolder.getHolder(reg).getObject<TownLocation>(townInd), things, setID);
         }
         if(rand == 1) {
             var things = new List<Armor>();
             for(int i = 0; i < Random.Range(1, 4); i++)
                 things.Add(getRandomArmor());
 
-            return new DeliveryQuest(MapLocationHolder.getHolder().getObject<TownLocation>(townInd), things, setID);
+            return new DeliveryQuest(MapLocationHolder.getHolder(reg).getObject<TownLocation>(townInd), things, setID);
         }
         if(rand == 2) {
             var things = new List<Usable>();
@@ -860,21 +860,21 @@ public class PresetLibrary : MonoBehaviour {
             for(int i = 0; i < Random.Range(1, 26); i++)
                 things.Add(con);
 
-            return new DeliveryQuest(MapLocationHolder.getHolder().getObject<TownLocation>(townInd), things, setID);
+            return new DeliveryQuest(MapLocationHolder.getHolder(reg).getObject<TownLocation>(townInd), things, setID);
         }
         if(rand == 3) {
             var things = new List<Item>();
             for(int i = 0; i < Random.Range(0, 4); i++)
                 things.Add(getRandomItem());
 
-            return new DeliveryQuest(MapLocationHolder.getHolder().getObject<TownLocation>(townInd), things, setID);
+            return new DeliveryQuest(MapLocationHolder.getHolder(reg).getObject<TownLocation>(townInd), things, setID);
         }
         if(rand == 4) {
             var things = new List<UnitStats>();
             for(int i = 0; i < Random.Range(1, 3); i++)
                 things.Add(createRandomPlayerUnitStats(true));
 
-            return new DeliveryQuest(MapLocationHolder.getHolder().getObject<TownLocation>(townInd), things, setID);
+            return new DeliveryQuest(MapLocationHolder.getHolder(reg).getObject<TownLocation>(townInd), things, setID);
         }
         return null;
     }

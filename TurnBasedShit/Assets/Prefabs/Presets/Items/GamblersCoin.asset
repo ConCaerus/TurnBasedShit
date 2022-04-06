@@ -28,19 +28,15 @@ MonoBehaviour:
     flavor: Feeling Lucky?
     description: Leave your life up to fate. Doubles attack power, but increases
       the chance to miss by 50%.
-    tEffects: []
-    pEffects:
-    - effect: 0
-      effectAmount: 2
-    - effect: 9
-      effectAmount: 50
-    passiveMods:
-    - conditions: 
-      amount: 2
-      type: 0
+    pMods:
     - conditions: 
       amount: 50
+      good: 0
       type: 14
-    timedMods: []
+    - conditions: 
+      amount: 2
+      good: 1
+      type: 0
+    tMods: []
     sprite:
       sprite: {fileID: 21300000, guid: a29093d12242af64c8a1a8a8d669469b, type: 3}

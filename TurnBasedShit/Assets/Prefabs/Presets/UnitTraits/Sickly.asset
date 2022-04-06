@@ -14,13 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preset:
     t_name: Sickly
-    t_infos:
-    - modType: 3
-      condition: 0
-      modAmount: -25
-    passiveMods:
+    pMods:
     - conditions: 
-      amount: 0.85
+      amount: 0.9
+      good: 0
       type: 3
-    timedMods: []
+    tMods: []
     t_isGood: 0

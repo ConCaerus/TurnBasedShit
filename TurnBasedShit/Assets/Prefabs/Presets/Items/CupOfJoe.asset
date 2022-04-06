@@ -27,14 +27,11 @@ MonoBehaviour:
       chanceToCatch: 0
     flavor: A nice french vanilla blend.
     description: Delicious and refreshing. Grants an extra combat turn.
-    tEffects: []
-    pEffects:
-    - effect: 8
-      effectAmount: 1
-    passiveMods:
+    pMods:
     - conditions: 
       amount: 1
+      good: 1
       type: 13
-    timedMods: []
+    tMods: []
     sprite:
       sprite: {fileID: 21300000, guid: 6d82308c2ed1d20439da8d20f5a1cf48, type: 3}

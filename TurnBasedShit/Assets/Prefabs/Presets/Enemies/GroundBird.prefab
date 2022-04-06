@@ -506,6 +506,8 @@ MonoBehaviour:
       sCosts: []
       sUsageAmount: 0
       sUsageChance: 0
+      pMods: []
+      tMods: []
       aType: -1
       power: 0
       speedMod: 0
@@ -531,6 +533,8 @@ MonoBehaviour:
       description: Collectable thing
       wornAmount: 3
       attributes: 
+      pMods: []
+      tMods: []
       defence: 0
       speedMod: 0
       sprite:
@@ -580,15 +584,15 @@ MonoBehaviour:
         chanceToCatch: 0
       flavor: Choco
       description: Collectable thing
-      passiveMods: []
-      timedMods: []
+      pMods: []
+      tMods: []
       sprite:
         sprite: {fileID: 0}
     u_traits: []
     u_talent:
       t_name: 
-      passiveMods: []
-      timedMods: []
+      pMods: []
+      tMods: []
       t_isGood: 0
     u_deathInfo:
       nameOfKiller: 
@@ -628,11 +632,13 @@ MonoBehaviour:
     type: 3}
   bleedPreset: {fileID: 4363930972011218595, guid: 624a67cfc305b324f85d0e188ddb6c04,
     type: 3}
-  yOffset: 0.54
+  combatCards: {fileID: 0}
+  offset: {x: 0, y: 0.5}
   highlightOffset: {x: 0, y: -0.07}
   stunOffset: {x: 0, y: 1.78}
   bleedOffset: {x: 0.46, y: -0.21}
   showingWouldBeHealedValue: 0
+  highlighted: 0
 --- !u!114 &2126208834429481785
 MonoBehaviour:
   m_ObjectHideFlags: 0

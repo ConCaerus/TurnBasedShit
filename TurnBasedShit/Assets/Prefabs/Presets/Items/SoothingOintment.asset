@@ -26,16 +26,13 @@ MonoBehaviour:
       hookedRot: 0
       chanceToCatch: 0
     flavor: Very therapeutic.
-    description: Who needs medical treatment? Before every turn, gain a little health.
-    tEffects:
-    - effect: 0
-      time: 2
-      effectAmount: 2
-    pEffects: []
-    passiveMods: []
-    timedMods:
+    description: Who needs medical treatment? Before turn is taken, gain a little
+      health.
+    pMods: []
+    tMods:
     - conditions: 
       amount: 2
+      good: 1
       type: 0
       useTimes: 02000000
     sprite:

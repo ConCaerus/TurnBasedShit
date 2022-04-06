@@ -21,70 +21,75 @@ public class TownMenuCanvas : MonoBehaviour {
 
 
     public void updateSlots() {
-        slot.createANumberOfSlots(MapLocationHolder.getHolder().getObjectCount<TownLocation>(), unvisitedColor);
         int count = 0;
-        //  by time
-        if(!state) {
-            for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<TownLocation>(); i++) {
-                var loc = MapLocationHolder.getHolder().getObject<TownLocation>(i);
-                if(loc.town.visited) {
-                    var obj = slot.replaceSlot(i, slot.gameObject.transform.GetChild(0).transform, visitedColor);
-                    obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = loc.town.t_name;
-                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = loc.town.townMemberCount.ToString();
-                    obj.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = loc.town.getMembersWithActiveQuests().Count.ToString();
-                    obj.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = loc.town.getMembersWithInactiveQuests().Count.ToString();
+        int total = 0;
+        for(int r = 0; r < 5; r++) {
+            slot.createANumberOfSlots(MapLocationHolder.getHolder((GameInfo.region)r).getObjectCount<TownLocation>(), unvisitedColor);
+            //  by time
+            if(!state) {
+                for(int i = 0; i < MapLocationHolder.getHolder((GameInfo.region)r).getObjectCount<TownLocation>(); i++) {
+                    var loc = MapLocationHolder.getHolder((GameInfo.region)r).getObject<TownLocation>(i);
+                    if(loc.town.visited) {
+                        var obj = slot.replaceSlot(i, slot.gameObject.transform.GetChild(0).transform, visitedColor);
+                        obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = loc.town.t_name;
+                        obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = loc.town.townMemberCount.ToString();
+                        obj.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = loc.town.getMembersWithActiveQuests().Count.ToString();
+                        obj.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = loc.town.getMembersWithInactiveQuests().Count.ToString();
 
-                    if(loc.town.hasBuilding(Building.type.Church))
-                        obj.transform.GetChild(4).GetComponent<Image>().color = presetBuildingColor;
-                    else
-                        obj.transform.GetChild(4).GetComponent<Image>().color = absentBuildingColor;
+                        if(loc.town.hasBuilding(Building.type.Church))
+                            obj.transform.GetChild(4).GetComponent<Image>().color = presetBuildingColor;
+                        else
+                            obj.transform.GetChild(4).GetComponent<Image>().color = absentBuildingColor;
 
-                    if(loc.town.hasBuilding(Building.type.Hospital))
-                        obj.transform.GetChild(5).GetComponent<Image>().color = presetBuildingColor;
-                    else
-                        obj.transform.GetChild(5).GetComponent<Image>().color = absentBuildingColor;
+                        if(loc.town.hasBuilding(Building.type.Hospital))
+                            obj.transform.GetChild(5).GetComponent<Image>().color = presetBuildingColor;
+                        else
+                            obj.transform.GetChild(5).GetComponent<Image>().color = absentBuildingColor;
 
-                    if(loc.town.hasBuilding(Building.type.Shop))
-                        obj.transform.GetChild(6).GetComponent<Image>().color = presetBuildingColor;
-                    else
-                        obj.transform.GetChild(6).GetComponent<Image>().color = absentBuildingColor;
-                    count++;
+                        if(loc.town.hasBuilding(Building.type.Shop))
+                            obj.transform.GetChild(6).GetComponent<Image>().color = presetBuildingColor;
+                        else
+                            obj.transform.GetChild(6).GetComponent<Image>().color = absentBuildingColor;
+                        count++;
+                    }
+                    total++;
+                }
+            }
+
+            //  by visited
+            else {
+                for(int i = 0; i < MapLocationHolder.getHolder((GameInfo.region)r).getObjectCount<TownLocation>(); i++) {
+                    var loc = MapLocationHolder.getHolder((GameInfo.region)r).getObject<TownLocation>(i);
+                    if(loc.town.visited) {
+                        var obj = slot.replaceSlot(count, slot.gameObject.transform.GetChild(0).transform, visitedColor);
+                        obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = loc.town.t_name;
+                        obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = loc.town.townMemberCount.ToString();
+                        obj.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = loc.town.getMembersWithActiveQuests().Count.ToString();
+                        obj.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = loc.town.getMembersWithInactiveQuests().Count.ToString();
+
+                        if(loc.town.hasBuilding(Building.type.Church))
+                            obj.transform.GetChild(4).GetComponent<Image>().color = presetBuildingColor;
+                        else
+                            obj.transform.GetChild(4).GetComponent<Image>().color = absentBuildingColor;
+
+                        if(loc.town.hasBuilding(Building.type.Hospital))
+                            obj.transform.GetChild(5).GetComponent<Image>().color = presetBuildingColor;
+                        else
+                            obj.transform.GetChild(5).GetComponent<Image>().color = absentBuildingColor;
+
+                        if(loc.town.hasBuilding(Building.type.Shop))
+                            obj.transform.GetChild(6).GetComponent<Image>().color = presetBuildingColor;
+                        else
+                            obj.transform.GetChild(6).GetComponent<Image>().color = absentBuildingColor;
+
+                        count++;
+                    }
+                    total++;
                 }
             }
         }
 
-        //  by visited
-        else {
-            for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<TownLocation>(); i++) {
-                var loc = MapLocationHolder.getHolder().getObject<TownLocation>(i);
-                if(loc.town.visited) {
-                    var obj = slot.replaceSlot(count, slot.gameObject.transform.GetChild(0).transform, visitedColor);
-                    obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = loc.town.t_name;
-                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = loc.town.townMemberCount.ToString();
-                    obj.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = loc.town.getMembersWithActiveQuests().Count.ToString();
-                    obj.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = loc.town.getMembersWithInactiveQuests().Count.ToString();
-
-                    if(loc.town.hasBuilding(Building.type.Church))
-                        obj.transform.GetChild(4).GetComponent<Image>().color = presetBuildingColor;
-                    else
-                        obj.transform.GetChild(4).GetComponent<Image>().color = absentBuildingColor;
-
-                    if(loc.town.hasBuilding(Building.type.Hospital))
-                        obj.transform.GetChild(5).GetComponent<Image>().color = presetBuildingColor;
-                    else
-                        obj.transform.GetChild(5).GetComponent<Image>().color = absentBuildingColor;
-
-                    if(loc.town.hasBuilding(Building.type.Shop))
-                        obj.transform.GetChild(6).GetComponent<Image>().color = presetBuildingColor;
-                    else
-                        obj.transform.GetChild(6).GetComponent<Image>().color = absentBuildingColor;
-
-                    count++;
-                }
-            }
-        }
-
-        countText.text = count.ToString() + " / " + MapLocationHolder.getHolder().getObjectCount<TownLocation>();
+        countText.text = count.ToString() + " / " + total.ToString();
     }
 
 

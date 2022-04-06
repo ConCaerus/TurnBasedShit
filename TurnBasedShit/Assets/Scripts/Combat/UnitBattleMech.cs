@@ -17,8 +17,6 @@ public class UnitBattleMech : MonoBehaviour {
     bool battleEnded = false;
 
     private void Awake() {
-        var loc = FindObjectOfType<PresetLibrary>().createBossLocation(GameInfo.getCurrentRegion(), false).combatLocation;
-        GameInfo.setCombatDetails(loc);
         GameInfo.currentGameState = GameInfo.state.combat;
     }
 
@@ -109,9 +107,9 @@ public class UnitBattleMech : MonoBehaviour {
 
     void updateMapAndQuests() {
         //  pickup 
-        for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<PickupLocation>(); i++) {
-            if(MapLocationHolder.getHolder().getObject<PickupLocation>(i).pos == GameInfo.getCurrentMapPos()) {
-                MapLocationHolder.removeLocation(MapLocationHolder.getHolder().getObject<PickupLocation>(i));
+        for(int i = 0; i < MapLocationHolder.getHolder(GameInfo.getCurrentRegion()).getObjectCount<PickupLocation>(); i++) {
+            if(MapLocationHolder.getHolder(GameInfo.getCurrentRegion()).getObject<PickupLocation>(i).pos == GameInfo.getCurrentMapPos()) {
+                MapLocationHolder.removeLocation(MapLocationHolder.getHolder(GameInfo.getCurrentRegion()).getObject<PickupLocation>(i));
                 break;
             }
         }
@@ -125,9 +123,9 @@ public class UnitBattleMech : MonoBehaviour {
         }
 
         //  rescue
-        for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<RescueLocation>(); i++) {
-            if(MapLocationHolder.getHolder().getObject<RescueLocation>(i).pos == GameInfo.getCurrentMapPos()) {
-                MapLocationHolder.removeLocation(MapLocationHolder.getHolder().getObject<RescueLocation>(i));
+        for(int i = 0; i < MapLocationHolder.getHolder(GameInfo.getCurrentRegion()).getObjectCount<RescueLocation>(); i++) {
+            if(MapLocationHolder.getHolder(GameInfo.getCurrentRegion()).getObject<RescueLocation>(i).pos == GameInfo.getCurrentMapPos()) {
+                MapLocationHolder.removeLocation(MapLocationHolder.getHolder(GameInfo.getCurrentRegion()).getObject<RescueLocation>(i));
                 break;
             }
         }

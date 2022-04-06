@@ -14,13 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preset:
     t_name: Lazy
-    t_infos:
-    - modType: 4
-      condition: 0
-      modAmount: 5
-    passiveMods:
+    pMods:
     - conditions: 
-      amount: 5
-      type: 18
-    timedMods: []
+      amount: 0.9
+      good: 0
+      type: 2
+    tMods: []
     t_isGood: 0

@@ -35,6 +35,9 @@ public class Weapon : Collectable {
     public float sUsageAmount = 0.0f;
     public float sUsageChance = 0.0f;
 
+    public List<StatModifier.passiveMod> pMods = new List<StatModifier.passiveMod>();
+    public List<StatModifier.timedMod> tMods = new List<StatModifier.timedMod>();
+
     public attackType aType = (attackType)(-1);
     public float power = 0.0f;
     public float speedMod = 0.0f;
@@ -166,7 +169,8 @@ public class Weapon : Collectable {
         sUsageChance = other.sUsageChance;
         wornAmount = other.wornAmount;
         aType = other.aType;
-
+        pMods = other.pMods;
+        tMods = other.tMods;
     }
 
 

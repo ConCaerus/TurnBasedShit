@@ -28,15 +28,11 @@ MonoBehaviour:
     flavor: For the hungriest of adventurers.
     description: Never fight on an empty second stomach. After killing an enemy,
       some health is restored.
-    tEffects:
-    - effect: 3
-      time: 7
-      effectAmount: 0.2
-    pEffects: []
-    passiveMods: []
-    timedMods:
+    pMods: []
+    tMods:
     - conditions: 
-      amount: 10
+      amount: 25
+      good: 1
       type: 0
       useTimes: 07000000
     sprite:

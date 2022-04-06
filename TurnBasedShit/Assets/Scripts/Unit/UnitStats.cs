@@ -127,15 +127,23 @@ public class UnitStats {
     public List<StatModifier.passiveMod> getAllPassiveMods() {
         var temp = new List<StatModifier.passiveMod>();
         if(u_talent != null) {
-            foreach(var i in u_talent.passiveMods)
+            foreach(var i in u_talent.pMods)
                 temp.Add(i);
         }
         foreach(var i in u_traits) {
-            foreach(var t in i.passiveMods)
+            foreach(var t in i.pMods)
                 temp.Add(t);
         }
+        if(weapon != null && !weapon.isEmpty()) {
+            foreach(var i in weapon.pMods)
+                temp.Add(i);
+        }
+        if(armor != null && !armor.isEmpty()) {
+            foreach(var i in armor.pMods)
+                temp.Add(i);
+        }
         if(item != null && !item.isEmpty()) {
-            foreach(var i in item.passiveMods)
+            foreach(var i in item.pMods)
                 temp.Add(i);
         }
         return temp;
@@ -143,15 +151,23 @@ public class UnitStats {
     public List<StatModifier.timedMod> getAllTimedMods() {
         var temp = new List<StatModifier.timedMod>();
         if(u_talent != null) {
-            foreach(var i in u_talent.timedMods)
+            foreach(var i in u_talent.tMods)
                 temp.Add(i);
         }
         foreach(var i in u_traits) {
-            foreach(var t in i.timedMods)
+            foreach(var t in i.tMods)
                 temp.Add(t);
         }
+        if(weapon != null && !weapon.isEmpty()) {
+            foreach(var i in weapon.tMods)
+                temp.Add(i);
+        }
+        if(armor != null && !armor.isEmpty()) {
+            foreach(var i in armor.tMods)
+                temp.Add(i);
+        }
         if(item != null && !item.isEmpty()) {
-            foreach(var i in item.timedMods)
+            foreach(var i in item.tMods)
                 temp.Add(i);
         }
         return temp;

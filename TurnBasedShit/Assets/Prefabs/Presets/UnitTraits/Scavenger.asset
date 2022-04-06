@@ -14,13 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preset:
     t_name: Scavenger
-    t_infos:
-    - modType: 7
-      condition: 0
-      modAmount: 5
-    passiveMods:
+    pMods:
     - conditions: 
-      amount: 1.5
-      type: 21
-    timedMods: []
+      amount: 1.25
+      good: 1
+      type: 20
+    tMods: []
     t_isGood: 1

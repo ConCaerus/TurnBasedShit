@@ -9,18 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 622357aaa47946d46bb26c5d0e87cdea, type: 3}
-  m_Name: Slow
+  m_Script: {fileID: 11500000, guid: b02a2386c601f91428bff28d2fa64319, type: 3}
+  m_Name: Showoff
   m_EditorClassIdentifier: 
   preset:
-    t_name: 'Slow '
-    t_infos:
-    - modType: 2
-      condition: 0
-      modAmount: -5
-    passiveMods:
+    t_name: Showoff
+    pMods:
     - conditions: 
-      amount: -2
-      type: 2
-    timedMods: []
-    t_isGood: 0
+      amount: 0
+      good: 1
+      type: 26
+    tMods: []
+    t_isGood: 1

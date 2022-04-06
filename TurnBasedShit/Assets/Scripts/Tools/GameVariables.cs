@@ -54,7 +54,11 @@ public static class GameVariables {
         return chanceOutOfHundred(15);
     }
 
-    public static bool chanceEquipmentWornDecrease() {
+    public static bool chanceEquipmentWornDecrease(UnitStats unit) {
+        foreach(var i in unit.getAllPassiveMods()) {
+            if(i.type == StatModifier.passiveModifierType.equipmentNeverTatters)
+                return false;
+        }
         return chanceOutOfHundred(4);
     }
 

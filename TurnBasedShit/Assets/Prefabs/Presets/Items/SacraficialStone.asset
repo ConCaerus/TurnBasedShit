@@ -28,15 +28,11 @@ MonoBehaviour:
     flavor: A sacrifice must be made.
     description: Sacrifice yourself for greater power. After taking an attack, power
       increases by a little.
-    tEffects:
-    - effect: 2
-      time: 5
-      effectAmount: 0.05
-    pEffects: []
-    passiveMods: []
-    timedMods:
+    pMods: []
+    tMods:
     - conditions: 
-      amount: 0.05
+      amount: 1
+      good: 1
       type: 2
       useTimes: 05000000
     sprite:

@@ -25,7 +25,7 @@ public class FishingLineMover : MonoBehaviour {
         float percentage = minXArea + area * FindObjectOfType<FishingCanvas>().fishSlider.value;
 
         //  position bobber
-        if(FindObjectOfType<FishingCanvas>().running) {
+        if(FindObjectOfType<FishingCanvas>().fishing) {
             FindObjectOfType<Bobber>().transform.position = new Vector3(percentage, FindObjectOfType<Bobber>().transform.position.y, 0.0f);
         }
         ln.SetPosition(1, FindObjectOfType<Bobber>().transform.GetChild(0).position);

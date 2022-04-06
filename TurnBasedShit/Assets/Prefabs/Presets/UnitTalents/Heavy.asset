@@ -14,11 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preset:
     t_name: Heavy
-    t_infos:
-    - modType: 8
-      modAmount: 0.2
-    - modType: 2
-      modAmount: -3
-    - modType: 5
-      modAmount: 5
+    pMods:
+    - conditions: 
+      amount: 1.25
+      good: 1
+      type: 0
+    - conditions: 
+      amount: 0.8
+      good: 0
+      type: 2
+    tMods: []
     t_isGood: 1

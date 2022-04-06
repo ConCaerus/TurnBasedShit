@@ -14,13 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preset:
     t_name: Nimble
-    t_infos:
-    - modType: 2
-      condition: 0
-      modAmount: 5
-    passiveMods:
+    pMods:
     - conditions: 
-      amount: 2
+      amount: 1.1
+      good: 1
       type: 2
-    timedMods: []
+    tMods: []
     t_isGood: 1

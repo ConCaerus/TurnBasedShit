@@ -145,7 +145,7 @@ public class CombatCards : MonoBehaviour {
 
         //  check for item shit
         if(unit.stats.item != null && !unit.stats.item.isEmpty()) {
-            foreach(var i in unit.stats.item.passiveMods) {
+            foreach(var i in unit.stats.item.pMods) {
                 if(!relevantPassives.Contains(i.type))
                     continue;
 
@@ -162,7 +162,7 @@ public class CombatCards : MonoBehaviour {
 
         //  traits shit
         foreach(var tr in unit.stats.u_traits) {
-            foreach(var i in tr.passiveMods) {
+            foreach(var i in tr.pMods) {
                 if(!relevantPassives.Contains(i.type))
                     continue;
 
@@ -178,7 +178,7 @@ public class CombatCards : MonoBehaviour {
         }
 
         //  talent shit
-        foreach(var i in unit.stats.u_talent.passiveMods) {
+        foreach(var i in unit.stats.u_talent.pMods) {
             if(!relevantPassives.Contains(i.type))
                 continue;
 
@@ -283,12 +283,15 @@ public class CombatCards : MonoBehaviour {
     IEnumerator animateHidingCards() {
         float speed = 0.15f;
 
-        foreach(var i in cards) {
-            i.card.transform.DOLocalMove(Vector2.zero, speed);
-            i.card.transform.DOScale(0.0f, speed);
-            i.card.transform.DORotate(new Vector3(0.0f, 0.0f, 0.0f), speed);
+        if(cards == null || cards.Count == 0)
+            yield break;
 
-            Destroy(i.card.gameObject, speed);
+        for(int i = cards.Count - 1; i >= 0; i--) {
+            cards[i].card.transform.DOLocalMove(Vector2.zero, speed);
+            cards[i].card.transform.DOScale(0.0f, speed);
+            cards[i].card.transform.DORotate(new Vector3(0.0f, 0.0f, 0.0f), speed);
+
+            Destroy(cards[i].card.gameObject, speed);
 
             yield return new WaitForSeconds(.05f);
         }

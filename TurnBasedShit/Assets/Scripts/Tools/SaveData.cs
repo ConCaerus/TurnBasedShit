@@ -122,6 +122,6 @@ public static class SaveData {
         return hasSaveDataForSave(getCurrentSaveIndex());
     }
     public static bool hasSaveDataForSave(int index) {
-        return Party.getHolder().getObjectCount<UnitStats>() > 0;
+        return Party.getHolder() != null && Party.getHolder().getObjectCount<UnitStats>() > 0;
     }
 }

@@ -103,6 +103,10 @@ public static class Party {
 
     public static ObjectHolder getHolder() {
         var data = SaveData.getString(holderTag);
+        if(string.IsNullOrEmpty(data)) {
+            clear(false);
+            data = SaveData.getString(holderTag);
+        }
         return JsonUtility.FromJson<ObjectHolder>(data);
     }
     static void saveHolder(ObjectHolder holder) {

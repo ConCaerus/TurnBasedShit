@@ -14,24 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preset:
     t_name: Nudist
-    passiveMods:
+    pMods:
     - conditions: 00000000
-      amount: 1.15
+      amount: 1.2
+      good: 1
       type: 0
     - conditions: 00000000
-      amount: 1.15
+      amount: 1.2
+      good: 1
       type: 1
     - conditions: 00000000
-      amount: 1.15
+      amount: 1.2
+      good: 1
       type: 2
-    - conditions: 01000000
-      amount: 0.9
-      type: 0
-    - conditions: 01000000
-      amount: 0.9
-      type: 1
-    - conditions: 01000000
-      amount: 0.9
-      type: 2
-    timedMods: []
+    tMods: []
     t_isGood: 1

@@ -28,32 +28,32 @@ public static class GameInfo {
     const string stateTag = "Current Game State";
 
     //  current combat location that the player is in
-    public const string combatDetails = "CombatLocation";
+    const string combatDetails = "CombatLocation";
 
-    public const string currentRegion = "Current Region";
-    public const string currentMapLocation = "Current Map Location";
-    public const string currentMapPosX = "Current Map Position x";
-    public const string currentMapPosY = "Current Map Position y";
+    const string currentRegion = "Current Region";
+    const string currentMapLocation = "Current Map Location";
+    const string currentMapPosX = "Current Map Position x";
+    const string currentMapPosY = "Current Map Position y";
 
-    public const string nextCombatLocationID = "Next Combat Location ID";
-    public const string nextObjectHolderID = "Next Object Holder ID";
+    const string nextCombatLocationID = "Next Combat Location ID";
+    const string nextObjectHolderID = "Next Object Holder ID";
 
-    public const string nextUnitID = "Next Unit ID";
+    const string nextUnitID = "Next Unit ID";
 
-    public const string nextWeaponID = "Next Weapon ID";
-    public const string nextArmorID = "Next Armor ID";
-    public const string nextUsableID = "Next Usable ID";
-    public const string nextUnusableID = "Next Unusable ID";
-    public const string nextItemID = "Next Item ID";
+    const string nextWeaponID = "Next Weapon ID";
+    const string nextArmorID = "Next Armor ID";
+    const string nextUsableID = "Next Usable ID";
+    const string nextUnusableID = "Next Unusable ID";
+    const string nextItemID = "Next Item ID";
 
-    public const string nextTownID = "Next Town ID";
-    public const string nextTownMemberID = "Next Town Member ID";
+    const string nextTownID = "Next Town ID";
+    const string nextTownMemberID = "Next Town Member ID";
 
-    public const string nextQuestID = "Next Quest ID";
+    const string nextQuestID = "Next Quest ID";
 
-    public const string combatTutorialStatus = "Combat Tutorial Status";
-    public const string mapTutorialStatus = "Map Tutorial Status";
-    public const string townTutorialStatus = "Town Tutorial Status";
+    const string combatTutorialStatus = "Combat Tutorial Status";
+    const string mapTutorialStatus = "Map Tutorial Status";
+    const string townTutorialStatus = "Town Tutorial Status";
 
 
     public static void clearEverything() {

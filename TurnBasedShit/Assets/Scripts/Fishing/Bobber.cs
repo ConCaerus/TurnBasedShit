@@ -13,7 +13,7 @@ public class Bobber : MonoBehaviour {
 
 
     private void Update() {
-        if(FindObjectOfType<FishingCanvas>().running)
+        if(FindObjectOfType<FishingCanvas>().fishing)
             rotate();
     }
 
@@ -57,7 +57,7 @@ public class Bobber : MonoBehaviour {
 
         transform.DOPunchPosition(new Vector3(0.0f, -Random.Range(0.01f, 0.1f)), randTime);
         yield return new WaitForSeconds(randTime);
-        while(!FindObjectOfType<FishingCanvas>().running)
+        while(!FindObjectOfType<FishingCanvas>().fishing)
             yield return new WaitForSeconds(randTime);
         StartCoroutine(animateBob());
     }

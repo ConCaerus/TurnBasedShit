@@ -14,9 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preset:
     t_name: Meditative
-    passiveMods:
+    pMods:
     - conditions: 
-      amount: 0.5
-      type: 26
-    timedMods: []
+      amount: 0.75
+      good: 1
+      type: 14
+    - conditions: 
+      amount: 1.15
+      good: 1
+      type: 17
+    tMods: []
     t_isGood: 1

@@ -31,7 +31,7 @@ public abstract class InteractiveMovement : UnitMovement {
             }
             else {
                 isMoving = false;
-                GetComponent<Rigidbody2D>().velocity = new Vector2(0.0f, GetComponent<Rigidbody2D>().velocity.y);
+                    GetComponent<Rigidbody2D>().velocity = canMoveAlongY() ? Vector2.zero : new Vector2(0.0f, GetComponent<Rigidbody2D>().velocity.y);
                 unit.GetComponent<UnitSpriteHandler>().setWalkingAnim(false);
             }
         }
@@ -56,7 +56,7 @@ public abstract class InteractiveMovement : UnitMovement {
         //  X AXIS
         //  right
         if(Input.GetKey(KeyCode.D)) {
-            if(!movingRight)
+            if(!movingRight || !GetComponentInChildren<UnitSpriteHandler>().isFaceShown())
                 flip(true);
 
             target = Vector2.right;
@@ -64,10 +64,9 @@ public abstract class InteractiveMovement : UnitMovement {
 
         //  left
         else if(Input.GetKey(KeyCode.A)) {
-            if(movingRight)
+            if(movingRight || !GetComponentInChildren<UnitSpriteHandler>().isFaceShown())
                 flip(true);
 
-            //target = Vector2.right;
             target = Vector2.left;
         }
 
@@ -75,7 +74,7 @@ public abstract class InteractiveMovement : UnitMovement {
         if(canMoveAlongY()) {
             //  up
             if(Input.GetKey(KeyCode.W)) {
-                if(movingDown)
+                if((movingDown || GetComponentInChildren<UnitSpriteHandler>().isFaceShown()) && target.x == 0.0f)
                     flip(false);
                 movingDown = false;
                 target += Vector2.up;

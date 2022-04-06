@@ -27,14 +27,11 @@ MonoBehaviour:
       chanceToCatch: 0
     flavor: Works like a charm.
     description: Best not to drink the chunks. Increases healing power.
-    tEffects: []
-    pEffects:
-    - effect: 3
-      effectAmount: 0.15
-    passiveMods:
+    pMods:
     - conditions: 
-      amount: 1.15
+      amount: 1.25
+      good: 1
       type: 17
-    timedMods: []
+    tMods: []
     sprite:
       sprite: {fileID: 21300000, guid: 5bfd70f866a69b34aab63adc6c481d96, type: 3}

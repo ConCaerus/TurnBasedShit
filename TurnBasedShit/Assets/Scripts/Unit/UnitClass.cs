@@ -169,11 +169,8 @@ public abstract class UnitClass : MonoBehaviour {
         return stunned;
     }
     public void chanceGettingStunned(float chance) {
-        if(stats.u_talent != null)
-            chance *= stats.u_talent.getPassiveMod(StatModifier.passiveModifierType.stunSelfChance, stats, true);
-
-        foreach(var i in stats.u_traits)
-            chance *= i.getPassiveMod(StatModifier.passiveModifierType.stunSelfChance, stats, true);
+        foreach(var i in stats.getAllPassiveMods())
+            chance *= i.getMod(StatModifier.passiveModifierType.stunSelfChance, stats, true);
 
         stunned = GameVariables.chanceOutOfHundred((int)chance);
     }
@@ -189,8 +186,8 @@ public abstract class UnitClass : MonoBehaviour {
 
         transform.DOComplete();
         //  triggers
-        if(stats.item != null && !stats.item.isEmpty())
-            stats.item.triggerUseTime(this, StatModifier.useTimeType.beforeAttacking);
+        foreach(var i in stats.getAllTimedMods())
+            i.triggerUseTime(this, StatModifier.useTimeType.beforeAttacking);
 
         //  triggers
         stats.weapon.applyAttributes(gameObject, defender);
@@ -202,8 +199,8 @@ public abstract class UnitClass : MonoBehaviour {
 
     public void defend(GameObject attacker, float dmg) {
         //  triggers
-        if(stats.item != null && !stats.item.isEmpty())
-            stats.item.triggerUseTime(this, StatModifier.useTimeType.beforeDefending);
+        foreach(var i in stats.getAllTimedMods())
+            i.triggerUseTime(this, StatModifier.useTimeType.beforeDefending);
 
 
         //  if defender is an enemy, check if it's weak or strong to the attack
@@ -238,7 +235,7 @@ public abstract class UnitClass : MonoBehaviour {
         defendAnim = StartCoroutine(defendingAnim());
 
         //  chance worn state decrease
-        if(stats.armor != null && !stats.armor.isEmpty() && stats.armor.wornAmount > GameInfo.wornState.Old && GameVariables.chanceEquipmentWornDecrease() && combatStats.isPlayerUnit) {
+        if(stats.armor != null && !stats.armor.isEmpty() && stats.armor.wornAmount > GameInfo.wornState.Old && GameVariables.chanceEquipmentWornDecrease(stats) && combatStats.isPlayerUnit) {
             stats.armor.wornAmount--;
             FindObjectOfType<DamageTextCanvas>().showTatterTextForUnit(gameObject);
         }
@@ -398,20 +395,23 @@ public abstract class UnitClass : MonoBehaviour {
         //  damage logic
         if(!miss) {
             var dmg = stats.getDamageGiven(FindObjectOfType<PresetLibrary>()) + combatStats.tempPowerMod;
+            bool healInstead = false;
             //  check if other modifications to damage
-            if(stats.item != null && !stats.item.isEmpty() && stats.item.getPassiveMod(StatModifier.passiveModifierType.healInsteadOfDamage, stats, false) != 0.0f) {
-                dmg *= stats.item.getPassiveMod(StatModifier.passiveModifierType.healInsteadOfDamage, stats, true);
-                defender.GetComponent<UnitClass>().addHealth(dmg);
+            foreach(var i in stats.getAllPassiveMods()) {
+                if(i.getMod(StatModifier.passiveModifierType.healInsteadOfDamage, stats, false) != 0.0f) {
+                    dmg *= stats.item.getPassiveMod(StatModifier.passiveModifierType.healInsteadOfDamage, stats, true);
+                    defender.GetComponent<UnitClass>().addHealth(dmg);
+                    healInstead = true;
+                }
             }
 
             //  actually deal damage to defender
-            else {
+            if(!healInstead) {
                 if(charging) {
                     var chargedMod = 2.0f;
-                    if(stats.u_talent != null)
-                        chargedMod += stats.u_talent.getPassiveMod(StatModifier.passiveModifierType.addChargedPower, stats, false);
-                    foreach(var i in stats.u_traits)
-                        chargedMod += i.getPassiveMod(StatModifier.passiveModifierType.addChargedPower, stats, false);
+                    foreach(var i in stats.getAllPassiveMods()) {
+                        chargedMod += i.getMod(StatModifier.passiveModifierType.addChargedPower, stats, false);
+                    }
                     dmg *= chargedMod;
                 }
                 defender.GetComponent<UnitClass>().defend(gameObject, dmg);
@@ -438,28 +438,24 @@ public abstract class UnitClass : MonoBehaviour {
             FindObjectOfType<DamageTextCanvas>().showLevelUpTextForUnit(gameObject);
 
         //  non value based traits in attack
-        foreach(var i in stats.u_traits) {
-            if(!stunned && GameVariables.chanceOutOfHundred(Mathf.FloorToInt(i.getPassiveMod(StatModifier.passiveModifierType.stunSelfChance, stats, false)))) {
+        foreach(var i in stats.getAllPassiveMods()) {
+            if(!stunned && GameVariables.chanceOutOfHundred(Mathf.FloorToInt(i.getMod(StatModifier.passiveModifierType.stunSelfChance, stats, false)))) {
                 stunned = true;
             }
-            if(defender != null && !defender.GetComponent<UnitClass>().isStunned() && GameVariables.chanceOutOfHundred((int)i.getPassiveMod(StatModifier.passiveModifierType.stunTargetChance, stats, false)))
-                defender.GetComponent<UnitClass>().stunned = true;
-        }
-        if(stats.u_talent != null) {
-            if(!stunned && GameVariables.chanceOutOfHundred(Mathf.FloorToInt(stats.u_talent.getPassiveMod(StatModifier.passiveModifierType.stunSelfChance, stats, false)))) {
-                stunned = true;
-            }
-            if(defender != null && !defender.GetComponent<UnitClass>().isStunned() && GameVariables.chanceOutOfHundred((int)stats.u_talent.getPassiveMod(StatModifier.passiveModifierType.stunTargetChance, stats, false)))
+            if(defender != null && !defender.GetComponent<UnitClass>().isStunned() && GameVariables.chanceOutOfHundred((int)i.getMod(StatModifier.passiveModifierType.stunTargetChance, stats, false)))
                 defender.GetComponent<UnitClass>().stunned = true;
         }
 
         //  chance worn state decrease
-        if(stats.weapon != null && !stats.weapon.isEmpty() && stats.weapon.wornAmount > GameInfo.wornState.Old && GameVariables.chanceEquipmentWornDecrease() && combatStats.isPlayerUnit) {
+        if(stats.weapon != null && !stats.weapon.isEmpty() && stats.weapon.wornAmount > GameInfo.wornState.Old && GameVariables.chanceEquipmentWornDecrease(stats) && combatStats.isPlayerUnit) {
             FindObjectOfType<DamageTextCanvas>().showTatterTextForUnit(gameObject);
             stats.weapon.wornAmount--;
         }
 
         attackAnim = null;
+        GetComponent<CombatUnitUI>().updateUIInfo();
+        if(defender.gameObject != null)
+            defender.gameObject.GetComponent<CombatUnitUI>().updateUIInfo();
         FindObjectOfType<TurnOrderSorter>().setNextInTurnOrder();
     }
 

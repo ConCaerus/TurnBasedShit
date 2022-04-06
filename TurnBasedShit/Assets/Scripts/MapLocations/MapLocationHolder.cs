@@ -3,20 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class MapLocationHolder {
-    const string holderTag = "MapLocationHolderTag";
+    static string holderTag(GameInfo.region reg) {
+        if(reg == (GameInfo.region)(-1))
+            return null;
+        return "MapLocationHolderTag: " + reg.ToString();
+    }
 
-    public static ObjectHolder getHolder() {
-        var data = SaveData.getString(holderTag);
+    public static ObjectHolder getHolder(GameInfo.region reg) {
+        var data = SaveData.getString(holderTag(reg));
         return JsonUtility.FromJson<ObjectHolder>(data);
     }
-    static void saveHolder(ObjectHolder holder) {
+    static void saveHolder(ObjectHolder holder, GameInfo.region reg) {
         var data = JsonUtility.ToJson(holder);
-        SaveData.setString(holderTag, data);
+        SaveData.setString(holderTag(reg), data);
     }
 
 
     public static void clear() {
-        saveHolder(new ObjectHolder());
+        for(int i = 0; i < 5; i++)
+            saveHolder(new ObjectHolder(), (GameInfo.region)i);
     }
 
 
@@ -24,38 +29,38 @@ public static class MapLocationHolder {
         if(loc == null)
             return;
 
-        if(getHolder() == null)
-            saveHolder(new ObjectHolder());
+        if(getHolder(loc.region) == null)
+            saveHolder(new ObjectHolder(), loc.region);
 
-        var holder = getHolder();
+        var holder = getHolder(loc.region);
         holder.addObject<MapLocation>(loc);
-        saveHolder(holder);
+        saveHolder(holder, loc.region);
     }
     public static void overrideLocation(int index, MapLocation loc) {
         if(loc == null || index == -1)
             return;
-        var holder = getHolder();
+        var holder = getHolder(loc.region);
         holder.overrideObject<MapLocation>(index, loc);
-        saveHolder(holder);
+        saveHolder(holder, loc.region);
     }
     public static void overrideLocationOfSameType(MapLocation loc) {
         if(loc == null)
             return;
-        var holder = getHolder();
+        var holder = getHolder(loc.region);
         holder.overrideMapLocationOfSameType(loc);
-        saveHolder(holder);
+        saveHolder(holder, loc.region);
     }
     public static void removeLocation(MapLocation loc) {
         if(loc == null)
             return;
-        var holder = getHolder();
+        var holder = getHolder(loc.region);
         holder.removeMapLocation(loc);
-        saveHolder(holder);
+        saveHolder(holder, loc.region);
     }
-    public static void removeLocation<T>(int index) {
-        var holder = getHolder();
+    public static void removeLocation<T>(int index, GameInfo.region reg) {
+        var holder = getHolder(reg);
         holder.removeObject<T>(index);
-        saveHolder(holder);
+        saveHolder(holder, reg);
     }
 
 
@@ -90,19 +95,19 @@ public static class MapLocationHolder {
             }
         }
     }
-    public static MapLocation getLocationAtPos(Vector2 p) {
-        foreach(var i in getHolder().getMapLocations()) {
+    public static MapLocation getLocationAtPos(Vector2 p, GameInfo.region reg) {
+        foreach(var i in getHolder(reg).getMapLocations()) {
             if(i.pos == p)
                 return i;
         }
 
         return null;
     }
-    public static TownLocation getRandomTownLocationWithBuilding(Building.type type) {
+    public static TownLocation getRandomTownLocationWithBuilding(Building.type type, GameInfo.region reg) {
         List<TownLocation> locs = new List<TownLocation>();
-        for(int i = 0; i < getHolder().getObjectCount<TownLocation>(); i++) {
-            if(getHolder().getObject<TownLocation>(i).town.hasBuilding(type))
-                locs.Add(getHolder().getObject<TownLocation>(i));
+        for(int i = 0; i < getHolder(reg).getObjectCount<TownLocation>(); i++) {
+            if(getHolder(reg).getObject<TownLocation>(i).town.hasBuilding(type))
+                locs.Add(getHolder(reg).getObject<TownLocation>(i));
         }
         if(locs.Count == 0)
             return null;

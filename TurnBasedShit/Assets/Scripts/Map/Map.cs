@@ -87,15 +87,15 @@ public static class Map {
     }
 
     public static TownLocation getRandomTownLocationInRegion(GameInfo.region regionIndex) {
-        if(MapLocationHolder.getHolder().getObjectCount<TownLocation>() == 0) {
+        if(MapLocationHolder.getHolder(regionIndex).getObjectCount<TownLocation>() == 0) {
             Debug.LogError("No Towns My Guy");
             return null;
         }
 
         var pos = new List<TownLocation>();
-        for(int i = 0; i < MapLocationHolder.getHolder().getObjectCount<TownLocation>(); i++) {
-            if(MapLocationHolder.getHolder().getObject<TownLocation>(i).region == regionIndex)
-                pos.Add(MapLocationHolder.getHolder().getObject<TownLocation>(i));
+        for(int i = 0; i < MapLocationHolder.getHolder(regionIndex).getObjectCount<TownLocation>(); i++) {
+            if(MapLocationHolder.getHolder(regionIndex).getObject<TownLocation>(i).region == regionIndex)
+                pos.Add(MapLocationHolder.getHolder(regionIndex).getObject<TownLocation>(i));
         }
 
         return pos[Random.Range(0, pos.Count)];

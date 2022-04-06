@@ -7,6 +7,7 @@ using DG.Tweening;
 public class FishingCanvas : MonoBehaviour {
     public Slider reelSlider, fishSlider, reelTargetSlider, progressSlider;
     [SerializeField] GameObject fishSliderImage, reelSliderImage;
+    GameObject walker;
     [SerializeField] Vector2 spoilsImageEndPos;
 
     public float fishTarget = 0.0f;
@@ -15,7 +16,7 @@ public class FishingCanvas : MonoBehaviour {
 
     float distToGainPoints = .15f;
 
-    public bool running = false;
+    public bool fishing = false;
 
 
     Coroutine fishWaiter = null, randReelWaiter = null;
@@ -31,13 +32,15 @@ public class FishingCanvas : MonoBehaviour {
         reelTargetSlider.value = 0.0f;
         progressSlider.value = 0.0f;
 
+        walker = FindObjectOfType<RoomMovement>().gameObject;
+
         reelTargetSlider.onValueChanged.AddListener(delegate { reelTarget = reelTargetSlider.value; });
 
         stopFishing();
     }
 
     private void Update() {
-        if(running) {
+        if(fishing) {
             fishMovement();
             reelMovement();
             gainPoints();
@@ -66,7 +69,7 @@ public class FishingCanvas : MonoBehaviour {
                 FindObjectOfType<RoomMovement>().deinteract();
 
                 addSpoils();
-                running = false;
+                fishing = false;
             }
         }
     }
@@ -74,18 +77,20 @@ public class FishingCanvas : MonoBehaviour {
 
 
     public void startFishing() {
-        FindObjectOfType<RoomMovement>().gameObject.transform.localScale = new Vector3(0.0f, 0.0f);
+        transform.GetChild(0).gameObject.SetActive(true);
+        walker.SetActive(false);
         FindObjectOfType<FishingUnit>().gameObject.transform.localScale = new Vector3(.5f, .5f);
-        running = true;
+        fishing = true;
     }
 
     public void stopFishing() {
-        FindObjectOfType<RoomMovement>().gameObject.transform.localScale = new Vector3(.5f, .5f);
+        transform.GetChild(0).gameObject.SetActive(false);
+        walker.SetActive(true);
         FindObjectOfType<FishingUnit>().gameObject.transform.localScale = new Vector3(0.0f, 0.0f);
         FindObjectOfType<Bobber>().resetValues();
 
         progressSlider.value = 0.0f;
-        running = false;
+        fishing = false;
     }
 
 
@@ -109,6 +114,10 @@ public class FishingCanvas : MonoBehaviour {
         float scroll = Input.mouseScrollDelta.y;
         if(Mathf.Abs(scroll) > 0.001f)
             reelTargetSlider.value = Mathf.Clamp(reelTargetSlider.value + scroll / 15.0f, reelTargetSlider.minValue, reelTargetSlider.maxValue);
+        if(Input.GetKey(KeyCode.A)) 
+            reelTargetSlider.value = Mathf.Clamp(reelTargetSlider.value + .5f / 15.0f, reelTargetSlider.minValue, reelTargetSlider.maxValue);
+        else if(Input.GetKey(KeyCode.D))
+            reelTargetSlider.value = Mathf.Clamp(reelTargetSlider.value - .5f / 15.0f, reelTargetSlider.minValue, reelTargetSlider.maxValue);
         reelTarget = reelTargetSlider.value;
 
         reelSlider.value = Mathf.Lerp(reelSlider.value, reelTarget + reelOffset, 0.75f * Time.deltaTime);

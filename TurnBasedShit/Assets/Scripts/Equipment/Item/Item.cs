@@ -6,35 +6,14 @@ using DG.Tweening;
 [System.Serializable]
 public class Item : Collectable {
 
-    public List<StatModifier.passiveMod> passiveMods = new List<StatModifier.passiveMod>();
-    public List<StatModifier.timedMod> timedMods = new List<StatModifier.timedMod>();
+    public List<StatModifier.passiveMod> pMods = new List<StatModifier.passiveMod>();
+    public List<StatModifier.timedMod> tMods = new List<StatModifier.timedMod>();
 
     [SerializeField] ItemSpriteHolder sprite;
 
-    /*
-    //  passive shit
-    public float getPassiveMod(passiveEffectTypes type) {
-        float temp = 0.0f;
-        foreach(var i in pEffects) {
-            if(i.effect == type)
-                temp += i.effectAmount;
-        }
-        return temp;
-    }
-
-    //  timed shit
-    public float getTimedMod(timedEffectTypes type) {
-        float temp = 0.0f;
-        foreach(var i in tEffects) {
-            if(i.effect == type)
-                temp += i.effectAmount;
-        }
-        return temp;
-    }
-    */
 
     public void triggerUseTime(UnitClass unit, StatModifier.useTimeType time) {
-        foreach(var i in timedMods) {
+        foreach(var i in tMods) {
             foreach(var t in i.useTimes) {
                 if(t == time) {
                     switch(i.type) {
@@ -97,19 +76,19 @@ public class Item : Collectable {
 
     public float getPassiveMod(StatModifier.passiveModifierType type, UnitStats unit, bool multing) {
         var temp = 0.0f;
-        if(passiveMods.Count == 0)
+        if(pMods.Count == 0)
             return multing ? 1.0f : 0.0f;
 
-        foreach(var i in passiveMods)
+        foreach(var i in pMods)
             temp += i.getMod(type, unit, multing);
         return temp;
     }
     public float getTimedMod(StatModifier.timedModifierType type, UnitClass unit, bool multing) {
         var temp = 0.0f;
-        if(timedMods.Count == 0)
+        if(tMods.Count == 0)
             return multing ? 1.0f : 0.0f;
 
-        foreach(var i in timedMods)
+        foreach(var i in tMods)
             temp += i.getMod(type, unit, multing);
         return temp;
     }
@@ -125,11 +104,11 @@ public class Item : Collectable {
 
         matchParentValues(col, takeID);
 
-        passiveMods = new List<StatModifier.passiveMod>();
-        timedMods = new List<StatModifier.timedMod>();
+        pMods = new List<StatModifier.passiveMod>();
+        tMods = new List<StatModifier.timedMod>();
 
-        passiveMods = other.passiveMods;
-        timedMods = other.timedMods;
+        pMods = other.pMods;
+        tMods = other.tMods;
     }
 
     public ItemSpriteHolder getSpriteHolder() {
