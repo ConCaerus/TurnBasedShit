@@ -22,6 +22,16 @@ public class UnitBody : UnitCustomizables {
         return GetComponent<SpriteRenderer>().color;
     }
 
+    public override void setAllSpritesVisible(bool b) {
+        GetComponent<SpriteRenderer>().enabled = b;
+        rArm.GetComponent<SpriteRenderer>().enabled = b;
+        lArm.GetComponent<SpriteRenderer>().enabled = b;
+        weapon.GetComponent<SpriteRenderer>().enabled = b;
+        armor.GetComponent<SpriteRenderer>().enabled = b;
+        rArmor.GetComponent<SpriteRenderer>().enabled = b;
+        lArmor.GetComponent<SpriteRenderer>().enabled = b;
+    }
+
     public override void offsetLayer(int norm) {
         GetComponent<SpriteRenderer>().sortingOrder = norm;
 

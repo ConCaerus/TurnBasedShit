@@ -4,10 +4,11 @@ using UnityEngine;
 using DG.Tweening;
 
 public class Bobber : MonoBehaviour {
-    [SerializeField] Vector2 showPos;
+    [SerializeField] Vector2 showPos, normPos;
 
     private void Start() {
         transform.position = new Vector3(transform.position.x, FindObjectOfType<FishingLineMover>().yPos);
+        normPos = transform.position;
         StartCoroutine(animateBob());
     }
 
@@ -40,6 +41,11 @@ public class Bobber : MonoBehaviour {
         transform.GetChild(1).GetComponent<ParticleSystem>().emissionRate = 0;
         transform.rotation = Quaternion.Euler(0f, 0f, 0f);
     }
+    public void resetBobber() {
+        resetValues();
+        transform.GetChild(2).GetComponent<SpriteRenderer>().sprite = null;
+        transform.position = normPos;
+    }
 
     public void showSpoils(Collectable fish) {
         transform.GetChild(2).GetComponent<SpriteRenderer>().sprite = FindObjectOfType<PresetLibrary>().getGenericSpriteForCollectable(fish);
@@ -66,5 +72,10 @@ public class Bobber : MonoBehaviour {
         yield return new WaitForSeconds(0.25f);
         transform.DOMove(showPos, 0.25f);
         transform.GetChild(2).transform.DOScale(3.0f, 0.25f);
+
+        yield return new WaitForSeconds(1.0f);
+
+        transform.GetChild(2).GetComponent<SpriteRenderer>().sprite = null;
+        transform.DOMove(normPos, .25f);
     }
 }

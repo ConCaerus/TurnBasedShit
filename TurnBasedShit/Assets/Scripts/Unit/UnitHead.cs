@@ -19,6 +19,12 @@ public class UnitHead : UnitCustomizables {
         return GetComponent<SpriteRenderer>().color;
     }
 
+    public override void setAllSpritesVisible(bool b) {
+        GetComponent<SpriteRenderer>().enabled = b;
+        face.GetComponent<SpriteRenderer>().enabled = b;
+        hat.GetComponent<SpriteRenderer>().enabled = b;
+    }
+
     public override void offsetLayer(int norm) {
         GetComponent<SpriteRenderer>().sortingOrder = norm + 3;
         face.GetComponent<SpriteRenderer>().sortingOrder = norm + 4;

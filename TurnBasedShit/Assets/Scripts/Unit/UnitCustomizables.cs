@@ -9,6 +9,8 @@ public abstract class UnitCustomizables : MonoBehaviour {
     public abstract void tweenToColor(Color c, float time);
     public abstract Color getColor();
 
+    public abstract void setAllSpritesVisible(bool b);
+
     public abstract void offsetLayer(int norm);
 
     public abstract void triggerAttackAnim();

@@ -64,6 +64,11 @@ public class UnitSpriteHandler : MonoBehaviour {
         body = Instantiate(b.gameObject, transform);
     }
 
+    public void setAllSpritesVisible(bool b) {
+        body.GetComponent<UnitBody>().setAllSpritesVisible(b);
+        head.GetComponent<UnitHead>().setAllSpritesVisible(b);
+    }
+
     public void setShowingFace(bool b) {
         head.GetComponent<UnitHead>().setShowingFace(b);
     }

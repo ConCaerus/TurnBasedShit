@@ -78,15 +78,19 @@ public class FishingCanvas : MonoBehaviour {
 
     public void startFishing() {
         transform.GetChild(0).gameObject.SetActive(true);
-        walker.SetActive(false);
-        FindObjectOfType<FishingUnit>().gameObject.transform.localScale = new Vector3(.5f, .5f);
+        FindObjectOfType<Bobber>().resetBobber();
+
+        walker.GetComponentInChildren<UnitSpriteHandler>().setAllSpritesVisible(false);
+        walker.GetComponent<RoomMovement>().canMove = false;
+        FindObjectOfType<FishingUnit>().transform.localScale = new Vector3(.5f, .5f);
+        walker.transform.position = FindObjectOfType<FishingUnit>().transform.position;
         fishing = true;
     }
 
     public void stopFishing() {
         transform.GetChild(0).gameObject.SetActive(false);
-        walker.SetActive(true);
-        FindObjectOfType<FishingUnit>().gameObject.transform.localScale = new Vector3(0.0f, 0.0f);
+        walker.GetComponentInChildren<UnitSpriteHandler>().setAllSpritesVisible(true);
+        FindObjectOfType<FishingUnit>().transform.localScale = Vector3.zero;
         FindObjectOfType<Bobber>().resetValues();
 
         progressSlider.value = 0.0f;
