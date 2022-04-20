@@ -780,8 +780,9 @@ public class PresetLibrary : MonoBehaviour {
     }
     public BridgeLocation createBridgeLocation(float yPos, bool advancing, GameInfo.region reg, bool addToMap) {
         var temp = new BridgeLocation(yPos, advancing, reg);
-        if(addToMap)
+        if(addToMap) {
             MapLocationHolder.addLocation(temp);
+        }
         return temp;
     }
     public LootLocation createLootLocation(GameInfo.region reg, bool addToMap) {

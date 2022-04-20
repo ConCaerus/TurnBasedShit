@@ -30,7 +30,8 @@ public static class Map {
     }
 
     public static Vector2 getRandPos() {
-        return new Vector2(Random.Range(leftBound(), rightBound()), Random.Range(botBound(), topBound()));
+        float minDistFromEdge = 1.0f;
+        return new Vector2(Random.Range(leftBound() + minDistFromEdge, rightBound() - minDistFromEdge), Random.Range(botBound() + minDistFromEdge, topBound() - minDistFromEdge));
     }
 
     public static void populateTowns(PresetLibrary lib) {
@@ -56,6 +57,8 @@ public static class Map {
 
     public static void createFogTexture() {
         var temp = new Texture2D(width, height);
+        temp.filterMode = FilterMode.Trilinear;
+        temp.wrapMode = TextureWrapMode.Clamp;
         for(int x = 0; x < temp.width; x++) {
             for(int y = 0; y < temp.height; y++) {
                 temp.SetPixel(x, y, Color.white);

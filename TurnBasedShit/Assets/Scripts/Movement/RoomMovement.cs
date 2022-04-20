@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class RoomMovement : LocationMovement {
     [SerializeField] GameObject door;
-    [SerializeField] GameObject[] buildingOjbects;
+    public GameObject[] buildingOjbects;
     [SerializeField] AudioClip doorSound;
 
     [SerializeField] doorDestinations destination;

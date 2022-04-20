@@ -84,6 +84,7 @@ public static class SaveData {
 
         //  MapLocations
         GameInfo.setCurrentRegion(GameInfo.region.grassland);
+        GameInfo.setCurrentMapPos(new Vector2(Map.leftBound(), Map.getRandPos().y));
         Map.createFogTexture();
         MapLocationHolder.populateMapLocations(lib);
         MapMerchantManager.createStartingMerchantData(lib);

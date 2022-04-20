@@ -9,6 +9,8 @@ public class MapFogTexture : MonoBehaviour {
     public Texture2D fow { get; private set; }
     float seeingDist = 4.0f;
 
+    public Color gColor, fColor, sColor, mColor, hColor;
+
     List<fogPointInfo> clearingPoints = new List<fogPointInfo>();
     Coroutine clearer = null;
 
@@ -26,7 +28,6 @@ public class MapFogTexture : MonoBehaviour {
         fow = Map.getFogTexture(GameInfo.getCurrentRegion());
         reg = GameInfo.getCurrentRegion();
         StartCoroutine(FindObjectOfType<TransitionCanvas>().runAfterLoading(startingClear));
-        Debug.Log(GameInfo.getCurrentRegion());
 
         //  set the sprite of the frog mask
         var r = new Rect(0, 0, fow.width, fow.height);
@@ -38,24 +39,30 @@ public class MapFogTexture : MonoBehaviour {
 
         //  reset the position of the frog mask because changing the sprite also shifts it's position
         fogMask.transform.position = new Vector3(-Map.width / 2.0f, -Map.height / 2.0f);
-        fogMask.transform.localScale = new Vector3(100.0f, 100.0f);
+        fogMask.transform.localScale = new Vector3(101.0f, 101.0f);
 
 
         setFogBackgroundSprite();
         fogBackground.transform.localScale = new Vector3(fogBackground.transform.localScale.x, fogBackground.transform.localScale.y);
         lastUpdatedPos = transform.position;
 
-        fow.Apply(false);
-    }
+        fogBackground.GetComponent<SpriteRenderer>().color = reg == GameInfo.region.grassland ? gColor : reg == GameInfo.region.forest ? fColor : reg == GameInfo.region.swamp ? sColor : reg == GameInfo.region.mountains ? mColor : hColor;
 
-    private void Update() {
-        if(Input.GetKeyDown(KeyCode.E))
-            clearFogAroundPos(transform.position, 10f, true);
+        fow.Apply(false);
     }
 
 
     public void startingClear() {
         clearFogAroundPos(transform.position, seeingDist * 2.0f, true);
+    }
+
+    private void Update() {
+        if(Input.GetKeyDown(KeyCode.E)) {
+            for(int i = 0; i < fow.height; i++) {
+                fow.SetPixel(fow.width, i, Color.white);
+            }
+            fow.Apply(false);
+        }
     }
 
 
@@ -71,10 +78,10 @@ public class MapFogTexture : MonoBehaviour {
         var highlightDist = area * 1.5f;
 
         //  sets the pos to a good position to map to the texture
-        if(clearingArea) 
+        if(clearingArea)
             pos = getWorldPosForTexPoint(getTexPosForWorldPoint(pos));
 
-        Vector2Int feild = new Vector2Int((int)highlightDist + 1, (int)highlightDist + 1);
+        Vector2Int feild = new Vector2Int((int)highlightDist, (int)highlightDist);
         var startingPoint = getTexPosForWorldPoint(pos) - feild;
         var endingPoint = getTexPosForWorldPoint(pos) + feild;
 
@@ -90,9 +97,11 @@ public class MapFogTexture : MonoBehaviour {
                 if(fow.GetPixel(x, y).a == 0.0f)
                     continue;
                 var p = getWorldPosForTexPoint(new Vector2Int(x, y));
+
                 if(x < fow.width - 1 && y < fow.height - 1) {
-                    p += getWorldPosForTexPoint(new Vector2Int(x + 1, y + 1));
-                    p /= 2.0f;
+                    p += getWorldPosForTexPoint(new Vector2Int((x + 1), y + 1));
+                    p.x = Mathf.Clamp(p.x / 2.0f, Map.leftBound(), Map.rightBound());
+                    p.y = Mathf.Clamp(p.y / 2.0f, Map.botBound(), Map.topBound());
                 }
                 if(Vector2.Distance(pos, p) < area) {
                     var info = new fogPointInfo();
@@ -180,8 +189,8 @@ public class MapFogTexture : MonoBehaviour {
         float wXPerc = (pos.x - Map.leftBound()) / (Map.width);
         float wYPerc = (pos.y - Map.botBound()) / (Map.height);
 
-        temp.x = Mathf.FloorToInt((fow.width * wXPerc) + 0.5f);
-        temp.y = Mathf.FloorToInt((fow.height * wYPerc) + 0.5f);
+        temp.x = Mathf.Clamp(Mathf.FloorToInt((fow.width * wXPerc) + 0.5f), 0, fow.width);
+        temp.y = Mathf.Clamp(Mathf.FloorToInt((fow.height * wYPerc) + 0.5f), 0, fow.height);
 
         return temp;
     }

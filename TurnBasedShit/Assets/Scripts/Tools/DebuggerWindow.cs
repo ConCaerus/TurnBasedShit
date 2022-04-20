@@ -128,8 +128,10 @@ public class DebuggerWindow : EditorWindow {
         GUILayout.EndHorizontal();
         GUILayout.BeginHorizontal();
 
-        if(GUILayout.Button("Clear Fog Data"))
+        if(GUILayout.Button("Clear Fog Data")) {
             Map.clearFogTexture();
+            Map.createFogTexture();
+        }
 
         GUILayout.EndHorizontal();
 

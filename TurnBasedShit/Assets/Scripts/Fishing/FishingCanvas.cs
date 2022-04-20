@@ -37,6 +37,13 @@ public class FishingCanvas : MonoBehaviour {
         reelTargetSlider.onValueChanged.AddListener(delegate { reelTarget = reelTargetSlider.value; });
 
         stopFishing();
+
+        if(!Inventory.hasCollectableType(FindObjectOfType<PresetLibrary>().getWeapon("Fishing Rod"))) {
+            Debug.Log("No Rod?");
+            FindObjectOfType<RoomMovement>().buildingOjbects = new GameObject[0];
+            FindObjectOfType<InteractionCanvas>().interactTag = "Missing Fishing Rod";
+            enabled = false;
+        }
     }
 
     private void Update() {
@@ -79,6 +86,7 @@ public class FishingCanvas : MonoBehaviour {
     public void startFishing() {
         transform.GetChild(0).gameObject.SetActive(true);
         FindObjectOfType<Bobber>().resetBobber();
+        FindObjectOfType<InteractionCanvas>().hide();
 
         walker.GetComponentInChildren<UnitSpriteHandler>().setAllSpritesVisible(false);
         walker.GetComponent<RoomMovement>().canMove = false;

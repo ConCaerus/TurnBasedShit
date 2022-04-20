@@ -42,6 +42,8 @@ public class TutorialCanvas : MonoBehaviour {
 
     [SerializeField] TextMeshProUGUI tutText, titleText;
 
+    public tutState state;
+
 
     Coroutine moveAnim = null;
 
@@ -54,6 +56,8 @@ public class TutorialCanvas : MonoBehaviour {
 
 
     private void Start() {
+        gameObject.SetActive(false);
+        return;
         transform.GetChild(0).gameObject.SetActive(false);
         StartCoroutine(FindObjectOfType<TransitionCanvas>().runAfterLoading(runChecker));
     }

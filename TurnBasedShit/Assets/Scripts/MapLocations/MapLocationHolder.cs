@@ -84,12 +84,10 @@ public static class MapLocationHolder {
         //  bridges
         float lastY = Map.getRandPos().y;
         for(int i = 0; i < 5; i++) {
-            if(i > 0)   //  doesn't add a privious bridge to grasslands
+            if(i > 0)   //  if not grassland, add a prev bridge
                 lib.createBridgeLocation(lastY, false, (GameInfo.region)i, true);
-            else
-                GameInfo.setCurrentMapPos(new Vector2(Map.leftBound(), lastY));
 
-            if(i < 4) { //  doesn't add a next bridge for hell
+            if(i < 4) { //  if not hell, add a next bridge
                 lastY = Map.getRandPos().y;
                 lib.createBridgeLocation(lastY, true, (GameInfo.region)i, true);
             }

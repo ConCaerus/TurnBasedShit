@@ -6,13 +6,13 @@ using UnityEngine.UI;
 using DG.Tweening;
 
 public class InteractionCanvas : MonoBehaviour {
-    [SerializeField] string interactTag;
+    public string interactTag;
     [SerializeField] TextMeshProUGUI text;
 
     [SerializeField] float offset = 100f;
 
     private void Start() {
-        hide();
+        hardHide();
     }
 
 
@@ -25,7 +25,13 @@ public class InteractionCanvas : MonoBehaviour {
     }
     public void hide() {
         text.transform.DOKill();
-        text.transform.DOLocalMoveY(0f, .25f);
-        text.transform.DOScale(0f, .25f);
+        text.transform.DOLocalMoveY(0f, .15f);
+        text.transform.DOScale(0f, .15f);
+    }
+
+    public void hardHide() {
+        text.transform.DOKill();
+        text.transform.localPosition = Vector3.zero;
+        text.transform.localScale = Vector3.zero;
     }
 }

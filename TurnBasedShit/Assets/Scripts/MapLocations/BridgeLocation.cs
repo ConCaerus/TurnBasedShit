@@ -8,6 +8,7 @@ public class BridgeLocation : MapLocation {
 
     public BridgeLocation(float yPos, bool advancingBridge, GameInfo.region reg) {
         region = reg;
+        type = locationType.bridge;
         advancing = advancingBridge;
         pos = (advancing) ? new Vector2(Map.rightBound(), yPos) : new Vector2(Map.leftBound(), yPos);
     }

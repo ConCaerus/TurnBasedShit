@@ -14,9 +14,17 @@ public class FishingUnit : MonoBehaviour {
     }
 
     private void Update() {
-        transform.rotation = Quaternion.Euler(0.0f, 0.0f, 45.0f * FindObjectOfType<FishingCanvas>().fishSlider.value);
-        if(currentRod != null) {
-            currentRod.transform.parent.transform.rotation = Quaternion.Euler(0.0f, 0.0f, (-45/2.0f) + 45.0f * FindObjectOfType<FishingCanvas>().reelSlider.value);
+        if(FindObjectOfType<FishingCanvas>().enabled && FindObjectOfType<FishingCanvas>().fishing) {
+            transform.rotation = Quaternion.Euler(0.0f, 0.0f, 45.0f * FindObjectOfType<FishingCanvas>().fishSlider.value);
+            if(currentRod != null) {
+                currentRod.transform.parent.transform.rotation = Quaternion.Euler(0.0f, 0.0f, (-45 / 2.0f) + 45.0f * FindObjectOfType<FishingCanvas>().reelSlider.value);
+            }
+        }
+        else {
+            if(Vector2.Distance(transform.position, FindObjectOfType<RoomMovement>().transform.position) < 1.0f)
+                FindObjectOfType<InteractionCanvas>().show(transform.position);
+            else
+                FindObjectOfType<InteractionCanvas>().hide();
         }
     }
 

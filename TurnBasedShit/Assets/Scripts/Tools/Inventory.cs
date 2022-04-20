@@ -73,6 +73,13 @@ public static class Inventory {
         }
         return false;
     }
+    public static bool hasCollectableType(Collectable col) {
+        foreach(var i in getHolder().getCollectables()) {
+            if(col.isTheSameTypeAs(i))
+                return true;
+        }
+        return false;
+    }
 
     public static void resetCapacity() {
         SaveData.setInt(maxCapacity, 25);
