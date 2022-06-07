@@ -74,6 +74,7 @@ public class CombatCards : MonoBehaviour {
     }
 
     public void showCards(cardState s, List<StatModifier.useTimeType> relevantTimes) {
+        return; //  for shit
         StartCoroutine(waitToShowCards(s, relevantTimes));
     }
     public void hideCards() {

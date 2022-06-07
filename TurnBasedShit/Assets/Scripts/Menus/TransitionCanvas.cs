@@ -41,6 +41,7 @@ public class TransitionCanvas : MonoBehaviour {
             return;
         background.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
         hider = StartCoroutine(hideBackgroundObject());
+        TimeInfo.saveTime();
     }
 
 

@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 508ea45ff48af2444b1d7573c3a39463, type: 3}
-  m_Name: FarmingClothes
+  m_Name: FarmersClothes
   m_EditorClassIdentifier: 
   preset:
     instanceID: -1
-    name: Farming Clothes
+    name: Farmer's Clothes
     type: 1
     rarity: 0
     coinCost: 2
@@ -27,9 +27,15 @@ MonoBehaviour:
       chanceToCatch: 0
     flavor: Cheap clothing used for working in feilds.
     description: Great clothing for farmwork, not so great as armor. At least it's
-      cheap.
+      cheap. Increases enemy drop rate.
     wornAmount: 3
     attributes: 
+    pMods:
+    - conditions: 
+      amount: 1.15
+      good: 1
+      type: 20
+    tMods: []
     defence: 2
     speedMod: 0
     sprite:

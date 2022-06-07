@@ -26,7 +26,8 @@ MonoBehaviour:
       hookedRot: 0
       chanceToCatch: 0
     flavor: Adventurers' best friend.
-    description: Great fun out of battle. In battle, increases summon damage.
+    description: Great fun out of battle. In battle, increases summon's power, speed,
+      and exp gained.
     pMods:
     - conditions: 
       amount: 1.1
@@ -35,15 +36,7 @@ MonoBehaviour:
     - conditions: 
       amount: 1.1
       good: 1
-      type: 5
-    - conditions: 
-      amount: 1.1
-      good: 1
       type: 6
-    - conditions: 
-      amount: 1.1
-      good: 1
-      type: 7
     - conditions: 
       amount: 1.1
       good: 1

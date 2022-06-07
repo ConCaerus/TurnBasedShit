@@ -152,7 +152,15 @@ public static class GameInfo {
 
 
     public static Vector2 getMousePos() {
-        return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        if(Camera.main.orthographic)
+            return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        else {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if(Physics.Raycast(ray, out RaycastHit raycastHit)) {
+                return raycastHit.point;
+            }
+        }
+        return Vector2.zero;
     }
 
 

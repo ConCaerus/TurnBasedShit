@@ -73,6 +73,10 @@ public class PlayerUnitInstance : UnitClass {
         //  summon
         else if(stats.weapon.sUsage == Weapon.specialUsage.summoning && roomToSummon()) {
             var obj = Instantiate(FindObjectOfType<PresetLibrary>().getSummonForWeapon(stats.weapon).gameObject);
+            if(obj == null) {
+                Debug.LogError("No summon for weapon: " + stats.weapon.name);
+                return;
+            }
             obj.GetComponent<SummonedUnitInstance>().summoner = stats;
             getNextSummonSpotForUnit().GetComponent<CombatSpot>().unit = obj.gameObject;
             obj.transform.position = FindObjectOfType<SummonSpotSpawner>().getCombatSpotAtIndexForUnit(gameObject, getSummonCount() - 1).transform.position + new Vector3(0.0f, obj.GetComponent<UnitClass>().combatStats.spotOffset);

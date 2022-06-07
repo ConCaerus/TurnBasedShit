@@ -99,6 +99,7 @@ public class MapLocationSpawner : MonoBehaviour {
             currentIcons.Add(obj);
         }
 
+        /*
         //  FISHING
         for(int i = 0; i < MapLocationHolder.getHolder(GameInfo.getCurrentRegion()).getObjectCount<FishingLocation>(); i++) {
             if(MapLocationHolder.getHolder(GameInfo.getCurrentRegion()).getObject<FishingLocation>(i).region != GameInfo.getCurrentRegion())
@@ -112,7 +113,7 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.GetComponent<MapIcon>().indexInHolder = i;
 
             currentIcons.Add(obj);
-        }
+        }*/
 
         //  eyes
         for(int i = 0; i < MapLocationHolder.getHolder(GameInfo.getCurrentRegion()).getObjectCount<EyeLocation>(); i++) {
@@ -163,7 +164,7 @@ public class MapLocationSpawner : MonoBehaviour {
             currentIcons.Add(obj);
         }
 
-
+        /*
         //  merchant
         for(int i = 0; i < MapMerchantManager.getContainer().getMercsForRegion(GameInfo.getCurrentRegion()).Count; i++) {
             var obj = Instantiate(merchantPreset.gameObject);
@@ -173,7 +174,7 @@ public class MapLocationSpawner : MonoBehaviour {
             obj.transform.localScale = Vector3.one / 2.0f;
 
             currentIcons.Add(obj);
-        }
+        }*/
     }
 
     public void removeIonAtPos(Vector2 pos) {

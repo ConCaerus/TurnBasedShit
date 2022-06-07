@@ -21,6 +21,7 @@ public class MainMenuCanvas : MonoBehaviour {
 
     private void Start() {
         FindObjectOfType<AudioManager>().playMusic(music, true);
+        //TimeInfo.addTime(90);
     }
 
     public void quit() {
@@ -47,6 +48,7 @@ public class MainMenuCanvas : MonoBehaviour {
         FindObjectOfType<TransitionCanvas>().showBackground();
 
         yield return new WaitForSeconds(FindObjectOfType<TransitionCanvas>().getTransitionTime());
+        TimeInfo.resetTime();
 
         if(createNewSave) {
             SaveData.deleteCurrentSave();

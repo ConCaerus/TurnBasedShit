@@ -31,14 +31,14 @@ public class TownCameraMovement : MonoBehaviour {
         if(target.GetComponent<LocationMovement>().movingRight) {
             var p = new Vector3(target.transform.position.x, target.transform.position.y, transform.position.z) + (Vector3)offsetFromPlayer;
             transform.position = snap ? p : Vector3.Lerp(transform.position, p, speed * Time.deltaTime);
-            FindObjectOfType<EnvironmentHandler>().moveParallaxObjs(transform.position.x - prev);
+            //FindObjectOfType<EnvironmentHandler>().moveParallaxObjs(transform.position.x - prev);
         }
 
         else {
             var temp = new Vector2(-offsetFromPlayer.x, offsetFromPlayer.y);
             var p = new Vector3(target.transform.position.x, target.transform.position.y, transform.position.z) + (Vector3)temp;
             transform.position = snap ? p : Vector3.Lerp(transform.position, p, speed * Time.deltaTime);
-            FindObjectOfType<EnvironmentHandler>().moveParallaxObjs(transform.position.x - prev);
+            //FindObjectOfType<EnvironmentHandler>().moveParallaxObjs(transform.position.x - prev);
         }
     }
 

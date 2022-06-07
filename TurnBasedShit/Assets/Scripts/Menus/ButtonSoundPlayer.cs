@@ -5,11 +5,11 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class ButtonSoundPlayer : MonoBehaviour, IPointerEnterHandler {
-    [SerializeField] AudioClip sound;
+    [SerializeField] AudioClip sound = null;
 
 
     private void Start() {
-        if(GetComponent<Button>() != null)
+        if(GetComponent<Button>() != null && sound != null)
             GetComponent<Button>().onClick.AddListener(delegate { FindObjectOfType<AudioManager>().playSound(sound); });
     }
 

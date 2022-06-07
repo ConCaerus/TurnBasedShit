@@ -5,9 +5,10 @@ using DG.Tweening;
 
 public class EnvironmentHandler : MonoBehaviour {
     [SerializeField] GameObject grasslandObjects, forestObjects, swampObjects, mountainObjects, hellObjects;
+    [SerializeField] List<GameObject> otherObjects; //  things that should be paralaxed but aren't in the environment list (unit spots)
     [SerializeField] GameObject cloudObjects;
     float moveSpeed = 0.75f;
-    float parallaxAmount = .1f;
+    float parallaxAmount = 5f;
 
     //  first is close, fifth is far
     List<List<GameObject>> parallaxObjs = new List<List<GameObject>>();
@@ -58,15 +59,25 @@ public class EnvironmentHandler : MonoBehaviour {
                             i.gameObject.CompareTag("SixthParallax")  ?  5 : 6
             ].Add(i.gameObject);
         }
+        //  misc things
+        foreach(var i in otherObjects) {
+            parallaxObjs[   i.gameObject.CompareTag("FirstParallax")  ?  0 : //  fun
+                            i.gameObject.CompareTag("SecondParallax") ?  1 :
+                            i.gameObject.CompareTag("ThirdParallax")  ?  2 :
+                            i.gameObject.CompareTag("FourthParallax") ?  3 :
+                            i.gameObject.CompareTag("FifthParallax")  ?  4 :
+                            i.gameObject.CompareTag("SixthParallax")  ?  5 : 6
+            ].Add(i.gameObject);
+        }
     }
 
     //  called from camera movement scripts, so it doesn't have to run every frame
     public void moveParallaxObjs(float movedX) {
         float useMod = parallaxAmount * parallaxObjs.Count;
-        foreach(var p in parallaxObjs) {
-            foreach(var i in p) {
-                i.transform.DOKill();
-                i.transform.DOMove(new Vector3(i.transform.position.x + movedX * useMod, i.transform.position.y), moveSpeed);
+        for(int i = 0; i < 6; i++) {
+            foreach(var j in parallaxObjs[i]) {
+                j.transform.DOKill();
+                j.transform.DOMove(new Vector3(j.transform.position.x + (movedX * useMod), j.transform.position.y), moveSpeed);
             }
             useMod -= parallaxAmount;
         }
